@@ -1,0 +1,17 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "noImplicitThis": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "plugins": [
+      {
+        "name": "tsserver-plugin"
+      }
+    ]
+  }
+}
