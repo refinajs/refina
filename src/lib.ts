@@ -12,4 +12,4 @@ export * from "./component";
 export { view } from "./view";
 export * from "./loop";
 
-import "./components/basic.r";
+export * from  "./components/basic.r";

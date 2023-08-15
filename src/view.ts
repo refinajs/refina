@@ -1,6 +1,7 @@
 import { D, dangerously_setD } from "./data";
 import { DOMNodeComponent, HTMLElementComponent } from "./dom";
 import { Context, ContextClass } from "./context";
+import { Component, ComponentConstructor } from "./component";
 
 export type ViewRender = (_: Context) => void;
 
@@ -81,19 +82,22 @@ export class View {
     return ret;
   }
 
-  beginComponent<T extends object>(ckey: string, ctor: new () => T) {
+  beginComponent<T extends Component>(
+    ckey: string,
+    ctor: ComponentConstructor<T>
+  ) {
     this.pushKey(ckey);
     const ikey = this.ikey;
     let component = this.map.get(ikey) as T;
     if (!component) {
-      component = new ctor();
+      component = new ctor(ikey);
       this.map.set(ikey, component);
     }
     if (this._.$pendingRef) {
       this._.$pendingRef.current = component;
       this._.$pendingRef = null;
     }
-    return { component, ikey };
+    return component;
   }
   endComponent() {
     this.popKey();
