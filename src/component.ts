@@ -1,6 +1,7 @@
 import { D } from "./data";
 import { View } from "./view";
 import {
+  Context,
   ContextClass,
   IntrinsicContext,
   ToFullContext,
@@ -9,13 +10,14 @@ import {
 
 interface IntrinsicComponentContext<S, C = any, Ev = unknown>
   extends IntrinsicContext<C, Ev> {
-  $self: S;
-  /**
-   * (ikey)
-   */
-  $id: string;
+  readonly $self: S;
+  readonly $ikey: string;
   $setD<T>(d: D<T>, v: T): boolean;
   $refresh(): void;
+
+  $cls(): void;
+  $cls(classes: string[]): void;
+  $cls(strings: TemplateStringsArray, ...exps: any[]): void;
 }
 export type ComponentContext<S, C = any, Ev = unknown> = ToFullContext<
   C,
@@ -24,14 +26,16 @@ export type ComponentContext<S, C = any, Ev = unknown> = ToFullContext<
 >;
 export class ComponentContextClass<S>
   extends ContextClass
-  implements Partial<IntrinsicComponentContext<S>>
+  implements IntrinsicComponentContext<S>
 {
   constructor(
     public $view: View,
-    public $id: string,
-    public $self: S
+    public $ikey: string,
+    public $self: S,
+    classesArg: string[]
   ) {
     super($view);
+    this.$classesArg = classesArg;
   }
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$view.setD(d, v);
@@ -39,11 +43,24 @@ export class ComponentContextClass<S>
   $refresh() {
     this.$view.update();
   }
+
+  $classesArg: string[] | null = null;
+  $cls(...args: [] | any[]): void {
+    if (args.length === 0) {
+      if (!this.$classesArg) {
+        throw new Error(`Passed $classes has been used.`);
+      }
+      super.$cls(this.$classesArg);
+      this.$classesArg = null;
+    }
+    super.$cls(...args);
+  }
 }
 
 interface IntrinsicTriggerComponentContext<S, C = any, Ev = unknown>
   extends IntrinsicComponentContext<S, C, Ev> {
   $fire: (data: any) => void;
+  $fireWith: (data: any) => () => void;
 }
 export type TriggerComponentContext<S, C = any, Ev = unknown> = ToFullContext<
   C,
@@ -52,23 +69,37 @@ export type TriggerComponentContext<S, C = any, Ev = unknown> = ToFullContext<
 >;
 export class TriggerComponentContextClass<S>
   extends ComponentContextClass<S>
-  implements Partial<IntrinsicTriggerComponentContext<S>>
+  implements IntrinsicTriggerComponentContext<S>
 {
   $fire = (data: any) => {
-    this.$view.fire(this.$id, data);
+    this.$view.fire(this.$ikey, data);
+  };
+  $fireWith = (data: any) => () => {
+    this.$fire(data);
   };
 }
 export function defineTrigger<S extends object>(
-  proto: S,
+  ctor: new () => S,
   func: (_: TriggerComponentContext<S>, ...args: any) => void,
   name = func.name
 ) {
-  contextFuncs[name] = function (view, ckey, ...args) {
-    const { component, ikey } = view.beginComponent(ckey, proto);
+  contextFuncs[name] = function (this: Context, view, ckey, ...args) {
+    const { component, ikey } = view.beginComponent(ckey, ctor);
 
-    const context = new ComponentContextClass(view, ikey, component);
+    const context = new TriggerComponentContextClass(
+      view,
+      ikey,
+      component,
+      this.$classes
+    );
+
     func(context as any as TriggerComponentContext<S>, ...args);
+
     const isReceiver = view.isReceiver;
+
+    if (context.$classesArg !== null) {
+      context.$firstHTMLELement?.addClasses(context.$classesArg);
+    }
 
     view.endComponent();
 
@@ -88,6 +119,7 @@ interface IntrinsicStatusComponentContext<
   $status: boolean;
   $on(): void;
   $off(): void;
+  $toggle(): void;
 }
 export type StatusComponentContext<
   S extends object & {
@@ -102,12 +134,13 @@ export class StatusComponentContextClass<
     },
   >
   extends ComponentContextClass<S>
-  implements Partial<IntrinsicStatusComponentContext<S>>
+  implements IntrinsicStatusComponentContext<S>
 {
   get $status() {
     return this.$self.$status;
   }
   set $status(v) {
+    if (this.$self.$status === v) return;
     this.$self.$status = v;
     this.$refresh();
   }
@@ -117,13 +150,16 @@ export class StatusComponentContextClass<
   $off = () => {
     this.$status = false;
   };
+  $toggle = () => {
+    this.$status = !this.$status;
+  };
 }
 export function defineStatus<
   S extends object & {
     $status?: boolean;
   },
 >(
-  proto: S,
+  ctor: new () => S,
   func: (
     _: StatusComponentContext<
       S & {
@@ -134,17 +170,20 @@ export function defineStatus<
   ) => void,
   name = func.name
 ) {
-  contextFuncs[name] = function (view, ckey, ...args) {
-    proto.$status ??= false;
+  contextFuncs[name] = function (this: Context, view, ckey, ...args) {
+    const { component, ikey } = view.beginComponent(ckey, ctor);
 
-    const { component, ikey } = view.beginComponent(
-      ckey,
-      proto as S & {
+    component.$status ??= false;
+
+    const context = new StatusComponentContextClass(
+      view,
+      ikey,
+      component as S & {
         $status: boolean;
-      }
+      },
+      this.$classes
     );
 
-    const context = new StatusComponentContextClass(view, ikey, component);
     func(
       context as any as StatusComponentContext<
         S & {
@@ -154,49 +193,16 @@ export function defineStatus<
       ...args
     );
 
+    if (context.$classesArg !== null) {
+      context.$firstHTMLELement?.addClasses(context.$classesArg);
+    }
+
     view.endComponent();
 
     return component.$status;
   };
 }
 export interface StatusComponents extends Record<string, [object, any[]]> {}
-
-// interface IntrinsicHelperComponentContext<S, C = any, Ev = unknown>
-//   extends IntrinsicComponentContext<S, C, Ev> {
-//   $firer: (data: any) => any;
-// }
-// export type TriggerComponentContext<S, C = any, Ev = unknown> = ToFullContext<
-//   C,
-//   Ev,
-//   IntrinsicTriggerComponentContext<S, C, Ev>
-// >;
-// export class TriggerComponentContextClass<S>
-//   extends ComponentContextClass<S>
-//   implements Partial<IntrinsicTriggerComponentContext<S>>
-// {
-//   $firer = (data: any) => {
-//     this.$view.fire(this.$id, data);
-//   };
-// }
-// export function defineTrigger<S extends object>(
-//   proto: S,
-//   func: (_: TriggerComponentContext<S>, ...args: any) => void,
-//   name = func.name
-// ) {
-//   components[name] = function (view, ckey, ...args) {
-//     const { component, ikey } = view.beginComponent(ckey, proto);
-
-//     const context = new ComponentContextClass(view, ikey, component);
-//     func(context as any as TriggerComponentContext<S>, ...args);
-//     const isReceiver = view.isReceiver;
-
-//     view.endComponent();
-
-//     return isReceiver;
-//   };
-// }
-// export interface TriggerComponents
-//   extends Record<string, [object, any[], object]> {}
 
 export type ComponentFuncs<C> = {
   [K in keyof TriggerComponents]: TriggerComponents[K][0] extends C
@@ -207,9 +213,6 @@ export type ComponentFuncs<C> = {
     : never;
 } & {
   [K in keyof StatusComponents]: StatusComponents[K][0] extends C
-    ? (
-        ...args: StatusComponents[K][1]
-        //@ts-ignore
-      ) => this is Context<StatusComponents[K][0]>
+    ? (...args: StatusComponents[K][1]) => boolean
     : never;
 };

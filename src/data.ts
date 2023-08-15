@@ -1,7 +1,5 @@
 export const PDSymbol = Symbol("PD");
 
-type DWarppable = string | number | bigint | boolean | null | undefined;
-
 export class PD<T> {
   constructor(public value: T) {}
   [PDSymbol] = true;
@@ -10,7 +8,7 @@ export class PD<T> {
   }
 }
 
-export function d<T extends DWarppable>(v: T): Readonly<T> & PD<T> {
+export function d<T>(v: T): Readonly<T> & PD<T> {
   return new PD(v) as any as Readonly<T> & PD<T>;
 }
 
@@ -18,7 +16,7 @@ export type D<T> = T | PD<T>;
 
 export function getD<T>(d: D<T>): T {
   //@ts-ignore
-  return d[PDSymbol] ? (d as PD<T>).value : (d as T);
+  return d !== undefined && d[PDSymbol] ? (d as PD<T>).value : (d as T);
 }
 
 export function dangerously_setD<T>(d: D<T>, v: T): boolean {

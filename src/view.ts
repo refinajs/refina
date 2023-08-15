@@ -1,10 +1,8 @@
 import { D, dangerously_setD } from "./data";
-import { DOMComponent, HTMLElementComponent } from "./htmlElements";
+import { DOMNodeComponent, HTMLElementComponent } from "./dom";
 import { Context, ContextClass } from "./context";
 
 export type ViewRender = (_: Context) => void;
-
-export const viewsSymbolMap = new Map<object, symbol>();
 
 export class View {
   constructor(
@@ -16,6 +14,7 @@ export class View {
       throw new Error(`Root element ${rootElementId} not found`);
     }
     this.root = new HTMLElementComponent("~", rootElement);
+    this.resetState();
   }
 
   _ = new ContextClass(this) as any as Context;
@@ -25,48 +24,55 @@ export class View {
 
   currrentParent: HTMLElementComponent;
   state: State;
-  eventRecevier: string | null;
+  eventRecevierIkey: string | null;
+  get eventRecevier() {
+    return this.map.get(this.eventRecevierIkey!);
+  }
   eventData: any;
   protected idPrefix: string[];
 
   protected resetState() {
+    this.root.children = [];
     this.currrentParent = this.root;
+    this.eventRecevierIkey = null;
     this.idPrefix = ["root"];
   }
 
   mount() {
-    if (!viewsSymbolMap.has(this.main)) {
-      viewsSymbolMap.set(this.main, Symbol(this.main.toString()));
-    }
+    this.execUpdate();
     this.root.createDOM();
-    this.update();
-  }
-  exec(){
-    const initialKey = this.ikey;
-    this.main(this._);
-    if(initialKey!==this.ikey){
-      throw new Error(`Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`);
-    }
-  }
-  recv(receiver: string, data: any = null) {
-    this.resetState();
-    this.state = State.recv;
-    this.eventRecevier = receiver;
-    this.eventData = data;
-    this.exec();
   }
   update() {
+    this.execUpdate();
+    this.root.updateDOM();
+  }
+  execMain() {
+    const initialKey = this.ikey;
+    this.main(this._);
+    if (initialKey !== this.ikey) {
+      throw new Error(
+        `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`
+      );
+    }
+  }
+  execRecv(receiver: string, data: any = null) {
+    this.resetState();
+    this.state = State.recv;
+    this.eventRecevierIkey = receiver;
+    this.eventData = data;
+    this.execMain();
+  }
+  execUpdate() {
     this.resetState();
     this.state = State.update;
-    this.eventRecevier = null;
+    this.eventRecevierIkey = null;
     this.eventData = undefined;
-    this.exec();
-    this.root.updateDOM();
+    this.execMain();
   }
 
   fire(receiver: string, data: any) {
     console.log("FIRE!", receiver, data);
-    this.recv(receiver, data);
+    this.execRecv(receiver, data);
     this.update();
   }
   setD<T>(d: D<T>, v: T): boolean {
@@ -75,12 +81,12 @@ export class View {
     return ret;
   }
 
-  beginComponent<T extends object>(ckey: string, proto: T) {
+  beginComponent<T extends object>(ckey: string, ctor: new () => T) {
     this.pushKey(ckey);
     const ikey = this.ikey;
     let component = this.map.get(ikey) as T;
     if (!component) {
-      component = Object.create(proto);
+      component = new ctor();
       this.map.set(ikey, component);
     }
     if (this._.$pendingRef) {
@@ -91,14 +97,14 @@ export class View {
   }
   endComponent() {
     this.popKey();
-    this._.$pendingRef = null;
   }
 
   renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
     data: Partial<HTMLElementTagNameMap[E]>,
-    inner: ViewRender
+    inner: ViewRender,
+    classes: string[]
   ) {
     this.pushKey(ckey);
     const ikey = this.ikey;
@@ -114,6 +120,7 @@ export class View {
           //@ts-ignore
           ec.node[key] = data[key]!;
         }
+        ec.setClasses(classes);
         this.currrentParent.children.push(ec);
         ec.children = [];
         this.currrentParent = ec;
@@ -125,30 +132,28 @@ export class View {
         break;
     }
     this.currrentParent = oldParent;
-    if (this._.$pendingRef) {
-      this._.$pendingRef.current = ec!.node;
-      this._.$pendingRef = null;
-    }
     this.popKey();
+    return ec!;
   }
   renderText(ckey: string, text: string) {
     this.pushKey(ckey);
     const ikey = this.ikey;
-    let t = this.map.get(ikey) as DOMComponent | undefined;
+    let t = this.map.get(ikey) as DOMNodeComponent | undefined;
     if (this.state === State.update) {
       if (!t) {
-        t = new HTMLElementComponent(ikey, document.createTextNode(text));
+        t = new DOMNodeComponent(ikey, document.createTextNode(text));
         this.map.set(ikey, t);
       }
       this.currrentParent.children.push(t);
-      t.node.textContent = text;
+      if (t.node.textContent !== text) t.node.textContent = text;
     }
     this.popKey();
+    return t!;
   }
 
   pushKey(id: string) {
     this.idPrefix.push(id);
-    console.log("pushKey", this.ikey);
+    //  console.log("pushKey", this.ikey);
   }
   popKey() {
     this.idPrefix.pop();
@@ -157,7 +162,7 @@ export class View {
     return this.idPrefix.join(".");
   }
   get isReceiver() {
-    return this.eventRecevier === this.ikey;
+    return this.eventRecevierIkey === this.ikey;
   }
 
   // child<E extends Component>(
@@ -179,8 +184,8 @@ export class View {
 }
 
 export enum State {
-  update, // 更新Element的props，若元素不存在则创建
-  recv, // 接收消息，不得改变DOM
+  update = "update", // 更新Element的props，若元素不存在则创建
+  recv = "recv", // 接收消息，不得改变DOM
 }
 
 export function view(render: ViewRender, rootElementId: string = "root"): View {

@@ -1,18 +1,20 @@
 import { ViewRender } from "./view";
 import { D } from "./data";
 
-export class DOMComponent {
+export class DOMNodeComponent<N extends Node = Node> {
   constructor(
     public ikey: string,
-    public node: Node
+    public node: N
   ) {}
 
   createDOM() {}
   updateDOM() {}
 }
-export class HTMLElementComponent extends DOMComponent {
-  children: DOMComponent[] = [];
-  protected createdChildren = new Set<DOMComponent>();
+export class HTMLElementComponent<
+  E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
+> extends DOMNodeComponent<HTMLElementTagNameMap[E]> {
+  children: DOMNodeComponent[] = [];
+  protected createdChildren = new Set<DOMNodeComponent>();
 
   createDOM() {
     for (const child of this.children) {
@@ -23,7 +25,7 @@ export class HTMLElementComponent extends DOMComponent {
   }
 
   updateDOM() {
-    let createdUnused = new Set<DOMComponent>(this.createdChildren);
+    let createdUnused = new Set<DOMNodeComponent>(this.createdChildren);
     let lastChildEl: null | ChildNode = null;
     for (const child of this.children) {
       if (this.createdChildren.has(child)) {
@@ -46,19 +48,28 @@ export class HTMLElementComponent extends DOMComponent {
     }
     for (const unusedChild of createdUnused) {
       this.node.removeChild(unusedChild.node);
-      this.createdChildren.delete(unusedChild);
     }
+    this.createdChildren = new Set(this.children);
+  }
+
+  setClasses(classes: string[]) {
+    // Is this the best way to do this?
+    if (this.node.classList.length > 0) this.node.className = "";
+    if (classes.length > 0) this.node.classList.add(...classes);
+  }
+  addClasses(classes: string[]) {
+    if (classes.length > 0) this.node.classList.add(...classes);
   }
 }
 
 export type DOMFuncs<C> = {
-  [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementTagNameMap[E] extends C
+  [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementComponent<E> extends C
     ? (
-        data: Partial<HTMLElementTagNameMap[E]>,
-        inner?: ViewRender | string
+        data?: Partial<HTMLElementTagNameMap[E]>,
+        inner?: D<ViewRender | string | number>
         // @ts-ignore
-      ) => this is Context<HTMLElementTagNameMap[E]>
+      ) => this is Context<HTMLElementComponent<E>>
     : never;
 } & {
-  _t: (text: D<string>) => void;
+  _t: (text: D<string | number>) => void;
 };
