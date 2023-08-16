@@ -24,7 +24,7 @@ export class View {
   root: HTMLElementComponent;
 
   currrentParent: HTMLElementComponent;
-  state: State;
+  state: ViewState;
   eventRecevierIkey: string | null;
   get eventRecevier() {
     return this.map.get(this.eventRecevierIkey!);
@@ -58,14 +58,14 @@ export class View {
   }
   execRecv(receiver: string, data: any = null) {
     this.resetState();
-    this.state = State.recv;
+    this.state = ViewState.recv;
     this.eventRecevierIkey = receiver;
     this.eventData = data;
     this.execMain();
   }
   execUpdate() {
     this.resetState();
-    this.state = State.update;
+    this.state = ViewState.update;
     this.eventRecevierIkey = null;
     this.eventData = undefined;
     this.execMain();
@@ -115,7 +115,7 @@ export class View {
     let ec = this.map.get(ikey) as HTMLElementComponent | undefined;
     const oldParent = this.currrentParent;
     switch (this.state) {
-      case State.update:
+      case ViewState.update:
         if (!ec) {
           ec = new HTMLElementComponent(ikey, document.createElement(tagName));
           this.map.set(ikey, ec);
@@ -130,7 +130,7 @@ export class View {
         this.currrentParent = ec;
         inner(this._);
         break;
-      case State.recv:
+      case ViewState.recv:
         this.currrentParent = ec!;
         inner(this._);
         break;
@@ -143,7 +143,7 @@ export class View {
     this.pushKey(ckey);
     const ikey = this.ikey;
     let t = this.map.get(ikey) as DOMNodeComponent | undefined;
-    if (this.state === State.update) {
+    if (this.state === ViewState.update) {
       if (!t) {
         t = new DOMNodeComponent(ikey, document.createTextNode(text));
         this.map.set(ikey, t);
@@ -187,12 +187,12 @@ export class View {
   // }
 }
 
-export enum State {
+export enum ViewState {
   update = "update", // 更新Element的props，若元素不存在则创建
   recv = "recv", // 接收消息，不得改变DOM
 }
 
-export function view(render: ViewRender, rootElementId: string = "root"): View {
+export function view(render: ViewRender, rootElementId: string = "root") {
   let currentView = new View(render, rootElementId);
   currentView.mount();
   return currentView;
