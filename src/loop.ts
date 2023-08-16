@@ -10,14 +10,6 @@ declare module "./context" {
       body: (item: T, index: number) => void
     ) => void;
     forRange(times: D<number>, body: (index: number) => void): void;
-    // for(
-    //   times: number,
-    //   body: (index: number) => void
-    // ): void;
-    // forEach<T = unknown>(
-    //   arr: Iterable<T>,
-    //   body: (item: T, index: number) => void
-    // ): void;
   }
 }
 contextFuncs.for = <T>(

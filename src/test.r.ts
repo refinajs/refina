@@ -20,7 +20,7 @@ view((_) => {
     _._p({}, "Input is focused!");
   }
 
-  <script setup>
+<script setup>
 import { ref } from 'vue';
 const on = ref(false);
 const t = ref("Hello world");

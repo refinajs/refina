@@ -168,23 +168,6 @@ export class View {
   get isReceiver() {
     return this.eventRecevierIkey === this.ikey;
   }
-
-  // child<E extends Component>(
-  //   id: string,
-  //   elc: ComponentCtor<E>,
-  //   props: Partial<E>
-  // ): boolean {
-  //   const e = this.getOrCreate(id, elc);
-  //   switch (this.status.currentState) {
-  //     case State.update:
-  //       this.writeProps(e, props);
-  //       this.status.currrentParent.children.push(e);
-  //       break;
-  //     case State.recv:
-  //       break;
-  //   }
-  //   return this.status.eventRecevier === e.id;
-  // }
 }
 
 export enum ViewState {

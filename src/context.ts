@@ -122,9 +122,7 @@ export class ContextClass implements IntrinsicContext {
       );
       if (setFirstDOMNode) this.$firstDOMNode = ec;
       if (setFirstHTMLELement) this.$firstHTMLELement = ec;
-      if (pendingRef) {
-        pendingRef.current = ec;
-      }
+      if (pendingRef) pendingRef.current = ec;
       return ec;
     }
     const func = contextFuncs[funcName];

@@ -10,6 +10,7 @@ export class DOMNodeComponent<N extends Node = Node> {
   createDOM() {}
   updateDOM() {}
 }
+
 export class HTMLElementComponent<
   E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
 > extends DOMNodeComponent<HTMLElementTagNameMap[E]> {
