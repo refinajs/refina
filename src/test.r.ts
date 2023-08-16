@@ -1,11 +1,11 @@
 import { Button, d, ref, view } from "./lib";
 const on = d(false);
-const t = d("hello world");
+const t = d.trim("hello world");
 let n = 4;
 const btn = ref<Button>();
 view((_) => {
   _.$cls`${on.value ? "bg-blue-500" : ""}`;
-  _._h1({}, t);
+  _._pre({}, `$${t}$`);
   if (_.$ref(btn) && _.button("Toggle")) on.value = !on.value;
   if (_.button("+")) n++;
   _._t(n);

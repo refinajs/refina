@@ -8,8 +8,19 @@ export class PD<T> {
   }
 }
 
-export function d<T>(v: T): Readonly<T> & PD<T> {
-  return new PD(v) as any as Readonly<T> & PD<T>;
+export type PDType<T> = Readonly<T> & PD<T>;
+
+export interface DFactory {
+  <T>(v: T): PDType<T>;
+}
+export const d = (<T>(v: T) => {
+  return new PD(v) as any as PDType<T>;
+}) as DFactory;
+export function injectDFactory<K extends keyof DFactory>(
+  key: K,
+  value: DFactory[K]
+) {
+  d[key] = value;
 }
 
 export type D<T> = T | PD<T>;
@@ -42,3 +53,26 @@ export interface Ref<T> {
 export function ref<T extends object>(current: T | null = null): Ref<T> {
   return { current };
 }
+
+// trim
+export class PDTrim implements PD<string> {
+  constructor(protected _value: string) {}
+  get value() {
+    return this._value.trim();
+  }
+  set value(v: string) {
+    this._value = v;
+  }
+  [PDSymbol] = true;
+  [Symbol.toPrimitive]() {
+    return this.value;
+  }
+}
+declare module "./data" {
+  interface DFactory {
+    trim(v: string): PDType<string>;
+  }
+}
+injectDFactory("trim", (v) => {
+  return new PDTrim(v) as any as PDType<string>;
+});
