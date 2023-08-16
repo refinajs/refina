@@ -10,17 +10,14 @@ import {
 
 export abstract class CallbackComponent<
   Evs extends Record<string, any>,
-  Evn extends keyof Evs = keyof Evs,
 > extends Component {
   $status: boolean;
-  $evName: Evn;
-  $ev: Evs[Evn];
-  $listendEvs = new Set<Evn>();
+  $listendEvs = new Set<keyof Evs>();
   //@ts-ignore
   abstract main(_: CallbackComponentContext<Evs, this>, ...args: any[]): void;
 }
 export type CallbackComponentEvs<C extends CallbackComponent<any>> =
-  C extends CallbackComponent<infer Evs, any> ? Evs : never;
+  C extends CallbackComponent<infer Evs> ? Evs : never;
 interface IntrinsicCallbackComponentContext<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
@@ -45,14 +42,18 @@ export class CallbackComponentContextClass<
 {
   $firer<Evn extends keyof Evs>(name: Evn): (data: Evs[Evn]) => void {
     return (data: Evs[Evn]) => {
+      //@ts-ignore
       this.$component.$evName = name;
+      //@ts-ignore
       this.$component.$ev = data;
       this.$view.fire(this.$component.ikey, name);
     };
   }
   $firerWith<Evn extends keyof Evs>(name: Evn, data: Evs[Evn]): () => void {
     return () => {
+      //@ts-ignore
       this.$component.$evName = name;
+      //@ts-ignore
       this.$component.$ev = data;
       this.$view.fire(this.$component.ikey, name);
     };
@@ -106,6 +107,7 @@ export function createCallbackComponentFunc<
       component.$listendEvs.forEach((ev) => {
         //@ts-ignore
         component[`on${ev[0].toUpperCase()}${ev.slice(1)}`] = () =>
+          //@ts-ignore
           component.$evName === ev;
       });
 
@@ -119,9 +121,6 @@ export function createCallbackComponentFunc<
         context as any as CallbackComponentContext<Evs, S>,
         ...args
       );
-
-      //   console.log("?????", this.$view.ikey, component.ikey, this.$view.eventRecevierIkey, this.$view.isReceiver);
-
       ret = this.$view.isReceiver;
     }
     this.endComponent();
@@ -138,17 +137,20 @@ export function callbackComponent<
   return ctor;
 }
 export interface CallbackComponents
-  extends Record<string, CallbackComponent<any, any>> {}
+  extends Record<string, CallbackComponent<any>> {}
 
-type CallbackComponentInContext<C extends CallbackComponent<any, any>> = C & {
+type CallbackComponentInContext<C extends CallbackComponent<any>> = C & {
   [Evn in keyof CallbackComponentEvs<C> as `on${Capitalize<
     Evn & string
     //@ts-ignore
-  >}`]: () => this is CallbackComponent<CallbackComponentEvs<C>, Evn>;
+  >}`]: () => this is C & {
+    $evName: Evn;
+    $ev: CallbackComponentEvs<C>[Evn];
+  };
 };
 
 export type ToCallbackComponentFuncs<
-  Cs extends Record<string, CallbackComponent<any, any>>,
+  Cs extends Record<string, CallbackComponent<any>>,
   C,
 > = {
   [K in keyof Cs]: Cs[K] extends C
