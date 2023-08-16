@@ -1,7 +1,7 @@
 import { D, dangerously_setD } from "./data";
 import { DOMNodeComponent, HTMLElementComponent } from "./dom";
 import { Context, ContextClass } from "./context";
-import { Component, ComponentConstructor } from "./component";
+import { Component, ComponentConstructor } from "./component/index";
 
 export type ViewRender = (_: Context) => void;
 
@@ -20,7 +20,7 @@ export class View {
 
   _ = new ContextClass(this) as any as Context;
 
-  protected map: Map<string, any> = new Map();
+  map: Map<string, any> = new Map();
   root: HTMLElementComponent;
 
   currrentParent: HTMLElementComponent;
@@ -49,7 +49,11 @@ export class View {
   }
   execMain() {
     const initialKey = this.ikey;
-    this.main(this._);
+    try {
+      this.main(this._);
+    } catch (e) {
+      console.error("Error when executing main:", e, "\nstate:", this.state);
+    }
     if (initialKey !== this.ikey) {
       throw new Error(
         `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`
@@ -80,79 +84,6 @@ export class View {
     const ret = dangerously_setD(d, v);
     this.update();
     return ret;
-  }
-
-  beginComponent<T extends Component>(
-    ckey: string,
-    ctor: ComponentConstructor<T>
-  ) {
-    this.pushKey(ckey);
-    const ikey = this.ikey;
-    let component = this.map.get(ikey) as T;
-    if (!component) {
-      component = new ctor(ikey);
-      this.map.set(ikey, component);
-    }
-    if (this._.$pendingRef) {
-      this._.$pendingRef.current = component;
-      this._.$pendingRef = null;
-    }
-    return component;
-  }
-  endComponent() {
-    this.popKey();
-  }
-
-  renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    data: Partial<HTMLElementTagNameMap[E]>,
-    inner: ViewRender,
-    classes: string[]
-  ) {
-    this.pushKey(ckey);
-    const ikey = this.ikey;
-    let ec = this.map.get(ikey) as HTMLElementComponent | undefined;
-    const oldParent = this.currrentParent;
-    switch (this.state) {
-      case ViewState.update:
-        if (!ec) {
-          ec = new HTMLElementComponent(ikey, document.createElement(tagName));
-          this.map.set(ikey, ec);
-        }
-        for (const key in data) {
-          //@ts-ignore
-          ec.node[key] = data[key]!;
-        }
-        ec.setClasses(classes);
-        this.currrentParent.children.push(ec);
-        ec.children = [];
-        this.currrentParent = ec;
-        inner(this._);
-        break;
-      case ViewState.recv:
-        this.currrentParent = ec!;
-        inner(this._);
-        break;
-    }
-    this.currrentParent = oldParent;
-    this.popKey();
-    return ec!;
-  }
-  renderText(ckey: string, text: string) {
-    this.pushKey(ckey);
-    const ikey = this.ikey;
-    let t = this.map.get(ikey) as DOMNodeComponent | undefined;
-    if (this.state === ViewState.update) {
-      if (!t) {
-        t = new DOMNodeComponent(ikey, document.createTextNode(text));
-        this.map.set(ikey, t);
-      }
-      this.currrentParent.children.push(t);
-      if (t.node.textContent !== text) t.node.textContent = text;
-    }
-    this.popKey();
-    return t!;
   }
 
   pushKey(id: string) {

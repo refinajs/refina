@@ -1,5 +1,12 @@
 import { ViewRender } from "./view";
 import { D } from "./data";
+import {
+  CallbackComponent,
+  CallbackComponentContext,
+  ToCallbackComponentFuncs,
+  createCallbackComponentFunc,
+} from "./component/index";
+import { Context } from "./context";
 
 export class DOMNodeComponent<N extends Node = Node> {
   constructor(
@@ -63,6 +70,69 @@ export class HTMLElementComponent<
   }
 }
 
+export function createCbHTMLElementComponentFunction<
+  E extends keyof HTMLElementTagNameMap,
+>(tagName: E) {
+  const ctor = class
+    extends CallbackComponent<HTMLElementEventMap>
+    implements CbHTMLElementComponent<E>
+  {
+    main(
+      _: CallbackComponentContext<HTMLElementEventMap, this>,
+      data: Partial<HTMLElementTagNameMap[E]> = {},
+      inner: D<ViewRender | string | number> = () => {}
+    ) {
+      (
+        _.$$ as (
+          funcName: string,
+          ckey: string,
+          data?: Partial<HTMLElementTagNameMap[E]>,
+          inner?: D<ViewRender | string | number>
+          // @ts-ignore
+        ) => this is Context<HTMLElementComponent<E>>
+      )(
+        `_${tagName}`,
+        "_",
+        {
+          ...data,
+          ...Object.fromEntries(
+            [...this.$listendEvs].map(
+              (ev) => [`on${ev}`, _.$firer(ev)] as const
+            )
+          ),
+        } as any,
+        inner
+      );
+    }
+  };
+  return createCallbackComponentFunc(ctor);
+}
+
+const cbHTMLElementComponentFunctionCache = new Map<
+  keyof HTMLElementTagNameMap,
+  (this: Context, ckey: string, ...args: any[]) => boolean
+>();
+
+export function getCbHTMLElementComponentFunction<
+  E extends keyof HTMLElementTagNameMap,
+>(tagName: E) {
+  if (!cbHTMLElementComponentFunctionCache.has(tagName)) {
+    cbHTMLElementComponentFunctionCache.set(
+      tagName,
+      createCbHTMLElementComponentFunction(tagName)
+    );
+  }
+  return cbHTMLElementComponentFunctionCache.get(tagName)!;
+}
+
+export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
+  extends CallbackComponent<HTMLElementEventMap> {
+  main(
+    _: CallbackComponentContext<HTMLElementEventMap, this>,
+    data?: Partial<HTMLElementTagNameMap[E]>,
+    inner?: D<ViewRender | string | number>
+  ): void;
+}
 export type DOMFuncs<C> = {
   [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementComponent<E> extends C
     ? (
@@ -71,6 +141,11 @@ export type DOMFuncs<C> = {
         // @ts-ignore
       ) => this is Context<HTMLElementComponent<E>>
     : never;
-} & {
-  _t: (text: D<string | number>) => void;
-};
+} & ToCallbackComponentFuncs<
+  {
+    [E in keyof HTMLElementTagNameMap as `_cb${Capitalize<E>}`]: CbHTMLElementComponent<E>;
+  },
+  C
+> & {
+    _t: (text: D<string | number>) => void;
+  };

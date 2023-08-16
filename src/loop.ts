@@ -1,4 +1,4 @@
-import { contextFuncs } from "./context";
+import { Context, contextFuncs } from "./context";
 import { D, getD } from "./data";
 import { View } from "./view";
 
@@ -12,14 +12,14 @@ declare module "./context" {
     forRange(times: D<number>, body: (index: number) => void): void;
   }
 }
-contextFuncs.for = <T>(
-  view: View,
+contextFuncs.for = function <T>(
+  this: Context,
   ckey: string,
   arr: D<Iterable<T>>,
   key: keyof T | ((item: T, index: number) => D<string>),
   body: (item: T, index: number) => void
-) => {
-  view.pushKey(ckey);
+) {
+  this.$view.pushKey(ckey);
   let k: any;
   if (typeof key === "string") {
     k = (item: T) => item[key];
@@ -28,28 +28,28 @@ contextFuncs.for = <T>(
   }
   let i = 0;
   for (const item of getD(arr)) {
-    view.pushKey(k(item, i));
+    this.$view.pushKey(k(item, i));
     body(item, i);
-    view.popKey();
+    this.$view.popKey();
     i++;
   }
-  view.popKey();
+  this.$view.popKey();
   return false;
 };
-contextFuncs.forRange = <T>(
-  view: View,
+contextFuncs.forRange = function (
+  this: Context,
   ckey: string,
   times: D<number>,
   body: (index: number) => void
-) => {
-  view.pushKey(ckey);
+) {
+  this.$view.pushKey(ckey);
   times = getD(times);
   for (let i = 0; i < times; i++) {
-    view.pushKey(i.toString());
+    this.$view.pushKey(i.toString());
     body(i);
-    view.popKey();
+    this.$view.popKey();
   }
-  view.popKey();
+  this.$view.popKey();
   return false;
 };
 

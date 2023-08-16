@@ -8,8 +8,8 @@ export {
   type PD,
   type Ref,
 } from "./data";
-export * from "./component";
+export * from "./component/index";
 export { view } from "./view";
 export * from "./loop";
 
-export * from  "./components/basic.r";
+export * from  "./component/basic.r";

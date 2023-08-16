@@ -26,7 +26,7 @@ export class BreadCrumb extends TriggerComponent<number> {
     return false;
   }
 }
-declare module "../component" {
+declare module "./index" {
   interface TriggerComponents {
     breadcrumb: BreadCrumb;
   }

@@ -10,6 +10,27 @@ view((_) => {
   if (_.button("+")) n++;
   _._t(n);
   if (_.button("-")) n--;
+
+  if (_.cbButton("LR click")) {
+    if (_.$.onClick()) {
+      console.log(_.$.$ev);
+      n++;
+    }
+    if (_.$.onContextmenu()) {
+      console.log(_.$.$ev);
+      n = 0;
+    }
+  }
+  if (_._cbButton({}, "LR click2")) {
+    if (_.$.onClick()) {
+      console.log(_.$.$ev);
+      n++;
+    }
+    if (_.$.onContextmenu()) {
+      console.log(_.$.$ev);
+      n = 0;
+    }
+  }
   _.textInput("Type here: ", t);
   _.textInput("Type here2: ", t);
   _.forRange(n, (i) => _._p({}, i));
