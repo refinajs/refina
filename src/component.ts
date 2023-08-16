@@ -44,10 +44,9 @@ export class ComponentContextClass<S extends Component>
   constructor(
     public $view: View,
     public $component: S,
-    classesArg: string[]
+    public $classesArg: string[]
   ) {
     super($view);
-    this.$classesArg = classesArg;
   }
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$view.setD(d, v);
@@ -56,14 +55,11 @@ export class ComponentContextClass<S extends Component>
     this.$view.update();
   }
 
-  $classesArg: string[] | null = null;
+  $classesArgUsed = false;
   $cls(...args: [] | any[]): void {
     if (args.length === 0) {
-      if (!this.$classesArg) {
-        throw new Error(`Passed $classes has been used.`);
-      }
       super.$cls(this.$classesArg);
-      this.$classesArg = null;
+      this.$classesArgUsed = true;
     }
     super.$cls(...args);
   }
@@ -116,7 +112,7 @@ export function triggerComponent<S extends TriggerComponent>(
 
     const isReceiver = view.isReceiver;
 
-    if (context.$classesArg !== null) {
+    if (!context.$classesArgUsed) {
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
@@ -193,7 +189,7 @@ export function statusComponent<S extends StatusComponent>(
       ...args
     );
 
-    if (context.$classesArg !== null) {
+    if (!context.$classesArgUsed) {
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
