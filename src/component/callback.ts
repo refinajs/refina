@@ -46,7 +46,7 @@ export class CallbackComponentContextClass<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$view.fire(this.$component.ikey, name);
+      this.$view.recv(this.$component.ikey, name);
     };
   }
   $firerWith<Evn extends keyof Evs>(name: Evn, data: Evs[Evn]): () => void {
@@ -55,7 +55,7 @@ export class CallbackComponentContextClass<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$view.fire(this.$component.ikey, name);
+      this.$view.recv(this.$component.ikey, name);
     };
   }
 }
@@ -64,11 +64,11 @@ export function createCallbackComponentFunc<
   S extends CallbackComponent<Evs>,
 >(ctor: ComponentConstructor<S>) {
   return function (this: Context, ckey: string, ...args: any[]) {
-    let component = this.beginComponent(ckey, ctor);
+    const component = this.beginComponent(ckey, ctor);
     let ret: boolean;
     if (this.$state === ViewState.update) {
       component.$listendEvs.clear();
-      component = new Proxy(component, {
+      const componentProxy = new Proxy(component, {
         get(target, prop) {
           if (
             typeof prop === "string" &&
@@ -83,12 +83,11 @@ export function createCallbackComponentFunc<
           return target[prop];
         },
       });
-      this.$cbComponent = component;
+      this.$cbComponent = componentProxy;
       this.$hookAfterThisComponent = () => {
         const context = new CallbackComponentContextClass(
-          this.$view,
-          component as any,
-          this.$classes
+          this,
+          componentProxy as any
         );
 
         component.main(
@@ -99,6 +98,8 @@ export function createCallbackComponentFunc<
         if (!context.$classesArgUsed) {
           context.$firstHTMLELement?.addClasses(context.$classesArg);
         }
+
+        context.$callHookAfterThisComponent();
       };
       ret = true;
     } else {
@@ -111,19 +112,17 @@ export function createCallbackComponentFunc<
           component.$evName === ev;
       });
 
-      const context = new CallbackComponentContextClass(
-        this.$view,
-        component as any,
-        this.$classes
-      );
+      const context = new CallbackComponentContextClass(this, component as any);
 
       component.main(
         context as any as CallbackComponentContext<Evs, S>,
         ...args
       );
       ret = this.$view.isReceiver;
+
+      context.$callHookAfterThisComponent();
     }
-    this.endComponent();
+    this.endComponent(ckey);
     return ret;
   };
 }

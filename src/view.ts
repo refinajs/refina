@@ -1,7 +1,6 @@
-import { D, dangerously_setD } from "./data";
-import { DOMNodeComponent, HTMLElementComponent } from "./dom";
 import { Context, ContextClass } from "./context";
-import { Component, ComponentConstructor } from "./component/index";
+import { D, dangerously_setD } from "./data";
+import { HTMLElementComponent } from "./dom";
 
 export type ViewRender = (_: Context) => void;
 
@@ -23,36 +22,90 @@ export class View {
   map: Map<string, any> = new Map();
   root: HTMLElementComponent;
 
-  currrentParent: HTMLElementComponent;
-  state: ViewState;
+  currrentHTMLParent: HTMLElementComponent;
+
   eventRecevierIkey: string | null;
   get eventRecevier() {
     return this.map.get(this.eventRecevierIkey!);
   }
   eventData: any;
+
   protected idPrefix: string[];
+
+  state: ViewState;
+
+  mounted = false;
+  running = false;
+  recvQueue: { receiver: string; data: any }[] = [];
+  needUpdate = false;
+  protected get needNextTickRun() {
+    return this.recvQueue.length > 0 || this.needUpdate;
+  }
 
   protected resetState() {
     this.root.children = [];
-    this.currrentParent = this.root;
+    this.currrentHTMLParent = this.root;
     this.eventRecevierIkey = null;
     this.idPrefix = ["root"];
   }
 
   mount() {
+    if (this.mounted) {
+      throw new Error("View already mounted");
+    }
     this.execUpdate();
     this.root.createDOM();
+    this.mounted = true;
+  }
+  nextTick() {
+    setTimeout(() => {
+      console.log("[!] next tick");
+      if (this.recvQueue.length > 0) {
+        const { receiver, data } = this.recvQueue.shift()!;
+        console.log("[+] recv executing start with id", receiver);
+        this.execRecv(receiver, data);
+        console.log("[-] recv executed with id", receiver);
+
+        this.nextTick();
+      } else if (this.needUpdate) {
+        this.needUpdate = false;
+        console.log("[+] update executing start");
+        this.execUpdate();
+        this.root.updateDOM();
+        console.log("[-] update executed");
+      }
+    }, 0);
   }
   update() {
-    this.execUpdate();
-    this.root.updateDOM();
+    if (this.running && this.state === ViewState.update) {
+      throw new Error("Cannot trigger an update in update state");
+    }
+    console.log("[*] update queued");
+    this.needUpdate = true;
+    if (!this.running) this.nextTick();
   }
-  execMain() {
+  recv(receiver: string, data: any) {
+    if (this.running && this.state === ViewState.update) {
+      throw new Error("Cannot trigger a recv in update state");
+    }
+    console.log("[*] recv queued with id", receiver);
+    this.recvQueue.push({ receiver, data });
+    this.needUpdate = true;
+    if (!this.running) this.nextTick();
+  }
+  protected execMain() {
     const initialKey = this.ikey;
     try {
+      this.running = true;
       this.main(this._);
+      //@ts-ignore
+      window["__main_executed_times"] ??= 0;
+      //@ts-ignore
+      console.log(`main executed ${window["__main_executed_times"]++} times`);
     } catch (e) {
       console.error("Error when executing main:", e, "\nstate:", this.state);
+    } finally {
+      this.running = false;
     }
     if (initialKey !== this.ikey) {
       throw new Error(
@@ -60,14 +113,14 @@ export class View {
       );
     }
   }
-  execRecv(receiver: string, data: any = null) {
+  protected execRecv(receiver: string, data: any = null) {
     this.resetState();
     this.state = ViewState.recv;
     this.eventRecevierIkey = receiver;
     this.eventData = data;
     this.execMain();
   }
-  execUpdate() {
+  protected execUpdate() {
     this.resetState();
     this.state = ViewState.update;
     this.eventRecevierIkey = null;
@@ -75,23 +128,26 @@ export class View {
     this.execMain();
   }
 
-  fire(receiver: string, data: any) {
-    console.log("FIRE!", receiver, data);
-    this.execRecv(receiver, data);
-    this.update();
-  }
   setD<T>(d: D<T>, v: T): boolean {
     const ret = dangerously_setD(d, v);
     this.update();
     return ret;
   }
 
-  pushKey(id: string) {
-    this.idPrefix.push(id);
-    //  console.log("pushKey", this.ikey);
+  pushKey(ckey: string) {
+    this.idPrefix.push(ckey);
+    // console.log("push" + "  ".repeat(this.idPrefix.length), ckey);
   }
-  popKey() {
-    this.idPrefix.pop();
+  popKey(ckey: string, msg: string = "unknown") {
+    // console.log("pop " + "  ".repeat(this.idPrefix.length), ckey, new Error());
+    const last = this.idPrefix.pop();
+    if (ckey !== last) {
+      throw new Error(
+        `idPrefix tag mismatch: want to pop "${ckey}", but the last is "${last}".\n
+current: ${this.ikey}
+message: ${msg}`
+      );
+    }
   }
   get ikey() {
     return this.idPrefix.join(".");

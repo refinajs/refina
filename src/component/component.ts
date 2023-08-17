@@ -1,6 +1,11 @@
 import { D } from "../data";
 import { View } from "../view";
-import { ContextClass, IntrinsicContext, ToFullContext } from "../context";
+import {
+  Context,
+  ContextClass,
+  IntrinsicContext,
+  ToFullContext,
+} from "../context";
 
 export abstract class Component {
   constructor(public readonly ikey: string) {}
@@ -15,8 +20,11 @@ export type ComponentFuncArgs<S extends Component> = S extends {
 }
   ? A
   : never;
-export interface IntrinsicComponentContext<S extends Component, C = any, Ev = unknown>
-  extends IntrinsicContext<C, Ev> {
+export interface IntrinsicComponentContext<
+  S extends Component,
+  C = any,
+  Ev = unknown,
+> extends IntrinsicContext<C, Ev> {
   readonly $component: S;
   $setD<T>(d: D<T>, v: T): boolean;
   $refresh(): void;
@@ -35,12 +43,13 @@ export class ComponentContextClass<S extends Component>
   implements IntrinsicComponentContext<S>
 {
   constructor(
-    public $view: View,
-    public $component: S,
-    public $classesArg: string[]
+    public $caller: Context,
+    public $component: S
   ) {
-    super($view);
+    super($caller.$view);
+    this.$classesArg = $caller.$classes;
   }
+  $classesArg: string[];
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$view.setD(d, v);
   }

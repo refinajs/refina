@@ -30,7 +30,7 @@ export class TriggerComponentContextClass<S extends TriggerComponent>
   implements IntrinsicTriggerComponentContext<S>
 {
   $fire = (data: TriggerComponentEventData<S>) => {
-    this.$view.fire(this.$component.ikey, data);
+    this.$view.recv(this.$component.ikey, data);
   };
   $fireWith = (data: TriggerComponentEventData<S>) => () => {
     this.$fire(data);
@@ -45,11 +45,7 @@ export function triggerComponent<S extends TriggerComponent>(
   contextFuncs[name] = function (this: Context, ckey, ...args) {
     const component = this.beginComponent(ckey, ctor);
 
-    const context = new TriggerComponentContextClass(
-        this.$view,
-      component,
-      this.$classes
-    );
+    const context = new TriggerComponentContextClass(this, component);
 
     component.main(context as unknown as TriggerComponentContext<S>, ...args);
 
@@ -59,7 +55,9 @@ export function triggerComponent<S extends TriggerComponent>(
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
-    this.endComponent();
+    context.$callHookAfterThisComponent();
+
+    this.endComponent(ckey);
 
     return isReceiver;
   };

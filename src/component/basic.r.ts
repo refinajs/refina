@@ -15,12 +15,17 @@ import { HTMLElementComponent } from "../dom";
 @triggerComponent
 export class Button extends TriggerComponent<MouseEvent> {
   main(_: TriggerComponentContext<this>, text: D<string>) {
-    _._button(
-      {
-        onclick: _.$fire,
-      },
-      getD(text)
-    );
+    // _._button(
+    //   {
+    //     onclick: _.$fire,
+    //   },
+    //   getD(text)
+    // );
+    if(_._cbButton({}, getD(text))){
+      if(_.$.onClick()){
+        _.$fire(_.$.$ev);
+      }
+    }
   }
 }
 declare module "./index" {
@@ -84,5 +89,23 @@ export class CbButton extends CallbackComponent<CbButtonEvs> {
 declare module "./index" {
   interface CallbackComponents {
     cbButton: CbButton;
+  }
+}
+
+@statusComponent
+export class ToggleButton extends StatusComponent {
+  main(_: StatusComponentContext<this>, text: D<string>) {
+    // console.log(_.$state);
+    // _.button( "111");
+    if (_._cbButton({}, text)) {
+      if (_.$.onClick()) {
+        _.$toggle();
+      }
+    }
+  }
+}
+declare module "./index" {
+  interface StatusComponents {
+    toggleButton: ToggleButton;
   }
 }

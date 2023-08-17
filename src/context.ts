@@ -63,7 +63,7 @@ export interface IntrinsicContext<C = any, Ev = unknown> {
     ckey: string,
     ctor: ComponentConstructor<T>
   ): T;
-  endComponent(): void;
+  endComponent(ckey: string): void;
 }
 
 export type ToFullContext<C, Ev, I> = ComponentFuncs<C> &
@@ -91,7 +91,7 @@ export class ContextClass implements IntrinsicContext {
   $cbComponent: any = null;
 
   $hookAfterThisComponent: null | (() => void) = null;
-  protected callHookAfterThisComponent() {
+  $callHookAfterThisComponent() {
     if (this.$hookAfterThisComponent) {
       this.$hookAfterThisComponent();
       this.$hookAfterThisComponent = null;
@@ -154,7 +154,12 @@ export class ContextClass implements IntrinsicContext {
       if (typeof inner === "string" || typeof inner === "number") {
         const text = inner;
         inner = () => {
-          this.$$("_t", ckey, text);
+          if (this.$classes.length > 0) {
+            throw new Error(`Text node cannot have classes`);
+          }
+          const setFirstDOMNode = this.$firstDOMNode === null;
+          const t = this.renderText("_t", String(text));
+          if (setFirstDOMNode) this.$firstDOMNode ??= t;
         };
       }
       data ??= {};
@@ -190,7 +195,7 @@ export class ContextClass implements IntrinsicContext {
     ckey: string,
     ctor: ComponentConstructor<T>
   ) {
-    this.callHookAfterThisComponent();
+    this.$callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
@@ -205,8 +210,8 @@ export class ContextClass implements IntrinsicContext {
     }
     return component;
   }
-  endComponent() {
-    this.$view.popKey();
+  endComponent(ckey: string) {
+    this.$view.popKey(ckey);
   }
 
   renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
@@ -216,12 +221,12 @@ export class ContextClass implements IntrinsicContext {
     inner: ViewRender,
     classes: string[]
   ) {
-    this.callHookAfterThisComponent();
+    this.$callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
     let ec = this.$view.map.get(ikey) as HTMLElementComponent | undefined;
-    const oldParent = this.$view.currrentParent;
+    const oldParent = this.$view.currrentHTMLParent;
     switch (this.$state) {
       case ViewState.update:
         if (!ec) {
@@ -233,22 +238,22 @@ export class ContextClass implements IntrinsicContext {
           ec.node[key] = data[key]!;
         }
         ec.setClasses(classes);
-        this.$view.currrentParent.children.push(ec);
+        this.$view.currrentHTMLParent.children.push(ec);
         ec.children = [];
-        this.$view.currrentParent = ec;
+        this.$view.currrentHTMLParent = ec;
         inner(this as unknown as Context);
         break;
       case ViewState.recv:
-        this.$view.currrentParent = ec!;
+        this.$view.currrentHTMLParent = ec!;
         inner(this as unknown as Context);
         break;
     }
-    this.$view.currrentParent = oldParent;
-    this.$view.popKey();
+    this.$view.currrentHTMLParent = oldParent;
+    this.$view.popKey(ckey);
     return ec!;
   }
   renderText(ckey: string, text: string) {
-    this.callHookAfterThisComponent();
+    this.$callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
@@ -257,11 +262,12 @@ export class ContextClass implements IntrinsicContext {
       if (!t) {
         t = new DOMNodeComponent(ikey, document.createTextNode(text));
         this.$view.map.set(ikey, t);
+      } else {
+        if (t.node.textContent !== text) t.node.textContent = text;
       }
-      this.$view.currrentParent.children.push(t);
-      if (t.node.textContent !== text) t.node.textContent = text;
+      this.$view.currrentHTMLParent.children.push(t);
     }
-    this.$view.popKey();
+    this.$view.popKey(ckey);
     return t!;
   }
 }

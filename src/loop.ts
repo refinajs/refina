@@ -28,12 +28,13 @@ contextFuncs.for = function <T>(
   }
   let i = 0;
   for (const item of getD(arr)) {
-    this.$view.pushKey(k(item, i));
+    const key = k(item, i);
+    this.$view.pushKey(key);
     body(item, i);
-    this.$view.popKey();
+    this.$view.popKey(key);
     i++;
   }
-  this.$view.popKey();
+  this.$view.popKey(ckey);
   return false;
 };
 contextFuncs.forRange = function (
@@ -45,11 +46,12 @@ contextFuncs.forRange = function (
   this.$view.pushKey(ckey);
   times = getD(times);
   for (let i = 0; i < times; i++) {
-    this.$view.pushKey(i.toString());
+    const key = i.toString();
+    this.$view.pushKey(key);
     body(i);
-    this.$view.popKey();
+    this.$view.popKey(key);
   }
-  this.$view.popKey();
+  this.$view.popKey(ckey);
   return false;
 };
 

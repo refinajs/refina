@@ -4,36 +4,52 @@ const t = d.trim("hello world");
 let n = 4;
 const btn = ref<Button>();
 view((_) => {
-  _.$cls`${on.value ? "bg-blue-500" : ""}`;
-  _._pre({}, `$${t}$`);
-  if (_.$ref(btn) && _.button("Toggle")) on.value = !on.value;
-  if (_.button("+")) n++;
-  _._t(n);
-  if (_.button("-")) n--;
+  // _.$cls`${on.value ? "bg-blue-500" : ""}`;
+  // _._pre({}, `$${t}$`);
+  // if (_.$ref(btn) && _.button("Toggle")) on.value = !on.value;
+  // if (_.button("+")) n++;
+  // _._t(n);
+  // if (_.button("-")) n--;
 
-  if (_.cbButton("LR click")) {
-    if (_.$.onClick()) {
-      console.log(_.$.$ev);
-      n++;
-    }
-    if (_.$.onContextmenu()) {
-      console.log(_.$.$ev);
-      n = 0;
-    }
+  // if (_.cbButton("LR click")) {
+  //   if (_.$.onClick()) {
+  //     console.log(_.$.$ev);
+  //     n++;
+  //   }
+  //   if (_.$.onContextmenu()) {
+  //     console.log(_.$.$ev);
+  //     n = 0;
+  //   }
+  // }
+  // if (_._cbButton({}, "LR click2")) {
+  //   if (_.$.onClick()) {
+  //     console.log(_.$.$ev);
+  //     n++;
+  //   }
+  //   if (_.$.onContextmenu()) {
+  //     console.log(_.$.$ev);
+  //     n = 0;
+  //   }
+  // }
+  // if (_.toggleButton("1")) {
+  //   if (_.toggleButton("2")) {
+  //     if (_.toggleButton("3")) {
+  //       if (_.toggleButton("4")) {
+  //         if (_.toggleButton("5")) {
+  //           _._p({}, "MENU");
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  if (_.button("ABC")) {
+    n++;
   }
-  if (_._cbButton({}, "LR click2")) {
-    if (_.$.onClick()) {
-      console.log(_.$.$ev);
-      n++;
-    }
-    if (_.$.onContextmenu()) {
-      console.log(_.$.$ev);
-      n = 0;
-    }
-  }
-  _.textInput("Type here: ", t);
-  _.textInput("Type here2: ", t);
-  _.forRange(n, (i) => _._p({}, i));
+  _._p({}, "MENU" + n);
+  //_._t("1111111")
+  // _.textInput("Type here: ", t);
+  // _.textInput("Type here2: ", t);
+  // _.forRange(n, (i) => _._p({}, i));
 });
 
 /*

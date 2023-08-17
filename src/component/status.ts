@@ -58,11 +58,7 @@ export function statusComponent<S extends StatusComponent>(
 
     component.$status ??= false;
 
-    const context = new StatusComponentContextClass(
-      this.$view,
-      component,
-      this.$classes
-    );
+    const context = new StatusComponentContextClass(this, component);
 
     component.main(
       context as any as StatusComponentContext<
@@ -77,7 +73,9 @@ export function statusComponent<S extends StatusComponent>(
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
-    this.endComponent();
+    context.$callHookAfterThisComponent();
+
+    this.endComponent(ckey);
 
     return component.$status;
   };
