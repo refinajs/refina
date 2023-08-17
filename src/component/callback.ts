@@ -1,10 +1,10 @@
-import { ToFullContext, contextFuncs, Context } from "../context";
+import { Context, ToFullContext, contextFuncs } from "../context";
 import { ViewState } from "../view";
 import {
   Component,
   ComponentConstructor,
-  IntrinsicComponentContext,
   ComponentFuncArgs,
+  IntrinsicComponentContext,
 } from "./component";
 
 export abstract class CallbackComponent<

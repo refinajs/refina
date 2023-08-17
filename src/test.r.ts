@@ -1,5 +1,5 @@
 import { HTMLElementComponent } from "./dom";
-import { Button, bySelf, d, ref, view } from "./lib";
+import { bySelf, d, ref, view } from "./lib";
 const on = d(false);
 const t = d.trim("hello world");
 let n = 4;

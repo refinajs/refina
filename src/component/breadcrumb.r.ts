@@ -1,10 +1,10 @@
 import {
   D,
+  TriggerComponent,
+  TriggerComponentContext,
   byIndex,
   getD,
   triggerComponent,
-  TriggerComponent,
-  TriggerComponentContext,
 } from "../lib";
 
 @triggerComponent

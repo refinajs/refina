@@ -1,5 +1,5 @@
-import { D } from "../data";
 import { Context, IntrinsicContext, ToFullContext } from "../context";
+import { D } from "../data";
 
 export abstract class Component {
   constructor(public readonly ikey: string) {}

@@ -1,5 +1,3 @@
-import { ViewRender, ViewState } from "./view";
-import { D, ref } from "./data";
 import {
   CallbackComponent,
   CallbackComponentContext,
@@ -7,6 +5,8 @@ import {
   createCallbackComponentFunc,
 } from "./component/index";
 import { Context } from "./context";
+import { D } from "./data";
+import { ViewRender } from "./view";
 
 export class DOMNodeComponent<N extends Node = Node> {
   constructor(

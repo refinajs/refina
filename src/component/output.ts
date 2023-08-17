@@ -1,9 +1,9 @@
-import { ToFullContext, contextFuncs, Context } from "../context";
+import { Context, ToFullContext, contextFuncs } from "../context";
 import {
   Component,
   ComponentConstructor,
-  IntrinsicComponentContext,
   ComponentFuncArgs,
+  IntrinsicComponentContext,
 } from "./component";
 
 export abstract class OutputComponent extends Component {

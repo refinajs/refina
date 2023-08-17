@@ -1,16 +1,16 @@
-import { View, ViewRender, ViewState } from "./view";
-import { Ref, getD } from "./data";
 import {
   Component,
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
+import { Ref, getD } from "./data";
 import {
   DOMFuncs,
   DOMNodeComponent,
   HTMLElementComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
+import { View, ViewRender, ViewState } from "./view";
 
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`

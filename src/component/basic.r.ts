@@ -1,17 +1,14 @@
 import { D, getD, ref } from "../data";
+import { HTMLElementComponent } from "../dom";
+import { ViewRender } from "../view";
 import {
-  CallbackComponent,
-  CallbackComponentContext,
   StatusComponent,
   StatusComponentContext,
   TriggerComponent,
   TriggerComponentContext,
-  callbackComponent,
   statusComponent,
   triggerComponent,
 } from "./index";
-import { HTMLElementComponent } from "../dom";
-import { ViewRender } from "../view";
 import {
   OutputComponent,
   OutputComponentContext,

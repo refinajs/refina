@@ -1,9 +1,9 @@
 import { Context, ToFullContext, contextFuncs } from "../context";
 import {
-  IntrinsicComponentContext,
-  ComponentConstructor,
   Component,
+  ComponentConstructor,
   ComponentFuncArgs,
+  IntrinsicComponentContext,
 } from "./component";
 
 export abstract class TriggerComponent extends Component {
