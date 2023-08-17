@@ -15,6 +15,7 @@ export default function myExample() {
         /_\s*\.\s*([a-zA-Z0-9_]+)\s*\(\s*([\s\S]*?)\s*\)/g,
         (_, name, args) => {
           ctx.id++;
+          console.log("ckey", ctx.id.toString(36).toUpperCase(), "at", id);
           return `_.$$("${name}", "${ctx.id
             .toString(36)
             .toUpperCase()}", ${args})`;
@@ -24,6 +25,7 @@ export default function myExample() {
         /_\s*\.\s*([a-zA-Z0-9_]+)\s*\<([\s\S]+?)\>\s*\(\s*([\s\S]*?)\s*\)/g,
         (_, name, targs, args) => {
           ctx.id++;
+          console.log("ckey", ctx.id.toString(36).toUpperCase(), "at", id);
           return `_.$$("${name}", "${ctx.id
             .toString(36)
             .toUpperCase()}", ${args})`;
