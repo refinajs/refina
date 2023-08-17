@@ -21,9 +21,11 @@ export class IntrinsicTriggerComponentContext<
 > extends IntrinsicComponentContext<S, C> {
   $fire = (data: Ev) => {
     this.$view.recv(this.$component.ikey, data);
+    return false;
   };
   $fireWith = (data: Ev) => () => {
     this.$fire(data);
+    return false;
   };
 }
 export type TriggerComponentContext<

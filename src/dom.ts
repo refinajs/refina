@@ -1,5 +1,5 @@
-import { ViewRender } from "./view";
-import { D } from "./data";
+import { ViewRender, ViewState } from "./view";
+import { D, ref } from "./data";
 import {
   CallbackComponent,
   CallbackComponentContext,
@@ -77,11 +77,13 @@ export function createCbHTMLElementComponentFunction<
     extends CallbackComponent<HTMLElementEventMap>
     implements CbHTMLElementComponent<E>
   {
+    element = ref<HTMLElementComponent<E>>();
     main(
       _: CallbackComponentContext<HTMLElementEventMap, this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
       inner: D<ViewRender | string | number> = () => {}
     ) {
+      _.$ref(this.element);
       (
         _.$$ as (
           funcName: string,
@@ -95,14 +97,14 @@ export function createCbHTMLElementComponentFunction<
         "_",
         {
           ...data,
-          ...Object.fromEntries(
-            [...this.$listendEvs].map(
-              (ev) => [`on${ev}`, _.$firer(ev)] as const
-            )
-          ),
         } as any,
         inner
       );
+      if (_.$state === ViewState.update) {
+        for (const ev of this.$listendEvs) {
+          this.element.current!.node.addEventListener(ev, _.$firer(ev));
+        }
+      }
     }
   };
   return createCallbackComponentFunc(ctor);

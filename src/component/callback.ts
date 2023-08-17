@@ -29,6 +29,7 @@ export class IntrinsicCallbackComponentContext<
       //@ts-ignore
       this.$component.$ev = data;
       this.$view.recv(this.$component.ikey, name);
+      return false;
     };
   }
   $firerWith<Evn extends keyof Evs>(name: Evn, data: Evs[Evn]): () => void {
