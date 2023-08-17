@@ -2,6 +2,7 @@ import { D, getD, ref } from "../data";
 import { HTMLElementComponent } from "../dom";
 import { ViewRender } from "../view";
 import {
+  ComponentFuncArgs,
   StatusComponent,
   StatusComponentContext,
   TriggerComponent,
@@ -190,7 +191,13 @@ export class Ul extends OutputComponent {
   }
 }
 declare module "./index" {
-  interface OutputComponents {
-    ul: Ul;
+  interface CustomComponentFuncs<C> {
+    ul: Ul extends C
+      ? <T>(
+          data: D<Iterable<T>>,
+          key: keyof T | ((item: T, index: number) => D<string>),
+          body: (item: T, index: number) => void,
+        ) => false
+      : never;
   }
 }

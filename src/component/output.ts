@@ -43,6 +43,6 @@ export interface OutputComponents extends Record<string, OutputComponent> {}
 
 export type OutputComponentFuncs<C> = {
   [K in keyof OutputComponents]: OutputComponents[K] extends C
-    ? (...args: ComponentFuncArgs<OutputComponents[K]>) => never
+    ? (...args: ComponentFuncArgs<OutputComponents[K]>) => false
     : never;
 };
