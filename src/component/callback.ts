@@ -83,12 +83,12 @@ export function createCallbackComponentFunc<
       this.$view.hookAfterThisComponent = () => {
         const context = new IntrinsicCallbackComponentContext(
           this,
-          componentProxy as any
+          componentProxy as any,
         );
 
         component.main(
           context as any as CallbackComponentContext<Evs, S>,
-          ...args
+          ...args,
         );
 
         if (!context.$classesArgUsed) {
@@ -108,12 +108,12 @@ export function createCallbackComponentFunc<
 
       const context = new IntrinsicCallbackComponentContext(
         this,
-        component as any
+        component as any,
       );
 
       component.main(
         context as any as CallbackComponentContext<Evs, S>,
-        ...args
+        ...args,
       );
       ret = this.$view.isReceiver;
     }

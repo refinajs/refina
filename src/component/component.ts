@@ -7,7 +7,7 @@ export abstract class Component {
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (
-  ikey: string
+  ikey: string,
 ) => S;
 export type ComponentFuncArgs<S extends Component> = S extends {
   main(_: any, ...args: infer A): void;
@@ -21,7 +21,7 @@ export class IntrinsicComponentContext<
 > extends IntrinsicContext<C> {
   constructor(
     public $caller: Context,
-    public $component: S
+    public $component: S,
   ) {
     super($caller.$view);
     this.$classesArg = $caller.$classes;

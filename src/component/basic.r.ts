@@ -22,7 +22,7 @@ import {
 export class Div extends StatusComponent {
   main(
     _: StatusComponentContext<this>,
-    inner: D<string | number | ViewRender>
+    inner: D<string | number | ViewRender>,
   ) {
     _._div({}, inner);
   }
@@ -37,7 +37,7 @@ declare module "./index" {
 export class Span extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>
+    inner: D<string | number | ViewRender>,
   ) {
     _._span({}, inner);
   }
@@ -64,7 +64,7 @@ declare module "./index" {
 export class H1 extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>
+    inner: D<string | number | ViewRender>,
   ) {
     _._h1({}, inner);
   }
@@ -79,7 +79,7 @@ declare module "./index" {
 export class P extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>
+    inner: D<string | number | ViewRender>,
   ) {
     _._p({}, inner);
   }
@@ -98,7 +98,7 @@ export class Button extends TriggerComponent {
       {
         onclick: _.$fire,
       },
-      getD(text)
+      getD(text),
     );
   }
 }
@@ -154,7 +154,7 @@ export class Checkbox extends StatusComponent {
   main(
     _: StatusComponentContext<this>,
     label: D<string>,
-    value: D<boolean> = this.inputEl.current?.node.checked ?? false
+    value: D<boolean> = this.inputEl.current?.node.checked ?? false,
   ) {
     _._label({}, () => {
       _._t(label);
@@ -181,7 +181,7 @@ export class Ul extends OutputComponent {
     _: OutputComponentContext<this, any>,
     data: D<Iterable<T>>,
     key: keyof T | ((item: T, index: number) => D<string>),
-    body: (item: T, index: number) => void
+    body: (item: T, index: number) => void,
   ): void {
     _._ul({}, () => {
       _.for(data, key, (item, index) => {

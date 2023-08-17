@@ -18,7 +18,7 @@ export type OutputComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicOutputComponentContext<S, C>>;
 export function outputComponent<S extends OutputComponent>(
-  ctor: ComponentConstructor<S>
+  ctor: ComponentConstructor<S>,
 ) {
   if (!ctor.name) throw new Error(`Component class must have name.`);
   const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);

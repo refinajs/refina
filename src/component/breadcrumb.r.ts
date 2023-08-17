@@ -17,7 +17,7 @@ export class BreadCrumb extends TriggerComponent {
           {
             onclick: _.$fireWith(i),
           },
-          item
+          item,
         );
         _._span({}, " / ");
       });

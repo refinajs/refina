@@ -19,7 +19,7 @@ export default function myExample() {
           return `_.$$("${name}", "${ctx.id
             .toString(36)
             .toUpperCase()}", ${args})`;
-        }
+        },
       );
       s.replaceAll(
         /_\s*\.\s*([a-zA-Z0-9_]+)\s*\<([\s\S]+?)\>\s*\(\s*([\s\S]*?)\s*\)/g,
@@ -29,7 +29,7 @@ export default function myExample() {
           return `_.$$("${name}", "${ctx.id
             .toString(36)
             .toUpperCase()}", ${args})`;
-        }
+        },
       );
       const map = s.generateMap({
         source: id,

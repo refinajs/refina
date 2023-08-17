@@ -6,7 +6,7 @@ declare module "./context" {
     for: <T = unknown>(
       arr: D<Iterable<T>>,
       key: keyof T | ((item: T, index: number) => D<string>),
-      body: (item: T, index: number) => void
+      body: (item: T, index: number) => void,
     ) => void;
     forRange(times: D<number>, body: (index: number) => void): void;
   }
@@ -16,7 +16,7 @@ contextFuncs.for = function <T>(
   ckey: string,
   arr: D<Iterable<T>>,
   key: keyof T | ((item: T, index: number) => D<string>),
-  body: (item: T, index: number) => void
+  body: (item: T, index: number) => void,
 ) {
   this.$view.pushKey(ckey);
   let k: any;
@@ -40,7 +40,7 @@ contextFuncs.forRange = function (
   this: Context,
   ckey: string,
   times: D<number>,
-  body: (index: number) => void
+  body: (index: number) => void,
 ) {
   this.$view.pushKey(ckey);
   times = getD(times);

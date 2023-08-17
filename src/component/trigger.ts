@@ -34,7 +34,7 @@ export type TriggerComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 export function triggerComponent<S extends TriggerComponent>(
-  ctor: ComponentConstructor<S>
+  ctor: ComponentConstructor<S>,
 ) {
   if (!ctor.name) throw new Error(`Component class must have name.`);
   const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);
@@ -46,7 +46,7 @@ export function triggerComponent<S extends TriggerComponent>(
 
     component.main(
       context as unknown as TriggerComponentContext<unknown, S>,
-      ...args
+      ...args,
     );
 
     const isReceiver = this.$view.isReceiver;

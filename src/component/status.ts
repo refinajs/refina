@@ -37,7 +37,7 @@ export type StatusComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 export function statusComponent<S extends StatusComponent>(
-  ctor: ComponentConstructor<S>
+  ctor: ComponentConstructor<S>,
 ) {
   if (!ctor.name) throw new Error(`Component class must have name.`);
   const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);
@@ -54,7 +54,7 @@ export function statusComponent<S extends StatusComponent>(
           $status: boolean;
         }
       >,
-      ...args
+      ...args,
     );
 
     if (!context.$classesArgUsed) {

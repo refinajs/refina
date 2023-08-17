@@ -18,7 +18,7 @@ export const d = (<T>(v: T) => {
 }) as DFactory;
 export function injectDFactory<K extends keyof DFactory>(
   key: K,
-  value: DFactory[K]
+  value: DFactory[K],
 ) {
   d[key] = value;
 }

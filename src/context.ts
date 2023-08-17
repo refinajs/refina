@@ -137,7 +137,7 @@ export class IntrinsicContext<C = any> {
         tagName,
         data,
         inner,
-        this.$classes
+        this.$classes,
       );
       if (setFirstDOMNode) this.$firstDOMNode = ec;
       if (setFirstHTMLELement) this.$firstHTMLELement = ec;
@@ -157,7 +157,7 @@ export class IntrinsicContext<C = any> {
 
   beginComponent<T extends Component>(
     ckey: string,
-    ctor: ComponentConstructor<T>
+    ctor: ComponentConstructor<T>,
   ) {
     this.$view.callHookAfterThisComponent();
 
@@ -183,7 +183,7 @@ export class IntrinsicContext<C = any> {
     tagName: E,
     data: Partial<HTMLElementTagNameMap[E]>,
     inner: ViewRender,
-    classes: string[]
+    classes: string[],
   ) {
     this.$view.callHookAfterThisComponent();
 

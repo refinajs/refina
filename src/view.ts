@@ -7,7 +7,7 @@ export type ViewRender = (_: Context) => void;
 export class View {
   constructor(
     public main: ViewRender,
-    public rootElementId: string
+    public rootElementId: string,
   ) {
     const rootElement = document.getElementById(rootElementId);
     if (!rootElement) {
@@ -63,14 +63,14 @@ export class View {
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
         console.log(
-          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`
+          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`,
         );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
         console.log(
           `[-] recv executed with id ${receiver} in ${
             window.performance.now() - startTime
-          }ms`
+          }ms`,
         );
 
         this.nextTick();
@@ -81,7 +81,7 @@ export class View {
         this.execUpdate();
         this.root.updateDOM();
         console.log(
-          `[-] update executed in ${window.performance.now() - startTime}ms`
+          `[-] update executed in ${window.performance.now() - startTime}ms`,
         );
       }
     }, 0);
@@ -119,7 +119,7 @@ export class View {
     }
     if (initialKey !== this.ikey) {
       throw new Error(
-        `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`
+        `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
       );
     }
   }
@@ -164,7 +164,7 @@ export class View {
       throw new Error(
         `idPrefix tag mismatch: want to pop "${ckey}", but the last is "${last}".\n
 current: ${this.ikey}
-message: ${msg}`
+message: ${msg}`,
       );
     }
   }

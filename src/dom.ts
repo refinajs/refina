@@ -11,7 +11,7 @@ import { Context } from "./context";
 export class DOMNodeComponent<N extends Node = Node> {
   constructor(
     public ikey: string,
-    public node: N
+    public node: N,
   ) {}
 
   createDOM() {}
@@ -80,7 +80,7 @@ export function createCbHTMLElementComponentFunction<
     main(
       _: CallbackComponentContext<HTMLElementEventMap, this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
-      inner: D<ViewRender | string | number> = () => {}
+      inner: D<ViewRender | string | number> = () => {},
     ) {
       const elementData: any = { ...data };
       for (const ev of this.$listendEvs) {
@@ -91,7 +91,7 @@ export function createCbHTMLElementComponentFunction<
           funcName: string,
           ckey: string,
           data?: Partial<HTMLElementTagNameMap[E]>,
-          inner?: D<ViewRender | string | number>
+          inner?: D<ViewRender | string | number>,
           // @ts-ignore
         ) => this is Context<HTMLElementComponent<E>>
       )(`_${tagName}`, "_", elementData, inner);
@@ -111,7 +111,7 @@ export function getCbHTMLElementComponentFunction<
   if (!cbHTMLElementComponentFunctionCache.has(tagName)) {
     cbHTMLElementComponentFunctionCache.set(
       tagName,
-      createCbHTMLElementComponentFunction(tagName)
+      createCbHTMLElementComponentFunction(tagName),
     );
   }
   return cbHTMLElementComponentFunctionCache.get(tagName)!;
@@ -122,14 +122,14 @@ export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
   main(
     _: CallbackComponentContext<HTMLElementEventMap, this>,
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<ViewRender | string | number>
+    inner?: D<ViewRender | string | number>,
   ): void;
 }
 export type DOMFuncs<C> = {
   [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementComponent<E> extends C
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
-        inner?: D<ViewRender | string | number>
+        inner?: D<ViewRender | string | number>,
         // @ts-ignore
       ) => this is Context<HTMLElementComponent<E>>
     : never;
