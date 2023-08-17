@@ -1,4 +1,4 @@
-import { Context, ContextClass } from "./context";
+import { Context, IntrinsicContext } from "./context";
 import { D, dangerously_setD } from "./data";
 import { HTMLElementComponent } from "./dom";
 
@@ -17,7 +17,7 @@ export class View {
     this.resetState();
   }
 
-  _ = new ContextClass(this) as any as Context;
+  _ = new IntrinsicContext(this) as any as Context;
 
   map: Map<string, any> = new Map();
   root: HTMLElementComponent;

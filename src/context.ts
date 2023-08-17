@@ -30,65 +30,23 @@ type CustomContextFuncsBase = {
  */
 export interface CustomContext<C, Ev> extends CustomContextFuncsBase {}
 
-export interface IntrinsicContext<C = any, Ev = unknown> {
-  readonly $: C;
-  readonly $ev: Ev;
-  readonly $view: View;
-  readonly $state: ViewState;
-  $cbComponent: C;
-
-  /**
-   * Called before next component and after all components using this context is rendered.
-   */
-  $hookAfterThisComponent: null | (() => void);
-
-  // @ts-ignore
-  $ref<C>(ref: Ref<C>): this is Context<C>;
-  $pendingRef: Ref<any> | null;
-
-  $cls(classes: string[]): void;
-  $cls(strings: TemplateStringsArray, ...exps: any[]): void;
-  readonly $classes: string[];
-
-  $$<N extends keyof Context>(
-    funcName: N,
-    ckey: string,
-    ...args: Parameters<Context[N]>
-  ): ReturnType<Context[N]>;
-
-  $firstDOMNode: DOMNodeComponent | null;
-  $firstHTMLELement: HTMLElementComponent | null;
-
-  beginComponent<T extends Component>(
-    ckey: string,
-    ctor: ComponentConstructor<T>
-  ): T;
-  endComponent(ckey: string): void;
-}
-
 export type ToFullContext<C, Ev, I> = ComponentFuncs<C> &
   CustomContext<C, Ev> &
   DOMFuncs<C> &
   I;
 
-export type Context<C = any, Ev = unknown> = ToFullContext<
-  C,
-  Ev,
-  IntrinsicContext<C, Ev>
->;
-
-export class ContextClass implements IntrinsicContext {
-  get $() {
+export class IntrinsicContext<C = any, Ev = unknown> {
+  constructor(public readonly $view: View) {}
+  get $(): C {
     return this.$view.eventRecevier ?? this.$cbComponent;
   }
-  get $ev() {
+  get $ev(): Ev {
     return this.$view.eventData;
   }
-  constructor(public readonly $view: View) {}
   get $state() {
     return this.$view.state;
   }
-  $cbComponent: any = null;
+  $cbComponent: C = null as any;
 
   $hookAfterThisComponent: null | (() => void) = null;
   $callHookAfterThisComponent() {
@@ -214,7 +172,7 @@ export class ContextClass implements IntrinsicContext {
     this.$view.popKey(ckey);
   }
 
-  renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
+  protected renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
     data: Partial<HTMLElementTagNameMap[E]>,
@@ -252,7 +210,7 @@ export class ContextClass implements IntrinsicContext {
     this.$view.popKey(ckey);
     return ec!;
   }
-  renderText(ckey: string, text: string) {
+  protected renderText(ckey: string, text: string) {
     this.$callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
@@ -271,3 +229,9 @@ export class ContextClass implements IntrinsicContext {
     return t!;
   }
 }
+
+export type Context<C = any, Ev = unknown> = ToFullContext<
+  C,
+  Ev,
+  IntrinsicContext<C, Ev>
+>;

@@ -1,7 +1,6 @@
 import { Context, ToFullContext, contextFuncs } from "../context";
 import {
   IntrinsicComponentContext,
-  ComponentContextClass,
   ComponentConstructor,
   Component,
   ComponentFuncArgs,
@@ -12,23 +11,11 @@ export abstract class TriggerComponent<Ev = unknown> extends Component {
 }
 export type TriggerComponentEventData<S extends TriggerComponent> =
   S extends TriggerComponent<infer Ev> ? Ev : never;
-interface IntrinsicTriggerComponentContext<
+export class IntrinsicTriggerComponentContext<
   S extends TriggerComponent,
   C = any,
   Ev = unknown,
 > extends IntrinsicComponentContext<S, C, Ev> {
-  $fire: (data: any) => void;
-  $fireWith: (data: any) => () => void;
-}
-export type TriggerComponentContext<
-  S extends TriggerComponent,
-  C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicTriggerComponentContext<S, C, Ev>>;
-export class TriggerComponentContextClass<S extends TriggerComponent>
-  extends ComponentContextClass<S>
-  implements IntrinsicTriggerComponentContext<S>
-{
   $fire = (data: TriggerComponentEventData<S>) => {
     this.$view.recv(this.$component.ikey, data);
   };
@@ -36,6 +23,11 @@ export class TriggerComponentContextClass<S extends TriggerComponent>
     this.$fire(data);
   };
 }
+export type TriggerComponentContext<
+  S extends TriggerComponent,
+  C = any,
+  Ev = unknown,
+> = ToFullContext<C, Ev, IntrinsicTriggerComponentContext<S, C, Ev>>;
 export function triggerComponent<S extends TriggerComponent>(
   ctor: ComponentConstructor<S>
 ) {
@@ -45,7 +37,7 @@ export function triggerComponent<S extends TriggerComponent>(
   contextFuncs[name] = function (this: Context, ckey, ...args) {
     const component = this.beginComponent(ckey, ctor);
 
-    const context = new TriggerComponentContextClass(this, component);
+    const context = new IntrinsicTriggerComponentContext(this, component);
 
     component.main(context as unknown as TriggerComponentContext<S>, ...args);
 

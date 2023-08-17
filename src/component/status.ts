@@ -2,34 +2,19 @@ import { ToFullContext, contextFuncs, Context } from "../context";
 import {
   Component,
   ComponentConstructor,
-  ComponentContextClass,
-  ComponentFuncArgs,
   IntrinsicComponentContext,
+  ComponentFuncArgs,
 } from "./component";
 
 export abstract class StatusComponent extends Component {
   $status: boolean;
   abstract main(_: StatusComponentContext<this>, ...args: any[]): void;
 }
-interface IntrinsicStatusComponentContext<
+export class IntrinsicStatusComponentContext<
   S extends StatusComponent,
   C = any,
   Ev = unknown,
 > extends IntrinsicComponentContext<S, C, Ev> {
-  $status: boolean;
-  $on(): void;
-  $off(): void;
-  $toggle(): void;
-}
-export type StatusComponentContext<
-  S extends StatusComponent,
-  C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicStatusComponentContext<S, C, Ev>>;
-export class StatusComponentContextClass<S extends StatusComponent>
-  extends ComponentContextClass<S>
-  implements IntrinsicStatusComponentContext<S>
-{
   get $status() {
     return this.$component.$status;
   }
@@ -48,6 +33,11 @@ export class StatusComponentContextClass<S extends StatusComponent>
     this.$status = !this.$status;
   };
 }
+export type StatusComponentContext<
+  S extends StatusComponent,
+  C = any,
+  Ev = unknown,
+> = ToFullContext<C, Ev, IntrinsicStatusComponentContext<S, C, Ev>>;
 export function statusComponent<S extends StatusComponent>(
   ctor: ComponentConstructor<S>
 ) {
@@ -58,7 +48,7 @@ export function statusComponent<S extends StatusComponent>(
 
     component.$status ??= false;
 
-    const context = new StatusComponentContextClass(this, component);
+    const context = new IntrinsicStatusComponentContext(this, component);
 
     component.main(
       context as any as StatusComponentContext<

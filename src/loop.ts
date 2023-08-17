@@ -1,6 +1,5 @@
 import { Context, contextFuncs } from "./context";
 import { D, getD } from "./data";
-import { View } from "./view";
 
 declare module "./context" {
   interface CustomContext<C, Ev> {

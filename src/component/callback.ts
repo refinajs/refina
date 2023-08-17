@@ -3,9 +3,8 @@ import { ViewState } from "../view";
 import {
   Component,
   ComponentConstructor,
-  ComponentContextClass,
-  ComponentFuncArgs,
   IntrinsicComponentContext,
+  ComponentFuncArgs,
 } from "./component";
 
 export abstract class CallbackComponent<
@@ -18,28 +17,12 @@ export abstract class CallbackComponent<
 }
 export type CallbackComponentEvs<C extends CallbackComponent<any>> =
   C extends CallbackComponent<infer Evs> ? Evs : never;
-interface IntrinsicCallbackComponentContext<
+export class IntrinsicCallbackComponentContext<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
   C = any,
   Ev = unknown,
 > extends IntrinsicComponentContext<S, C, Ev> {
-  $firer<Ev extends keyof Evs>(name: Ev): (data: Evs[Ev]) => void;
-  $firerWith<Ev extends keyof Evs>(name: Ev, data: Evs[Ev]): () => void;
-}
-export type CallbackComponentContext<
-  Evs extends Record<string, any>,
-  S extends CallbackComponent<Evs>,
-  C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicCallbackComponentContext<Evs, S, C, Ev>>;
-export class CallbackComponentContextClass<
-    Evs extends Record<string, any>,
-    S extends CallbackComponent<Evs>,
-  >
-  extends ComponentContextClass<S>
-  implements IntrinsicCallbackComponentContext<Evs, S>
-{
   $firer<Evn extends keyof Evs>(name: Evn): (data: Evs[Evn]) => void {
     return (data: Evs[Evn]) => {
       //@ts-ignore
@@ -59,6 +42,12 @@ export class CallbackComponentContextClass<
     };
   }
 }
+export type CallbackComponentContext<
+  Evs extends Record<string, any>,
+  S extends CallbackComponent<Evs>,
+  C = any,
+  Ev = unknown,
+> = ToFullContext<C, Ev, IntrinsicCallbackComponentContext<Evs, S, C, Ev>>;
 export function createCallbackComponentFunc<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
@@ -85,7 +74,7 @@ export function createCallbackComponentFunc<
       });
       this.$cbComponent = componentProxy;
       this.$hookAfterThisComponent = () => {
-        const context = new CallbackComponentContextClass(
+        const context = new IntrinsicCallbackComponentContext(
           this,
           componentProxy as any
         );
@@ -112,7 +101,7 @@ export function createCallbackComponentFunc<
           component.$evName === ev;
       });
 
-      const context = new CallbackComponentContextClass(this, component as any);
+      const context = new IntrinsicCallbackComponentContext(this, component as any);
 
       component.main(
         context as any as CallbackComponentContext<Evs, S>,
