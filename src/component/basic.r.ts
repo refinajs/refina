@@ -13,16 +13,16 @@ import {
 import { HTMLElementComponent } from "../dom";
 
 @triggerComponent
-export class Button extends TriggerComponent<MouseEvent> {
-  main(_: TriggerComponentContext<this>, text: D<string>) {
+export class Button extends TriggerComponent {
+  main(_: TriggerComponentContext<MouseEvent, this>, text: D<string>) {
     // _._button(
     //   {
     //     onclick: _.$fire,
     //   },
     //   getD(text)
     // );
-    if(_._cbButton({}, getD(text))){
-      if(_.$.onClick()){
+    if (_._cbButton({}, getD(text))) {
+      if (_.$.onClick()) {
         _.$fire(_.$.$ev);
       }
     }
@@ -97,7 +97,7 @@ export class ToggleButton extends StatusComponent {
   main(_: StatusComponentContext<this>, text: D<string>) {
     // console.log(_.$state);
     // _.button( "111");
-    if (_._cbButton({}, text)) {
+    if (_.cbButton(text)) {
       if (_.$.onClick()) {
         _.$toggle();
       }

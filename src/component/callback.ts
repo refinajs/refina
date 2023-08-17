@@ -21,8 +21,7 @@ export class IntrinsicCallbackComponentContext<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
   C = any,
-  Ev = unknown,
-> extends IntrinsicComponentContext<S, C, Ev> {
+> extends IntrinsicComponentContext<S, C> {
   $firer<Evn extends keyof Evs>(name: Evn): (data: Evs[Evn]) => void {
     return (data: Evs[Evn]) => {
       //@ts-ignore
@@ -46,8 +45,7 @@ export type CallbackComponentContext<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
   C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicCallbackComponentContext<Evs, S, C, Ev>>;
+> = ToFullContext<C, IntrinsicCallbackComponentContext<Evs, S, C>>;
 export function createCallbackComponentFunc<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
@@ -101,7 +99,10 @@ export function createCallbackComponentFunc<
           component.$evName === ev;
       });
 
-      const context = new IntrinsicCallbackComponentContext(this, component as any);
+      const context = new IntrinsicCallbackComponentContext(
+        this,
+        component as any
+      );
 
       component.main(
         context as any as CallbackComponentContext<Evs, S>,
@@ -145,10 +146,10 @@ export type ToCallbackComponentFuncs<
     ? (
         ...args: ComponentFuncArgs<Cs[K]>
         //@ts-ignore
-      ) => this is Context<
-        CallbackComponentInContext<Cs[K]>,
-        keyof CallbackComponentEvs<Cs[K]>
-      >
+      ) => this is {
+        readonly $: CallbackComponentInContext<Cs[K]>;
+        readonly $ev: keyof CallbackComponentEvs<Cs[K]>;
+      }
     : never;
 };
 

@@ -18,8 +18,7 @@ export type ComponentFuncArgs<S extends Component> = S extends {
 export class IntrinsicComponentContext<
   S extends Component,
   C = any,
-  Ev = unknown,
-> extends IntrinsicContext<C, Ev> {
+> extends IntrinsicContext<C> {
   constructor(
     public $caller: Context,
     public $component: S
@@ -45,8 +44,7 @@ export class IntrinsicComponentContext<
   }
 }
 
-export type ComponentContext<
-  S extends Component,
-  C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicComponentContext<S, C, Ev>>;
+export type ComponentContext<S extends Component, C = any> = ToFullContext<
+  C,
+  IntrinsicComponentContext<S, C>
+>;

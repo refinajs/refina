@@ -8,8 +8,8 @@ import {
 } from "../lib";
 
 @triggerComponent
-export class BreadCrumb extends TriggerComponent<number> {
-  main(_: TriggerComponentContext<this>, items: D<string[]>) {
+export class BreadCrumb extends TriggerComponent {
+  main(_: TriggerComponentContext<number, this>, items: D<string[]>) {
     let itemsValue = getD(items);
     _._div({}, () => {
       _.for(itemsValue.slice(0, -1), byIndex, (item, i) => {

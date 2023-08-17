@@ -13,12 +13,12 @@ import {
 } from "./dom";
 
 export const contextFuncs = {} as {
-  [K in keyof CustomContext<any, unknown>]: K extends `$${string}`
-    ? CustomContext<any, unknown>[K]
+  [K in keyof CustomContext<any>]: K extends `$${string}`
+    ? CustomContext<any>[K]
     : (
         id: string,
-        ...args: Parameters<CustomContext<any, unknown>[K]>
-      ) => ReturnType<CustomContext<any, unknown>[K]>;
+        ...args: Parameters<CustomContext<any>[K]>
+      ) => ReturnType<CustomContext<any>[K]>;
 };
 
 type CustomContextFuncsBase = {
@@ -28,21 +28,27 @@ type CustomContextFuncsBase = {
  * @typeParam C - The type of `context.$`
  * @typeParam Ev - The type of `context.$ev`
  */
-export interface CustomContext<C, Ev> extends CustomContextFuncsBase {}
+export interface CustomContext<C> extends CustomContextFuncsBase {}
 
-export type ToFullContext<C, Ev, I> = ComponentFuncs<C> &
-  CustomContext<C, Ev> &
+export type ToFullContext<C, I> = ComponentFuncs<C> &
+  CustomContext<C> &
   DOMFuncs<C> &
   I;
 
-export class IntrinsicContext<C = any, Ev = unknown> {
-  constructor(public readonly $view: View) {}
-  get $(): C {
-    return this.$view.eventRecevier ?? this.$cbComponent;
+export class IntrinsicContext<C = any> {
+  constructor(public readonly $view: View) {
+    Object.defineProperty(this, "$ev", {
+      get() {
+        return $view.eventData;
+      },
+    });
+    Object.defineProperty(this, "$", {
+      get() {
+        return this.$view.eventRecevier ?? this.$cbComponent;
+      },
+    });
   }
-  get $ev(): Ev {
-    return this.$view.eventData;
-  }
+
   get $state() {
     return this.$view.state;
   }
@@ -56,11 +62,18 @@ export class IntrinsicContext<C = any, Ev = unknown> {
     }
   }
 
-  $ref<C>(ref: Ref<C>) {
+  $ref<C2>(ref: Ref<C2>): this is Context<C2> {
     this.$pendingRef = ref;
     return true;
   }
   $pendingRef: Ref<any> | null = null;
+
+  $clear(ref: Ref<{ readonly ikey: string }>) {
+    if (ref.current) {
+      this.$view.map.delete(ref.current.ikey);
+    }
+    ref.current = null;
+  }
 
   $cls(...args: any[]): void {
     if (Array.isArray(args[0])) {
@@ -230,8 +243,4 @@ export class IntrinsicContext<C = any, Ev = unknown> {
   }
 }
 
-export type Context<C = any, Ev = unknown> = ToFullContext<
-  C,
-  Ev,
-  IntrinsicContext<C, Ev>
->;
+export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;

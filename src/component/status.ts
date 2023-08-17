@@ -13,8 +13,7 @@ export abstract class StatusComponent extends Component {
 export class IntrinsicStatusComponentContext<
   S extends StatusComponent,
   C = any,
-  Ev = unknown,
-> extends IntrinsicComponentContext<S, C, Ev> {
+> extends IntrinsicComponentContext<S, C> {
   get $status() {
     return this.$component.$status;
   }
@@ -36,8 +35,7 @@ export class IntrinsicStatusComponentContext<
 export type StatusComponentContext<
   S extends StatusComponent,
   C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicStatusComponentContext<S, C, Ev>>;
+> = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 export function statusComponent<S extends StatusComponent>(
   ctor: ComponentConstructor<S>
 ) {

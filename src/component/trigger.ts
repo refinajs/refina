@@ -6,28 +6,31 @@ import {
   ComponentFuncArgs,
 } from "./component";
 
-export abstract class TriggerComponent<Ev = unknown> extends Component {
-  abstract main(_: TriggerComponentContext<this>, ...args: any[]): void;
+export abstract class TriggerComponent extends Component {
+  abstract main(_: TriggerComponentContext<any, this>, ...args: any[]): void;
 }
-export type TriggerComponentEventData<S extends TriggerComponent> =
-  S extends TriggerComponent<infer Ev> ? Ev : never;
+export type TriggerComponentEventData<S extends TriggerComponent> = S extends {
+  main(_: TriggerComponentContext<infer Ev, any>, ...args: any[]): any;
+}
+  ? Ev
+  : never;
 export class IntrinsicTriggerComponentContext<
+  Ev,
   S extends TriggerComponent,
   C = any,
-  Ev = unknown,
-> extends IntrinsicComponentContext<S, C, Ev> {
-  $fire = (data: TriggerComponentEventData<S>) => {
+> extends IntrinsicComponentContext<S, C> {
+  $fire = (data: Ev) => {
     this.$view.recv(this.$component.ikey, data);
   };
-  $fireWith = (data: TriggerComponentEventData<S>) => () => {
+  $fireWith = (data: Ev) => () => {
     this.$fire(data);
   };
 }
 export type TriggerComponentContext<
+  Ev,
   S extends TriggerComponent,
   C = any,
-  Ev = unknown,
-> = ToFullContext<C, Ev, IntrinsicTriggerComponentContext<S, C, Ev>>;
+> = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 export function triggerComponent<S extends TriggerComponent>(
   ctor: ComponentConstructor<S>
 ) {
@@ -39,7 +42,10 @@ export function triggerComponent<S extends TriggerComponent>(
 
     const context = new IntrinsicTriggerComponentContext(this, component);
 
-    component.main(context as unknown as TriggerComponentContext<S>, ...args);
+    component.main(
+      context as unknown as TriggerComponentContext<unknown, S>,
+      ...args
+    );
 
     const isReceiver = this.$view.isReceiver;
 
@@ -62,9 +68,9 @@ export type TriggerComponentFuncs<C> = {
     ? (
         ...args: ComponentFuncArgs<TriggerComponents[K]>
         //@ts-ignore
-      ) => this is Context<
-        TriggerComponents[K],
-        TriggerComponentEventData<TriggerComponents[K]>
-      >
+      ) => this is {
+        readonly $: TriggerComponents[K];
+        readonly $ev: TriggerComponentEventData<TriggerComponents[K]>;
+      }
     : never;
 };

@@ -2,7 +2,7 @@ import { Context, contextFuncs } from "./context";
 import { D, getD } from "./data";
 
 declare module "./context" {
-  interface CustomContext<C, Ev> {
+  interface CustomContext<C> {
     for: <T = unknown>(
       arr: D<Iterable<T>>,
       key: keyof T | ((item: T, index: number) => D<string>),
