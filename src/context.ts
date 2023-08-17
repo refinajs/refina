@@ -24,10 +24,7 @@ export const contextFuncs = {} as {
 type CustomContextFuncsBase = {
   [K in string]: K extends `$${string}` ? any : (...args: any[]) => any;
 };
-/**
- * @typeParam C - The type of `context.$`
- * @typeParam Ev - The type of `context.$ev`
- */
+
 export interface CustomContext<C> extends CustomContextFuncsBase {}
 
 export type ToFullContext<C, I> = ComponentFuncs<C> &
