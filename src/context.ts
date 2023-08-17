@@ -51,12 +51,12 @@ export class IntrinsicContext<C = any> {
   }
   $cbComponent: C = null as any;
 
-  $hookAfterThisComponent: null | (() => void) = null;
-  $callHookAfterThisComponent() {
-    if (this.$hookAfterThisComponent) {
-      this.$hookAfterThisComponent();
-      this.$hookAfterThisComponent = null;
+  $preventDefault() {
+    const ev = this.$view.eventData;
+    if (typeof ev?.preventDefault !== "function") {
+      throw new Error(`Cannot prevent default on ${ev}.`);
     }
+    ev.preventDefault();
   }
 
   $ref<C2>(ref: Ref<C2>): this is Context<C2> {
@@ -88,11 +88,7 @@ export class IntrinsicContext<C = any> {
     return classes;
   }
 
-  $$(
-    funcNameRaw: string | number,
-    ...argsWithCKey: [ckey: string, ...args: any[]]
-  ): any {
-    const funcName = String(funcNameRaw);
+  $$(funcName: string, ...argsWithCKey: [ckey: string, ...args: any[]]): any {
     if (funcName === "_t") {
       // Now this is a text node
       const [ckey, text] = argsWithCKey;
@@ -114,7 +110,7 @@ export class IntrinsicContext<C = any> {
       const func = createCbHTMLElementComponentFunction(tagName);
       return func.call(this as unknown as Context, ...argsWithCKey);
     }
-    if (funcName.startsWith("_")) {
+    if (funcName[0] === "_") {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
       let [ckey, data, inner] = argsWithCKey;
@@ -163,7 +159,7 @@ export class IntrinsicContext<C = any> {
     ckey: string,
     ctor: ComponentConstructor<T>
   ) {
-    this.$callHookAfterThisComponent();
+    this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
@@ -189,7 +185,7 @@ export class IntrinsicContext<C = any> {
     inner: ViewRender,
     classes: string[]
   ) {
-    this.$callHookAfterThisComponent();
+    this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
@@ -206,14 +202,16 @@ export class IntrinsicContext<C = any> {
           ec.node[key] = data[key]!;
         }
         ec.setClasses(classes);
-        this.$view.currrentHTMLParent.children.push(ec);
+        oldParent.children.push(ec);
         ec.children = [];
         this.$view.currrentHTMLParent = ec;
         inner(this as unknown as Context);
+        this.$view.callHookAfterThisComponent();
         break;
       case ViewState.recv:
         this.$view.currrentHTMLParent = ec!;
         inner(this as unknown as Context);
+        this.$view.callHookAfterThisComponent();
         break;
     }
     this.$view.currrentHTMLParent = oldParent;
@@ -221,7 +219,7 @@ export class IntrinsicContext<C = any> {
     return ec!;
   }
   protected renderText(ckey: string, text: string) {
-    this.$callHookAfterThisComponent();
+    this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;

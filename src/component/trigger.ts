@@ -55,8 +55,6 @@ export function triggerComponent<S extends TriggerComponent>(
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
-    context.$callHookAfterThisComponent();
-
     this.endComponent(ckey);
 
     return isReceiver;

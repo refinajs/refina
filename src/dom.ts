@@ -77,13 +77,15 @@ export function createCbHTMLElementComponentFunction<
     extends CallbackComponent<HTMLElementEventMap>
     implements CbHTMLElementComponent<E>
   {
-    element = ref<HTMLElementComponent<E>>();
     main(
       _: CallbackComponentContext<HTMLElementEventMap, this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
       inner: D<ViewRender | string | number> = () => {}
     ) {
-      _.$ref(this.element);
+      const elementData: any = { ...data };
+      for (const ev of this.$listendEvs) {
+        elementData[`on${ev}`] = _.$firer(ev);
+      }
       (
         _.$$ as (
           funcName: string,
@@ -92,19 +94,7 @@ export function createCbHTMLElementComponentFunction<
           inner?: D<ViewRender | string | number>
           // @ts-ignore
         ) => this is Context<HTMLElementComponent<E>>
-      )(
-        `_${tagName}`,
-        "_",
-        {
-          ...data,
-        } as any,
-        inner
-      );
-      if (_.$state === ViewState.update) {
-        for (const ev of this.$listendEvs) {
-          this.element.current!.node.addEventListener(ev, _.$firer(ev));
-        }
-      }
+      )(`_${tagName}`, "_", elementData, inner);
     }
   };
   return createCallbackComponentFunc(ctor);

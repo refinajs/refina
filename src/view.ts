@@ -62,7 +62,9 @@ export class View {
       console.log(`[!] next tick`);
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
-        console.log(`[+] recv executing start with id ${receiver}`);
+        console.log(
+          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`
+        );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
         console.log(
@@ -88,7 +90,7 @@ export class View {
     if (this.running && this.state === ViewState.update) {
       throw new Error("Cannot trigger an update in update state");
     }
-    console.log("[*] update queued");
+    console.log(`[*] update queued`);
     this.needUpdate = true;
     if (!this.running) this.nextTick();
   }
@@ -96,7 +98,7 @@ export class View {
     if (this.running && this.state === ViewState.update) {
       throw new Error("Cannot trigger a recv in update state");
     }
-    console.log("[*] recv queued with id", receiver);
+    console.log(`[*] recv queued with receiver ${receiver}`);
     this.recvQueue.push({ receiver, data });
     this.needUpdate = true;
     if (!this.running) this.nextTick();
@@ -107,7 +109,7 @@ export class View {
       this.running = true;
       this.main(this._);
       //@ts-ignore
-      window["__main_executed_times"] ??= 0;
+      window["__main_executed_times"] ??= 1;
       //@ts-ignore
       console.log(`main executed ${window["__main_executed_times"]++} times`);
     } catch (e) {
@@ -134,6 +136,15 @@ export class View {
     this.eventRecevierIkey = null;
     this.eventData = undefined;
     this.execMain();
+  }
+
+  hookAfterThisComponent: null | (() => void) = null;
+  callHookAfterThisComponent() {
+    if (this.hookAfterThisComponent) {
+      const hook = this.hookAfterThisComponent;
+      this.hookAfterThisComponent = null;
+      hook();
+    }
   }
 
   setD<T>(d: D<T>, v: T): boolean {

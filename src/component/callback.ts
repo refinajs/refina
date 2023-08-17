@@ -14,6 +14,14 @@ export abstract class CallbackComponent<
   $listendEvs = new Set<keyof Evs>();
   //@ts-ignore
   abstract main(_: CallbackComponentContext<Evs, this>, ...args: any[]): void;
+
+  $preventDefault() {
+    const ev = (this as any).$ev;
+    if (typeof ev?.preventDefault !== "function") {
+      throw new Error(`Cannot prevent default on ${ev}.`);
+    }
+    ev.preventDefault();
+  }
 }
 export type CallbackComponentEvs<C extends CallbackComponent<any>> =
   C extends CallbackComponent<infer Evs> ? Evs : never;
@@ -72,7 +80,7 @@ export function createCallbackComponentFunc<
         },
       });
       this.$cbComponent = componentProxy;
-      this.$hookAfterThisComponent = () => {
+      this.$view.hookAfterThisComponent = () => {
         const context = new IntrinsicCallbackComponentContext(
           this,
           componentProxy as any
@@ -86,8 +94,6 @@ export function createCallbackComponentFunc<
         if (!context.$classesArgUsed) {
           context.$firstHTMLELement?.addClasses(context.$classesArg);
         }
-
-        context.$callHookAfterThisComponent();
       };
       ret = true;
     } else {
@@ -110,8 +116,6 @@ export function createCallbackComponentFunc<
         ...args
       );
       ret = this.$view.isReceiver;
-
-      context.$callHookAfterThisComponent();
     }
     this.endComponent(ckey);
     return ret;

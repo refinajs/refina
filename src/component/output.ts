@@ -33,8 +33,6 @@ export function outputComponent<S extends OutputComponent>(
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
-    context.$callHookAfterThisComponent();
-
     this.endComponent(ckey);
 
     return false;

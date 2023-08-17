@@ -61,8 +61,6 @@ export function statusComponent<S extends StatusComponent>(
       context.$firstHTMLELement?.addClasses(context.$classesArg);
     }
 
-    context.$callHookAfterThisComponent();
-
     this.endComponent(ckey);
 
     return component.$status;
