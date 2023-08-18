@@ -17,16 +17,23 @@ export class View {
     this.resetState();
   }
 
-  _: Context;
-
-  map: Map<string, any> = new Map();
   root: HTMLElementComponent;
+  refMap: Map<string, any> = new Map();
+  _: Context;
+  protected processedComponents = new Set<string>();
+
+  markComponentProcessed(ikey: string) {
+    if (this.processedComponents.has(ikey)) {
+      throw new Error(`Component ${ikey} has already been processed`);
+    }
+    this.processedComponents.add(ikey);
+  }
 
   currrentHTMLParent: HTMLElementComponent;
 
   eventRecevierIkey: string | null;
   get eventRecevier() {
-    return this.map.get(this.eventRecevierIkey!);
+    return this.refMap.get(this.eventRecevierIkey!);
   }
   eventData: any;
 
@@ -105,10 +112,18 @@ export class View {
   protected execMain() {
     const initialKey = this.ikey;
     try {
-      this._ = new IntrinsicContext(this) as any;
       this.running = true;
+      this._ = new IntrinsicContext(this) as any;
+      this.processedComponents.clear();
       this.main(this._);
       this._ = undefined as any;
+
+      if (initialKey !== this.ikey) {
+        throw new Error(
+          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
+        );
+      }
+
       //@ts-ignore
       window["__main_executed_times"] ??= 1;
       //@ts-ignore
@@ -117,11 +132,6 @@ export class View {
       console.error("Error when executing main:", e, "\nstate:", this.state);
     } finally {
       this.running = false;
-    }
-    if (initialKey !== this.ikey) {
-      throw new Error(
-        `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
-      );
     }
   }
   protected execRecv(receiver: string, data: any = null) {

@@ -68,7 +68,7 @@ export class IntrinsicContext<C = any> {
 
   $clear(ref: Ref<{ readonly ikey: string }>) {
     if (ref.current) {
-      this.$view.map.delete(ref.current.ikey);
+      this.$view.refMap.delete(ref.current.ikey);
     }
     ref.current = null;
   }
@@ -164,10 +164,11 @@ export class IntrinsicContext<C = any> {
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
-    let component = this.$view.map.get(ikey) as T;
+    this.$view.markComponentProcessed(ikey);
+    let component = this.$view.refMap.get(ikey) as T;
     if (!component) {
       component = new ctor(ikey);
-      this.$view.map.set(ikey, component);
+      this.$view.refMap.set(ikey, component);
     }
     if (this.$pendingRef) {
       this.$pendingRef.current = component;
@@ -190,13 +191,14 @@ export class IntrinsicContext<C = any> {
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
-    let ec = this.$view.map.get(ikey) as HTMLElementComponent | undefined;
+    this.$view.markComponentProcessed(ikey);
+    let ec = this.$view.refMap.get(ikey) as HTMLElementComponent | undefined;
     const oldParent = this.$view.currrentHTMLParent;
     switch (this.$state) {
       case ViewState.update:
         if (!ec) {
           ec = new HTMLElementComponent(ikey, document.createElement(tagName));
-          this.$view.map.set(ikey, ec);
+          this.$view.refMap.set(ikey, ec);
         }
         for (const key in data) {
           //@ts-ignore
@@ -224,11 +226,12 @@ export class IntrinsicContext<C = any> {
 
     this.$view.pushKey(ckey);
     const ikey = this.$view.ikey;
-    let t = this.$view.map.get(ikey) as DOMNodeComponent | undefined;
+    this.$view.markComponentProcessed(ikey);
+    let t = this.$view.refMap.get(ikey) as DOMNodeComponent | undefined;
     if (this.$state === ViewState.update) {
       if (!t) {
         t = new DOMNodeComponent(ikey, document.createTextNode(text));
-        this.$view.map.set(ikey, t);
+        this.$view.refMap.set(ikey, t);
       } else {
         if (t.node.textContent !== text) t.node.textContent = text;
       }
