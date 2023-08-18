@@ -15,12 +15,13 @@ export abstract class CallbackComponent<
   //@ts-ignore
   abstract main(_: CallbackComponentContext<Evs, this>, ...args: any[]): void;
 
-  $preventDefault() {
+  $preventDefault(): true {
     const ev = (this as any).$ev;
     if (typeof ev?.preventDefault !== "function") {
       throw new Error(`Cannot prevent default on ${ev}.`);
     }
     ev.preventDefault();
+    return true;
   }
 }
 export type CallbackComponentEvs<C extends CallbackComponent<any>> =

@@ -51,12 +51,13 @@ export class IntrinsicContext<C = any> {
   }
   $cbComponent: C = null as any;
 
-  $preventDefault() {
+  $preventDefault(): true {
     const ev = this.$view.eventData;
     if (typeof ev?.preventDefault !== "function") {
       throw new Error(`Cannot prevent default on ${ev}.`);
     }
     ev.preventDefault();
+    return true;
   }
 
   $ref<C2>(ref: Ref<C2>): this is Context<C2> {
