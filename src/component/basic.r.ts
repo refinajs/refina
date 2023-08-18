@@ -2,7 +2,6 @@ import { D, getD, ref } from "../data";
 import { HTMLElementComponent } from "../dom";
 import { ViewRender } from "../view";
 import {
-  ComponentFuncArgs,
   StatusComponent,
   StatusComponentContext,
   TriggerComponent,
@@ -46,20 +45,20 @@ declare module "./index" {
   }
 }
 
-@outputComponent
-export class Br extends OutputComponent {
+@outputComponent("br")
+export class BreakLine extends OutputComponent {
   main(_: OutputComponentContext<this>) {
     _._br();
   }
 }
 declare module "./index" {
   interface OutputComponents {
-    br: Br;
+    br: BreakLine;
   }
 }
 
-@outputComponent
-export class H1 extends OutputComponent {
+@outputComponent("h1")
+export class Heading1 extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
     inner: D<string | number | ViewRender>,
@@ -69,12 +68,12 @@ export class H1 extends OutputComponent {
 }
 declare module "./index" {
   interface OutputComponents {
-    h1: H1;
+    h1: Heading1;
   }
 }
 
-@outputComponent
-export class P extends OutputComponent {
+@outputComponent("p")
+export class Paragraph extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
     inner: D<string | number | ViewRender>,
@@ -85,7 +84,7 @@ export class P extends OutputComponent {
 
 declare module "./index" {
   interface OutputComponents {
-    p: P;
+    p: Paragraph;
   }
 }
 
@@ -173,8 +172,8 @@ declare module "./index" {
   }
 }
 
-@outputComponent
-export class Ul extends OutputComponent {
+@outputComponent("ul")
+export class UnorderedList extends OutputComponent {
   main<T>(
     _: OutputComponentContext<this, any>,
     data: D<Iterable<T>>,
@@ -192,7 +191,7 @@ export class Ul extends OutputComponent {
 }
 declare module "./index" {
   interface CustomComponentFuncs<C> {
-    ul: Ul extends C
+    ul: UnorderedList extends C
       ? <T>(
           data: D<Iterable<T>>,
           key: keyof T | ((item: T, index: number) => D<string>),

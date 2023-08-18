@@ -5,6 +5,7 @@ import {
   ComponentConstructor,
   ComponentFuncArgs,
   IntrinsicComponentContext,
+  componentRegister,
 } from "./component";
 
 export abstract class CallbackComponent<
@@ -122,15 +123,21 @@ export function createCallbackComponentFunc<
     return ret;
   };
 }
-export function callbackComponent<
-  Evs extends Record<string, any>,
-  S extends CallbackComponent<Evs>,
->(ctor: ComponentConstructor<S>) {
-  if (!ctor.name) throw new Error(`Component class must have name.`);
-  const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);
-  contextFuncs[name] = createCallbackComponentFunc<Evs, S>(ctor);
-  return ctor;
-}
+
+export const callbackComponent = componentRegister<
+  <Evs extends Record<string, any>, S extends CallbackComponent<Evs>>(
+    ctor: ComponentConstructor<S>,
+  ) => ComponentConstructor<S>
+>(
+  <Evs extends Record<string, any>, S extends CallbackComponent<Evs>>(
+    ctor: ComponentConstructor<S>,
+    name: string,
+  ) => {
+    contextFuncs[name] = createCallbackComponentFunc<Evs, S>(ctor);
+    return ctor;
+  },
+);
+
 export interface CallbackComponents
   extends Record<string, CallbackComponent<any>> {}
 

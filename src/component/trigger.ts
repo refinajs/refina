@@ -4,6 +4,7 @@ import {
   ComponentConstructor,
   ComponentFuncArgs,
   IntrinsicComponentContext,
+  componentRegister,
 } from "./component";
 
 export abstract class TriggerComponent extends Component {
@@ -33,12 +34,12 @@ export type TriggerComponentContext<
   S extends TriggerComponent,
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
-export function triggerComponent<S extends TriggerComponent>(
-  ctor: ComponentConstructor<S>,
-) {
-  if (!ctor.name) throw new Error(`Component class must have name.`);
-  const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);
 
+export const triggerComponent = componentRegister<
+  <S extends TriggerComponent>(
+    ctor: ComponentConstructor<S>,
+  ) => ComponentConstructor<S>
+>(<S extends TriggerComponent>(ctor: ComponentConstructor<S>, name: string) => {
   contextFuncs[name] = function (this: Context, ckey, ...args) {
     const component = this.beginComponent(ckey, ctor);
 
@@ -60,7 +61,8 @@ export function triggerComponent<S extends TriggerComponent>(
     return isReceiver;
   };
   return ctor;
-}
+});
+
 export interface TriggerComponents extends Record<string, TriggerComponent> {}
 
 export type TriggerComponentFuncs<C> = {

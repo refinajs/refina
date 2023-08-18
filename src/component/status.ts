@@ -4,6 +4,7 @@ import {
   ComponentConstructor,
   ComponentFuncArgs,
   IntrinsicComponentContext,
+  componentRegister,
 } from "./component";
 
 export abstract class StatusComponent extends Component {
@@ -36,11 +37,12 @@ export type StatusComponentContext<
   S extends StatusComponent,
   C = any,
 > = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
-export function statusComponent<S extends StatusComponent>(
-  ctor: ComponentConstructor<S>,
-) {
-  if (!ctor.name) throw new Error(`Component class must have name.`);
-  const name = ctor.name[0].toLowerCase() + ctor.name.slice(1);
+
+export const statusComponent = componentRegister<
+  <S extends StatusComponent>(
+    ctor: ComponentConstructor<S>,
+  ) => ComponentConstructor<S>
+>(<S extends StatusComponent>(ctor: ComponentConstructor<S>, name: string) => {
   contextFuncs[name] = function (this: Context, ckey, ...args) {
     const component = this.beginComponent(ckey, ctor);
 
@@ -66,7 +68,8 @@ export function statusComponent<S extends StatusComponent>(
     return component.$status;
   };
   return ctor;
-}
+});
+
 export interface StatusComponents extends Record<string, StatusComponent> {}
 
 export type StatusComponentFuncs<C> = {

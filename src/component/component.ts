@@ -52,3 +52,19 @@ export type ComponentContext<S extends Component, C = any> = ToFullContext<
   C,
   IntrinsicComponentContext<S, C>
 >;
+
+export function componentRegister<F>(func: any): F & ((name: string) => F) {
+  return ((ctor_or_name: ComponentConstructor | string) => {
+    if (typeof ctor_or_name === "string") {
+      return (ctor: ComponentConstructor) => {
+        return func(ctor, ctor_or_name);
+      };
+    } else {
+      if (!ctor_or_name.name)
+        throw new Error(`Component class must have name.`);
+      const name =
+        ctor_or_name.name[0].toLowerCase() + ctor_or_name.name.slice(1);
+      return func(ctor_or_name, name);
+    }
+  }) as any;
+}
