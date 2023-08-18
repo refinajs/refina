@@ -17,7 +17,7 @@ export class View {
     this.resetState();
   }
 
-  _ = new IntrinsicContext(this) as any as Context;
+  _: Context;
 
   map: Map<string, any> = new Map();
   root: HTMLElementComponent;
@@ -72,7 +72,6 @@ export class View {
             window.performance.now() - startTime
           }ms`,
         );
-
         this.nextTick();
       } else if (this.needUpdate) {
         this.needUpdate = false;
@@ -106,8 +105,10 @@ export class View {
   protected execMain() {
     const initialKey = this.ikey;
     try {
+      this._ = new IntrinsicContext(this) as any;
       this.running = true;
       this.main(this._);
+      this._ = undefined as any;
       //@ts-ignore
       window["__main_executed_times"] ??= 1;
       //@ts-ignore
