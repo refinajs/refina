@@ -88,12 +88,38 @@ declare module "./index" {
   }
 }
 
+@outputComponent("a")
+export class Anchor extends OutputComponent {
+  main(
+    _: OutputComponentContext<this>,
+    inner: D<string | number | ViewRender>,
+    href: D<string>,
+  ) {
+    _._a(
+      {
+        href: getD(href),
+      },
+      inner,
+    );
+  }
+}
+declare module "./index" {
+  interface OutputComponents {
+    a: Anchor;
+  }
+}
+
 @triggerComponent
 export class Button extends TriggerComponent {
-  main(_: TriggerComponentContext<MouseEvent, this>, text: D<string>) {
+  main(
+    _: TriggerComponentContext<MouseEvent, this>,
+    text: D<string>,
+    disabled: D<boolean> = false,
+  ) {
     _._button(
       {
         onclick: _.$fire,
+        disabled: getD(disabled),
       },
       getD(text),
     );
@@ -108,26 +134,44 @@ declare module "./index" {
 @statusComponent
 export class TextInput extends StatusComponent {
   inputEl = ref<HTMLElementComponent<"input">>();
-  main(_: StatusComponentContext<this>, label: D<string>, value: D<string>) {
-    _.$component;
-    _._label({}, () => {
-      _._t(label);
-      _.$ref(this.inputEl) &&
-        _._input({
-          type: "text",
-          value: getD(value),
-          oninput: () => {
-            _.$setD(value, this.inputEl.current!.node.value);
-          },
-          onfocus: _.$on,
-          onblur: _.$off,
-        });
-    });
+  main(_: StatusComponentContext<this>, value: D<string>) {
+    _.$ref(this.inputEl) &&
+      _._input({
+        type: "text",
+        value: getD(value),
+        oninput: () => {
+          _.$setD(value, this.inputEl.current!.node.value);
+        },
+        onfocus: _.$on,
+        onblur: _.$off,
+      });
   }
 }
 declare module "./index" {
   interface StatusComponents {
     textInput: TextInput;
+  }
+}
+
+@statusComponent
+export class PasswordInput extends StatusComponent {
+  inputEl = ref<HTMLElementComponent<"input">>();
+  main(_: StatusComponentContext<this>, value: D<string>) {
+    _.$ref(this.inputEl) &&
+      _._input({
+        type: "password",
+        value: getD(value),
+        oninput: () => {
+          _.$setD(value, this.inputEl.current!.node.value);
+        },
+        onfocus: _.$on,
+        onblur: _.$off,
+      });
+  }
+}
+declare module "./index" {
+  interface StatusComponents {
+    passwordInput: PasswordInput;
   }
 }
 
@@ -175,7 +219,7 @@ declare module "./index" {
 @outputComponent("ul")
 export class UnorderedList extends OutputComponent {
   main<T>(
-    _: OutputComponentContext<this, any>,
+    _: OutputComponentContext<this>,
     data: D<Iterable<T>>,
     key: keyof T | ((item: T, index: number) => D<string>),
     body: (item: T, index: number) => void,
@@ -198,5 +242,20 @@ declare module "./index" {
           body: (item: T, index: number) => void,
         ) => false
       : never;
+  }
+}
+
+@outputComponent("img")
+export class Image extends OutputComponent {
+  main(_: OutputComponentContext<this>, src: D<string>, alt: D<string>): void {
+    _._img({
+      src: getD(src),
+      alt: getD(alt),
+    });
+  }
+}
+declare module "./index" {
+  interface OutputComponents {
+    img: Image;
   }
 }

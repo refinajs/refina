@@ -25,26 +25,26 @@ export class IntrinsicComponentContext<
   ) {
     super($caller.$view);
     this.$classesArg = $caller.$classes;
+    this.$styleArg = $caller.$style;
     //@ts-ignore
     this.$allNoPreserve = $caller.$pendingNoPreserve === "deep";
     //@ts-ignore
     $caller.$pendingNoPreserve = false;
   }
+
   $classesArg: string[];
+  $styleArg: string;
+
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$view.setD(d, v);
   }
-  $refresh() {
-    this.$view.update();
-  }
 
-  $classesArgUsed = false;
-  $cls(...args: [] | any[]): void {
-    if (args.length === 0) {
-      super.$cls(this.$classesArg);
-      this.$classesArgUsed = true;
-    }
-    super.$cls(...args);
+  $classesAndStyleUsed = false;
+  $main(): true {
+    this.$pendingClasses = this.$classesArg;
+    this.$pendingStyle = this.$styleArg;
+    this.$classesAndStyleUsed = true;
+    return true;
   }
 }
 

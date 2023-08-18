@@ -60,13 +60,36 @@ export class HTMLElementComponent<
     this.createdChildren = new Set(this.children);
   }
 
+  currentClasses = new Set<string>();
   setClasses(classes: string[]) {
-    // Is this the best way to do this?
-    if (this.node.classList.length > 0) this.node.className = "";
-    if (classes.length > 0) this.node.classList.add(...classes);
+    for (const cls of classes) {
+      if (!this.currentClasses.has(cls)) {
+        this.node.classList.add(cls);
+      } else {
+        this.currentClasses.delete(cls);
+      }
+    }
+    for (const cls of this.currentClasses) {
+      this.node.classList.remove(cls);
+    }
+    this.currentClasses = new Set(classes);
   }
   addClasses(classes: string[]) {
     if (classes.length > 0) this.node.classList.add(...classes);
+  }
+
+  currentStyle: string = "";
+  setStyle(style: string) {
+    if (style !== this.currentStyle) {
+      this.node.style.cssText = style;
+      this.currentStyle = style;
+    }
+  }
+  addStyle(style: string) {
+    if (style.length > 0) {
+      this.node.style.cssText += style;
+      this.currentStyle += style;
+    }
   }
 }
 

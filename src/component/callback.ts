@@ -93,8 +93,9 @@ export function createCallbackComponentFunc<
           ...args,
         );
 
-        if (!context.$classesArgUsed) {
+        if (!context.$classesAndStyleUsed) {
           context.$firstHTMLELement?.addClasses(context.$classesArg);
+          context.$firstHTMLELement?.addStyle(context.$styleArg);
         }
       };
       ret = true;

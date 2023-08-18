@@ -31,8 +31,9 @@ export const outputComponent = componentRegister<
 
     component.main(context as any as OutputComponentContext<S>, ...args);
 
-    if (!context.$classesArgUsed) {
+    if (!context.$classesAndStyleUsed) {
       context.$firstHTMLELement?.addClasses(context.$classesArg);
+      context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
     this.endComponent(ckey);

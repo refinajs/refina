@@ -52,8 +52,9 @@ export const triggerComponent = componentRegister<
 
     const isReceiver = this.$view.isReceiver;
 
-    if (!context.$classesArgUsed) {
+    if (!context.$classesAndStyleUsed) {
       context.$firstHTMLELement?.addClasses(context.$classesArg);
+      context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
     this.endComponent(ckey);

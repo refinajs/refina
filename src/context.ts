@@ -46,6 +46,10 @@ export class IntrinsicContext<C = any> {
     });
   }
 
+  $refresh() {
+    this.$view.update();
+  }
+
   get $state() {
     return this.$view.state;
   }
@@ -76,14 +80,17 @@ export class IntrinsicContext<C = any> {
     return Boolean(this.$allNoPreserve || this.$pendingNoPreserve);
   }
 
-  $cls(...args: any[]): void {
-    if (Array.isArray(args[0])) {
-      this.$pendingClasses = String.raw({ raw: args[0] }, ...args.slice(1))
-        .split(/\s/)
-        .filter(Boolean);
-    } else {
-      this.$pendingClasses = args;
-    }
+  $cls(cls: string): true;
+  $cls(template: TemplateStringsArray, ...args: any[]): true;
+  $cls(...args: any[]): true {
+    this.$pendingClasses = (
+      Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+    )
+      .split(/\s/)
+      .filter(Boolean);
+    return true;
   }
   protected $pendingClasses: string[] = [];
   get $classes() {
@@ -92,12 +99,29 @@ export class IntrinsicContext<C = any> {
     return classes;
   }
 
+  $css(style: string): void;
+  $css(template: TemplateStringsArray, ...args: any[]): void;
+  $css(...args: any[]): void {
+    this.$pendingStyle = Array.isArray(args[0])
+      ? String.raw({ raw: args[0] }, ...args.slice(1))
+      : args[0];
+  }
+  protected $pendingStyle: string = "";
+  get $style() {
+    const style = this.$pendingStyle;
+    this.$pendingStyle = "";
+    return style;
+  }
+
   $$(funcName: string, ckey: string, ...args: any[]): any {
     if (funcName === "_t") {
       // Now this is a text node
       const [text] = args;
       if (this.$classes.length > 0) {
         throw new Error(`Text node cannot have classes`);
+      }
+      if (this.$style.length > 0) {
+        throw new Error(`Text node cannot have style`);
       }
       return this.processTextNode(ckey, getD(text));
     }
@@ -115,7 +139,14 @@ export class IntrinsicContext<C = any> {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
       let [data, inner] = args;
-      return this.processHTMLElement(ckey, tagName, this.$classes, data, inner);
+      return this.processHTMLElement(
+        ckey,
+        tagName,
+        this.$classes,
+        this.$style,
+        data,
+        inner,
+      );
     }
     // Now this is a user-defined component
     const func = contextFuncs[funcName];
@@ -160,6 +191,7 @@ export class IntrinsicContext<C = any> {
     ckey: string,
     tagName: E,
     classes: string[],
+    style: string,
     data?: Partial<HTMLElementTagNameMap[E]>,
     inner?: D<ViewRender | string | number>,
   ) {
@@ -196,6 +228,7 @@ export class IntrinsicContext<C = any> {
         ec.node[key] = data[key]!;
       }
       ec.setClasses(classes);
+      ec.setStyle(style);
       oldParent.children.push(ec);
       ec.children = [];
     }
