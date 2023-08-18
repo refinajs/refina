@@ -1,5 +1,6 @@
 import { d, view } from "./lib";
-import logo from "../assets/github-mark-white.svg";
+import blackLogo from "../assets/github-mark-black.svg";
+import whiteLogo from "../assets/github-mark-white.svg";
 const username = d("");
 const password = d("");
 let loading = false,
@@ -12,7 +13,12 @@ view((_) => {
     _.div(() => {
       _.$css`width: 48px !important; height: 48px !important;`;
       _.$cls`octicon octicon-mark-github`;
-      _.img(logo, "logo");
+      _.img(
+        window.matchMedia("(prefers-color-scheme: light)").matches
+          ? blackLogo
+          : whiteLogo,
+        "logo",
+      );
     });
     _.$cls`auth-form px-3`;
     _.div(() => {
