@@ -35,34 +35,35 @@ export type TriggerComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 
-export const triggerComponent = componentRegister<
-  <S extends TriggerComponent>(
-    ctor: ComponentConstructor<S>,
-  ) => ComponentConstructor<S>
->(<S extends TriggerComponent>(ctor: ComponentConstructor<S>, name: string) => {
-  contextFuncs[name] = function (this: Context, ckey, ...args) {
-    const component = this.beginComponent(ckey, ctor);
+export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
+  return (ctor: ComponentConstructor<TriggerComponents[N]>) => {
+    contextFuncs[name] = function (this: Context, ckey, ...args) {
+      const component = this.beginComponent(ckey, ctor);
 
-    const context = new IntrinsicTriggerComponentContext(this, component);
+      const context = new IntrinsicTriggerComponentContext(this, component);
 
-    component.main(
-      context as unknown as TriggerComponentContext<unknown, S>,
-      ...args,
-    );
+      component.main(
+        context as unknown as TriggerComponentContext<
+          unknown,
+          TriggerComponents[N]
+        >,
+        ...args,
+      );
 
-    const isReceiver = this.$view.isReceiver;
+      const isReceiver = this.$view.isReceiver;
 
-    if (!context.$classesAndStyleUsed) {
-      context.$firstHTMLELement?.addClasses(context.$classesArg);
-      context.$firstHTMLELement?.addStyle(context.$styleArg);
-    }
+      if (!context.$classesAndStyleUsed) {
+        context.$firstHTMLELement?.addClasses(context.$classesArg);
+        context.$firstHTMLELement?.addStyle(context.$styleArg);
+      }
 
-    this.endComponent(ckey);
+      this.endComponent(ckey);
 
-    return isReceiver;
+      return isReceiver;
+    };
+    return ctor;
   };
-  return ctor;
-});
+}
 
 export interface TriggerComponents extends Record<string, TriggerComponent> {}
 

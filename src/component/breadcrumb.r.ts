@@ -7,8 +7,8 @@ import {
   triggerComponent,
 } from "../lib";
 
-@triggerComponent
-export class BreadCrumb extends TriggerComponent {
+@triggerComponent("breadcrumb")
+export class Breadcrumb extends TriggerComponent {
   main(_: TriggerComponentContext<number, this>, items: D<string[]>) {
     let itemsValue = getD(items);
     _._div({}, () => {
@@ -28,6 +28,6 @@ export class BreadCrumb extends TriggerComponent {
 }
 declare module "./index" {
   interface TriggerComponents {
-    breadcrumb: BreadCrumb;
+    breadcrumb: Breadcrumb;
   }
 }

@@ -124,20 +124,15 @@ export function createCallbackComponentFunc<
     return ret;
   };
 }
-
-export const callbackComponent = componentRegister<
-  <Evs extends Record<string, any>, S extends CallbackComponent<Evs>>(
-    ctor: ComponentConstructor<S>,
-  ) => ComponentConstructor<S>
->(
-  <Evs extends Record<string, any>, S extends CallbackComponent<Evs>>(
-    ctor: ComponentConstructor<S>,
-    name: string,
-  ) => {
-    contextFuncs[name] = createCallbackComponentFunc<Evs, S>(ctor);
+export function callbackComponent<N extends keyof CallbackComponents>(name: N) {
+  return (ctor: ComponentConstructor<CallbackComponents[N]>) => {
+    contextFuncs[name] = createCallbackComponentFunc<
+      CallbackComponentEvs<CallbackComponents[N]>,
+      CallbackComponents[N]
+    >(ctor);
     return ctor;
-  },
-);
+  };
+}
 
 export interface CallbackComponents
   extends Record<string, CallbackComponent<any>> {}

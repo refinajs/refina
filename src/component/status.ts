@@ -38,38 +38,36 @@ export type StatusComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 
-export const statusComponent = componentRegister<
-  <S extends StatusComponent>(
-    ctor: ComponentConstructor<S>,
-  ) => ComponentConstructor<S>
->(<S extends StatusComponent>(ctor: ComponentConstructor<S>, name: string) => {
-  contextFuncs[name] = function (this: Context, ckey, ...args) {
-    const component = this.beginComponent(ckey, ctor);
+export function statusComponent<N extends keyof StatusComponents>(name: N) {
+  return (ctor: ComponentConstructor<StatusComponents[N]>) => {
+    contextFuncs[name] = function (this: Context, ckey, ...args) {
+      const component = this.beginComponent(ckey, ctor);
 
-    component.$status ??= false;
+      component.$status ??= false;
 
-    const context = new IntrinsicStatusComponentContext(this, component);
+      const context = new IntrinsicStatusComponentContext(this, component);
 
-    component.main(
-      context as any as StatusComponentContext<
-        S & {
-          $status: boolean;
-        }
-      >,
-      ...args,
-    );
+      component.main(
+        context as any as StatusComponentContext<
+          StatusComponents[N] & {
+            $status: boolean;
+          }
+        >,
+        ...args,
+      );
 
-    if (!context.$classesAndStyleUsed) {
-      context.$firstHTMLELement?.addClasses(context.$classesArg);
-      context.$firstHTMLELement?.addStyle(context.$styleArg);
-    }
+      if (!context.$classesAndStyleUsed) {
+        context.$firstHTMLELement?.addClasses(context.$classesArg);
+        context.$firstHTMLELement?.addStyle(context.$styleArg);
+      }
 
-    this.endComponent(ckey);
+      this.endComponent(ckey);
 
-    return component.$status;
+      return component.$status;
+    };
+    return ctor;
   };
-  return ctor;
-});
+}
 
 export interface StatusComponents extends Record<string, StatusComponent> {}
 

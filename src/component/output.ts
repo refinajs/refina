@@ -19,29 +19,30 @@ export type OutputComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicOutputComponentContext<S, C>>;
 
-export const outputComponent = componentRegister<
-  <S extends OutputComponent>(
-    ctor: ComponentConstructor<S>,
-  ) => ComponentConstructor<S>
->(<S extends OutputComponent>(ctor: ComponentConstructor<S>, name: string) => {
-  contextFuncs[name] = function (this: Context, ckey, ...args) {
-    const component = this.beginComponent(ckey, ctor);
+export function outputComponent<N extends keyof OutputComponents>(name: N) {
+  return (ctor: ComponentConstructor<OutputComponents[N]>) => {
+    contextFuncs[name] = function (this: Context, ckey, ...args) {
+      const component = this.beginComponent(ckey, ctor);
 
-    const context = new IntrinsicOutputComponentContext(this, component);
+      const context = new IntrinsicOutputComponentContext(this, component);
 
-    component.main(context as any as OutputComponentContext<S>, ...args);
+      component.main(
+        context as any as OutputComponentContext<OutputComponents[N]>,
+        ...args,
+      );
 
-    if (!context.$classesAndStyleUsed) {
-      context.$firstHTMLELement?.addClasses(context.$classesArg);
-      context.$firstHTMLELement?.addStyle(context.$styleArg);
-    }
+      if (!context.$classesAndStyleUsed) {
+        context.$firstHTMLELement?.addClasses(context.$classesArg);
+        context.$firstHTMLELement?.addStyle(context.$styleArg);
+      }
 
-    this.endComponent(ckey);
+      this.endComponent(ckey);
 
-    return;
+      return;
+    };
+    return ctor;
   };
-  return ctor;
-});
+}
 
 export interface OutputComponents extends Record<string, OutputComponent> {}
 

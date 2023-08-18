@@ -15,7 +15,7 @@ import {
   outputComponent,
 } from "./output";
 
-@statusComponent
+@statusComponent("div")
 export class Div extends StatusComponent {
   main(
     _: StatusComponentContext<this>,
@@ -30,7 +30,7 @@ declare module "./index" {
   }
 }
 
-@outputComponent
+@outputComponent("span")
 export class Span extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
@@ -109,7 +109,7 @@ declare module "./index" {
   }
 }
 
-@triggerComponent
+@triggerComponent("button")
 export class Button extends TriggerComponent {
   main(
     _: TriggerComponentContext<MouseEvent, this>,
@@ -131,7 +131,7 @@ declare module "./index" {
   }
 }
 
-@statusComponent
+@statusComponent("textInput")
 export class TextInput extends StatusComponent {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(_: StatusComponentContext<this>, value: D<string>) {
@@ -153,7 +153,7 @@ declare module "./index" {
   }
 }
 
-@statusComponent
+@statusComponent("passwordInput")
 export class PasswordInput extends StatusComponent {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(_: StatusComponentContext<this>, value: D<string>) {
@@ -175,7 +175,7 @@ declare module "./index" {
   }
 }
 
-@statusComponent
+@statusComponent("toggleButton")
 export class ToggleButton extends StatusComponent {
   main(_: StatusComponentContext<this>, text: D<string>) {
     if (_.button(text)) {
@@ -189,7 +189,7 @@ declare module "./index" {
   }
 }
 
-@statusComponent
+@statusComponent("checkbox")
 export class Checkbox extends StatusComponent {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(
