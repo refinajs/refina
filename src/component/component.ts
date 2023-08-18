@@ -25,6 +25,10 @@ export class IntrinsicComponentContext<
   ) {
     super($caller.$view);
     this.$classesArg = $caller.$classes;
+    //@ts-ignore
+    this.$allNoPreserve = $caller.$pendingNoPreserve === "deep";
+    //@ts-ignore
+    $caller.$pendingNoPreserve = false;
   }
   $classesArg: string[];
   $setD<T>(d: D<T>, v: T): boolean {

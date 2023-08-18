@@ -20,6 +20,7 @@ export class View {
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
   _: Context;
+  noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();
 
   markComponentProcessed(ikey: string) {
@@ -122,6 +123,13 @@ export class View {
         throw new Error(
           `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
         );
+      }
+
+      console.log(this.noPreserveComponents);
+      for (const ikey of this.noPreserveComponents) {
+        if (!this.processedComponents.has(ikey)) {
+          this.refMap.delete(ikey);
+        }
       }
 
       //@ts-ignore

@@ -3,7 +3,7 @@ import {
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
-import { Ref, getD } from "./data";
+import { D, Ref, getD } from "./data";
 import {
   DOMFuncs,
   DOMNodeComponent,
@@ -66,11 +66,14 @@ export class IntrinsicContext<C = any> {
   }
   $pendingRef: Ref<any> | null = null;
 
-  $clear(ref: Ref<{ readonly ikey: string }>) {
-    if (ref.current) {
-      this.$view.refMap.delete(ref.current.ikey);
-    }
-    ref.current = null;
+  $noPreserve(deep: boolean = true): true {
+    this.$pendingNoPreserve = deep ? "deep" : true;
+    return true;
+  }
+  protected $pendingNoPreserve: boolean | "deep" = false;
+  protected $allNoPreserve = false;
+  protected get $isNoPreserve() {
+    return Boolean(this.$allNoPreserve || this.$pendingNoPreserve);
   }
 
   $cls(...args: any[]): void {
@@ -89,17 +92,14 @@ export class IntrinsicContext<C = any> {
     return classes;
   }
 
-  $$(funcName: string, ...argsWithCKey: [ckey: string, ...args: any[]]): any {
+  $$(funcName: string, ckey: string, ...args: any[]): any {
     if (funcName === "_t") {
       // Now this is a text node
-      const [ckey, text] = argsWithCKey;
+      const [text] = args;
       if (this.$classes.length > 0) {
         throw new Error(`Text node cannot have classes`);
       }
-      const setFirstDOMNode = this.$firstDOMNode === null;
-      const t = this.renderText(ckey, getD(text));
-      if (setFirstDOMNode) this.$firstDOMNode ??= t;
-      return t;
+      return this.processTextNode(ckey, getD(text));
     }
     if (
       funcName.startsWith("_cb") &&
@@ -109,48 +109,20 @@ export class IntrinsicContext<C = any> {
       const tagName = (funcName[3].toLowerCase() +
         funcName.slice(4)) as keyof HTMLElementTagNameMap;
       const func = createCbHTMLElementComponentFunction(tagName);
-      return func.call(this as unknown as Context, ...argsWithCKey);
+      return func.call(this as unknown as Context, ckey, ...args);
     }
     if (funcName[0] === "_") {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
-      let [ckey, data, inner] = argsWithCKey;
-      inner = getD(inner);
-      if (typeof inner === "string" || typeof inner === "number") {
-        const text = inner;
-        inner = () => {
-          if (this.$classes.length > 0) {
-            throw new Error(`Text node cannot have classes`);
-          }
-          const setFirstDOMNode = this.$firstDOMNode === null;
-          const t = this.renderText("_t", String(text));
-          if (setFirstDOMNode) this.$firstDOMNode ??= t;
-        };
-      }
-      data ??= {};
-      inner ??= () => {};
-      const setFirstDOMNode = this.$firstDOMNode === null;
-      const setFirstHTMLELement = this.$firstHTMLELement === null;
-      const pendingRef = this.$pendingRef;
-      this.$pendingRef = null;
-      const ec = this.renderHTMLElement(
-        ckey,
-        tagName,
-        data,
-        inner,
-        this.$classes,
-      );
-      if (setFirstDOMNode) this.$firstDOMNode = ec;
-      if (setFirstHTMLELement) this.$firstHTMLELement = ec;
-      if (pendingRef) pendingRef.current = ec;
-      return ec;
+      let [data, inner] = args;
+      return this.processHTMLElement(ckey, tagName, this.$classes, data, inner);
     }
     // Now this is a user-defined component
     const func = contextFuncs[funcName];
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
     }
-    return func.call(this, ...argsWithCKey);
+    return func.call(this, ckey, ...args);
   }
 
   $firstDOMNode: DOMNodeComponent | null = null;
@@ -174,19 +146,38 @@ export class IntrinsicContext<C = any> {
       this.$pendingRef.current = component;
       this.$pendingRef = null;
     }
+    if (this.$isNoPreserve) {
+      this.$view.noPreserveComponents.add(ikey);
+      // later set by IntrinsicComponentContext: this.$pendingNoPreserve = false;
+    }
     return component;
   }
   endComponent(ckey: string) {
     this.$view.popKey(ckey);
   }
 
-  protected renderHTMLElement<E extends keyof HTMLElementTagNameMap>(
+  protected processHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
-    data: Partial<HTMLElementTagNameMap[E]>,
-    inner: ViewRender,
     classes: string[],
+    data?: Partial<HTMLElementTagNameMap[E]>,
+    inner?: D<ViewRender | string | number>,
   ) {
+    inner = getD(inner);
+    if (typeof inner === "string" || typeof inner === "number") {
+      const text = inner;
+      inner = () => {
+        if (this.$classes.length > 0) {
+          throw new Error(`Text node cannot have classes`);
+        }
+        const setFirstDOMNode = this.$firstDOMNode === null;
+        const t = this.processTextNode("_t", String(text));
+        if (setFirstDOMNode) this.$firstDOMNode ??= t;
+      };
+    }
+    data ??= {};
+    inner ??= () => {};
+
     this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
@@ -194,34 +185,49 @@ export class IntrinsicContext<C = any> {
     this.$view.markComponentProcessed(ikey);
     let ec = this.$view.refMap.get(ikey) as HTMLElementComponent | undefined;
     const oldParent = this.$view.currrentHTMLParent;
-    switch (this.$state) {
-      case ViewState.update:
-        if (!ec) {
-          ec = new HTMLElementComponent(ikey, document.createElement(tagName));
-          this.$view.refMap.set(ikey, ec);
-        }
-        for (const key in data) {
-          //@ts-ignore
-          ec.node[key] = data[key]!;
-        }
-        ec.setClasses(classes);
-        oldParent.children.push(ec);
-        ec.children = [];
-        this.$view.currrentHTMLParent = ec;
-        inner(this as unknown as Context);
-        this.$view.callHookAfterThisComponent();
-        break;
-      case ViewState.recv:
-        this.$view.currrentHTMLParent = ec!;
-        inner(this as unknown as Context);
-        this.$view.callHookAfterThisComponent();
-        break;
+    if (this.$state === ViewState.update) {
+      if (!ec) {
+        console.warn("create new el", tagName, "for", ikey);
+        ec = new HTMLElementComponent(ikey, document.createElement(tagName));
+        this.$view.refMap.set(ikey, ec);
+      }
+      for (const key in data) {
+        //@ts-ignore
+        ec.node[key] = data[key]!;
+      }
+      ec.setClasses(classes);
+      oldParent.children.push(ec);
+      ec.children = [];
     }
+
+    const context = new IntrinsicContext(this.$view);
+
+    this.$firstDOMNode ??= ec!;
+    this.$firstHTMLELement ??= ec!;
+
+    if (this.$pendingRef) {
+      this.$pendingRef.current = ec;
+      this.$pendingRef = null;
+    }
+    if (this.$isNoPreserve) {
+      this.$view.noPreserveComponents.add(ikey);
+      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
+      this.$pendingNoPreserve = false;
+    }
+
+    this.$view.currrentHTMLParent = ec!;
+
+    inner(context as unknown as Context);
+
+    this.$view.callHookAfterThisComponent();
+
     this.$view.currrentHTMLParent = oldParent;
+
     this.$view.popKey(ckey);
+
     return ec!;
   }
-  protected renderText(ckey: string, text: string) {
+  protected processTextNode(ckey: string, text: string) {
     this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
@@ -238,6 +244,14 @@ export class IntrinsicContext<C = any> {
       this.$view.currrentHTMLParent.children.push(t);
     }
     this.$view.popKey(ckey);
+
+    this.$firstDOMNode ??= t!;
+
+    if (this.$allNoPreserve || this.$pendingNoPreserve) {
+      this.$view.noPreserveComponents.add(ikey);
+      this.$pendingNoPreserve = false;
+    }
+
     return t!;
   }
 }
