@@ -35,7 +35,7 @@ export function outputComponent<S extends OutputComponent>(
 
     this.endComponent(ckey);
 
-    return false;
+    return;
   };
   return ctor;
 }
@@ -43,6 +43,6 @@ export interface OutputComponents extends Record<string, OutputComponent> {}
 
 export type OutputComponentFuncs<C> = {
   [K in keyof OutputComponents]: OutputComponents[K] extends C
-    ? (...args: ComponentFuncArgs<OutputComponents[K]>) => false
+    ? (...args: ComponentFuncArgs<OutputComponents[K]>) => void
     : never;
 };
