@@ -79,7 +79,7 @@ export class IntrinsicContext<C = any> {
   $cls(...args: any[]): void {
     if (Array.isArray(args[0])) {
       this.$pendingClasses = String.raw({ raw: args[0] }, ...args.slice(1))
-        .split(" ")
+        .split(/\s/)
         .filter(Boolean);
     } else {
       this.$pendingClasses = args;
