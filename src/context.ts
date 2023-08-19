@@ -203,9 +203,10 @@ export class IntrinsicContext<C> {
         if (this.$classes.length > 0) {
           throw new Error(`Text node cannot have classes`);
         }
-        const setFirstDOMNode = this.$firstDOMNode === null;
+        if (this.$style.length > 0) {
+          throw new Error(`Text node cannot have style`);
+        }
         const t = this.processTextNode("_t", String(text));
-        if (setFirstDOMNode) this.$firstDOMNode ??= t;
       };
     }
     data ??= {};
