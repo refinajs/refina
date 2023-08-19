@@ -1,6 +1,6 @@
+import { Render } from "../context";
 import { D, getD, ref } from "../data";
 import { HTMLElementComponent } from "../dom";
-import { ViewRender } from "../view";
 import {
   StatusComponent,
   StatusComponentContext,
@@ -17,10 +17,7 @@ import {
 
 @statusComponent("div")
 export class Div extends StatusComponent {
-  main(
-    _: StatusComponentContext<this>,
-    inner: D<string | number | ViewRender>,
-  ) {
+  main(_: StatusComponentContext<this>, inner: D<string | number | Render>) {
     _._div({}, inner);
   }
 }
@@ -32,10 +29,7 @@ declare module "./index" {
 
 @outputComponent("span")
 export class Span extends OutputComponent {
-  main(
-    _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>,
-  ) {
+  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
     _._span({}, inner);
   }
 }
@@ -59,10 +53,7 @@ declare module "./index" {
 
 @outputComponent("h1")
 export class Heading1 extends OutputComponent {
-  main(
-    _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>,
-  ) {
+  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
     _._h1({}, inner);
   }
 }
@@ -74,10 +65,7 @@ declare module "./index" {
 
 @outputComponent("p")
 export class Paragraph extends OutputComponent {
-  main(
-    _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>,
-  ) {
+  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
     _._p({}, inner);
   }
 }
@@ -92,7 +80,7 @@ declare module "./index" {
 export class Anchor extends OutputComponent {
   main(
     _: OutputComponentContext<this>,
-    inner: D<string | number | ViewRender>,
+    inner: D<string | number | Render>,
     href: D<string>,
   ) {
     _._a(

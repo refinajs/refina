@@ -10,7 +10,7 @@ import {
   HTMLElementComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
-import { View, ViewRender, ViewState } from "./view";
+import { View, ViewState } from "./view";
 
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
@@ -32,7 +32,7 @@ export type ToFullContext<C, I> = ComponentFuncs<C> &
   DOMFuncs<C> &
   I;
 
-export class IntrinsicContext<C = any> {
+export class IntrinsicContext<C> {
   constructor(public readonly $view: View) {
     Object.defineProperty(this, "$ev", {
       get() {
@@ -193,7 +193,7 @@ export class IntrinsicContext<C = any> {
     classes: string[],
     style: string,
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<ViewRender | string | number>,
+    inner?: D<Render | string | number>,
   ) {
     inner = getD(inner);
     if (typeof inner === "string" || typeof inner === "number") {
@@ -219,7 +219,6 @@ export class IntrinsicContext<C = any> {
     const oldParent = this.$view.currrentHTMLParent;
     if (this.$state === ViewState.update) {
       if (!ec) {
-        console.warn("create new el", tagName, "for", ikey);
         ec = new HTMLElementComponent(ikey, document.createElement(tagName));
         this.$view.refMap.set(ikey, ec);
       }
@@ -290,3 +289,35 @@ export class IntrinsicContext<C = any> {
 }
 
 export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;
+
+export type Render = (context: Context) => void;
+
+export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
+  $rootCls(cls: string): true;
+  $rootCls(template: TemplateStringsArray, ...args: any[]): true;
+  $rootCls(...args: any[]): true {
+    this.$view.root.setClasses(
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+      )
+        .split(/\s/)
+        .filter(Boolean),
+    );
+    return true;
+  }
+
+  $rootCss(style: string): void;
+  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
+  $rootCss(...args: any[]): void {
+    this.$view.root.setStyle(
+      Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0],
+    );
+  }
+}
+
+export type ViewContext<C = any> = ToFullContext<C, IntrinsicViewContext<C>>;
+
+export type ViewRender = (_: ViewContext) => void;

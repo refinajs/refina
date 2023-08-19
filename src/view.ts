@@ -1,8 +1,6 @@
-import { Context, IntrinsicContext } from "./context";
+import { IntrinsicViewContext, ViewContext, ViewRender } from "./context";
 import { D, dangerously_setD } from "./data";
 import { HTMLElementComponent } from "./dom";
-
-export type ViewRender = (_: Context) => void;
 
 export class View {
   constructor(
@@ -19,7 +17,7 @@ export class View {
 
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
-  _: Context;
+  _: ViewContext;
   noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();
 
@@ -114,7 +112,7 @@ export class View {
     const initialKey = this.ikey;
     try {
       this.running = true;
-      this._ = new IntrinsicContext(this) as any;
+      this._ = new IntrinsicViewContext(this) as any;
       this.processedComponents.clear();
       this.main(this._);
       this._ = undefined as any;
