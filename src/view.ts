@@ -17,7 +17,7 @@ export class View {
 
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
-  _: ViewContext;
+  _: ViewContext | undefined;
   noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();
 
@@ -68,16 +68,10 @@ export class View {
       console.log(`[!] next tick`);
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
-        console.log(
-          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`,
-        );
+        console.log(`[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`);
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
-        console.log(
-          `[-] recv executed with id ${receiver} in ${
-            window.performance.now() - startTime
-          }ms`,
-        );
+        console.log(`[-] recv executed with id ${receiver} in ${window.performance.now() - startTime}ms`);
         this.nextTick();
       } else if (this.needUpdate) {
         this.needUpdate = false;
@@ -85,9 +79,7 @@ export class View {
         const startTime = window.performance.now();
         this.execUpdate();
         this.root.updateDOM();
-        console.log(
-          `[-] update executed in ${window.performance.now() - startTime}ms`,
-        );
+        console.log(`[-] update executed in ${window.performance.now() - startTime}ms`);
       }
     }, 0);
   }
@@ -114,13 +106,11 @@ export class View {
       this.running = true;
       this._ = new IntrinsicViewContext(this) as any;
       this.processedComponents.clear();
-      this.main(this._);
-      this._ = undefined as any;
+      this.main(this._ as ViewContext);
+      this._ = undefined;
 
       if (initialKey !== this.ikey) {
-        throw new Error(
-          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
-        );
+        throw new Error(`Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`);
       }
 
       console.log(this.noPreserveComponents);
@@ -198,8 +188,10 @@ export enum ViewState {
   recv = "recv", // 接收消息，不得改变DOM
 }
 
+export let $view: View;
+
 export function view(render: ViewRender, rootElementId: string = "root") {
-  let currentView = new View(render, rootElementId);
-  currentView.mount();
-  return currentView;
+  $view = new View(render, rootElementId);
+  $view.mount();
+  return $view;
 }
