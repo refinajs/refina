@@ -4,6 +4,7 @@
   },
   "tailwindCSS.experimental.classRegex": [
     "_.\\$cls`([^`]*)`",
+    "_.\\$rootCls`([^`]*)`",
     ["_.\\$cls\\(([^\\)]*)\\)", "\\\"(.*?)\\\""]
   ]
 }
