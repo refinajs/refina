@@ -17,6 +17,8 @@ export class DOMNodeComponent<N extends Node = Node> {
   updateDOM() {}
 }
 
+export type Content = string | number | Render;
+
 export class HTMLElementComponent<
   E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
 > extends DOMNodeComponent<HTMLElementTagNameMap[E]> {
@@ -102,7 +104,7 @@ export function createCbHTMLElementComponentFunction<
     main(
       _: CallbackComponentContext<HTMLElementEventMap, this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
-      inner: D<Render | string | number> = () => {},
+      inner: D<Content> = () => {},
     ) {
       const elementData: any = { ...data };
       for (const ev of this.$listendEvs) {
@@ -113,7 +115,7 @@ export function createCbHTMLElementComponentFunction<
           funcName: string,
           ckey: string,
           data?: Partial<HTMLElementTagNameMap[E]>,
-          inner?: D<Render | string | number>,
+          inner?: D<Content>,
           // @ts-ignore
         ) => this is Context<HTMLElementComponent<E>>
       )(`_${tagName}`, "_", elementData, inner);
@@ -144,14 +146,14 @@ export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
   main(
     _: CallbackComponentContext<HTMLElementEventMap, this>,
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<Render | string | number>,
+    inner?: D<Content>,
   ): void;
 }
 export type DOMFuncs<C> = {
   [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementComponent<E> extends C
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
-        inner?: D<Render | string | number>,
+        inner?: D<Content>,
         // @ts-ignore
       ) => this is Context<HTMLElementComponent<E>>
     : never;

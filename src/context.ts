@@ -5,6 +5,7 @@ import {
 } from "./component/index";
 import { D, Ref, getD } from "./data";
 import {
+  Content,
   DOMFuncs,
   DOMNodeComponent,
   HTMLElementComponent,
@@ -193,7 +194,7 @@ export class IntrinsicContext<C> {
     classes: string[],
     style: string,
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<Render | string | number>,
+    inner?: D<Content>,
   ) {
     inner = getD(inner);
     if (typeof inner === "string" || typeof inner === "number") {

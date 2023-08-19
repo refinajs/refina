@@ -1,6 +1,6 @@
 import { Render } from "../context";
 import { D, getD, ref } from "../data";
-import { HTMLElementComponent } from "../dom";
+import { Content, HTMLElementComponent } from "../dom";
 import {
   StatusComponent,
   StatusComponentContext,
@@ -17,7 +17,7 @@ import {
 
 @statusComponent("div")
 export class Div extends StatusComponent {
-  main(_: StatusComponentContext<this>, inner: D<string | number | Render>) {
+  main(_: StatusComponentContext<this>, inner: D<Content>) {
     _._div({}, inner);
   }
 }
@@ -29,7 +29,7 @@ declare module "./index" {
 
 @outputComponent("span")
 export class Span extends OutputComponent {
-  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
+  main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._span({}, inner);
   }
 }
@@ -53,7 +53,7 @@ declare module "./index" {
 
 @outputComponent("h1")
 export class Heading1 extends OutputComponent {
-  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
+  main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._h1({}, inner);
   }
 }
@@ -65,7 +65,7 @@ declare module "./index" {
 
 @outputComponent("p")
 export class Paragraph extends OutputComponent {
-  main(_: OutputComponentContext<this>, inner: D<string | number | Render>) {
+  main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._p({}, inner);
   }
 }
@@ -78,11 +78,7 @@ declare module "./index" {
 
 @outputComponent("a")
 export class Anchor extends OutputComponent {
-  main(
-    _: OutputComponentContext<this>,
-    inner: D<string | number | Render>,
-    href: D<string>,
-  ) {
+  main(_: OutputComponentContext<this>, inner: D<Content>, href: D<string>) {
     _._a(
       {
         href: getD(href),
@@ -101,7 +97,7 @@ declare module "./index" {
 export class Button extends TriggerComponent {
   main(
     _: TriggerComponentContext<MouseEvent, this>,
-    text: D<string>,
+    text: D<Content>,
     disabled: D<boolean> = false,
   ) {
     _._button(
@@ -230,6 +226,19 @@ declare module "./index" {
           body: (item: T, index: number) => void,
         ) => false
       : never;
+  }
+}
+
+@outputComponent("li")
+export class ListItem extends OutputComponent {
+  main(_: OutputComponentContext<this>, inner: D<Content>) {
+    _._li({}, inner);
+  }
+}
+
+declare module "./index" {
+  interface OutputComponents {
+    li: ListItem;
   }
 }
 
