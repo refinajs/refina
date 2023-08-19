@@ -1,4 +1,3 @@
-import { Render } from "../context";
 import { D, getD, ref } from "../data";
 import { Content, HTMLElementComponent } from "../dom";
 import {
@@ -9,11 +8,7 @@ import {
   statusComponent,
   triggerComponent,
 } from "./index";
-import {
-  OutputComponent,
-  OutputComponentContext,
-  outputComponent,
-} from "./output";
+import { OutputComponent, OutputComponentContext, outputComponent } from "./output";
 
 @statusComponent("div")
 export class Div extends StatusComponent {
@@ -95,11 +90,7 @@ declare module "./index" {
 
 @triggerComponent("button")
 export class Button extends TriggerComponent {
-  main(
-    _: TriggerComponentContext<MouseEvent, this>,
-    text: D<Content>,
-    disabled: D<boolean> = false,
-  ) {
+  main(_: TriggerComponentContext<MouseEvent, this>, text: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
         onclick: _.$fire,
@@ -182,7 +173,7 @@ export class Checkbox extends StatusComponent {
     value: D<boolean> = this.inputEl.current?.node.checked ?? false,
   ) {
     _._label({}, () => {
-      _._t(label);
+      _.t(label);
       _.$ref(this.inputEl) &&
         _._input({
           type: "checkbox",

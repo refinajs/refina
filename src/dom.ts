@@ -99,13 +99,8 @@ export class HTMLElementComponent<
   }
 }
 
-export function createCbHTMLElementComponentFunction<
-  E extends keyof HTMLElementTagNameMap,
->(tagName: E) {
-  const ctor = class
-    extends CallbackComponent<HTMLElementEventMap>
-    implements CbHTMLElementComponent<E>
-  {
+export function createCbHTMLElementComponentFunction<E extends keyof HTMLElementTagNameMap>(tagName: E) {
+  const ctor = class extends CallbackComponent<HTMLElementEventMap> implements CbHTMLElementComponent<E> {
     main(
       _: CallbackComponentContext<HTMLElementEventMap, this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
@@ -134,14 +129,9 @@ const cbHTMLElementComponentFunctionCache = new Map<
   (this: Context, ckey: string, ...args: any[]) => boolean
 >();
 
-export function getCbHTMLElementComponentFunction<
-  E extends keyof HTMLElementTagNameMap,
->(tagName: E) {
+export function getCbHTMLElementComponentFunction<E extends keyof HTMLElementTagNameMap>(tagName: E) {
   if (!cbHTMLElementComponentFunctionCache.has(tagName)) {
-    cbHTMLElementComponentFunctionCache.set(
-      tagName,
-      createCbHTMLElementComponentFunction(tagName),
-    );
+    cbHTMLElementComponentFunctionCache.set(tagName, createCbHTMLElementComponentFunction(tagName));
   }
   return cbHTMLElementComponentFunctionCache.get(tagName)!;
 }
@@ -167,6 +157,4 @@ export type DOMFuncs<C> = {
     [E in keyof HTMLElementTagNameMap as `_cb${Capitalize<E>}`]: CbHTMLElementComponent<E>;
   },
   C
-> & {
-    _t: (text: D<string | number>) => void;
-  };
+>;
