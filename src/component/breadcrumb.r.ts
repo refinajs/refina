@@ -1,11 +1,4 @@
-import {
-  D,
-  TriggerComponent,
-  TriggerComponentContext,
-  byIndex,
-  getD,
-  triggerComponent,
-} from "../lib";
+import { D, TriggerComponent, TriggerComponentContext, byIndex, getD, triggerComponent } from "../lib";
 
 @triggerComponent("breadcrumb")
 export class Breadcrumb extends TriggerComponent {

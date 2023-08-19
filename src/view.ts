@@ -68,10 +68,16 @@ export class View {
       console.log(`[!] next tick`);
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
-        console.log(`[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`);
+        console.log(
+          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`,
+        );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
-        console.log(`[-] recv executed with id ${receiver} in ${window.performance.now() - startTime}ms`);
+        console.log(
+          `[-] recv executed with id ${receiver} in ${
+            window.performance.now() - startTime
+          }ms`,
+        );
         this.nextTick();
       } else if (this.needUpdate) {
         this.needUpdate = false;
@@ -79,7 +85,9 @@ export class View {
         const startTime = window.performance.now();
         this.execUpdate();
         this.root.updateDOM();
-        console.log(`[-] update executed in ${window.performance.now() - startTime}ms`);
+        console.log(
+          `[-] update executed in ${window.performance.now() - startTime}ms`,
+        );
       }
     }, 0);
   }
@@ -110,7 +118,9 @@ export class View {
       this._ = undefined;
 
       if (initialKey !== this.ikey) {
-        throw new Error(`Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`);
+        throw new Error(
+          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
+        );
       }
 
       console.log(this.noPreserveComponents);

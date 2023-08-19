@@ -62,16 +62,16 @@ view((_) => {
     _.div(() => {
       _.$cls`block mb-2` && _._label({}, "Username or email address");
       _.$cls`mt-1 mb-4 block w-full px-3 py-[5px] bg-[#0d1117] outline-none rounded-[6px]
-border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#2f81f7]`;
+        border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#aac6ec]`;
       _.textInput(username);
       _.$cls`relative`;
       _.div(() => {
         _.$cls`block mb-2` && _._label({}, "Password");
         _.$cls`mt-1 mb-4 block w-full px-3 py-[5px] bg-[#0d1117] outline-none rounded-[6px]
-border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#2f81f7]`;
+          border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#2f81f7]`;
         _.passwordInput(password);
         _.$cls`mt-4 block w-full text-center bg-[#238636] px-4 py-[5px] rounded-[6px] font-[500] text-white
-disabled:bg-[rgb(35,134,54,0.6)] disabled:text-[rgb(255,255,255,0.5)] disabled:border-[rgb(240,246,252,0.1)]`;
+          disabled:bg-[#23863699] disabled:text-[#ffffff80] disabled:border-[#f0f6fc1a]`;
         if (_.button(loading ? "Signing in…" : "Sign in", loading)) {
           _.$preventDefault();
           login();

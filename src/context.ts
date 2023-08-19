@@ -1,12 +1,25 @@
-import { Component, ComponentConstructor, ComponentFuncs } from "./component/index";
+import {
+  Component,
+  ComponentConstructor,
+  ComponentFuncs,
+} from "./component/index";
 import { D, Ref, getD } from "./data";
-import { Content, DOMFuncs, DOMNodeComponent, HTMLElementComponent, createCbHTMLElementComponentFunction } from "./dom";
+import {
+  Content,
+  DOMFuncs,
+  DOMNodeComponent,
+  HTMLElementComponent,
+  createCbHTMLElementComponentFunction,
+} from "./dom";
 import { View, ViewState } from "./view";
 
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
     ? CustomContext<any>[K]
-    : (id: string, ...args: Parameters<CustomContext<any>[K]>) => ReturnType<CustomContext<any>[K]>;
+    : (
+        id: string,
+        ...args: Parameters<CustomContext<any>[K]>
+      ) => ReturnType<CustomContext<any>[K]>;
 };
 
 type CustomContextFuncsBase = {
@@ -15,7 +28,10 @@ type CustomContextFuncsBase = {
 
 export interface CustomContext<C> extends CustomContextFuncsBase {}
 
-export type ToFullContext<C, I> = ComponentFuncs<C> & CustomContext<C> & DOMFuncs<C> & I;
+export type ToFullContext<C, I> = ComponentFuncs<C> &
+  CustomContext<C> &
+  DOMFuncs<C> &
+  I;
 
 export class IntrinsicContext<C> {
   constructor(public readonly $view: View) {
@@ -68,7 +84,11 @@ export class IntrinsicContext<C> {
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
-    this.$pendingClasses = (Array.isArray(args[0]) ? String.raw({ raw: args[0] }, ...args.slice(1)) : args[0])
+    this.$pendingClasses = (
+      Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+    )
       .split(/\s/)
       .filter(Boolean);
     return true;
@@ -83,7 +103,9 @@ export class IntrinsicContext<C> {
   $css(style: string): void;
   $css(template: TemplateStringsArray, ...args: any[]): void;
   $css(...args: any[]): void {
-    this.$pendingStyle = Array.isArray(args[0]) ? String.raw({ raw: args[0] }, ...args.slice(1)) : args[0];
+    this.$pendingStyle = Array.isArray(args[0])
+      ? String.raw({ raw: args[0] }, ...args.slice(1))
+      : args[0];
   }
   protected $pendingStyle: string = "";
   get $style() {
@@ -93,9 +115,13 @@ export class IntrinsicContext<C> {
   }
 
   $$(funcName: string, ckey: string, ...args: any[]): any {
-    if (funcName.startsWith("_cb") && funcName[3].toUpperCase() === funcName[3]) {
+    if (
+      funcName.startsWith("_cb") &&
+      funcName[3].toUpperCase() === funcName[3]
+    ) {
       // Now this is a cb-style HTML element
-      const tagName = (funcName[3].toLowerCase() + funcName.slice(4)) as keyof HTMLElementTagNameMap;
+      const tagName = (funcName[3].toLowerCase() +
+        funcName.slice(4)) as keyof HTMLElementTagNameMap;
       const func = createCbHTMLElementComponentFunction(tagName);
       return func.call(this as unknown as Context, ckey, ...args);
     }
@@ -103,7 +129,14 @@ export class IntrinsicContext<C> {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
       let [data, inner] = args;
-      return this.processHTMLElement(ckey, tagName, this.$classes, this.$style, data, inner);
+      return this.processHTMLElement(
+        ckey,
+        tagName,
+        this.$classes,
+        this.$style,
+        data,
+        inner,
+      );
     }
     // Now this is a user-defined component
     const func = contextFuncs[funcName];
@@ -126,7 +159,10 @@ export class IntrinsicContext<C> {
   $firstDOMNode: DOMNodeComponent | null = null;
   $firstHTMLELement: HTMLElementComponent | null = null;
 
-  beginComponent<T extends Component>(ckey: string, ctor: ComponentConstructor<T>) {
+  beginComponent<T extends Component>(
+    ckey: string,
+    ctor: ComponentConstructor<T>,
+  ) {
     this.$view.callHookAfterThisComponent();
 
     this.$view.pushKey(ckey);
@@ -143,7 +179,8 @@ export class IntrinsicContext<C> {
     }
     if (this.$isNoPreserve) {
       this.$view.noPreserveComponents.add(ikey);
-      // later set by IntrinsicComponentContext: this.$pendingNoPreserve = false;
+      // later set by IntrinsicComponentContext:
+      //   this.$pendingNoPreserve = false;
     }
     return component;
   }
@@ -262,7 +299,12 @@ export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
   $rootCls(...args: any[]): true {
     this.$view.root.setClasses(
-      (Array.isArray(args[0]) ? String.raw({ raw: args[0] }, ...args.slice(1)) : args[0]).split(/\s/).filter(Boolean),
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+      )
+        .split(/\s/)
+        .filter(Boolean),
     );
     return true;
   }
@@ -270,7 +312,11 @@ export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
   $rootCss(style: string): void;
   $rootCss(template: TemplateStringsArray, ...args: any[]): void;
   $rootCss(...args: any[]): void {
-    this.$view.root.setStyle(Array.isArray(args[0]) ? String.raw({ raw: args[0] }, ...args.slice(1)) : args[0]);
+    this.$view.root.setStyle(
+      Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0],
+    );
   }
 }
 

@@ -3,8 +3,12 @@
     "strings": "on"
   },
   "tailwindCSS.experimental.classRegex": [
-    "_.\\$cls`([^`]*)`",
-    "_.\\$rootCls`([^`]*)`",
+    ["_.\\$cls`([\\s\\S]*?)`", "(\\S+)"],
+    ["_.\\$rootCls`([^`]*)`", "(\\S+)"],
     ["_.\\$cls\\(([^\\)]*)\\)", "\\\"(.*?)\\\""]
-  ]
+  ],
+  "[*.r.js][*.r.ts]": {
+    "editor.guides.bracketPairs": "active"
+  },
+  "editor.guides.bracketPairs": "active"
 }

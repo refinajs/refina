@@ -1,3 +1,10 @@
 {
-  "printWidth": 120
+  "overrides": [
+    {
+      "files": ["*.r.js", "*.r.ts"],
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
 }

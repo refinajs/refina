@@ -16,18 +16,28 @@ export default function myExample() {
         console.log("t", ctx.id.toString(36).toUpperCase(), "at", id);
         return `_.$$t("${ctx.id.toString(36).toUpperCase()}", \`${text}\`)`;
       });
-      s.replaceAll(/_\s*\.\s*([a-zA-Z0-9_]+)\s*\(\s*([\s\S]*?)\s*\)/g, (_, name, args) => {
-        ctx.id++;
-        console.log(name, ctx.id.toString(36).toUpperCase(), "at", id);
-        return name === "t"
-          ? `_.$$t("${ctx.id.toString(36).toUpperCase()}", ${args})`
-          : `_.$$("${name}", "${ctx.id.toString(36).toUpperCase()}", ${args})`;
-      });
-      s.replaceAll(/_\s*\.\s*([a-zA-Z0-9_]+)\s*\<([\s\S]+?)\>\s*\(\s*([\s\S]*?)\s*\)/g, (_, name, targs, args) => {
-        ctx.id++;
-        console.log(name, ctx.id.toString(36).toUpperCase(), "at", id);
-        return `_.$$("${name}", "${ctx.id.toString(36).toUpperCase()}", ${args})`;
-      });
+      s.replaceAll(
+        /_\s*\.\s*([a-zA-Z0-9_]+)\s*\(\s*([\s\S]*?)\s*\)/g,
+        (_, name, args) => {
+          ctx.id++;
+          console.log(name, ctx.id.toString(36).toUpperCase(), "at", id);
+          return name === "t"
+            ? `_.$$t("${ctx.id.toString(36).toUpperCase()}", ${args})`
+            : `_.$$("${name}", "${ctx.id
+                .toString(36)
+                .toUpperCase()}", ${args})`;
+        },
+      );
+      s.replaceAll(
+        /_\s*\.\s*([a-zA-Z0-9_]+)\s*\<([\s\S]+?)\>\s*\(\s*([\s\S]*?)\s*\)/g,
+        (_, name, targs, args) => {
+          ctx.id++;
+          console.log(name, ctx.id.toString(36).toUpperCase(), "at", id);
+          return `_.$$("${name}", "${ctx.id
+            .toString(36)
+            .toUpperCase()}", ${args})`;
+        },
+      );
       const map = s.generateMap({
         source: id,
         file: id + ".map",
