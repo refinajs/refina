@@ -76,7 +76,12 @@ export class HTMLElementComponent<
     this.currentClasses = new Set(classes);
   }
   addClasses(classes: string[]) {
-    if (classes.length > 0) this.node.classList.add(...classes);
+    if (classes.length > 0) {
+      this.node.classList.add(...classes);
+      for (const cls of classes) {
+        this.currentClasses.add(cls);
+      }
+    }
   }
 
   currentStyle: string = "";
