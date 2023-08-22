@@ -1,4 +1,4 @@
-import { $view, d, view } from "../lib";
+import { d, view } from "../lib";
 //@ts-ignore
 import logo from "../assets/github-mark-white.svg";
 
@@ -23,7 +23,8 @@ const password = d("");
 let loading = false,
   msgType = "",
   msg = "";
-view((_) => {
+
+const $view = view((_) => {
   _.$rootCss`font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";`;
   _.$rootCls`m-auto bg-[#0d1117] text-[#e6edf3] text-sm`;
   _.$cls`pb-6 pt-8 w-full text-center`;

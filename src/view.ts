@@ -200,10 +200,8 @@ export enum ViewState {
   recv = "recv", // 接收消息，不得改变DOM
 }
 
-export let $view: View;
-
 export function view(render: ViewRender, rootElementId: string = "root") {
-  $view = new View(render, rootElementId);
+  const $view = new View(render, rootElementId);
   $view.mount();
   return $view;
 }

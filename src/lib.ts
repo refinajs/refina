@@ -11,6 +11,6 @@ export {
 } from "./data";
 export * from "./dom";
 export * from "./loop";
-export { $view, view } from "./view";
+export { view } from "./view";
 
 export * from "./component/basic.r";
