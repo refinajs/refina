@@ -7,11 +7,6 @@
     "lib": ["ESNext", "DOM"],
     "strict": true,
     "strictPropertyInitialization": false,
-    "experimentalDecorators": true,
-    "plugins": [
-      {
-        "name": "tsserver-plugin"
-      }
-    ]
+    "experimentalDecorators": true
   }
 }
