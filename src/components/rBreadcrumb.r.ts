@@ -1,7 +1,7 @@
 import { D, TriggerComponent, TriggerComponentContext, byIndex, getD, triggerComponent } from "../lib";
 
-@triggerComponent("breadcrumb")
-export class Breadcrumb extends TriggerComponent {
+@triggerComponent("rBreadcrumb")
+export class RBreadcrumb extends TriggerComponent {
   main(_: TriggerComponentContext<number, this>, items: D<string[]>) {
     let itemsValue = getD(items);
     _._div({}, () => {
@@ -16,11 +16,10 @@ export class Breadcrumb extends TriggerComponent {
       });
       _._span({}, itemsValue.at(-1)!);
     });
-    return false;
   }
 }
-declare module "./index" {
+declare module "../component/index" {
   interface TriggerComponents {
-    breadcrumb: Breadcrumb;
+    rBreadcrumb: RBreadcrumb;
   }
 }

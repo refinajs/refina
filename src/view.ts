@@ -18,6 +18,7 @@ export class View {
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
   _: ViewContext | undefined;
+  runtimeData: Record<symbol, any> | undefined;
   noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();
 
@@ -113,9 +114,11 @@ export class View {
     try {
       this.running = true;
       this._ = new IntrinsicViewContext(this) as any;
+      this.runtimeData = {};
       this.processedComponents.clear();
       this.main(this._ as ViewContext);
       this._ = undefined;
+      this.runtimeData = undefined;
 
       if (initialKey !== this.ikey) {
         throw new Error(
@@ -123,7 +126,6 @@ export class View {
         );
       }
 
-      console.log(this.noPreserveComponents);
       for (const ikey of this.noPreserveComponents) {
         if (!this.processedComponents.has(ikey)) {
           this.refMap.delete(ikey);

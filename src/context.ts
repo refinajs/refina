@@ -3,7 +3,7 @@ import {
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
-import { D, Ref, getD } from "./data";
+import { D, Ref, dangerously_setD, getD, ref } from "./data";
 import {
   Content,
   DOMFuncs,
@@ -17,7 +17,8 @@ export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
     ? CustomContext<any>[K]
     : (
-        id: string,
+        this: Context,
+        ckey: string,
         ...args: Parameters<CustomContext<any>[K]>
       ) => ReturnType<CustomContext<any>[K]>;
 };
@@ -56,6 +57,8 @@ export class IntrinsicContext<C> {
   }
   $cbComponent: C = null as any;
 
+  protected $lastRef = ref<any>();
+
   $preventDefault(): true {
     const ev = this.$view.eventData;
     if (typeof ev?.preventDefault !== "function") {
@@ -64,12 +67,28 @@ export class IntrinsicContext<C> {
     ev.preventDefault();
     return true;
   }
+  $stopPropagation(): true {
+    const ev = this.$view.eventData;
+    if (typeof ev?.stopPropagation !== "function") {
+      throw new Error(`Cannot stop propagation on ${ev}.`);
+    }
+    ev.stopPropagation();
+    return true;
+  }
+  $stopImmediatePropagation(): true {
+    const ev = this.$view.eventData;
+    if (typeof ev?.stopImmediatePropagation !== "function") {
+      throw new Error(`Cannot stop immediate propagation on ${ev}.`);
+    }
+    ev.stopImmediatePropagation();
+    return true;
+  }
 
   $ref<C2>(ref: Ref<C2>): this is Context<C2> {
     this.$pendingRef = ref;
     return true;
   }
-  $pendingRef: Ref<any> | null = null;
+  $pendingRef = this.$lastRef;
 
   $noPreserve(deep: boolean = true): true {
     this.$pendingNoPreserve = deep ? "deep" : true;
@@ -114,6 +133,29 @@ export class IntrinsicContext<C> {
     return style;
   }
 
+  protected get $runtimeData() {
+    return this.$view.runtimeData!;
+  }
+  $provide(key: symbol, value: unknown): true {
+    this.$runtimeData[key] = value;
+    return true;
+  }
+  $unprovide(key: symbol): true {
+    delete this.$runtimeData[key];
+    return true;
+  }
+  $forceInject<T>(key: symbol, errorMessage?: string): T {
+    if (!(key in this.$runtimeData)) {
+      throw new Error(
+        errorMessage ?? `Cannot inject ${key.toString()}: not provided.`,
+      );
+    }
+    return this.$runtimeData[key];
+  }
+  $inject<T>(key: symbol, fallback?: T): T {
+    return this.$runtimeData[key] ?? fallback;
+  }
+
   $$(funcName: string, ckey: string, ...args: any[]): any {
     if (
       funcName.startsWith("_cb") &&
@@ -143,7 +185,7 @@ export class IntrinsicContext<C> {
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
     }
-    return func.call(this, ckey, ...args);
+    return func.call(this as unknown as Context, ckey, ...args);
   }
 
   $$t(ckey: string, text: string): any {
@@ -157,7 +199,13 @@ export class IntrinsicContext<C> {
   }
 
   $firstDOMNode: DOMNodeComponent | null = null;
+  $setFirstDOMNode(node: DOMNodeComponent) {
+    this.$firstDOMNode ??= node;
+  }
   $firstHTMLELement: HTMLElementComponent | null = null;
+  $setFirstHTMLELement(element: HTMLElementComponent) {
+    this.$firstHTMLELement ??= element;
+  }
 
   beginComponent<T extends Component>(
     ckey: string,
@@ -173,10 +221,10 @@ export class IntrinsicContext<C> {
       component = new ctor(ikey);
       this.$view.refMap.set(ikey, component);
     }
-    if (this.$pendingRef) {
-      this.$pendingRef.current = component;
-      this.$pendingRef = null;
-    }
+
+    this.$pendingRef.current = component;
+    this.$pendingRef = this.$lastRef;
+
     if (this.$isNoPreserve) {
       this.$view.noPreserveComponents.add(ikey);
       // later set by IntrinsicComponentContext:
@@ -188,18 +236,11 @@ export class IntrinsicContext<C> {
     this.$view.popKey(ckey);
   }
 
-  protected processHTMLElement<E extends keyof HTMLElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    classes: string[],
-    style: string,
-    data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<Content>,
-  ) {
-    inner = getD(inner);
-    if (typeof inner === "string" || typeof inner === "number") {
-      const text = inner;
-      inner = () => {
+  normalizeContent(content: D<Content> = () => {}): Render {
+    const contentValue = getD(content);
+    if (typeof contentValue === "string" || typeof contentValue === "number") {
+      const text = contentValue;
+      return () => {
         if (this.$classes.length > 0) {
           throw new Error(`Text node cannot have classes`);
         }
@@ -209,8 +250,19 @@ export class IntrinsicContext<C> {
         this.processTextNode("_t", String(text));
       };
     }
+    return contentValue;
+  }
+
+  protected processHTMLElement<E extends keyof HTMLElementTagNameMap>(
+    ckey: string,
+    tagName: E,
+    classes: string[],
+    style: string,
+    data?: Partial<HTMLElementTagNameMap[E]>,
+    inner?: D<Content>,
+  ) {
     data ??= {};
-    inner ??= () => {};
+    inner = this.normalizeContent(inner);
 
     this.$view.callHookAfterThisComponent();
 
@@ -236,13 +288,12 @@ export class IntrinsicContext<C> {
 
     const context = new IntrinsicContext(this.$view);
 
-    this.$firstDOMNode ??= ec!;
-    this.$firstHTMLELement ??= ec!;
+    this.$setFirstDOMNode(ec!);
+    this.$setFirstHTMLELement(ec!);
 
-    if (this.$pendingRef) {
-      this.$pendingRef.current = ec;
-      this.$pendingRef = null;
-    }
+    this.$pendingRef.current = ec;
+    this.$pendingRef = this.$lastRef;
+
     if (this.$isNoPreserve) {
       this.$view.noPreserveComponents.add(ikey);
       if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;

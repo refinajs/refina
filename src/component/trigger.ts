@@ -9,17 +9,23 @@ import {
 export abstract class TriggerComponent extends Component {
   abstract main(_: TriggerComponentContext<any, this>, ...args: any[]): void;
 }
+
 export type TriggerComponentEventData<S extends TriggerComponent> = S extends {
   main(_: TriggerComponentContext<infer Ev, any>, ...args: any[]): any;
 }
   ? Ev
   : never;
+
 export class IntrinsicTriggerComponentContext<
   Ev,
   S extends TriggerComponent,
   C = any,
 > extends IntrinsicComponentContext<S, C> {
   $fire = (data: Ev) => {
+    if (data instanceof Event) {
+      //@ts-ignore
+      data.$isCurrent = data.target === data.currentTarget;
+    }
     this.$view.recv(this.$component.ikey, data);
     return false;
   };
@@ -73,7 +79,13 @@ export type TriggerComponentFuncs<C> = {
         //@ts-ignore
       ) => this is {
         readonly $: TriggerComponents[K];
-        readonly $ev: TriggerComponentEventData<TriggerComponents[K]>;
+        readonly $ev: TriggerComponentEventData<
+          TriggerComponents[K]
+        > extends Event
+          ? TriggerComponentEventData<TriggerComponents[K]> & {
+              $isCurrent: boolean;
+            }
+          : TriggerComponentEventData<TriggerComponents[K]>;
       }
     : never;
 };

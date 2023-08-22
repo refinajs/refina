@@ -54,7 +54,7 @@ export class IntrinsicCallbackComponentContext<
 }
 export type CallbackComponentContext<
   Evs extends Record<string, any>,
-  S extends CallbackComponent<Evs>,
+  S extends CallbackComponent<any>,
   C = any,
 > = ToFullContext<C, IntrinsicCallbackComponentContext<Evs, S, C>>;
 export function createCallbackComponentFunc<

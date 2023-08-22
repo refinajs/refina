@@ -121,7 +121,7 @@ export function createCbHTMLElementComponentFunction<
           ckey: string,
           data?: Partial<HTMLElementTagNameMap[E]>,
           inner?: D<Content>,
-          // @ts-ignore
+          //@ts-ignore
         ) => this is Context<HTMLElementComponent<E>>
       )(`_${tagName}`, "_", elementData, inner);
     }
@@ -159,7 +159,7 @@ export type DOMFuncs<C> = {
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
         inner?: D<Content>,
-        // @ts-ignore
+        //@ts-ignore
       ) => this is Context<HTMLElementComponent<E>>
     : never;
 } & ToCallbackComponentFuncs<

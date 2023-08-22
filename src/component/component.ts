@@ -1,5 +1,6 @@
 import { Context, IntrinsicContext, ToFullContext } from "../context";
 import { D } from "../data";
+import { DOMNodeComponent, HTMLElementComponent } from "../dom";
 
 export abstract class Component {
   constructor(public readonly ikey: string) {}
@@ -34,6 +35,15 @@ export class IntrinsicComponentContext<
 
   $classesArg: string[];
   $styleArg: string;
+
+  $setFirstDOMNode(node: DOMNodeComponent) {
+    super.$setFirstDOMNode(node);
+    this.$caller.$setFirstDOMNode(node);
+  }
+  $setFirstHTMLELement(element: HTMLElementComponent) {
+    super.$setFirstHTMLELement(element);
+    this.$caller.$setFirstHTMLELement(element);
+  }
 
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$view.setD(d, v);

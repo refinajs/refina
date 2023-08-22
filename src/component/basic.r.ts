@@ -90,13 +90,16 @@ declare module "./index" {
 
 @triggerComponent("button")
 export class Button extends TriggerComponent {
-  main(_: TriggerComponentContext<MouseEvent, this>, text: D<Content>, disabled: D<boolean> = false) {
+  main(_: TriggerComponentContext<MouseEvent, this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
-        onclick: _.$fire,
+        onclick: (ev) => {
+          _.$fire(ev);
+        },
         disabled: getD(disabled),
+        type: "button",
       },
-      getD(text),
+      getD(inner),
     );
   }
 }
@@ -152,8 +155,8 @@ declare module "./index" {
 
 @statusComponent("toggleButton")
 export class ToggleButton extends StatusComponent {
-  main(_: StatusComponentContext<this>, text: D<string>) {
-    if (_.button(text)) {
+  main(_: StatusComponentContext<this>, inner: D<Content>) {
+    if (_.button(inner)) {
       _.$toggle();
     }
   }
