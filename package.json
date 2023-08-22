@@ -28,7 +28,8 @@
     "dev": "vite",
     "preview": "vite preview",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "_Kerman",
