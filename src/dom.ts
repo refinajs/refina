@@ -45,8 +45,8 @@ export class HTMLElementComponent<
         if (lastChildEl) {
           lastChildEl.after(child.node);
         } else {
-          if (this.node.lastChild) {
-            this.node.lastChild.before(child.node);
+          if (this.node.firstChild) {
+            this.node.firstChild.before(child.node);
           } else {
             this.node.appendChild(child.node);
           }
