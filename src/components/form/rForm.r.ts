@@ -6,10 +6,10 @@ import {
   TriggerComponentFuncAssertThisType,
   triggerComponent,
 } from "../../lib";
-import { FormComponent, FormContext, IntrinsicFormContext } from "./base";
+import { FormComponent, FormContext, IntrinsicFormContext, RFormData } from "./base";
 
 @(triggerComponent("rForm") as <T>(v: T) => T)
-export class RForm<T extends object> extends TriggerComponent<T> {
+export class RForm<T extends RFormData> extends TriggerComponent<T> {
   defaultData: T;
   data: T;
 
@@ -79,7 +79,7 @@ export class RForm<T extends object> extends TriggerComponent<T> {
 declare module "../../context" {
   interface CustomContext<C> {
     rForm: RForm<any> extends C
-      ? <T extends object>(
+      ? <T extends RFormData>(
           data: T,
           inner: (context: FormContext<T>) => void,
           submitButton?: D<Content> | null,

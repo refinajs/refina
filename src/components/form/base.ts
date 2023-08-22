@@ -10,8 +10,10 @@ import {
 import { View } from "../../view";
 import { RForm } from "./rForm.r";
 
+export type RFormData = Record<string, any>;
+
 export class IntrinsicFormContext<
-  T extends object,
+  T extends RFormData,
   C,
 > extends IntrinsicContext<C> {
   constructor(
@@ -43,11 +45,11 @@ export type FormComponentFuncArgs<S extends FormComponent<any, any>> =
 export type FormComponentValueType<S extends FormComponent<any, any>> =
   S extends FormComponent<infer V, any> ? V : never;
 
-type ExtractSatisfiedIndex<O extends object, V> = {
+type ExtractSatisfiedIndex<O extends RFormData, V> = {
   [K in keyof O]: O[K] extends V ? K : never;
 }[keyof O];
 
-export type FormContext<T extends object, C = any> = ToFullContext<
+export type FormContext<T extends RFormData, C = any> = ToFullContext<
   C,
   IntrinsicFormContext<T, C>
 > & {
@@ -104,7 +106,7 @@ export function formComponent<N extends keyof FormComponents>(name: N) {
   };
 }
 
-export abstract class FormComponent<V, T extends object> extends Component {
+export abstract class FormComponent<V, T extends RFormData> extends Component {
   activited = false;
 
   form: RForm<T>;
@@ -132,7 +134,7 @@ export abstract class FormComponent<V, T extends object> extends Component {
 
 export class IntrinsicFormComponentContext<
   V,
-  T extends object,
+  T extends RFormData,
   S extends FormComponent<V, T>,
   C,
 > extends IntrinsicComponentContext<S, C> {
@@ -157,12 +159,12 @@ export class IntrinsicFormComponentContext<
 
 export type FormComponentContext<
   V,
-  T extends object,
+  T extends RFormData,
   S extends FormComponent<any, T> = FormComponent<any, T>,
   C = any,
 > = ToFullContext<C, IntrinsicFormComponentContext<V, T, S, C>>;
 
-export type Validator<V, T extends object> = (
+export type Validator<V, T extends RFormData> = (
   value: V,
   form: RForm<T>,
 ) => true | D<Content>;
