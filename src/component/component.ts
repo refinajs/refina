@@ -1,14 +1,19 @@
 import { Context, IntrinsicContext, ToFullContext } from "../context";
 import { D } from "../data";
 import { DOMNodeComponent, HTMLElementComponent } from "../dom";
+import { View } from "../view";
 
 export abstract class Component {
-  constructor(public readonly ikey: string) {}
+  constructor(
+    public readonly ikey: string,
+    public readonly view: View,
+  ) {}
 
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (
   ikey: string,
+  view: View,
 ) => S;
 export type ComponentFuncArgs<S extends Component> = S extends {
   main(_: any, ...args: infer A): void;

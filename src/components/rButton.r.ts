@@ -3,7 +3,7 @@ import { D, TriggerComponent, TriggerComponentContext, triggerComponent } from "
 // import { rAppendIconSymbol, rPrependIconSymbol } from "./rIcon.r";
 
 @triggerComponent("rButton")
-export class RButton extends TriggerComponent {
+export class RButton extends TriggerComponent<MouseEvent> {
   main(_: TriggerComponentContext<MouseEvent, this>, inner: D<Content>, disabled: D<boolean> = false) {
     _.$cls`rounded disabled:opacity-50`;
     if (_.button(inner, disabled)) {

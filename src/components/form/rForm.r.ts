@@ -1,15 +1,22 @@
-import { Content, D, TriggerComponent, TriggerComponentContext, triggerComponent } from "../../lib";
+import {
+  Content,
+  D,
+  TriggerComponent,
+  TriggerComponentContext,
+  TriggerComponentFuncAssertThisType,
+  triggerComponent,
+} from "../../lib";
 import { FormComponent, FormContext, IntrinsicFormContext } from "./base";
 
 @(triggerComponent("rForm") as <T>(v: T) => T)
-export class RForm<T extends object> extends TriggerComponent {
+export class RForm<T extends object> extends TriggerComponent<T> {
   defaultData: T;
   data: T;
 
   inputs = new Set<FormComponent<any, T>>();
 
   main(
-    _: TriggerComponentContext<null, this>,
+    _: TriggerComponentContext<T, this>,
     data: T,
     inner: (context: FormContext<T>) => void,
     submitButton: D<Content> | null = null,
@@ -17,7 +24,7 @@ export class RForm<T extends object> extends TriggerComponent {
     this.defaultData ??= { ...data };
     this.data = data;
     _.$cls``;
-    _.div((_) => {
+    _.div(() => {
       const context = new IntrinsicFormContext(_.$view, this);
       inner(context as unknown as FormContext<T>);
 
@@ -28,7 +35,7 @@ export class RForm<T extends object> extends TriggerComponent {
             type: "button",
             onclick: () => {
               if (!this.checkValid()) return;
-              _.$fire(null);
+              _.$fire(this.data);
             },
           },
           submitButton,
@@ -41,18 +48,20 @@ export class RForm<T extends object> extends TriggerComponent {
     for (const input of this.inputs) {
       input.activited = true;
     }
+    this.view.update();
   }
 
   deactivateAll() {
     for (const input of this.inputs) {
       input.activited = false;
     }
+    this.view.update();
   }
 
   checkValid() {
     this.activateAll();
     for (const input of this.inputs) {
-      if (!input.valid) {
+      if (input.valid !== true) {
         return false;
       }
     }
@@ -69,6 +78,12 @@ export class RForm<T extends object> extends TriggerComponent {
 
 declare module "../../context" {
   interface CustomContext<C> {
-    rForm: RForm<any> extends C ? <T extends object>(data: T, inner: (context: FormContext<T>) => void) => void : never;
+    rForm: RForm<any> extends C
+      ? <T extends object>(
+          data: T,
+          inner: (context: FormContext<T>) => void,
+          submitButton?: D<Content> | null,
+        ) => this is TriggerComponentFuncAssertThisType<T, RForm<T>>
+      : never;
   }
 }

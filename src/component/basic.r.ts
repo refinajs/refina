@@ -89,7 +89,7 @@ declare module "./index" {
 }
 
 @triggerComponent("button")
-export class Button extends TriggerComponent {
+export class Button extends TriggerComponent<MouseEvent> {
   main(_: TriggerComponentContext<MouseEvent, this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {

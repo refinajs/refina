@@ -218,7 +218,7 @@ export class IntrinsicContext<C> {
     this.$view.markComponentProcessed(ikey);
     let component = this.$view.refMap.get(ikey) as T;
     if (!component) {
-      component = new ctor(ikey);
+      component = new ctor(ikey, this.$view);
       this.$view.refMap.set(ikey, component);
     }
 

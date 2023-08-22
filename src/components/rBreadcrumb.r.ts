@@ -1,7 +1,7 @@
 import { D, TriggerComponent, TriggerComponentContext, byIndex, getD, triggerComponent } from "../lib";
 
 @triggerComponent("rBreadcrumb")
-export class RBreadcrumb extends TriggerComponent {
+export class RBreadcrumb extends TriggerComponent<number> {
   main(_: TriggerComponentContext<number, this>, items: D<string[]>) {
     let itemsValue = getD(items);
     _._div({}, () => {

@@ -1,7 +1,7 @@
 import { TriggerComponent, TriggerComponentContext, Content, D, triggerComponent, getD, byIndex } from "../lib";
 
 @triggerComponent("rCard")
-export class RCard extends TriggerComponent {
+export class RCard extends TriggerComponent<number> {
   main(
     _: TriggerComponentContext<number, this>,
     heading: D<Content>,

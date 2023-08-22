@@ -6,23 +6,24 @@ import {
   IntrinsicComponentContext,
 } from "./component";
 
-export abstract class TriggerComponent extends Component {
-  abstract main(_: TriggerComponentContext<any, this>, ...args: any[]): void;
+export abstract class TriggerComponent<Ev> extends Component {
+  abstract main(_: TriggerComponentContext<Ev, this>, ...args: any[]): void;
 }
 
-export type TriggerComponentEventData<S extends TriggerComponent> = S extends {
-  main(_: TriggerComponentContext<infer Ev, any>, ...args: any[]): any;
-}
-  ? Ev
-  : never;
+export type TriggerComponentEventData<S extends TriggerComponent<any>> =
+  S extends TriggerComponent<infer Ev> ? Ev : never;
 
 export class IntrinsicTriggerComponentContext<
   Ev,
-  S extends TriggerComponent,
+  S extends TriggerComponent<Ev>,
   C = any,
 > extends IntrinsicComponentContext<S, C> {
   $fire = (data: Ev) => {
-    if (data instanceof Event) {
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      (data as object) instanceof Event
+    ) {
       //@ts-ignore
       data.$isCurrent = data.target === data.currentTarget;
     }
@@ -36,14 +37,14 @@ export class IntrinsicTriggerComponentContext<
 }
 export type TriggerComponentContext<
   Ev,
-  S extends TriggerComponent,
+  S extends TriggerComponent<Ev>,
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 
 export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
   return (ctor: ComponentConstructor<TriggerComponents[N]>) => {
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor);
+      const component = this.beginComponent(ckey, ctor) as TriggerComponents[N];
 
       const context = new IntrinsicTriggerComponentContext(this, component);
 
@@ -70,22 +71,29 @@ export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
   };
 }
 
-export interface TriggerComponents extends Record<string, TriggerComponent> {}
+export interface TriggerComponents
+  extends Record<string, TriggerComponent<any>> {}
+
+export type TriggerComponentFuncAssertThisType<
+  Ev,
+  C extends TriggerComponent<Ev>,
+> = {
+  readonly $: C;
+  readonly $ev: Ev extends Event
+    ? Ev & {
+        $isCurrent: boolean;
+      }
+    : Ev;
+};
 
 export type TriggerComponentFuncs<C> = {
   [K in keyof TriggerComponents]: TriggerComponents[K] extends C
     ? (
         ...args: ComponentFuncArgs<TriggerComponents[K]>
         //@ts-ignore
-      ) => this is {
-        readonly $: TriggerComponents[K];
-        readonly $ev: TriggerComponentEventData<
-          TriggerComponents[K]
-        > extends Event
-          ? TriggerComponentEventData<TriggerComponents[K]> & {
-              $isCurrent: boolean;
-            }
-          : TriggerComponentEventData<TriggerComponents[K]>;
-      }
+      ) => this is TriggerComponentFuncAssertThisType<
+        TriggerComponentEventData<TriggerComponents[K]>,
+        TriggerComponents[K]
+      >
     : never;
 };
