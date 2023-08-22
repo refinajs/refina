@@ -56,6 +56,8 @@ export type FormContext<T extends object, C = any> = ToFullContext<
         index: D<
           ExtractSatisfiedIndex<T, FormComponentValueType<FormComponents[K]>>
         >,
+        label?: D<Content>,
+        validator?: Validator<FormComponentValueType<FormComponents[K]>, T>,
         ...args: FormComponentFuncArgs<FormComponents[K]>
       ) => void
     : never;
@@ -75,10 +77,23 @@ export function formComponent<N extends keyof FormComponents>(name: N) {
       this: FormContext<any, any>,
       ckey,
       index,
+      label,
+      validator,
       ...args
     ) {
       const component = this.beginComponent(ckey, ctor);
-      const context = new IntrinsicFormComponentContext(this, component, index);
+
+      this.$form.inputs.add(component);
+
+      component.form = this.$form;
+      component.index = getD(index);
+
+      component.label = label ?? "";
+      component.validator = validator ?? (() => true);
+
+      component.data ??= component.defaultValue;
+
+      const context = new IntrinsicFormComponentContext(this, component);
       component.main(
         context as unknown as FormComponentContext<any, any, FormComponents[N]>,
         ...args,
@@ -90,6 +105,28 @@ export function formComponent<N extends keyof FormComponents>(name: N) {
 }
 
 export abstract class FormComponent<V, T extends object> extends Component {
+  activited = false;
+
+  form: RForm<T>;
+  index: ExtractSatisfiedIndex<T, V>;
+
+  get data() {
+    return this.form.data[getD(this.index)];
+  }
+  set data(value: V) {
+    //@ts-ignore
+    this.form.data[getD(this.index)] = value;
+  }
+
+  label: D<Content>;
+  validator: Validator<V, T>;
+
+  get valid() {
+    return !this.activited || this.validator(this.data, this.form);
+  }
+
+  abstract defaultValue: V;
+
   abstract main(_: FormComponentContext<V, T, this>, ...args: any[]): void;
 }
 
@@ -102,7 +139,6 @@ export class IntrinsicFormComponentContext<
   constructor(
     public $caller: FormContext<T>,
     $component: S,
-    public $index: D<ExtractSatisfiedIndex<T, V>>,
   ) {
     super($caller, $component);
   }
@@ -112,15 +148,10 @@ export class IntrinsicFormComponentContext<
   }
 
   get $data(): V {
-    return this.$form.data[getD(this.$index)];
+    return this.$component.data;
   }
   set $data(value: V) {
-    //@ts-ignore
-    this.$form.data[getD(this.$index)] = value;
-  }
-
-  $submit() {
-    this.$form.submit();
+    this.$component.data = value;
   }
 }
 

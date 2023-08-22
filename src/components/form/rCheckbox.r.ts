@@ -1,17 +1,11 @@
-import { Content, D, HTMLElementComponent, getD, ref } from "../../lib";
-import { FormComponent, FormComponentContext, Validator, formComponent } from "./base";
+import { HTMLElementComponent, ref } from "../../lib";
+import { FormComponent, FormComponentContext, formComponent } from "./base";
 
 @formComponent("rCheckbox")
 export class RCheckbox<T extends object> extends FormComponent<boolean, T> {
-  activited = false;
+  defaultValue = false;
   inputEl = ref<HTMLElementComponent<"input">>();
-  main(
-    _: FormComponentContext<boolean, T, this>,
-    label: D<Content>,
-    validator: Validator<boolean, T> = () => true,
-  ): void {
-    _.$data ??= false;
-    const valid = validator(_.$data, _.$form);
+  main(_: FormComponentContext<boolean, T, this>): void {
     _.$cls`relative h-10 flex  items-center`;
     _.div(() => {
       _.$cls``;
@@ -25,11 +19,11 @@ export class RCheckbox<T extends object> extends FormComponent<boolean, T> {
             _.$refresh();
           },
         });
-      _.$cls`inline-block ml-3 ${this.activited && valid !== true ? "text-red-500" : ""}`;
-      _.div(label);
-      if (this.activited && valid !== true) {
+      _.$cls`inline-block ml-3 ${this.valid !== true ? "text-red-500" : ""}`;
+      _.div(this.label);
+      if (this.valid !== true) {
         _.$cls`relative text-red-500 text-sm`;
-        _.div(valid);
+        _.div(this.valid);
       }
     });
   }
