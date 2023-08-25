@@ -56,3 +56,11 @@ contextFuncs.forRange = function (
 
 export const byIndex = (_: any, index: number) => index.toString();
 export const bySelf = (item: any) => `${item}`;
+export const byProp =
+  <T>(
+    key: {
+      [K in keyof T]: T[K] extends string ? K : never;
+    }[keyof T],
+  ) =>
+  (obj: T) =>
+    `${obj[key]}`;
