@@ -73,7 +73,7 @@ declare module "./index" {
 
 @outputComponent("a")
 export class Anchor extends OutputComponent {
-  main(_: OutputComponentContext<this>, inner: D<Content>, href: D<string>) {
+  main(_: OutputComponentContext<this>, href: D<string>, inner: D<Content>) {
     _._a(
       {
         href: getD(href),
