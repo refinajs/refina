@@ -345,6 +345,10 @@ export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;
 
 export type Render = (context: Context) => void;
 
+export function defineRender<T extends Render>(render: T): T {
+  return render;
+}
+
 export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
   $rootCls(cls: string): true;
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
