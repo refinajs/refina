@@ -7,7 +7,7 @@ export class RExpand extends OutputComponent {
     _.$cls`border border-black rounded `;
     _.div(() => {
       if (
-        _.$cls`text-lg` &&
+        _.$cls`text-lg w-full text-start` &&
         _.button(() => {
           _.$cls`inline-block m-2`;
           _.$css`${this.open ? "transform:rotate(90deg)" : ""}`;
