@@ -46,7 +46,10 @@ export class IntrinsicContext<C> {
         return this.$view.eventRecevier ?? this.$cbComponent;
       },
     });
+    this.$init();
   }
+
+  $init = () => {};
 
   $refresh() {
     this.$view.update();
