@@ -1,6 +1,6 @@
 import { d, view } from "../lib";
 //@ts-ignore
-import logo from "../assets/github-mark-white.svg";
+import logo from "../../assets/github-mark-white.svg";
 
 function login() {
   loading = true;
