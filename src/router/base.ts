@@ -1,5 +1,5 @@
-import { Render } from "../../context";
-import { View } from "../../view";
+import { Render } from "../context";
+import { View } from "../view";
 
 export type Routes = Record<
   string,

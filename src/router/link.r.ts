@@ -1,4 +1,4 @@
-import { Content, D, OutputComponent, OutputComponentContext, getD, outputComponent } from "../../lib";
+import { Content, D, OutputComponent, OutputComponentContext, getD, outputComponent } from "../lib";
 
 @outputComponent("rRouterLink")
 export class RRouterLink extends OutputComponent {

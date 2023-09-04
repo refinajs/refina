@@ -1,4 +1,4 @@
-import { OutputComponent, OutputComponentContext, outputComponent } from "../../lib";
+import { OutputComponent, OutputComponentContext, outputComponent } from "../lib";
 import { globalRouter } from "./base";
 
 @outputComponent("rRouterView")
@@ -10,7 +10,7 @@ export class RRouterView extends OutputComponent {
   }
 }
 
-declare module "../../component/index" {
+declare module "../component/index" {
   interface OutputComponents {
     rRouterView: RRouterView;
   }
