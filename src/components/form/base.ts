@@ -90,7 +90,7 @@ export function formComponent<N extends keyof FormComponents>(name: N) {
       component.form = this.$form;
       component.index = getD(index);
 
-      component.label = label ?? "";
+      component.label = label ?? `${index}`;
       component.validator = validator ?? (() => true);
 
       component.data ??= component.defaultValue;
