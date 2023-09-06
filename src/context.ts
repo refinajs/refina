@@ -159,6 +159,8 @@ export class IntrinsicContext<C> {
     return this.$runtimeData[key] ?? fallback;
   }
 
+  $customData: Record<symbol, any> = {};
+
   $$(funcName: string, ckey: string, ...args: any[]): any {
     if (
       funcName.startsWith("_cb") &&
