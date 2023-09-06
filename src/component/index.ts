@@ -5,6 +5,7 @@ import { TriggerComponentFuncs } from "./trigger";
 
 export * from "./callback";
 export * from "./component";
+export * from "./embed.r";
 export * from "./output";
 export * from "./status";
 export * from "./trigger";
