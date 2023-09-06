@@ -29,7 +29,10 @@ type CustomContextFuncsBase = {
 
 export interface CustomContext<C> extends CustomContextFuncsBase {}
 
-export type ToFullContext<C, I> = ComponentFuncs<C> &
+export type ToFullContext<C, I> = {
+  t(template: TemplateStringsArray, ...args: any[]): void;
+  t(text: D<string>): void;
+} & ComponentFuncs<C> &
   CustomContext<C> &
   DOMFuncs<C> &
   I;
@@ -193,7 +196,7 @@ export class IntrinsicContext<C> {
     return func.call(this as unknown as Context, ckey, ...args);
   }
 
-  $$t(ckey: string, text: string): any {
+  $$t(ckey: string, text: D<string>): any {
     if (this.$classes.length > 0) {
       throw new Error(`Text node cannot have classes`);
     }
