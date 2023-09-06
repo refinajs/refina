@@ -346,9 +346,14 @@ export class IntrinsicContext<C> {
 
 export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;
 
-export type Render = (context: Context) => void;
+export type Render<Args extends any[] = []> = (
+  context: Context,
+  ...args: Args
+) => void;
 
-export function defineRender<T extends Render>(render: T): T {
+export function defineRender<Args extends any[] = []>(
+  render: Render<Args>,
+): Render<Args> {
   return render;
 }
 
