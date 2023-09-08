@@ -1,5 +1,5 @@
 import { Context, IntrinsicContext, ToFullContext } from "../context";
-import { D } from "../data";
+import { D } from "../data/index";
 import { DOMNodeComponent, HTMLElementComponent } from "../dom";
 import { View } from "../view";
 

@@ -3,7 +3,7 @@ import {
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
-import { D, Ref, getD, ref } from "./data";
+import { D, Ref, getD, ref } from "./data/index";
 import {
   Content,
   DOMFuncs,

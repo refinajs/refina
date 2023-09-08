@@ -1,5 +1,5 @@
 import { IntrinsicViewContext, ViewContext, ViewRender } from "./context";
-import { D, dangerously_setD } from "./data";
+import { D, dangerously_setD } from "./data/index";
 import { HTMLElementComponent } from "./dom";
 
 export class View {

@@ -1,4 +1,4 @@
-import { D, getD, ref } from "../data";
+import { D, getD, ref } from "../data/index";
 import { Content, HTMLElementComponent } from "../dom";
 import {
   StatusComponent,

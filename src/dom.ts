@@ -5,7 +5,7 @@ import {
   createCallbackComponentFunc,
 } from "./component/index";
 import { Context, Render } from "./context";
-import { D } from "./data";
+import { D } from "./data/index";
 
 export class DOMNodeComponent<N extends Node = Node> {
   constructor(
