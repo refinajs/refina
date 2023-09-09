@@ -61,6 +61,12 @@ export class IntrinsicContext<C> {
   get $state() {
     return this.$view.state;
   }
+  get $updating() {
+    return this.$state === ViewState.update;
+  }
+  get $receiving() {
+    return this.$state === ViewState.recv;
+  }
   $cbComponent: C = null as any;
 
   protected $lastRef = ref<any>();
@@ -279,7 +285,7 @@ export class IntrinsicContext<C> {
     this.$view.markComponentProcessed(ikey);
     let ec = this.$view.refMap.get(ikey) as HTMLElementComponent | undefined;
     const oldParent = this.$view.currrentHTMLParent;
-    if (this.$state === ViewState.update) {
+    if (this.$updating) {
       if (!ec) {
         ec = new HTMLElementComponent(ikey, document.createElement(tagName));
         this.$view.refMap.set(ikey, ec);
@@ -327,7 +333,7 @@ export class IntrinsicContext<C> {
     const ikey = this.$view.ikey;
     this.$view.markComponentProcessed(ikey);
     let t = this.$view.refMap.get(ikey) as DOMNodeComponent | undefined;
-    if (this.$state === ViewState.update) {
+    if (this.$updating) {
       if (!t) {
         t = new DOMNodeComponent(ikey, document.createTextNode(text));
         this.$view.refMap.set(ikey, t);
