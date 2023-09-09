@@ -1,4 +1,9 @@
-import { Context, ToFullContext, contextFuncs } from "../context";
+import {
+  Context,
+  CustomContext,
+  ToFullContext,
+  contextFuncs,
+} from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -19,16 +24,18 @@ export type OutputComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicOutputComponentContext<S, C>>;
 
-export function outputComponent<N extends keyof OutputComponents>(name: N) {
-  return (ctor: ComponentConstructor<OutputComponents[N]>) => {
+export function outputComponent<
+  N extends keyof OutputComponents | keyof CustomContext<any>,
+>(name: N) {
+  return <T extends ComponentConstructor<OutputComponent>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor);
+      const component = this.beginComponent(ckey, ctor) as OutputComponent;
 
       const context = new IntrinsicOutputComponentContext(this, component);
 
       component.main(
-        context as any as OutputComponentContext<OutputComponents[N]>,
+        context as any as OutputComponentContext<OutputComponent>,
         ...args,
       );
 
@@ -45,7 +52,7 @@ export function outputComponent<N extends keyof OutputComponents>(name: N) {
   };
 }
 
-export interface OutputComponents extends Record<string, OutputComponent> {}
+export interface OutputComponents {}
 
 export type OutputComponentFuncs<C> = {
   [K in keyof OutputComponents]: OutputComponents[K] extends C

@@ -8,7 +8,7 @@ import {
 } from "../../lib";
 import { FormComponent, FormContext, IntrinsicFormContext, RFormData } from "./base";
 
-@(triggerComponent("rForm") as <T>(v: T) => T)
+@triggerComponent("rForm")
 export class RForm<T extends RFormData> extends TriggerComponent<T> {
   defaultData: T;
   data: T;

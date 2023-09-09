@@ -10,10 +10,7 @@ export * from "./output";
 export * from "./status";
 export * from "./trigger";
 
-export interface CustomComponentFuncs<C> {}
-
-export type ComponentFuncs<C> = CustomComponentFuncs<C> &
-  TriggerComponentFuncs<C> &
+export type ComponentFuncs<C> = TriggerComponentFuncs<C> &
   StatusComponentFuncs<C> &
   CallbackComponentFuncs<C> &
   OutputComponentFuncs<C>;

@@ -3,7 +3,7 @@ import { OutputComponent, outputComponent } from "./output";
 
 const renderCache = new Map<string, Render<any>>();
 
-@(outputComponent("embed") as <T>(t: T) => T)
+@outputComponent("embed")
 export class Embed extends OutputComponent {
   main<Args extends any[]>(
     _: Context,

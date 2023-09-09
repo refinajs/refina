@@ -1,4 +1,9 @@
-import { Context, ToFullContext, contextFuncs } from "../context";
+import {
+  Context,
+  CustomContext,
+  ToFullContext,
+  contextFuncs,
+} from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -41,18 +46,23 @@ export type TriggerComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 
-export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
-  return (ctor: ComponentConstructor<TriggerComponents[N]>) => {
+export function triggerComponent<
+  N extends keyof TriggerComponents | keyof CustomContext<any>,
+>(name: N) {
+  return <T extends ComponentConstructor<TriggerComponent<any>>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor) as TriggerComponents[N];
+      const component = this.beginComponent(
+        ckey,
+        ctor,
+      ) as TriggerComponent<any>;
 
       const context = new IntrinsicTriggerComponentContext(this, component);
 
       component.main(
         context as unknown as TriggerComponentContext<
           unknown,
-          TriggerComponents[N]
+          TriggerComponent<any>
         >,
         ...args,
       );
@@ -72,13 +82,9 @@ export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
   };
 }
 
-export interface TriggerComponents
-  extends Record<string, TriggerComponent<any>> {}
+export interface TriggerComponents {}
 
-export type TriggerComponentFuncAssertThisType<
-  Ev,
-  C extends TriggerComponent<Ev>,
-> = {
+export type TriggerComponentFuncAssertThisType<Ev, C> = {
   readonly $: C;
   readonly $ev: Ev extends Event
     ? Ev & {

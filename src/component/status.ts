@@ -1,4 +1,9 @@
-import { Context, ToFullContext, contextFuncs } from "../context";
+import {
+  Context,
+  CustomContext,
+  ToFullContext,
+  contextFuncs,
+} from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -38,11 +43,13 @@ export type StatusComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 
-export function statusComponent<N extends keyof StatusComponents>(name: N) {
-  return (ctor: ComponentConstructor<StatusComponents[N]>) => {
+export function statusComponent<
+  N extends keyof StatusComponents | keyof CustomContext<any>,
+>(name: N) {
+  return <T extends ComponentConstructor<StatusComponent>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor);
+      const component = this.beginComponent(ckey, ctor) as StatusComponent;
 
       component.$status ??= false;
 
@@ -50,7 +57,7 @@ export function statusComponent<N extends keyof StatusComponents>(name: N) {
 
       component.main(
         context as any as StatusComponentContext<
-          StatusComponents[N] & {
+          StatusComponent & {
             $status: boolean;
           }
         >,
@@ -70,7 +77,7 @@ export function statusComponent<N extends keyof StatusComponents>(name: N) {
   };
 }
 
-export interface StatusComponents extends Record<string, StatusComponent> {}
+export interface StatusComponents {}
 
 export type StatusComponentFuncs<C> = {
   [K in keyof StatusComponents]: StatusComponents[K] extends C

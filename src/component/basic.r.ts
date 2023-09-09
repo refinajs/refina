@@ -211,8 +211,8 @@ export class UnorderedList extends OutputComponent {
     });
   }
 }
-declare module "./index" {
-  interface CustomComponentFuncs<C> {
+declare module "../context" {
+  interface CustomContext<C> {
     ul: UnorderedList extends C
       ? <T>(
           data: D<Iterable<T>>,

@@ -1,4 +1,9 @@
-import { Context, ToFullContext, contextFuncs } from "../context";
+import {
+  Context,
+  CustomContext,
+  ToFullContext,
+  contextFuncs,
+} from "../context";
 import { ViewState } from "../view";
 import {
   Component,
@@ -124,19 +129,20 @@ export function createCallbackComponentFunc<
     return ret;
   };
 }
-export function callbackComponent<N extends keyof CallbackComponents>(name: N) {
-  return (ctor: ComponentConstructor<CallbackComponents[N]>) => {
+export function callbackComponent<
+  N extends keyof CallbackComponents | keyof CustomContext<any>,
+>(name: N) {
+  return <T extends ComponentConstructor<CallbackComponent<any>>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = createCallbackComponentFunc<
-      CallbackComponentEvs<CallbackComponents[N]>,
-      CallbackComponents[N]
+      CallbackComponentEvs<CallbackComponent<any>>,
+      CallbackComponent<any>
     >(ctor);
     return ctor;
   };
 }
 
-export interface CallbackComponents
-  extends Record<string, CallbackComponent<any>> {}
+export interface CallbackComponents {}
 
 type CallbackComponentInContext<C extends CallbackComponent<any>> = C & {
   [Evn in keyof CallbackComponentEvs<C> as `on${Capitalize<
@@ -148,10 +154,7 @@ type CallbackComponentInContext<C extends CallbackComponent<any>> = C & {
   };
 };
 
-export type ToCallbackComponentFuncs<
-  Cs extends Record<string, CallbackComponent<any>>,
-  C,
-> = {
+export type ToCallbackComponentFuncs<Cs extends Record<string, any>, C> = {
   [K in keyof Cs]: Cs[K] extends C
     ? (
         ...args: ComponentFuncArgs<Cs[K]>

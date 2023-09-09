@@ -11,7 +11,7 @@ type RepeatedTuple<T extends readonly any[]> =
         >>>>>>>>>>>>>
     >>>;
 
-@(outputComponent("rTabs") as <T>(t: T) => T)
+@outputComponent("rTabs")
 export class RTabs extends OutputComponent {
   tab: string;
 
