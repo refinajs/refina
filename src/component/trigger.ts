@@ -43,6 +43,7 @@ export type TriggerComponentContext<
 
 export function triggerComponent<N extends keyof TriggerComponents>(name: N) {
   return (ctor: ComponentConstructor<TriggerComponents[N]>) => {
+    //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
       const component = this.beginComponent(ckey, ctor) as TriggerComponents[N];
 

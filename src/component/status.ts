@@ -40,6 +40,7 @@ export type StatusComponentContext<
 
 export function statusComponent<N extends keyof StatusComponents>(name: N) {
   return (ctor: ComponentConstructor<StatusComponents[N]>) => {
+    //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
       const component = this.beginComponent(ckey, ctor);
 

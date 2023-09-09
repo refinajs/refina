@@ -21,6 +21,7 @@ export type OutputComponentContext<
 
 export function outputComponent<N extends keyof OutputComponents>(name: N) {
   return (ctor: ComponentConstructor<OutputComponents[N]>) => {
+    //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
       const component = this.beginComponent(ckey, ctor);
 

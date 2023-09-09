@@ -23,11 +23,7 @@ export const contextFuncs = {} as {
       ) => ReturnType<CustomContext<any>[K]>;
 };
 
-type CustomContextFuncsBase = {
-  [K in string]: K extends `$${string}` ? any : (...args: any[]) => any;
-};
-
-export interface CustomContext<C> extends CustomContextFuncsBase {}
+export interface CustomContext<C> {}
 
 export type ToFullContext<C, I> = {
   t(template: TemplateStringsArray, ...args: any[]): void;
@@ -195,10 +191,11 @@ export class IntrinsicContext<C> {
       );
     }
     // Now this is a user-defined component
-    const func = contextFuncs[funcName];
+    const func = contextFuncs[funcName as keyof typeof contextFuncs];
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
     }
+    //@ts-ignore
     return func.call(this as unknown as Context, ckey, ...args);
   }
 

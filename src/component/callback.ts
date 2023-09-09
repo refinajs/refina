@@ -64,7 +64,7 @@ export function createCallbackComponentFunc<
   return function (this: Context, ckey: string, ...args: any[]) {
     const component = this.beginComponent(ckey, ctor);
     let ret: boolean;
-    if (this.$state === ViewState.update) {
+    if (this.$updating) {
       component.$listendEvs.clear();
       const componentProxy = new Proxy(component, {
         get(target, prop) {
@@ -100,7 +100,7 @@ export function createCallbackComponentFunc<
       };
       ret = true;
     } else {
-      // this.$state === ViewState.recv
+      // this.$receiving
 
       component.$listendEvs.forEach((ev) => {
         //@ts-ignore
@@ -126,6 +126,7 @@ export function createCallbackComponentFunc<
 }
 export function callbackComponent<N extends keyof CallbackComponents>(name: N) {
   return (ctor: ComponentConstructor<CallbackComponents[N]>) => {
+    //@ts-ignore
     contextFuncs[name] = createCallbackComponentFunc<
       CallbackComponentEvs<CallbackComponents[N]>,
       CallbackComponents[N]
