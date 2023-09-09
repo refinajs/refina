@@ -16,11 +16,13 @@ import { View, ViewState } from "./view";
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
     ? CustomContext<any>[K]
-    : (
+    : CustomContext<any>[K] extends (...args: any) => any
+    ? (
         this: Context,
         ckey: string,
         ...args: Parameters<CustomContext<any>[K]>
-      ) => ReturnType<CustomContext<any>[K]>;
+      ) => ReturnType<CustomContext<any>[K]>
+    : never;
 };
 
 export interface CustomContext<C> {}
