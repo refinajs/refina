@@ -22,7 +22,7 @@ export class RCard extends TriggerComponent<number> {
         _.div(() => {
           _.for(buttons, byIndex, (btn, index) => {
             _.$cls`px-2 h-9 me-2`;
-            _.rButton("btn", disabledValue[index]) && _.$fire(index);
+            _.rButton(btn, disabledValue[index]) && _.$fire(index);
           });
         });
       }
