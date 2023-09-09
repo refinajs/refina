@@ -12,6 +12,14 @@ import { RForm } from "./rForm.r";
 
 export type RFormData = Record<string, any>;
 
+export type RFormDataType<T extends RFormData> = {
+  $data: T;
+  $json: string;
+  $form: RForm<T>;
+} & {
+  [K in keyof Pick<T, string> as `$${K}`]: FormComponent<T[K], T>;
+};
+
 export class IntrinsicFormContext<
   T extends RFormData,
   C,
@@ -85,7 +93,8 @@ export function formComponent<N extends keyof FormComponents>(name: N) {
     ) {
       const component = this.beginComponent(ckey, ctor);
 
-      this.$form.inputs.add(component);
+      this.$form.data[`$${index}`] = component;
+      this.$form.inputs.add(index);
 
       component.form = this.$form;
       component.index = getD(index);
@@ -113,17 +122,20 @@ export abstract class FormComponent<V, T extends RFormData> extends Component {
   index: ExtractSatisfiedIndex<T, V>;
 
   get data() {
-    return this.form.data[getD(this.index)];
+    return this.form.data.$data[getD(this.index)];
   }
   set data(value: V) {
-    //@ts-ignore
-    this.form.data[getD(this.index)] = value;
+    this.tempInvalid = false;
+    this.form.data.$data[getD(this.index)] = value as any;
   }
 
   label: D<Content>;
   validator: Validator<V, T>;
 
+  tempInvalid = false as string | false;
+
   get valid() {
+    if (this.tempInvalid) return this.tempInvalid;
     return !this.activited || this.validator(this.data, this.form);
   }
 
@@ -168,3 +180,12 @@ export type Validator<V, T extends RFormData> = (
   value: V,
   form: RForm<T>,
 ) => true | D<Content>;
+
+export function formData<T extends RFormData>(defaultValue: Partial<T> = {}) {
+  return {
+    $data: defaultValue,
+    get $json() {
+      return JSON.stringify(this.$data);
+    },
+  } as RFormDataType<T>;
+}
