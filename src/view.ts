@@ -13,10 +13,7 @@ export class View {
     }
     this.root = new HTMLElementComponent("~", rootElement);
     this.resetState();
-    this.$init();
   }
-
-  $init = () => {};
 
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
