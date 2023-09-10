@@ -49,7 +49,7 @@ export class IntrinsicContext<C> {
     });
   }
 
-  $refresh() {
+  $update() {
     this.$view.update();
   }
 

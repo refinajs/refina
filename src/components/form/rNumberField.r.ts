@@ -16,16 +16,16 @@ export class RNumberInput<T extends object> extends FormComponent<number, T> {
           value: Number.isNaN(_.$data) ? "" : `${_.$data}`,
           onfocus: () => {
             this.focused = true;
-            _.$refresh();
+            _.$update();
           },
           onblur: () => {
             this.focused = false;
-            _.$refresh();
+            _.$update();
           },
           oninput: () => {
             this.activited = true;
             _.$data = parseFloat(this.inputEl.current!.node.value);
-            _.$refresh();
+            _.$update();
           },
         });
       _.$cls`absolute ${

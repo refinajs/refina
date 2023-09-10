@@ -16,16 +16,16 @@ export class RPassword<T extends object> extends FormComponent<string, T> {
           value: _.$data,
           onfocus: () => {
             this.focused = true;
-            _.$refresh();
+            _.$update();
           },
           onblur: () => {
             this.focused = false;
-            _.$refresh();
+            _.$update();
           },
           oninput: () => {
             this.activited = true;
             _.$data = this.inputEl.current!.node.value;
-            _.$refresh();
+            _.$update();
           },
         });
       _.$cls`absolute ${

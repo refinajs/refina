@@ -26,7 +26,7 @@ export class IntrinsicStatusComponentContext<
   set $status(v: boolean) {
     if (this.$component.$status === v) return;
     this.$component.$status = v;
-    this.$refresh();
+    this.$update();
   }
   $on = () => {
     this.$status = true;

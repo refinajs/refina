@@ -16,7 +16,7 @@ export class RCheckbox<T extends object> extends FormComponent<boolean, T> {
           oninput: () => {
             this.activited = true;
             _.$data = this.inputEl.current!.node.checked;
-            _.$refresh();
+            _.$update();
           },
         });
       _.$cls`inline-block ml-3 ${this.valid !== true ? "text-red-500" : ""}`;
