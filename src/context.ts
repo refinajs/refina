@@ -62,6 +62,9 @@ export class IntrinsicContext<C> {
   get $receiving() {
     return this.$state === ViewState.recv;
   }
+  get $router() {
+    return this.$view.router;
+  }
   $cbComponent: C = null as any;
 
   protected $lastRef = ref<any>();

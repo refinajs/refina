@@ -1,3 +1,4 @@
 export * from "./base";
-export * from "./link.r";
-export * from "./view.r";
+export * from "./beforeRoute";
+export * from "./route";
+export * from "./router";

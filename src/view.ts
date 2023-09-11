@@ -1,6 +1,7 @@
 import { IntrinsicViewContext, ViewContext, ViewRender } from "./context";
 import { D, dangerously_setD } from "./data/index";
 import { HTMLElementComponent } from "./dom";
+import { Router } from "./router/router";
 
 export class View {
   constructor(
@@ -18,6 +19,7 @@ export class View {
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
   _: ViewContext | undefined;
+  router = new Router(this);
   runtimeData: Record<symbol, any> | undefined;
   noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();

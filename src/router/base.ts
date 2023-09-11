@@ -1,38 +1,29 @@
-import { Render } from "../context";
-import { View } from "../view";
+export function matchPath(path: string, currentPath: string) {
+  const params: Record<string, string> = {};
+  let j = 0;
+  for (let i = 0; i < path.length; i++) {
+    if (path[i] === ":") {
+      let paramName = "";
+      while (++i < path.length && path[i] !== "/") {
+        paramName += path[i];
+      }
 
-export type Routes = Record<
-  string,
-  Promise<{
-    default: Render;
-  }>
->;
+      let paramValue = "";
+      while (j < currentPath.length && currentPath[j] !== "/") {
+        paramValue += currentPath[j];
+        j++;
+      }
 
-export class Router {
-  constructor(public routes: Routes) {}
-
-  view: View;
-  current: Render;
-
-  async mount() {
-    globalRouter = this;
-    window.addEventListener(
-      "hashchange",
-      async ({ oldURL, newURL }) => {
-        this.current = (await this.routes[newURL as any]).default;
-        this.view.update();
-      },
-      false,
-    );
-    this.current = (await this.routes["/"]).default;
-    this.view?.update();
+      params[paramName] = paramValue;
+    } else {
+      if (path[i] !== currentPath[j]) {
+        return false;
+      }
+      j++;
+    }
   }
-}
-
-export var globalRouter: Router | null = null;
-
-export function router(routes: Routes) {
-  const router = new Router(routes);
-  router.mount();
-  return router;
+  if (j !== currentPath.length) {
+    return false;
+  }
+  return params;
 }
