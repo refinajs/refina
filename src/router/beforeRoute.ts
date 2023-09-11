@@ -16,6 +16,6 @@ contextFuncs.beforeRoute = function (this: Context, ckey: string) {
 
 declare module "../context" {
   interface CustomContext<C> {
-    beforeRoute(): this is BeforeRouteContext;
+    beforeRoute: never extends C ? () => this is BeforeRouteContext : never;
   }
 }

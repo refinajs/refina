@@ -67,11 +67,13 @@ contextFuncs.routeNotFound = function (this: Context, ckey: string) {
 
 declare module "../context" {
   interface CustomContext<C> {
-    route<const S extends string>(
-      path: S,
-    ): this is {
-      $route: RouteParams<S>;
-    };
-    routeNotFound(): boolean;
+    route: never extends C
+      ? <const S extends string>(
+          path: S,
+        ) => this is {
+          $route: RouteParams<S>;
+        }
+      : never;
+    routeNotFound: never extends C ? () => boolean : never;
   }
 }

@@ -3,12 +3,16 @@ import { D, getD } from "./data/index";
 
 declare module "./context" {
   interface CustomContext<C> {
-    for: <T = unknown>(
-      arr: D<Iterable<T>>,
-      key: keyof T | ((item: T, index: number) => D<string>),
-      body: (item: T, index: number) => void,
-    ) => void;
-    forRange(times: D<number>, body: (index: number) => void): void;
+    for: never extends C
+      ? <T = unknown>(
+          arr: D<Iterable<T>>,
+          key: keyof T | ((item: T, index: number) => D<string>),
+          body: (item: T, index: number) => void,
+        ) => void
+      : never;
+    forRange: never extends C
+      ? (times: D<number>, body: (index: number) => void) => void
+      : never;
   }
 }
 contextFuncs.for = function <T>(

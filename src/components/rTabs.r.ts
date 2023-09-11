@@ -58,6 +58,6 @@ export class RTabs extends OutputComponent {
 
 declare module "../context" {
   interface CustomContext<C> {
-    rTabs(...tabs: RepeatedTuple<[name: string, content: D<Content>]>): void;
+    rTabs: RTabs extends C ? (...tabs: RepeatedTuple<[name: string, content: D<Content>]>) => void : never;
   }
 }

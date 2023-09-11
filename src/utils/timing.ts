@@ -32,6 +32,8 @@ contextFuncs.setInterval = function (
 declare module "../context" {
   interface CustomContext<C> {
     now(precisionMs?: number): number;
-    setInterval(callback: () => void, interval: number): void;
+    setInterval: never extends C
+      ? (callback: () => void, interval: number) => void
+      : never;
   }
 }

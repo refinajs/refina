@@ -34,13 +34,15 @@ export class Embed extends OutputComponent {
 
 declare module "../context" {
   interface CustomContext<C> {
-    embed<Args extends any[]>(
-      render:
-        | Render<Args>
-        | (() => Promise<{
-            default: Render<Args>;
-          }>),
-      ...args: Args
-    ): void;
+    embed: never extends C
+      ? <Args extends any[]>(
+          render:
+            | Render<Args>
+            | (() => Promise<{
+                default: Render<Args>;
+              }>),
+          ...args: Args
+        ) => void
+      : never;
   }
 }
