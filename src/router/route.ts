@@ -61,7 +61,7 @@ contextFuncs.route = function (this: Context, ckey: string, path: string) {
   return true;
 };
 
-contextFuncs.defaultRoute = function (this: Context, ckey: string) {
+contextFuncs.routeNotFound = function (this: Context, ckey: string) {
   return !this.$customData[routeMatchedSymbol];
 };
 
@@ -72,6 +72,6 @@ declare module "../context" {
     ): this is {
       $route: RouteParams<S>;
     };
-    defaultRoute(): boolean;
+    routeNotFound(): boolean;
   }
 }
