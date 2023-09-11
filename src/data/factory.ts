@@ -3,7 +3,7 @@ import { IntrinsicPD, PD, PDType } from "./base";
 export interface CustomDFactoryMember<T> {}
 
 export type DFactory<T> = {
-  (v: T): PDType<T>;
+  <V extends T>(v: V): PDType<V>;
   $initializer: (v: T, d: PD<T>) => T;
   $getter: (v: T, d: PD<T>) => T;
   $setter: (v: T, d: PD<T>) => T;
