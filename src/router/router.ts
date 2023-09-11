@@ -1,4 +1,4 @@
-import { View } from "../view";
+import { App } from "../app";
 
 export interface BeforeRouteContext {
   $routeFrom: string | null;
@@ -8,7 +8,7 @@ export interface BeforeRouteContext {
 
 export class Router {
   pendingRoute: null | BeforeRouteContext;
-  constructor(public view: View) {
+  constructor(public app: App) {
     this.setPendingRoute(
       (path) => {
         history.replaceState({}, "", path);
@@ -37,7 +37,7 @@ export class Router {
         next(this.toAbsolute(path));
       },
     };
-    this.view.update();
+    this.app.update();
   }
   push(path: string) {
     this.setPendingRoute((path) => {

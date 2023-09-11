@@ -26,7 +26,7 @@ export class RForm<T extends RFormData> extends TriggerComponent<T> {
     data.$form = this;
     _.$cls``;
     _.div(() => {
-      const context = new IntrinsicFormContext(_.$view, this);
+      const context = new IntrinsicFormContext(_.$app, this);
       inner(context as unknown as FormContext<T>);
 
       if (submitButton !== null) {
@@ -49,14 +49,14 @@ export class RForm<T extends RFormData> extends TriggerComponent<T> {
     for (const input of this.inputs) {
       this.data[`$${input}`].activited = true;
     }
-    this.view.update();
+    this.app.update();
   }
 
   deactivateAll() {
     for (const input of this.inputs) {
       this.data[`$${input}`].activited = false;
     }
-    this.view.update();
+    this.app.update();
   }
 
   checkValid() {

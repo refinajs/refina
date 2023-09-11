@@ -4,7 +4,7 @@ import {
   ToFullContext,
   contextFuncs,
 } from "../context";
-import { ViewState } from "../view";
+import { AppState } from "../app";
 import {
   Component,
   ComponentConstructor,
@@ -43,7 +43,7 @@ export class IntrinsicCallbackComponentContext<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$view.recv(this.$component.ikey, name);
+      this.$app.recv(this.$component.ikey, name);
       return false;
     };
   }
@@ -53,7 +53,7 @@ export class IntrinsicCallbackComponentContext<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$view.recv(this.$component.ikey, name);
+      this.$app.recv(this.$component.ikey, name);
     };
   }
 }
@@ -87,7 +87,7 @@ export function createCallbackComponentFunc<
         },
       });
       this.$cbComponent = componentProxy;
-      this.$view.hookAfterThisComponent = () => {
+      this.$app.hookAfterThisComponent = () => {
         const context = new IntrinsicCallbackComponentContext(
           this,
           componentProxy as any,
@@ -123,7 +123,7 @@ export function createCallbackComponentFunc<
         context as any as CallbackComponentContext<Evs, S>,
         ...args,
       );
-      ret = this.$view.isReceiver;
+      ret = this.$app.isReceiver;
     }
     this.endComponent(ckey);
     return ret;

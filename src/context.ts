@@ -11,7 +11,7 @@ import {
   HTMLElementComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
-import { View, ViewState } from "./view";
+import { App, AppState } from "./app";
 
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
@@ -36,41 +36,41 @@ export type ToFullContext<C, I> = {
   I;
 
 export class IntrinsicContext<C> {
-  constructor(public readonly $view: View) {
+  constructor(public readonly $app: App) {
     Object.defineProperty(this, "$ev", {
       get() {
-        return $view.eventData;
+        return $app.eventData;
       },
     });
     Object.defineProperty(this, "$", {
       get() {
-        return this.$view.eventRecevier ?? this.$cbComponent;
+        return this.$app.eventRecevier ?? this.$cbComponent;
       },
     });
   }
 
   $update() {
-    this.$view.update();
+    this.$app.update();
   }
 
   get $state() {
-    return this.$view.state;
+    return this.$app.state;
   }
   get $updating() {
-    return this.$state === ViewState.update;
+    return this.$state === AppState.update;
   }
   get $receiving() {
-    return this.$state === ViewState.recv;
+    return this.$state === AppState.recv;
   }
   get $router() {
-    return this.$view.router;
+    return this.$app.router;
   }
   $cbComponent: C = null as any;
 
   protected $lastRef = ref<any>();
 
   $preventDefault(): true {
-    const ev = this.$view.eventData;
+    const ev = this.$app.eventData;
     if (typeof ev?.preventDefault !== "function") {
       throw new Error(`Cannot prevent default on ${ev}.`);
     }
@@ -78,7 +78,7 @@ export class IntrinsicContext<C> {
     return true;
   }
   $stopPropagation(): true {
-    const ev = this.$view.eventData;
+    const ev = this.$app.eventData;
     if (typeof ev?.stopPropagation !== "function") {
       throw new Error(`Cannot stop propagation on ${ev}.`);
     }
@@ -86,7 +86,7 @@ export class IntrinsicContext<C> {
     return true;
   }
   $stopImmediatePropagation(): true {
-    const ev = this.$view.eventData;
+    const ev = this.$app.eventData;
     if (typeof ev?.stopImmediatePropagation !== "function") {
       throw new Error(`Cannot stop immediate propagation on ${ev}.`);
     }
@@ -144,7 +144,7 @@ export class IntrinsicContext<C> {
   }
 
   protected get $runtimeData() {
-    return this.$view.runtimeData!;
+    return this.$app.runtimeData!;
   }
   $provide(key: symbol, value: unknown): true {
     this.$runtimeData[key] = value;
@@ -224,32 +224,32 @@ export class IntrinsicContext<C> {
     ckey: string,
     ctor: ComponentConstructor<T>,
   ) {
-    this.$view.callHookAfterThisComponent();
+    this.$app.callHookAfterThisComponent();
 
-    this.$view.pushKey(ckey);
-    const ikey = this.$view.ikey;
-    this.$view.markComponentProcessed(ikey);
-    let component = this.$view.refMap.get(ikey) as T;
+    this.$app.pushKey(ckey);
+    const ikey = this.$app.ikey;
+    this.$app.markComponentProcessed(ikey);
+    let component = this.$app.refMap.get(ikey) as T;
     if (!component) {
-      component = new ctor(ikey, this.$view);
-      this.$view.refMap.set(ikey, component);
+      component = new ctor(ikey, this.$app);
+      this.$app.refMap.set(ikey, component);
     }
 
     this.$pendingRef.current = component;
     this.$pendingRef = this.$lastRef;
 
     if (this.$isNoPreserve) {
-      this.$view.noPreserveComponents.add(ikey);
+      this.$app.noPreserveComponents.add(ikey);
       // later set by IntrinsicComponentContext:
       //   this.$pendingNoPreserve = false;
     }
     return component;
   }
   endComponent(ckey: string) {
-    this.$view.popKey(ckey);
+    this.$app.popKey(ckey);
   }
 
-  normalizeContent(content: D<Content> = () => {}): Render {
+  normalizeContent(content: D<Content> = () => {}): View {
     const contentValue = getD(content);
     if (typeof contentValue === "string" || typeof contentValue === "number") {
       const text = contentValue;
@@ -277,17 +277,17 @@ export class IntrinsicContext<C> {
     data ??= {};
     inner = this.normalizeContent(inner);
 
-    this.$view.callHookAfterThisComponent();
+    this.$app.callHookAfterThisComponent();
 
-    this.$view.pushKey(ckey);
-    const ikey = this.$view.ikey;
-    this.$view.markComponentProcessed(ikey);
-    let ec = this.$view.refMap.get(ikey) as HTMLElementComponent | undefined;
-    const oldParent = this.$view.currrentHTMLParent;
+    this.$app.pushKey(ckey);
+    const ikey = this.$app.ikey;
+    this.$app.markComponentProcessed(ikey);
+    let ec = this.$app.refMap.get(ikey) as HTMLElementComponent | undefined;
+    const oldParent = this.$app.currrentHTMLParent;
     if (this.$updating) {
       if (!ec) {
         ec = new HTMLElementComponent(ikey, document.createElement(tagName));
-        this.$view.refMap.set(ikey, ec);
+        this.$app.refMap.set(ikey, ec);
       }
       for (const key in data) {
         //@ts-ignore
@@ -299,7 +299,7 @@ export class IntrinsicContext<C> {
       ec.children = [];
     }
 
-    const context = new IntrinsicContext(this.$view);
+    const context = new IntrinsicContext(this.$app);
 
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
@@ -308,45 +308,45 @@ export class IntrinsicContext<C> {
     this.$pendingRef = this.$lastRef;
 
     if (this.$isNoPreserve) {
-      this.$view.noPreserveComponents.add(ikey);
+      this.$app.noPreserveComponents.add(ikey);
       if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
       this.$pendingNoPreserve = false;
     }
 
-    this.$view.currrentHTMLParent = ec!;
+    this.$app.currrentHTMLParent = ec!;
 
     inner(context as unknown as Context);
 
-    this.$view.callHookAfterThisComponent();
+    this.$app.callHookAfterThisComponent();
 
-    this.$view.currrentHTMLParent = oldParent;
+    this.$app.currrentHTMLParent = oldParent;
 
-    this.$view.popKey(ckey);
+    this.$app.popKey(ckey);
 
     return ec!;
   }
   protected processTextNode(ckey: string, text: string) {
-    this.$view.callHookAfterThisComponent();
+    this.$app.callHookAfterThisComponent();
 
-    this.$view.pushKey(ckey);
-    const ikey = this.$view.ikey;
-    this.$view.markComponentProcessed(ikey);
-    let t = this.$view.refMap.get(ikey) as DOMNodeComponent | undefined;
+    this.$app.pushKey(ckey);
+    const ikey = this.$app.ikey;
+    this.$app.markComponentProcessed(ikey);
+    let t = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
     if (this.$updating) {
       if (!t) {
         t = new DOMNodeComponent(ikey, document.createTextNode(text));
-        this.$view.refMap.set(ikey, t);
+        this.$app.refMap.set(ikey, t);
       } else {
         if (t.node.textContent !== text) t.node.textContent = text;
       }
-      this.$view.currrentHTMLParent.children.push(t);
+      this.$app.currrentHTMLParent.children.push(t);
     }
-    this.$view.popKey(ckey);
+    this.$app.popKey(ckey);
 
     this.$firstDOMNode ??= t!;
 
     if (this.$allNoPreserve || this.$pendingNoPreserve) {
-      this.$view.noPreserveComponents.add(ikey);
+      this.$app.noPreserveComponents.add(ikey);
       this.$pendingNoPreserve = false;
     }
 
@@ -356,22 +356,20 @@ export class IntrinsicContext<C> {
 
 export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;
 
-export type Render<Args extends any[] = []> = (
+export type View<Args extends any[] = []> = (
   context: Context,
   ...args: Args
 ) => void;
 
-export function defineRender<Args extends any[] = []>(
-  render: Render<Args>,
-): Render<Args> {
-  return render;
+export function view<Args extends any[] = []>(view: View<Args>): View<Args> {
+  return view;
 }
 
-export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
+export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
   $rootCls(cls: string): true;
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
   $rootCls(...args: any[]): true {
-    this.$view.root.setClasses(
+    this.$app.root.setClasses(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]
@@ -385,7 +383,7 @@ export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
   $rootCss(style: string): void;
   $rootCss(template: TemplateStringsArray, ...args: any[]): void;
   $rootCss(...args: any[]): void {
-    this.$view.root.setStyle(
+    this.$app.root.setStyle(
       Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0],
@@ -393,6 +391,6 @@ export class IntrinsicViewContext<C> extends IntrinsicContext<C> {
   }
 }
 
-export type ViewContext<C = any> = ToFullContext<C, IntrinsicViewContext<C>>;
+export type AppContext<C = any> = ToFullContext<C, IntrinsicAppContext<C>>;
 
-export type ViewRender = (_: ViewContext) => void;
+export type AppView = (_: AppContext) => void;

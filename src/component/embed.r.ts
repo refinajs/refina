@@ -1,31 +1,31 @@
-import { Context, IntrinsicContext, Render } from "../context";
+import { Context, IntrinsicContext, View } from "../context";
 import { OutputComponent, outputComponent } from "./output";
 
-const renderCache = new Map<string, Render<any>>();
+const viewCache = new Map<string, View<any>>();
 
 @outputComponent("embed")
 export class Embed extends OutputComponent {
   main<Args extends any[]>(
     _: Context,
-    render:
-      | Render<Args>
+    view:
+      | View<Args>
       | (() => Promise<{
-          default: Render<Args>;
+          default: View<Args>;
         }>),
     ...args: Args
   ): void {
-    const context = new IntrinsicContext(_.$view);
+    const context = new IntrinsicContext(_.$app);
 
-    if (renderCache.has(this.ikey)) {
-      renderCache.get(this.ikey)!(context as unknown as Context, ...args);
+    if (viewCache.has(this.ikey)) {
+      viewCache.get(this.ikey)!(context as unknown as Context, ...args);
     } else {
-      const ret = render(context as unknown as Context, ...args);
+      const ret = view(context as unknown as Context, ...args);
       if (ret instanceof Promise) {
         _.t`Loading module...`;
         ret.then((r) => {
-          renderCache.set(this.ikey, r.default);
+          viewCache.set(this.ikey, r.default);
           r.default(context as unknown as Context, ...args);
-          _.$view.update();
+          _.$app.update();
         });
       }
     }
@@ -36,10 +36,10 @@ declare module "../context" {
   interface CustomContext<C> {
     embed: never extends C
       ? <Args extends any[]>(
-          render:
-            | Render<Args>
+          view:
+            | View<Args>
             | (() => Promise<{
-                default: Render<Args>;
+                default: View<Args>;
               }>),
           ...args: Args
         ) => void

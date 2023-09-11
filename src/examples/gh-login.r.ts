@@ -1,4 +1,4 @@
-import { d, view } from "../lib";
+import { d, app } from "../lib";
 //@ts-ignore
 import logo from "../../assets/github-mark-white.svg";
 
@@ -13,7 +13,7 @@ function login() {
       msg = "Incorrect username or password.";
     }
     loading = false;
-    $view.update();
+    $app.update();
   }, 1000);
 }
 
@@ -24,7 +24,7 @@ let loading = false,
   msgType = "",
   msg = "";
 
-const $view = view((_) => {
+const $app = app((_) => {
   _.$rootCss`font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";`;
   _.$rootCls`m-auto bg-[#0d1117] text-[#e6edf3] text-sm`;
   _.$cls`pb-6 pt-8 w-full text-center`;

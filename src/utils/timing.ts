@@ -7,7 +7,7 @@ contextFuncs.now = function (this: Context, ckey: string, precisionMs = 1000) {
     registeredCallbacks.add(ckey);
     setTimeout(() => {
       registeredCallbacks.delete(ckey);
-      this.$view.update();
+      this.$app.update();
     }, precisionMs);
   }
   return Date.now();
@@ -24,7 +24,7 @@ contextFuncs.setInterval = function (
     setTimeout(() => {
       registeredCallbacks.delete(ckey);
       callback();
-      this.$view.update();
+      this.$app.update();
     }, interval);
   }
 };

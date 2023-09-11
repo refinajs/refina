@@ -1,19 +1,19 @@
 import { Context, IntrinsicContext, ToFullContext } from "../context";
 import { D } from "../data/index";
 import { DOMNodeComponent, HTMLElementComponent } from "../dom";
-import { View } from "../view";
+import { App } from "../app";
 
 export abstract class Component {
   constructor(
     public readonly ikey: string,
-    public readonly view: View,
+    public readonly app: App,
   ) {}
 
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (
   ikey: string,
-  view: View,
+  app: App,
 ) => S;
 export type ComponentFuncArgs<S extends Component> = S extends {
   main(_: any, ...args: infer A): void;
@@ -29,7 +29,7 @@ export class IntrinsicComponentContext<
     public $caller: Context,
     public $component: S,
   ) {
-    super($caller.$view);
+    super($caller.$app);
     this.$classesArg = $caller.$classes;
     this.$styleArg = $caller.$style;
     //@ts-ignore
@@ -51,7 +51,7 @@ export class IntrinsicComponentContext<
   }
 
   $setD<T>(d: D<T>, v: T): boolean {
-    return this.$view.setD(d, v);
+    return this.$app.setD(d, v);
   }
 
   $classesAndStyleUsed = false;

@@ -7,7 +7,7 @@ import {
   IntrinsicComponentContext,
   getD,
 } from "../../lib";
-import { View } from "../../view";
+import { App } from "../../app";
 import { RForm } from "./rForm.r";
 
 export type RFormData = Record<string, any>;
@@ -25,10 +25,10 @@ export class IntrinsicFormContext<
   C,
 > extends IntrinsicContext<C> {
   constructor(
-    $view: View,
+    $app: App,
     public $form: RForm<T>,
   ) {
-    super($view);
+    super($app);
   }
 
   $$(funcName: string, ckey: string, ...args: any[]): any {

@@ -32,7 +32,7 @@ export class IntrinsicTriggerComponentContext<
       //@ts-ignore
       data.$isCurrent = data.target === data.currentTarget;
     }
-    this.$view.recv(this.$component.ikey, data);
+    this.$app.recv(this.$component.ikey, data);
     return false;
   };
   $fireWith = (data: Ev) => () => {
@@ -67,7 +67,7 @@ export function triggerComponent<
         ...args,
       );
 
-      const isReceiver = this.$view.isReceiver;
+      const isReceiver = this.$app.isReceiver;
 
       if (!context.$classesAndStyleUsed) {
         context.$firstHTMLELement?.addClasses(context.$classesArg);

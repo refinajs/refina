@@ -4,7 +4,7 @@ import {
   ToCallbackComponentFuncs,
   createCallbackComponentFunc,
 } from "./component/index";
-import { Context, Render } from "./context";
+import { Context, View } from "./context";
 import { D } from "./data/index";
 
 export class DOMNodeComponent<N extends Node = Node> {
@@ -17,7 +17,7 @@ export class DOMNodeComponent<N extends Node = Node> {
   updateDOM() {}
 }
 
-export type Content = string | number | Render;
+export type Content = string | number | View;
 
 export class HTMLElementComponent<
   E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,

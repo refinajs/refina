@@ -1,11 +1,11 @@
-import { IntrinsicViewContext, ViewContext, ViewRender } from "./context";
+import { IntrinsicAppContext, AppContext, AppView } from "./context";
 import { D, dangerously_setD } from "./data/index";
 import { HTMLElementComponent } from "./dom";
 import { Router } from "./router/router";
 
-export class View {
+export class App {
   constructor(
-    public main: ViewRender,
+    public main: AppView,
     public rootElementId: string,
   ) {
     const rootElement = document.getElementById(rootElementId);
@@ -18,7 +18,7 @@ export class View {
 
   root: HTMLElementComponent;
   refMap: Map<string, any> = new Map();
-  _: ViewContext | undefined;
+  _: AppContext | undefined;
   router = new Router(this);
   runtimeData: Record<symbol, any> | undefined;
   noPreserveComponents = new Set<string>();
@@ -41,7 +41,7 @@ export class View {
 
   protected idPrefix: string[];
 
-  state: ViewState;
+  state: AppState;
 
   mounted = false;
   running = false;
@@ -60,7 +60,7 @@ export class View {
 
   mount() {
     if (this.mounted) {
-      throw new Error("View already mounted");
+      throw new Error("App already mounted");
     }
     this.execUpdate();
     this.root.createDOM();
@@ -95,7 +95,7 @@ export class View {
     }, 0);
   }
   update() {
-    if (this.running && this.state === ViewState.update) {
+    if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger an update in update state");
     }
     console.log(`[*] update queued`);
@@ -103,7 +103,7 @@ export class View {
     if (!this.running) this.nextTick();
   }
   recv(receiver: string, data: any) {
-    if (this.running && this.state === ViewState.update) {
+    if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger a recv in update state");
     }
     console.log(`[*] recv queued with receiver ${receiver}`);
@@ -115,16 +115,16 @@ export class View {
     const initialKey = this.ikey;
     try {
       this.running = true;
-      this._ = new IntrinsicViewContext(this) as any;
+      this._ = new IntrinsicAppContext(this) as any;
       this.runtimeData = {};
       this.processedComponents.clear();
-      this.main(this._ as ViewContext);
+      this.main(this._ as AppContext);
       this._ = undefined;
       this.runtimeData = undefined;
 
       if (initialKey !== this.ikey) {
         throw new Error(
-          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call view.popKey()`,
+          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call app.popKey()`,
         );
       }
 
@@ -146,14 +146,14 @@ export class View {
   }
   protected execRecv(receiver: string, data: any = null) {
     this.resetState();
-    this.state = ViewState.recv;
+    this.state = AppState.recv;
     this.eventRecevierIkey = receiver;
     this.eventData = data;
     this.execMain();
   }
   protected execUpdate() {
     this.resetState();
-    this.state = ViewState.update;
+    this.state = AppState.update;
     this.eventRecevierIkey = null;
     this.eventData = undefined;
     this.execMain();
@@ -197,13 +197,13 @@ message: ${msg}`,
   }
 }
 
-export enum ViewState {
+export enum AppState {
   update = "update", // 更新Element的props，若元素不存在则创建
   recv = "recv", // 接收消息，不得改变DOM
 }
 
-export function view(render: ViewRender, rootElementId: string = "root") {
-  const $view = new View(render, rootElementId);
-  $view.mount();
-  return $view;
+export function app(view: AppView, rootElementId: string = "root") {
+  const $app = new App(view, rootElementId);
+  $app.mount();
+  return $app;
 }
