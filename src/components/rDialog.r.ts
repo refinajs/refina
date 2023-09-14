@@ -1,22 +1,39 @@
-import { Content, D, OutputComponent, OutputComponentContext, getD, outputComponent } from "../lib";
+import { Content, D, TriggerComponent, TriggerComponentContext, getD, triggerComponent } from "../lib";
 
-@outputComponent("rDialog")
-export class RDialog extends OutputComponent {
-  main(_: OutputComponentContext<this>, open: D<boolean>, inner: D<Content>) {
-    if (getD(open)) {
-      _.$cls`z-[2400] bg-[rgba(0,0,0,0.32)] fixed w-full h-full top-0 left-0 justify-center items-center flex`;
-      _.button(() => {
-        _.$cls`max-w-[calc(100%-48px)] w-auto text-left`;
-        _.div(inner);
-      }) &&
-        _.$ev.$isCurrent &&
-        _.$setD(open, false);
-    }
+@triggerComponent("rDialog")
+export class RDialog extends TriggerComponent<number> {
+  main(
+    _: TriggerComponentContext<number, this>,
+    open: D<boolean>,
+    heading: D<Content>,
+    body: D<Content>,
+    closeButton: D<string | boolean> = false,
+    buttons: D<D<Content>[]> = [],
+    disabled: D<D<boolean>[]> = [],
+  ) {
+    const closeButtonRaw = getD(closeButton);
+    const hasCloseButton = closeButtonRaw !== false;
+    const closeButtonText = closeButtonRaw === true ? "Close" : (closeButtonRaw as string);
+    _.rPopup(open, () => {
+      if (hasCloseButton) {
+        if (_.rCard(heading, body, [closeButtonText, ...getD(buttons)], [false, ...getD(disabled)])) {
+          if (_.$ev === 0) {
+            _.$setD(open, false);
+          } else {
+            _.$fire(_.$ev - 1);
+          }
+        }
+      } else {
+        if (_.rCard(heading, body, buttons, disabled)) {
+          _.$fire(_.$ev);
+        }
+      }
+    });
   }
 }
 
 declare module "../component/index" {
-  interface OutputComponents {
+  interface TriggerComponents {
     rDialog: RDialog;
   }
 }
