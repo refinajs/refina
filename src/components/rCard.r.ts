@@ -11,7 +11,7 @@ export class RCard extends TriggerComponent<number> {
   ) {
     const buttonsValue = getD(buttons);
     const disabledValue = getD(disabled);
-    _.$cls`bg-[#e3e3e3] relative rounded`;
+    _.$cls`bg-[#e3e3e3] relative rounded m-3`;
     _.div(() => {
       _.$cls`pt-4 px-6 pb-[10px] text-xl`;
       _.div(heading);
