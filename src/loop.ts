@@ -63,7 +63,7 @@ export const bySelf = (item: any) => `${item}`;
 export const byProp =
   <T>(
     key: {
-      [K in keyof T]: T[K] extends string ? K : never;
+      [K in keyof T]: T[K] extends string | number | bigint ? K : never;
     }[keyof T],
   ) =>
   (obj: T) =>
