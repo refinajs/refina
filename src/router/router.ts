@@ -53,9 +53,3 @@ export class Router {
     }, path);
   }
 }
-
-declare module "../context" {
-  interface CustomContext<C> {
-    $router: Router;
-  }
-}
