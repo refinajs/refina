@@ -24,13 +24,11 @@ export class IntrinsicTriggerComponentContext<
   C = any,
 > extends IntrinsicComponentContext<S, C> {
   $fire = (data: Ev) => {
-    if (
-      typeof data === "object" &&
-      data !== null &&
-      (data as object) instanceof Event
-    ) {
-      //@ts-ignore
-      data.$isCurrent = data.target === data.currentTarget;
+    if (typeof data === "object" && data !== null && data instanceof Event) {
+      data = {
+        ...data,
+        $isCurrent: data.target === data.currentTarget,
+      };
     }
     this.$app.recv(this.$component.ikey, data);
     return false;
@@ -88,7 +86,7 @@ export type TriggerComponentFuncAssertThisType<Ev, C> = {
   readonly $: C;
   readonly $ev: Ev extends Event
     ? Ev & {
-        $isCurrent: boolean;
+        readonly $isCurrent: boolean;
       }
     : Ev;
 };
