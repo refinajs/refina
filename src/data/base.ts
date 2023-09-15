@@ -36,8 +36,9 @@ export type PDType<T> = Readonly<T> & PD<T>;
 export type D<T> = T | PD<T>;
 
 export function getD<T>(d: D<T>): T {
-  //@ts-ignore
-  return d !== undefined && d[PDSymbol] ? (d as PD<T>).value : (d as T);
+  return d !== undefined && d !== null && d[PDSymbol as keyof D<T>]
+    ? (d as PD<T>).value
+    : (d as T);
 }
 
 export function dangerously_setD<T>(d: D<T>, v: T): boolean {
