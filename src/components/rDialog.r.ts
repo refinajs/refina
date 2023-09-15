@@ -6,10 +6,8 @@ import {
   TriggerComponent,
   TriggerComponentContext,
   View,
-  clearMaybe,
   getD,
   isMaybe,
-  setMaybe,
   triggerComponent,
 } from "../lib";
 
@@ -30,7 +28,7 @@ export class RDialog<T extends object> extends TriggerComponent<number> {
     open: D<Maybe<T>>,
     heading: D<Content | View<[data: T]>>,
     body: D<Content | View<[data: T]>>,
-    closeButton: D<string | boolean>,
+    closeButton?: D<string | boolean>,
     buttons?: D<D<Content | View<[data: T]>>[]>,
     disabled?: D<D<boolean>[]>,
   ): void;
@@ -50,7 +48,7 @@ export class RDialog<T extends object> extends TriggerComponent<number> {
 
     if (isMaybe(openValue)) {
       this.close = () => {
-        clearMaybe(openValue);
+        _.$clearMaybe(openValue);
         return true;
       };
 
@@ -71,8 +69,7 @@ export class RDialog<T extends object> extends TriggerComponent<number> {
             )
           ) {
             if (_.$ev === 0) {
-              clearMaybe(openValue);
-              _.$update();
+              this.close();
             } else {
               _.$fire(_.$ev - 1);
             }
@@ -96,7 +93,7 @@ export class RDialog<T extends object> extends TriggerComponent<number> {
             )
           ) {
             if (_.$ev === 0) {
-              _.$setD(open, false);
+              this.close();
             } else {
               _.$fire(_.$ev - 1);
             }
@@ -118,7 +115,7 @@ declare module "../context" {
           open: D<boolean>,
           heading: D<Content>,
           body: D<Content>,
-          closeButton: D<string | boolean>,
+          closeButton?: D<string | boolean>,
           buttons?: D<D<Content>[]>,
           disabled?: D<D<boolean>[]>,
         ) => this is {
@@ -129,7 +126,7 @@ declare module "../context" {
             open: D<Maybe<T>>,
             heading: D<Content | View<[data: T]>>,
             body: D<Content | View<[data: T]>>,
-            closeButton: D<string | boolean>,
+            closeButton?: D<string | boolean>,
             buttons?: D<D<Content | View<[data: T]>>[]>,
             disabled?: D<D<boolean>[]>,
           ) => this is {

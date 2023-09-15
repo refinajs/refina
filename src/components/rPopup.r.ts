@@ -5,7 +5,6 @@ import {
   OutputComponent,
   OutputComponentContext,
   View,
-  clearMaybe,
   getD,
   isMaybe,
   justSomething,
@@ -37,8 +36,7 @@ export class RPopup<T extends {}> extends OutputComponent {
         _.$ev.$isCurrent
       ) {
         if (isMaybe(openValue)) {
-          clearMaybe(openValue);
-          _.$update();
+          _.$clearMaybe(openValue);
         } else {
           _.$setD(open, false);
         }
