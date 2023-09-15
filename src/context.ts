@@ -12,6 +12,7 @@ import {
   createCbHTMLElementComponentFunction,
 } from "./dom";
 import { App, AppState } from "./app";
+import { Maybe } from "./utils/index";
 
 export const contextFuncs = {} as {
   [K in keyof CustomContext<any>]: K extends `$${string}`
@@ -51,6 +52,20 @@ export class IntrinsicContext<C> {
 
   $update() {
     this.$app.update();
+  }
+
+  $setD<T>(d: D<T>, v: T): boolean {
+    return this.$app.setD(d, v);
+  }
+
+  $setMaybe<T extends {}>(m: Maybe<T>, value: T) {
+    m.value = value;
+    this.$update();
+  }
+
+  $clearMaybe(m: Maybe<any>) {
+    m.clear();
+    this.$update();
   }
 
   get $state() {

@@ -26,13 +26,12 @@ export function nothing(): Nothing<any> {
     [maybeSymbol]: true,
     _hasSomething: false,
     _value: undefined,
-    set value(value: any) {
-      //@ts-ignore
-      this[maybeSymbol] = true;
-      this._value = value;
-    },
     get value() {
       return this._value;
+    },
+    set value(value: any) {
+      (this as Maybe<any>)._hasSomething = true;
+      this._value = value;
     },
     clear() {
       this._hasSomething = false;
@@ -54,6 +53,7 @@ export function maybe<T extends {}>(value?: T): Maybe<T> {
       return this._value!;
     },
     set value(value: T) {
+      this._hasSomething = true;
       this._value = value;
     },
     clear() {
@@ -83,25 +83,4 @@ export function justSomething<T extends {}>(m: Maybe<T>): m is Just<T>;
 export function justSomething(m: {}): m is Just<any>;
 export function justSomething(m: {}) {
   return m[maybeSymbol as keyof {}] && (m as Maybe<any>)._hasSomething === true;
-}
-
-contextFuncs["$setMaybe"] = function <T extends {}>(
-  this: Context,
-  m: Maybe<T>,
-  value: T,
-) {
-  m.value = value;
-  this.$update();
-};
-
-contextFuncs["$clearMaybe"] = function (this: Context, m: Maybe<any>) {
-  m.clear();
-  this.$update();
-};
-
-declare module "../context" {
-  interface CustomContext<C> {
-    $setMaybe<T extends {}>(m: Maybe<T>, value: T): void;
-    $clearMaybe(m: Maybe<any>): void;
-  }
 }

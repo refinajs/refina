@@ -1,7 +1,6 @@
-import { Context, IntrinsicContext, ToFullContext } from "../context";
-import { D } from "../data/index";
-import { DOMNodeComponent, HTMLElementComponent } from "../dom";
 import { App } from "../app";
+import { Context, IntrinsicContext, ToFullContext } from "../context";
+import { DOMNodeComponent, HTMLElementComponent } from "../dom";
 
 export abstract class Component {
   constructor(
@@ -48,10 +47,6 @@ export class IntrinsicComponentContext<
   $setFirstHTMLELement(element: HTMLElementComponent) {
     super.$setFirstHTMLELement(element);
     this.$caller.$setFirstHTMLELement(element);
-  }
-
-  $setD<T>(d: D<T>, v: T): boolean {
-    return this.$app.setD(d, v);
   }
 
   $classesAndStyleUsed = false;
