@@ -1,7 +1,7 @@
-import { Context, contextFuncs } from "./context";
-import { D, getD } from "./data/index";
+import { Context, contextFuncs } from "../context";
+import { D, getD } from "../data/index";
 
-declare module "./context" {
+declare module "../context" {
   interface CustomContext<C> {
     for: never extends C
       ? <T = unknown>(
