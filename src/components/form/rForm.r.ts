@@ -29,19 +29,7 @@ export class RForm<T extends RFormData> extends TriggerComponent<T> {
       const context = new IntrinsicFormContext(_.$app, this);
       inner(context as unknown as FormContext<T>);
 
-      if (submitButton !== null) {
-        _.$cls`mt-4`;
-        _._button(
-          {
-            type: "button",
-            onclick: () => {
-              if (!this.checkValid()) return;
-              _.$fire(this.data.$data);
-            },
-          },
-          submitButton,
-        );
-      }
+      submitButton !== null && _.$cls`mt-4` && _.rButton(submitButton) && this.checkValid() && _.$fire(this.data.$data);
     });
   }
 
