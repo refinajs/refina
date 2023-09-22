@@ -1,10 +1,10 @@
 import { Plugin } from "vite";
 import MagicString from "magic-string";
 
-export default function myExample() {
+export default function refina() {
   const ctx = { lastFileId: 0, fileIds: new Map<string, string>() };
   return {
-    name: "web-imgui-plugin",
+    name: "refina-plugin",
     enforce: "pre",
     transform(code, id, options) {
       if (!id.endsWith(".r.ts")) {

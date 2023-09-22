@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
-import plugin from "./plugin";
+import refina from "./plugin";
 
 export default defineConfig({
-  plugins: [Inspect(), plugin()],
+  plugins: [Inspect(), refina()],
 });
