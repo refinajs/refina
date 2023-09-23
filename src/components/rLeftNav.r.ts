@@ -48,12 +48,13 @@ export class RNavItem extends TriggerComponent<void> {
     if (
       _.button(() => {
         const iconValue = getD(icon);
+        _.$cls`self-center`;
         if (typeof iconValue === "string") {
           _.mdIcon(iconValue);
         } else {
           _.span(iconValue);
         }
-        _.$cls`text-left`;
+        _.$cls`text-left self-center`;
         _.div(inner);
       }, disabled)
     ) {
