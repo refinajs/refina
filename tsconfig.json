@@ -4,6 +4,7 @@
     "outDir": "dist",
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM"],
     "strict": true,
     "strictPropertyInitialization": false,
