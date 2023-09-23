@@ -13,7 +13,7 @@ export class RCard extends TriggerComponent<number> {
     const disabledValue = getD(disabled);
     _.$cls`bg-[#e3e3e3] relative rounded m-3`;
     _.div(() => {
-      _.$cls`pt-4 px-5 pb-[10px] text-xl bg-gray-400 rounded-t`;
+      _.$cls`px-5 py-2 text-xl bg-gray-400 rounded-t`;
       _.div(heading);
       _.$cls`p-4 text-sm`;
       _.div(body);
