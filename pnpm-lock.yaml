@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  material-icons:
+    specifier: ^1.13.11
+    version: 1.13.11
+
 devDependencies:
   autoprefixer:
     specifier: ^10.4.15
@@ -901,6 +906,10 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /material-icons@1.13.11:
+    resolution: {integrity: sha512-kp2oAdaqo/Zp6hpTZW01rOgDPWmxBUszSdDzkRm1idCjjNvdUMnqu8qu58cll6CObo+o0cydOiPLdoSugLm+mQ==}
+    dev: false
 
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}

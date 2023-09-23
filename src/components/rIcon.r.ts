@@ -1,32 +1,54 @@
-import { Context, contextFuncs } from "../context";
+import type { MaterialIcon } from "material-icons";
+import "material-icons/iconfont/material-icons.css";
 import { D, OutputComponent, OutputComponentContext, getD, outputComponent } from "../lib";
 
-@outputComponent("rIcon")
-export class RIcon extends OutputComponent {
-  main(_: OutputComponentContext<this>, name: D<string>) {
-    _.span(`[${name}]`);
+@outputComponent("mdIcon")
+export class MDIcon extends OutputComponent {
+  main(_: OutputComponentContext<this>, name: D<MaterialIcon>) {
+    _.$cls`material-icons`;
+    console.log(getD(name));
+    _._span({}, getD(name));
+  }
+}
+
+@outputComponent("mdOutlinedIcon")
+export class MDOutlinedIcon extends OutputComponent {
+  main(_: OutputComponentContext<this>, name: D<MaterialIcon>) {
+    _.$cls`material-icons-outlined`;
+    _._span({}, getD(name));
+  }
+}
+
+@outputComponent("mdRoundIcon")
+export class MDRoundIcon extends OutputComponent {
+  main(_: OutputComponentContext<this>, name: D<MaterialIcon>) {
+    _.$cls`material-icons-round`;
+    _._span({}, getD(name));
+  }
+}
+
+@outputComponent("mdSharpIcon")
+export class MDSharpIcon extends OutputComponent {
+  main(_: OutputComponentContext<this>, name: D<MaterialIcon>) {
+    _.$cls`material-icons-sharp`;
+    _._span({}, getD(name));
+  }
+}
+
+@outputComponent("mdTwoToneIcon")
+export class MDTwoToneIcon extends OutputComponent {
+  main(_: OutputComponentContext<this>, name: D<MaterialIcon>) {
+    _.$cls`material-icons-two-tone`;
+    _._span({}, getD(name));
   }
 }
 
 declare module "../component/index" {
   interface OutputComponents {
-    rIcon: RIcon;
+    mdIcon: MDIcon;
+    mdOutlinedIcon: MDOutlinedIcon;
+    mdRoundIcon: MDRoundIcon;
+    mdSharpIcon: MDSharpIcon;
+    mdTwoToneIcon: MDTwoToneIcon;
   }
 }
-
-// export const rPrependIconSymbol = Symbol("rPrependIcon"),
-//   rAppendIconSymbol = Symbol("rAppendIcon");
-
-// contextFuncs.rPrependIcon = function (this: Context, ckey: string, name: D<string>, stacked: D<boolean> = false) {
-//   this.$provide(rPrependIconSymbol, { name, stacked: getD(stacked) });
-// };
-// contextFuncs.rAppendIcon = function (this: Context, ckey: string, name: D<string>, stacked: D<boolean> = false) {
-//   this.$provide(rAppendIconSymbol, { name, stacked: getD(stacked) });
-// };
-
-// declare module "../context" {
-//   interface CustomContext<C> {
-//     rPrependIcon: (name: D<string>, stacked?: D<boolean>) => void;
-//     rAppendIcon: (name: D<string>, stacked?: D<boolean>) => void;
-//   }
-// }

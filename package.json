@@ -55,5 +55,8 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "material-icons": "^1.13.11"
   }
 }
