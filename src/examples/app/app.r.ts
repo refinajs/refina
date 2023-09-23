@@ -12,20 +12,15 @@ app((_) => {
     }
   }
   _.rLeftNav(
-    () =>
-      _.div(() => {
-        _.$cls`text-2xl font-bold text-center block`;
-        _.div("ZVMS");
-        if (isNaN(userId.value)) {
-          _.$cls`block`;
-          _.button("Login") && _.$router.goto("/login");
-        } else {
-          _.$cls`block`;
-          _.button("Dashboard") && _.$router.goto("/");
-          _.$cls`block`;
-          _.button("Me") && _.$router.goto(`/user/${userId}`);
-        }
-      }),
+    () => {
+      _.rNavLogo("ZVMS");
+      if (isNaN(userId.value)) {
+        _.rNavItem("person", "Login") && _.$router.goto("/login");
+      } else {
+        _.rNavItem("dashboard", "Dashboard") && _.$router.goto("/");
+        _.rNavItem("person", "Me") && _.$router.goto(`/user/${userId}`);
+      }
+    },
     () =>
       _.$cls`p-10` &&
       _.div(() => {
