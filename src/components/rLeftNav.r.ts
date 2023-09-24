@@ -44,7 +44,7 @@ export class RNavItem extends TriggerComponent<void> {
     inner: D<Content>,
     disabled: D<boolean> = false,
   ): void {
-    _.$cls`w-full grid grid-cols-[5rem_8rem] overflow-hidden h-10 hover:bg-slate-400`;
+    _.$cls`w-full grid grid-cols-[5rem_8rem] overflow-hidden h-10 hover:bg-slate-400 transition-colors`;
     if (
       _.button(() => {
         const iconValue = getD(icon);

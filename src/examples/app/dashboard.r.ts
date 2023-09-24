@@ -1,4 +1,4 @@
-import { byProp, maybe, view } from "../../lib";
+import { maybe, view } from "../../lib";
 import { userId } from "./store";
 let x = 0;
 
@@ -14,26 +14,21 @@ const currentThing = maybe<(typeof things)[0]>();
 const test = maybe<{ a: 1 }>();
 
 export default view((_) => {
-  // _.setInterval(() => {
-  //   x++;
-  // }, 500);
-  if (_.rCard(`Dashboard ${x}`, () => _.p(`Now is ${1 /*_.now()*/}`), ["Logout"])) {
+  _.setInterval(() => {
+    x++;
+  }, 500);
+  if (_.rCard(`Dashboard ${x}`, () => _.p(`Now is ${_.now()}`), ["Logout"])) {
     userId.value = NaN;
     _.$router.goto(`/login`);
   }
   _.rCard(`Test`, () => {
     if (
       _.rRowClickableTable(things, {
-        name: {
-          pos: 0,
-          sortable: true,
-        },
+        name: {},
         price: {
           sortable: true,
         },
-        id: {
-          sortable: true,
-        },
+        id: true,
       })
     ) {
       currentThing.value = _.$ev;
