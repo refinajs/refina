@@ -1,0 +1,4 @@
+{
+  "extends": "@refina/tsconfig",
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@refina/example-app",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.8",
+    "vite-plugin-inspect": "^0.7.35",
+    "vite-plugin-refina": "workspace:^"
+  },
+  "dependencies": {
+    "@refina/fluentui": "workspace:^",
+    "refina": "workspace:^"
+  }
+}

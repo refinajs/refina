@@ -1,0 +1,41 @@
+{
+  "name": "refina",
+  "version": "0.0.0",
+  "description": "An extremely refined web framework.",
+  "keywords": [
+    "refina",
+    "framework",
+    "web",
+    "typescript"
+  ],
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "typescript": "^5.2.2",
+    "vite-plugin-refina": "workspace:^"
+  }
+}

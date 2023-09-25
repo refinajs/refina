@@ -1,62 +1,22 @@
 {
-  "name": "refina",
+  "name": "@refina/monorepo",
   "version": "0.0.0",
-  "description": "A refined web framework",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md",
-    "package.json"
-  ],
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
+  "private": true,
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "preview": "vite preview",
+    "dev": "pnpm run dev:app",
+    "dev:app": "pnpm -r --parallel --filter \"@refina/example-app...\" run dev",
+    "dev:gh-login": "pnpm -r --parallel --filter \"@refina/example-gh-login...\" run dev",
+    "check": "pnpm -r --parallel run check",
     "prettier": "prettier --write .",
-    "prepare": "husky install",
-    "check": "tsc --noEmit"
+    "prepare": "husky install"
   },
-  "keywords": [],
-  "author": "_Kerman",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KermanX/refina"
-  },
-  "readme": "https://github.com/KermanX/refina#readme",
-  "bugs": "https://github.com/KermanX/refina/issues",
-  "license": "MIT",
   "devDependencies": {
-    "autoprefixer": "^10.4.15",
-    "chokidar": "^3.5.3",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.0",
-    "magic-string": "^0.30.2",
-    "postcss": "^8.4.27",
-    "prettier": "^3.0.0",
-    "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6",
-    "vite": "^4.4.8",
-    "vite-plugin-inspect": "^0.7.35"
+    "prettier": "3.0.0"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
-  },
-  "dependencies": {
-    "material-icons": "^1.13.11"
   }
 }

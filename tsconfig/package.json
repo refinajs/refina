@@ -1,0 +1,43 @@
+{
+  "name": "@refina/tsconfig",
+  "version": "0.0.0",
+  "description": "Default tsconfig for Refina framework.",
+  "keywords": [
+    "refina",
+    "tsconfig",
+    "typescript"
+  ],
+  "files": [
+    "tsconfig.json"
+  ],
+  "type": "module",
+  "main": "./tsconfig.json",
+  "types": "./tsconfig.json",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./tsconfig.json",
+        "default": "./tsconfig.json"
+      },
+      "require": {
+        "types": "./tsconfig.json",
+        "default": "./tsconfig.json"
+      }
+    }
+  },
+  "scripts": {},
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
