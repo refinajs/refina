@@ -18,7 +18,7 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
 
-  core:
+  packages/core:
     devDependencies:
       '@refina/tsconfig':
         specifier: workspace:^
@@ -30,7 +30,7 @@ importers:
         specifier: workspace:^
         version: link:../plugin
 
-  examples/app:
+  packages/examples/app:
     dependencies:
       '@refina/fluentui':
         specifier: workspace:^
@@ -64,7 +64,7 @@ importers:
         specifier: workspace:^
         version: link:../../plugin
 
-  examples/gh-login:
+  packages/examples/gh-login:
     dependencies:
       refina:
         specifier: workspace:^
@@ -95,7 +95,7 @@ importers:
         specifier: workspace:^
         version: link:../../plugin
 
-  fluentui:
+  packages/fluentui:
     dependencies:
       material-icons:
         specifier: ^1.13.11
@@ -120,7 +120,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  plugin:
+  packages/plugin:
     dependencies:
       magic-string:
         specifier: ^0.30.2
@@ -139,7 +139,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  tsconfig:
+  packages/tsconfig:
     devDependencies:
       typescript:
         specifier: ^5.2.2
