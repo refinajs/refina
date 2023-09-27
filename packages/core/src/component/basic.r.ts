@@ -109,24 +109,24 @@ declare module "./index" {
   }
 }
 
-@statusComponent("textInput")
-export class TextInput extends StatusComponent {
+@outputComponent("textInput")
+export class TextInput extends OutputComponent {
   inputEl = ref<HTMLElementComponent<"input">>();
-  main(_: StatusComponentContext<this>, value: D<string>) {
+  main(_: OutputComponentContext<this>, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
     _.$ref(this.inputEl) &&
       _._input({
         type: "text",
+        disabled: getD(disabled),
+        placeholder: getD(placeholder),
         value: getD(value),
         oninput: () => {
           _.$setD(value, this.inputEl.current!.node.value);
         },
-        onfocus: _.$on,
-        onblur: _.$off,
       });
   }
 }
 declare module "./index" {
-  interface StatusComponents {
+  interface OutputComponents {
     textInput: TextInput;
   }
 }
