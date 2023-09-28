@@ -31,11 +31,11 @@ export class IntrinsicTriggerComponentContext<
       };
     }
     this.$app.recv(this.$component.ikey, data);
-    return false;
+    return false as const;
   };
   $fireWith = (data: Ev) => () => {
     this.$fire(data);
-    return false;
+    return false as const;
   };
 }
 export type TriggerComponentContext<
