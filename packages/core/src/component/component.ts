@@ -1,6 +1,6 @@
 import { App } from "../app";
 import { Context, IntrinsicContext, ToFullContext } from "../context";
-import { DOMNodeComponent, HTMLElementComponent } from "../dom";
+import { DOMNodeComponent, DOMElementComponent } from "../dom";
 
 export abstract class Component {
   constructor(
@@ -44,7 +44,7 @@ export class IntrinsicComponentContext<
     super.$setFirstDOMNode(node);
     this.$caller.$setFirstDOMNode(node);
   }
-  $setFirstHTMLELement(element: HTMLElementComponent) {
+  $setFirstHTMLELement(element: DOMElementComponent) {
     super.$setFirstHTMLELement(element);
     this.$caller.$setFirstHTMLELement(element);
   }

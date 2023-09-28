@@ -8,8 +8,9 @@ import {
   Content,
   DOMFuncs,
   DOMNodeComponent,
-  HTMLElementComponent,
+  DOMElementComponent,
   createCbHTMLElementComponentFunction,
+  type DOMElementTagNameMap,
 } from "./dom";
 import { App, AppState } from "./app";
 import { Maybe } from "./utils/index";
@@ -194,6 +195,23 @@ export class IntrinsicContext<C> {
       const func = createCbHTMLElementComponentFunction(tagName);
       return func.call(this as unknown as Context, ckey, ...args);
     }
+    if (
+      funcName.startsWith("_svg") &&
+      funcName[4].toUpperCase() === funcName[4]
+    ) {
+      // Now this is a SVG element
+      const tagName = (funcName[4].toLowerCase() +
+        funcName.slice(5)) as keyof SVGElementTagNameMap;
+      let [data, inner] = args;
+      return this.processSVGElement(
+        ckey,
+        tagName,
+        this.$classes,
+        this.$style,
+        data,
+        inner,
+      );
+    }
     if (funcName[0] === "_") {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
@@ -230,8 +248,8 @@ export class IntrinsicContext<C> {
   $setFirstDOMNode(node: DOMNodeComponent) {
     this.$firstDOMNode ??= node;
   }
-  $firstHTMLELement: HTMLElementComponent | null = null;
-  $setFirstHTMLELement(element: HTMLElementComponent) {
+  $firstHTMLELement: DOMElementComponent | null = null;
+  $setFirstHTMLELement(element: DOMElementComponent) {
     this.$firstHTMLELement ??= element;
   }
 
@@ -297,16 +315,80 @@ export class IntrinsicContext<C> {
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
     this.$app.markComponentProcessed(ikey);
-    let ec = this.$app.refMap.get(ikey) as HTMLElementComponent | undefined;
+    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     const oldParent = this.$app.currrentHTMLParent;
     if (this.$updating) {
       if (!ec) {
-        ec = new HTMLElementComponent(ikey, document.createElement(tagName));
+        ec = new DOMElementComponent<keyof HTMLElementTagNameMap>(
+          ikey,
+          document.createElement(tagName),
+        );
         this.$app.refMap.set(ikey, ec);
       }
       for (const key in data) {
         //@ts-ignore
         ec.node[key] = data[key]!;
+      }
+      ec.setClasses(classes);
+      ec.setStyle(style);
+      oldParent.children.push(ec);
+      ec.children = [];
+    }
+
+    const context = new IntrinsicContext(this.$app);
+
+    this.$setFirstDOMNode(ec!);
+    this.$setFirstHTMLELement(ec!);
+
+    this.$pendingRef.current = ec;
+    this.$pendingRef = this.$lastRef;
+
+    if (this.$isNoPreserve) {
+      this.$app.noPreserveComponents.add(ikey);
+      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
+      this.$pendingNoPreserve = false;
+    }
+
+    this.$app.currrentHTMLParent = ec!;
+
+    inner(context as unknown as Context);
+
+    this.$app.callHookAfterThisComponent();
+
+    this.$app.currrentHTMLParent = oldParent;
+
+    this.$app.popKey(ckey);
+
+    return ec!;
+  }
+  protected processSVGElement<E extends keyof SVGElementTagNameMap>(
+    ckey: string,
+    tagName: E,
+    classes: string[],
+    style: string,
+    data?: Partial<SVGElementTagNameMap[E]>,
+    inner?: D<Content>,
+  ) {
+    data ??= {};
+    inner = this.normalizeContent(inner);
+
+    this.$app.callHookAfterThisComponent();
+
+    this.$app.pushKey(ckey);
+    const ikey = this.$app.ikey;
+    this.$app.markComponentProcessed(ikey);
+    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
+    const oldParent = this.$app.currrentHTMLParent;
+    if (this.$updating) {
+      if (!ec) {
+        ec = new DOMElementComponent<keyof SVGElementTagNameMap>(
+          ikey,
+          document.createElementNS("http://www.w3.org/2000/svg", tagName),
+        );
+        this.$app.refMap.set(ikey, ec);
+      }
+      for (const key in data) {
+        ec.node.setAttribute(key, String(data[key]));
       }
       ec.setClasses(classes);
       ec.setStyle(style);

@@ -17,11 +17,19 @@ export class DOMNodeComponent<N extends Node = Node> {
   updateDOM() {}
 }
 
+export type DOMElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;
+type DOMElementType<E extends keyof DOMElementTagNameMap> =
+  E extends keyof HTMLElementTagNameMap
+    ? HTMLElementTagNameMap[E]
+    : E extends keyof SVGElementTagNameMap
+    ? SVGElementTagNameMap[E]
+    : never;
+
 export type Content = string | number | View;
 
-export class HTMLElementComponent<
-  E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
-> extends DOMNodeComponent<HTMLElementTagNameMap[E]> {
+export class DOMElementComponent<
+  E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
+> extends DOMNodeComponent<DOMElementType<E>> {
   children: DOMNodeComponent[] = [];
   protected createdChildren = new Set<DOMNodeComponent>();
 
@@ -122,7 +130,7 @@ export function createCbHTMLElementComponentFunction<
           data?: Partial<HTMLElementTagNameMap[E]>,
           inner?: D<Content>,
           //@ts-ignore
-        ) => this is Context<HTMLElementComponent<E>>
+        ) => this is Context<DOMElementComponent<E>>
       )(`_${tagName}`, "_", elementData, inner);
     }
   };
@@ -154,17 +162,34 @@ export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
     inner?: D<Content>,
   ): void;
 }
-export type DOMFuncs<C> = {
-  [E in keyof HTMLElementTagNameMap as `_${E}`]: HTMLElementComponent<E> extends C
+
+type HTMLElementFuncs<C> = {
+  [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
         inner?: D<Content>,
         //@ts-ignore
-      ) => this is Context<HTMLElementComponent<E>>
+      ) => this is Context<DOMElementComponent<E>>
     : never;
-} & ToCallbackComponentFuncs<
+};
+
+type SVGElementFuncs<C> = {
+  [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C
+    ? (
+        data?: Record<string, D<string | number>>,
+        inner?: D<Content>,
+        //@ts-ignore
+      ) => this is Context<DOMElementComponent<E>>
+    : never;
+};
+
+type CbHTMLElementFuncs<C> = ToCallbackComponentFuncs<
   {
     [E in keyof HTMLElementTagNameMap as `_cb${Capitalize<E>}`]: CbHTMLElementComponent<E>;
   },
   C
 >;
+
+export type DOMFuncs<C> = HTMLElementFuncs<C> &
+  SVGElementFuncs<C> &
+  CbHTMLElementFuncs<C>;

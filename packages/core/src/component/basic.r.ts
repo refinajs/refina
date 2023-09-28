@@ -1,5 +1,5 @@
 import { D, getD, ref } from "../data/index";
-import { Content, HTMLElementComponent } from "../dom";
+import { Content, DOMElementComponent } from "../dom";
 import {
   StatusComponent,
   StatusComponentContext,
@@ -111,7 +111,7 @@ declare module "./index" {
 
 @outputComponent("textInput")
 export class TextInput extends OutputComponent {
-  inputEl = ref<HTMLElementComponent<"input">>();
+  inputEl = ref<DOMElementComponent<"input">>();
   main(_: OutputComponentContext<this>, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
     _.$ref(this.inputEl) &&
       _._input({
@@ -133,7 +133,7 @@ declare module "./index" {
 
 @statusComponent("passwordInput")
 export class PasswordInput extends StatusComponent {
-  inputEl = ref<HTMLElementComponent<"input">>();
+  inputEl = ref<DOMElementComponent<"input">>();
   main(_: StatusComponentContext<this>, value: D<string>) {
     _.$ref(this.inputEl) &&
       _._input({
@@ -169,7 +169,7 @@ declare module "./index" {
 
 @statusComponent("checkbox")
 export class Checkbox extends StatusComponent {
-  inputEl = ref<HTMLElementComponent<"input">>();
+  inputEl = ref<DOMElementComponent<"input">>();
   main(
     _: StatusComponentContext<this>,
     label: D<string>,

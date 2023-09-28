@@ -1,6 +1,6 @@
 import { IntrinsicAppContext, AppContext, AppView } from "./context";
 import { D, dangerously_setD } from "./data/index";
-import { HTMLElementComponent } from "./dom";
+import { DOMElementComponent } from "./dom";
 import { Router } from "./router/router";
 
 export class App {
@@ -12,11 +12,11 @@ export class App {
     if (!rootElement) {
       throw new Error(`Root element ${rootElementId} not found`);
     }
-    this.root = new HTMLElementComponent("~", rootElement);
+    this.root = new DOMElementComponent("~", rootElement);
     this.resetState();
   }
 
-  root: HTMLElementComponent;
+  root: DOMElementComponent;
   refMap: Map<string, any> = new Map();
   _: AppContext | undefined;
   router = new Router(this);
@@ -31,7 +31,7 @@ export class App {
     this.processedComponents.add(ikey);
   }
 
-  currrentHTMLParent: HTMLElementComponent;
+  currrentHTMLParent: DOMElementComponent;
 
   eventRecevierIkey: string | null;
   get eventRecevier() {
