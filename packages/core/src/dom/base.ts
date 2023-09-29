@@ -12,4 +12,4 @@ export class DOMNodeComponent<N extends Node = Node> {
 
 export type DOMElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;
 
-export type Content = string | number | View;
+export type Content<Args extends any[] = []> = string | number | View<Args>;
