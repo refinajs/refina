@@ -88,6 +88,14 @@ export class DOMElementComponent<
   }
 }
 
+export type HTMLElementComponent<
+  E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
+> = DOMElementComponent<E>;
+
+export type SVGElementComponent<
+  E extends keyof SVGElementTagNameMap = keyof SVGElementTagNameMap,
+> = DOMElementComponent<E>;
+
 export type HTMLElementFuncs<C> = {
   [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C
     ? (
