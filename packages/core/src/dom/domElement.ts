@@ -1,31 +1,12 @@
-import {
-  CallbackComponent,
-  CallbackComponentContext,
-  ToCallbackComponentFuncs,
-  createCallbackComponentFunc,
-} from "./component/index";
-import { Context, View } from "./context";
-import { D } from "./data/index";
+import { D } from "../data";
+import { DOMElementTagNameMap, DOMNodeComponent, Content } from "./base";
 
-export class DOMNodeComponent<N extends Node = Node> {
-  constructor(
-    public ikey: string,
-    public node: N,
-  ) {}
-
-  createDOM() {}
-  updateDOM() {}
-}
-
-export type DOMElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;
 type DOMElementType<E extends keyof DOMElementTagNameMap> =
   E extends keyof HTMLElementTagNameMap
     ? HTMLElementTagNameMap[E]
     : E extends keyof SVGElementTagNameMap
     ? SVGElementTagNameMap[E]
     : never;
-
-export type Content = string | number | View;
 
 export class DOMElementComponent<
   E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
@@ -107,63 +88,7 @@ export class DOMElementComponent<
   }
 }
 
-export function createCbHTMLElementComponentFunction<
-  E extends keyof HTMLElementTagNameMap,
->(tagName: E) {
-  const ctor = class
-    extends CallbackComponent<HTMLElementEventMap>
-    implements CbHTMLElementComponent<E>
-  {
-    main(
-      _: CallbackComponentContext<HTMLElementEventMap, this>,
-      data: Partial<HTMLElementTagNameMap[E]> = {},
-      inner: D<Content> = () => {},
-    ) {
-      const elementData: any = { ...data };
-      for (const ev of this.$listendEvs) {
-        elementData[`on${ev}`] = _.$firer(ev);
-      }
-      (
-        _.$$ as (
-          funcName: string,
-          ckey: string,
-          data?: Partial<HTMLElementTagNameMap[E]>,
-          inner?: D<Content>,
-          //@ts-ignore
-        ) => this is Context<DOMElementComponent<E>>
-      )(`_${tagName}`, "_", elementData, inner);
-    }
-  };
-  return createCallbackComponentFunc(ctor);
-}
-
-const cbHTMLElementComponentFunctionCache = new Map<
-  keyof HTMLElementTagNameMap,
-  (this: Context, ckey: string, ...args: any[]) => boolean
->();
-
-export function getCbHTMLElementComponentFunction<
-  E extends keyof HTMLElementTagNameMap,
->(tagName: E) {
-  if (!cbHTMLElementComponentFunctionCache.has(tagName)) {
-    cbHTMLElementComponentFunctionCache.set(
-      tagName,
-      createCbHTMLElementComponentFunction(tagName),
-    );
-  }
-  return cbHTMLElementComponentFunctionCache.get(tagName)!;
-}
-
-export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
-  extends CallbackComponent<HTMLElementEventMap> {
-  main(
-    _: CallbackComponentContext<HTMLElementEventMap, this>,
-    data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<Content>,
-  ): void;
-}
-
-type HTMLElementFuncs<C> = {
+export type HTMLElementFuncs<C> = {
   [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
@@ -173,7 +98,7 @@ type HTMLElementFuncs<C> = {
     : never;
 };
 
-type SVGElementFuncs<C> = {
+export type SVGElementFuncs<C> = {
   [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C
     ? (
         data?: Record<string, D<string | number>>,
@@ -182,14 +107,3 @@ type SVGElementFuncs<C> = {
       ) => this is Context<DOMElementComponent<E>>
     : never;
 };
-
-type CbHTMLElementFuncs<C> = ToCallbackComponentFuncs<
-  {
-    [E in keyof HTMLElementTagNameMap as `_cb${Capitalize<E>}`]: CbHTMLElementComponent<E>;
-  },
-  C
->;
-
-export type DOMFuncs<C> = HTMLElementFuncs<C> &
-  SVGElementFuncs<C> &
-  CbHTMLElementFuncs<C>;
