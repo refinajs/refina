@@ -37,6 +37,24 @@ export type ToFullContext<C, I> = {
   DOMFuncs<C> &
   I;
 
+function updateElementAttribute(
+  element: Pick<HTMLElement, "setAttribute" | "removeAttribute"> &
+    Record<string, any>,
+  data: Record<string, any>,
+) {
+  for (const key in data) {
+    const value = data[key];
+    if (value === undefined) {
+      element.removeAttribute(key);
+    } else if (typeof value === "string") {
+      element.setAttribute(key, String(value));
+    } else {
+      //@ts-ignore
+      element[key] = value;
+    }
+  }
+}
+
 export class IntrinsicContext<C> {
   constructor(public readonly $app: App) {
     Object.defineProperty(this, "$ev", {
@@ -328,9 +346,7 @@ export class IntrinsicContext<C> {
         );
         this.$app.refMap.set(ikey, ec);
       }
-      for (const key in data) {
-        ec.node.setAttribute(key, String(data[key]));
-      }
+      updateElementAttribute(ec.node, data);
       ec.setClasses(classes);
       ec.setStyle(style);
       oldParent.children.push(ec);
@@ -389,9 +405,7 @@ export class IntrinsicContext<C> {
         );
         this.$app.refMap.set(ikey, ec);
       }
-      for (const key in data) {
-        ec.node.setAttribute(key, String(data[key]));
-      }
+      updateElementAttribute(ec.node, data);
       ec.setClasses(classes);
       ec.setStyle(style);
       oldParent.children.push(ec);
