@@ -326,8 +326,7 @@ export class IntrinsicContext<C> {
         this.$app.refMap.set(ikey, ec);
       }
       for (const key in data) {
-        //@ts-ignore
-        ec.node[key] = data[key]!;
+        ec.node.setAttribute(key, String(data[key]));
       }
       ec.setClasses(classes);
       ec.setStyle(style);
