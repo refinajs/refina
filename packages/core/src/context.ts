@@ -10,6 +10,9 @@ import {
   DOMElementComponent,
   DOMFuncs,
   DOMNodeComponent,
+  DOMPortalComponent,
+  HTMLElementComponent,
+  PortalMountTarget,
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
@@ -246,6 +249,11 @@ export class IntrinsicContext<C> {
         inner,
       );
     }
+    if (funcName === "portal") {
+      // Now this is a portal
+      let [inner, mountTarget] = args;
+      return this.$processPortalElement(ckey, inner, mountTarget);
+    }
     // Now this is a user-defined component
     const func = contextFuncs[funcName as keyof typeof contextFuncs];
     if (!func) {
@@ -338,20 +346,20 @@ export class IntrinsicContext<C> {
     this.$app.markComponentProcessed(ikey);
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     const oldParent = this.$app.currrentHTMLParent;
-    if (this.$updating) {
-      if (!ec) {
-        ec = new DOMElementComponent<keyof HTMLElementTagNameMap>(
-          ikey,
-          document.createElement(tagName),
-        );
-        this.$app.refMap.set(ikey, ec);
-      }
-      updateElementAttribute(ec.node, data);
-      ec.setClasses(classes);
-      ec.setStyle(style);
-      oldParent.children.push(ec);
-      ec.children = [];
+
+    if (!ec) {
+      ec = new DOMElementComponent<keyof HTMLElementTagNameMap>(
+        ikey,
+        document.createElement(tagName),
+      );
+      this.$app.refMap.set(ikey, ec);
+      this.$app.nodeMap.set(ec.node, ec);
     }
+    updateElementAttribute(ec.node, data);
+    ec.setClasses(classes);
+    ec.setStyle(style);
+    oldParent.children.push(ec);
+    ec.children = [];
 
     const context = new IntrinsicContext(this.$app);
 
@@ -397,20 +405,20 @@ export class IntrinsicContext<C> {
     this.$app.markComponentProcessed(ikey);
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     const oldParent = this.$app.currrentHTMLParent;
-    if (this.$updating) {
-      if (!ec) {
-        ec = new DOMElementComponent<keyof SVGElementTagNameMap>(
-          ikey,
-          document.createElementNS("http://www.w3.org/2000/svg", tagName),
-        );
-        this.$app.refMap.set(ikey, ec);
-      }
-      updateElementAttribute(ec.node, data);
-      ec.setClasses(classes);
-      ec.setStyle(style);
-      oldParent.children.push(ec);
-      ec.children = [];
+
+    if (!ec) {
+      ec = new DOMElementComponent<keyof SVGElementTagNameMap>(
+        ikey,
+        document.createElementNS("http://www.w3.org/2000/svg", tagName),
+      );
+      this.$app.refMap.set(ikey, ec);
+      this.$app.nodeMap.set(ec.node, ec);
     }
+    updateElementAttribute(ec.node, data);
+    ec.setClasses(classes);
+    ec.setStyle(style);
+    oldParent.children.push(ec);
+    ec.children = [];
 
     const context = new IntrinsicContext(this.$app);
 
@@ -445,15 +453,16 @@ export class IntrinsicContext<C> {
     const ikey = this.$app.ikey;
     this.$app.markComponentProcessed(ikey);
     let t = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
-    if (this.$updating) {
-      if (!t) {
-        t = new TextNodeComponent(ikey, document.createTextNode(text));
-        this.$app.refMap.set(ikey, t);
-      } else {
-        if (t.node.textContent !== text) t.node.textContent = text;
-      }
-      this.$app.currrentHTMLParent.children.push(t);
+
+    if (!t) {
+      t = new TextNodeComponent(ikey, document.createTextNode(text));
+      this.$app.refMap.set(ikey, t);
+      this.$app.nodeMap.set(t.node, t);
+    } else {
+      if (t.node.textContent !== text) t.node.textContent = text;
     }
+    this.$app.currrentHTMLParent.children.push(t);
+
     this.$app.popKey(ckey);
 
     this.$firstDOMNode ??= t!;
@@ -464,6 +473,84 @@ export class IntrinsicContext<C> {
     }
 
     return t!;
+  }
+  protected $processPortalElement(
+    ckey: string,
+    inner: D<View>,
+    mountTarget: PortalMountTarget = this.$app.root.node,
+  ) {
+    this.$app.callHookAfterThisComponent();
+
+    this.$app.pushKey(ckey);
+    const ikey = this.$app.ikey;
+    const targetIkey = ikey + ".target";
+    const shadowIkey = ikey + ".shadow";
+    this.$app.markComponentProcessed(ikey);
+
+    const oldParent = this.$app.currrentHTMLParent;
+
+    const normalizedMountTarget =
+      typeof mountTarget === "string"
+        ? document.getElementById(mountTarget)
+        : mountTarget;
+    if (normalizedMountTarget === null) {
+      throw new Error(`Cannot find mount target ${mountTarget}`);
+    }
+
+    let targetComponent: HTMLElementComponent;
+    if (normalizedMountTarget instanceof DOMElementComponent) {
+      targetComponent = normalizedMountTarget;
+    } else {
+      const storedTargetComponent = this.$app.nodeMap.get(
+        normalizedMountTarget,
+      ) as HTMLElementComponent | undefined;
+      if (storedTargetComponent === undefined) {
+        targetComponent = new DOMElementComponent(
+          targetIkey,
+          normalizedMountTarget,
+        );
+        this.$app.nodeMap.set(normalizedMountTarget, targetComponent);
+      } else {
+        targetComponent = storedTargetComponent;
+      }
+    }
+
+    let shadowComponent = this.$app.portalMap.get(targetComponent);
+
+    if (!shadowComponent) {
+      shadowComponent = new DOMPortalComponent(
+        shadowIkey,
+        targetComponent.node,
+      );
+      this.$app.portalMap.set(targetComponent, shadowComponent);
+    }
+    oldParent.children.push(shadowComponent);
+    shadowComponent.children = [];
+
+    const context = new IntrinsicContext(this.$app);
+
+    this.$pendingRef.current = shadowComponent;
+    this.$pendingRef = this.$lastRef;
+
+    if (this.$isNoPreserve) {
+      // FIXME: not sure if this is correct
+      this.$app.noPreserveComponents.add(targetIkey);
+      this.$app.noPreserveComponents.add(shadowIkey);
+      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
+      this.$pendingNoPreserve = false;
+    }
+
+    this.$app.currrentHTMLParent = shadowComponent!;
+
+    getD(inner)(context as unknown as Context);
+
+    this.$app.callHookAfterThisComponent();
+
+    this.$app.currrentHTMLParent = oldParent;
+
+    this.$app.popKey(ckey);
+
+    return shadowComponent!;
   }
 }
 

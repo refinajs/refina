@@ -1,6 +1,11 @@
-import { IntrinsicAppContext, AppContext, AppView } from "./context";
+import { AppContext, AppView, IntrinsicAppContext } from "./context";
 import { D, dangerously_setD } from "./data/index";
-import { DOMElementComponent } from "./dom";
+import {
+  DOMElementComponent,
+  DOMNodeComponent,
+  DOMPortalComponent,
+  HTMLElementComponent,
+} from "./dom";
 import { Router } from "./router/router";
 
 export class App {
@@ -18,6 +23,8 @@ export class App {
 
   root: DOMElementComponent<keyof HTMLElementTagNameMap>;
   refMap: Map<string, any> = new Map();
+  nodeMap: Map<Node, DOMNodeComponent> = new Map();
+  portalMap: Map<HTMLElementComponent, DOMPortalComponent> = new Map();
   _: AppContext | undefined;
   router = new Router(this);
   runtimeData: Record<symbol, any> | undefined;
