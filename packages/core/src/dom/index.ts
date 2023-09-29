@@ -1,11 +1,13 @@
 import { CbHTMLElementFuncs } from "./cbElement";
 import { HTMLElementFuncs, SVGElementFuncs } from "./domElement";
-import { PortalFunc } from "./portal";
+import { DOMPortalFunc } from "./portal";
+import { TextNodeFunc } from "./textNode";
 
-export type DOMFuncs<C> = HTMLElementFuncs<C> &
+export type DOMFuncs<C> = CbHTMLElementFuncs<C> &
+  HTMLElementFuncs<C> &
   SVGElementFuncs<C> &
-  CbHTMLElementFuncs<C> &
-  PortalFunc<C>;
+  DOMPortalFunc<C> &
+  TextNodeFunc;
 
 export * from "./base";
 export * from "./cbElement";

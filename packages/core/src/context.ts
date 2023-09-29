@@ -12,7 +12,7 @@ import {
   DOMNodeComponent,
   DOMPortalComponent,
   HTMLElementComponent,
-  PortalMountTarget,
+  DOMPortalMountTarget,
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
@@ -32,10 +32,7 @@ export const contextFuncs = {} as {
 
 export interface CustomContext<C> {}
 
-export type ToFullContext<C, I> = {
-  t(template: TemplateStringsArray, ...args: any[]): void;
-  t(text: D<string>): void;
-} & ComponentFuncs<C> &
+export type ToFullContext<C, I> = ComponentFuncs<C> &
   CustomContext<C> &
   DOMFuncs<C> &
   I;
@@ -477,7 +474,7 @@ export class IntrinsicContext<C> {
   protected $processPortalElement(
     ckey: string,
     inner: D<View>,
-    mountTarget: PortalMountTarget = this.$app.root.node,
+    mountTarget: DOMPortalMountTarget = this.$app.root.node,
   ) {
     this.$app.callHookAfterThisComponent();
 

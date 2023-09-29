@@ -16,13 +16,13 @@ export class DOMPortalComponent extends DOMElementComponent {
   insertAfter(_element: ChildNode) {}
 }
 
-export type PortalMountTarget =
+export type DOMPortalMountTarget =
   | HTMLElement
   | DOMElementComponent<keyof HTMLElementTagNameMap>
   | string;
 
-export type PortalFunc<C> = {
+export type DOMPortalFunc<C> = {
   portal: DOMPortalComponent extends C
-    ? (inner: D<Content>, mountTarget?: PortalMountTarget) => void
+    ? (inner: D<Content>, mountTarget?: DOMPortalMountTarget) => void
     : never;
 };
