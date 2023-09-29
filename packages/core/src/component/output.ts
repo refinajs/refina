@@ -30,7 +30,7 @@ export function outputComponent<
   return <T extends ComponentConstructor<OutputComponent>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor) as OutputComponent;
+      const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
       const context = new IntrinsicOutputComponentContext(this, component);
 
@@ -44,7 +44,7 @@ export function outputComponent<
         context.$firstHTMLELement?.addStyle(context.$styleArg);
       }
 
-      this.endComponent(ckey);
+      this.$endComponent(ckey);
 
       return;
     };

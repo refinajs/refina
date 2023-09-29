@@ -50,7 +50,7 @@ export function triggerComponent<
   return <T extends ComponentConstructor<TriggerComponent<any>>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(
+      const component = this.$beginComponent(
         ckey,
         ctor,
       ) as TriggerComponent<any>;
@@ -72,7 +72,7 @@ export function triggerComponent<
         context.$firstHTMLELement?.addStyle(context.$styleArg);
       }
 
-      this.endComponent(ckey);
+      this.$endComponent(ckey);
 
       return isReceiver;
     };

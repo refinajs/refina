@@ -67,7 +67,7 @@ export function createCallbackComponentFunc<
   S extends CallbackComponent<Evs>,
 >(ctor: ComponentConstructor<S>) {
   return function (this: Context, ckey: string, ...args: any[]) {
-    const component = this.beginComponent(ckey, ctor);
+    const component = this.$beginComponent(ckey, ctor);
     let ret: boolean;
     if (this.$updating) {
       component.$listendEvs.clear();
@@ -125,7 +125,7 @@ export function createCallbackComponentFunc<
       );
       ret = this.$app.isReceiver;
     }
-    this.endComponent(ckey);
+    this.$endComponent(ckey);
     return ret;
   };
 }

@@ -49,7 +49,7 @@ export function statusComponent<
   return <T extends ComponentConstructor<StatusComponent>>(ctor: T) => {
     //@ts-ignore
     contextFuncs[name] = function (this: Context, ckey, ...args) {
-      const component = this.beginComponent(ckey, ctor) as StatusComponent;
+      const component = this.$beginComponent(ckey, ctor) as StatusComponent;
 
       component.$status ??= false;
 
@@ -69,7 +69,7 @@ export function statusComponent<
         context.$firstHTMLELement?.addStyle(context.$styleArg);
       }
 
-      this.endComponent(ckey);
+      this.$endComponent(ckey);
 
       return component.$status;
     };

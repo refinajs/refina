@@ -203,7 +203,7 @@ export class IntrinsicContext<C> {
       const tagName = (funcName[4].toLowerCase() +
         funcName.slice(5)) as keyof SVGElementTagNameMap;
       let [data, inner] = args;
-      return this.processSVGElement(
+      return this.$processSVGElement(
         ckey,
         tagName,
         this.$classes,
@@ -216,7 +216,7 @@ export class IntrinsicContext<C> {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
       let [data, inner] = args;
-      return this.processHTMLElement(
+      return this.$processHTMLElement(
         ckey,
         tagName,
         this.$classes,
@@ -241,7 +241,7 @@ export class IntrinsicContext<C> {
     if (this.$style.length > 0) {
       throw new Error(`Text node cannot have style`);
     }
-    return this.processTextNode(ckey, getD(text));
+    return this.$processTextNode(ckey, getD(text));
   }
 
   $firstDOMNode: DOMNodeComponent | null = null;
@@ -253,7 +253,7 @@ export class IntrinsicContext<C> {
     this.$firstHTMLELement ??= element;
   }
 
-  beginComponent<T extends Component>(
+  $beginComponent<T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
   ) {
@@ -278,11 +278,11 @@ export class IntrinsicContext<C> {
     }
     return component;
   }
-  endComponent(ckey: string) {
+  $endComponent(ckey: string) {
     this.$app.popKey(ckey);
   }
 
-  normalizeContent(content: D<Content> = () => {}): View {
+  protected $normalizeContent(content: D<Content> = () => {}): View {
     const contentValue = getD(content);
     if (typeof contentValue === "string" || typeof contentValue === "number") {
       const text = contentValue;
@@ -293,13 +293,13 @@ export class IntrinsicContext<C> {
         if (this.$style.length > 0) {
           throw new Error(`Text node cannot have style`);
         }
-        this.processTextNode("_t", String(text));
+        this.$processTextNode("_t", String(text));
       };
     }
     return contentValue;
   }
 
-  protected processHTMLElement<E extends keyof HTMLElementTagNameMap>(
+  protected $processHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
     classes: string[],
@@ -308,7 +308,7 @@ export class IntrinsicContext<C> {
     inner?: D<Content>,
   ) {
     data ??= {};
-    inner = this.normalizeContent(inner);
+    inner = this.$normalizeContent(inner);
 
     this.$app.callHookAfterThisComponent();
 
@@ -361,7 +361,7 @@ export class IntrinsicContext<C> {
 
     return ec!;
   }
-  protected processSVGElement<E extends keyof SVGElementTagNameMap>(
+  protected $processSVGElement<E extends keyof SVGElementTagNameMap>(
     ckey: string,
     tagName: E,
     classes: string[],
@@ -370,7 +370,7 @@ export class IntrinsicContext<C> {
     inner?: D<Content>,
   ) {
     data ??= {};
-    inner = this.normalizeContent(inner);
+    inner = this.$normalizeContent(inner);
 
     this.$app.callHookAfterThisComponent();
 
@@ -422,7 +422,7 @@ export class IntrinsicContext<C> {
 
     return ec!;
   }
-  protected processTextNode(ckey: string, text: string) {
+  protected $processTextNode(ckey: string, text: string) {
     this.$app.callHookAfterThisComponent();
 
     this.$app.pushKey(ckey);
