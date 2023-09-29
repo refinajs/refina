@@ -14,5 +14,4 @@ export type ComponentFuncs<C> = TriggerComponentFuncs<C> &
   CallbackComponentFuncs<C> &
   OutputComponentFuncs<C>;
 
-export * from "./embed.r";
 export * from "./basic.r";
