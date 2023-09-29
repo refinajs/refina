@@ -16,7 +16,7 @@ export class App {
     this.resetState();
   }
 
-  root: DOMElementComponent;
+  root: DOMElementComponent<keyof HTMLElementTagNameMap>;
   refMap: Map<string, any> = new Map();
   _: AppContext | undefined;
   router = new Router(this);
