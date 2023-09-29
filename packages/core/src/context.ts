@@ -129,13 +129,14 @@ export class IntrinsicContext<C> {
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
-    this.$pendingClasses = (
-      Array.isArray(args[0])
+    this.$pendingClasses = this.$pendingClasses.concat(
+      (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]
-    )
-      .split(/\s/)
-      .filter(Boolean);
+      )
+        .split(/\s/)
+        .filter(Boolean),
+    );
     return true;
   }
   protected $pendingClasses: string[] = [];
@@ -148,9 +149,11 @@ export class IntrinsicContext<C> {
   $css(style: string): void;
   $css(template: TemplateStringsArray, ...args: any[]): void;
   $css(...args: any[]): void {
-    this.$pendingStyle = Array.isArray(args[0])
-      ? String.raw({ raw: args[0] }, ...args.slice(1))
-      : args[0];
+    this.$pendingStyle +=
+      ";" +
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]);
   }
   protected $pendingStyle: string = "";
   get $style() {
