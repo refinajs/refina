@@ -17,7 +17,7 @@ export class DOMElementComponent<
   createDOM() {
     for (const child of this.children) {
       child.createDOM();
-      this.node.appendChild(child.node);
+      child.appendTo(this.node);
       this.createdChildren.add(child);
     }
   }
@@ -32,12 +32,12 @@ export class DOMElementComponent<
       } else {
         child.createDOM();
         if (lastChildEl) {
-          lastChildEl.after(child.node);
+          child.insertAfter(lastChildEl);
         } else {
           if (this.node.firstChild) {
-            this.node.firstChild.before(child.node);
+            child.insertBefore(this.node.firstChild);
           } else {
-            this.node.appendChild(child.node);
+            child.appendTo(this.node);
           }
         }
         child.updateDOM();
@@ -45,7 +45,7 @@ export class DOMElementComponent<
       lastChildEl = child.node as ChildNode;
     }
     for (const unusedChild of createdUnused) {
-      this.node.removeChild(unusedChild.node);
+      unusedChild.removeFrom(this.node);
     }
     this.createdChildren = new Set(this.children);
   }
