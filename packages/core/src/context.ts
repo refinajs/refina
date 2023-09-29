@@ -1,3 +1,4 @@
+import { App, AppState } from "./app";
 import {
   Component,
   ComponentConstructor,
@@ -6,14 +7,12 @@ import {
 import { D, Ref, getD, ref } from "./data/index";
 import {
   Content,
+  DOMElementComponent,
   DOMFuncs,
   DOMNodeComponent,
-  DOMElementComponent,
-  createCbHTMLElementComponentFunction,
-  type DOMElementTagNameMap,
   TextNodeComponent,
+  createCbHTMLElementComponentFunction,
 } from "./dom";
-import { App, AppState } from "./app";
 import { Maybe } from "./utils/index";
 
 export const contextFuncs = {} as {
