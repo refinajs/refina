@@ -1,13 +1,13 @@
 import { View } from "../context";
 
-export class DOMNodeComponent<N extends Node = Node> {
+export abstract class DOMNodeComponent<N extends Node = Node> {
   constructor(
     public ikey: string,
     public node: N,
   ) {}
 
-  createDOM() {}
-  updateDOM() {}
+  abstract createDOM(): void;
+  abstract updateDOM(): void;
 }
 
 export type DOMElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;

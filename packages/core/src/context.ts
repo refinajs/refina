@@ -11,6 +11,7 @@ import {
   DOMElementComponent,
   createCbHTMLElementComponentFunction,
   type DOMElementTagNameMap,
+  TextNodeComponent,
 } from "./dom";
 import { App, AppState } from "./app";
 import { Maybe } from "./utils/index";
@@ -431,7 +432,7 @@ export class IntrinsicContext<C> {
     let t = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
     if (this.$updating) {
       if (!t) {
-        t = new DOMNodeComponent(ikey, document.createTextNode(text));
+        t = new TextNodeComponent(ikey, document.createTextNode(text));
         this.$app.refMap.set(ikey, t);
       } else {
         if (t.node.textContent !== text) t.node.textContent = text;

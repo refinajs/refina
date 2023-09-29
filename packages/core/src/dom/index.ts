@@ -8,3 +8,4 @@ export type DOMFuncs<C> = HTMLElementFuncs<C> &
 export * from "./base";
 export * from "./cbElement";
 export * from "./domElement";
+export * from "./textNode";
