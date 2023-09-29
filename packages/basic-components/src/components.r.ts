@@ -1,14 +1,19 @@
-import { D, getD, ref } from "../data/index";
-import { Content, DOMElementComponent } from "../dom";
 import {
+  statusComponent,
   StatusComponent,
   StatusComponentContext,
+  D,
+  Content,
+  outputComponent,
+  OutputComponent,
+  OutputComponentContext,
+  getD,
+  triggerComponent,
   TriggerComponent,
   TriggerComponentContext,
-  statusComponent,
-  triggerComponent,
-} from "./index";
-import { OutputComponent, OutputComponentContext, outputComponent } from "./output";
+  ref,
+  DOMElementComponent,
+} from "refina";
 
 @statusComponent("div")
 export class Div extends StatusComponent {
@@ -16,7 +21,7 @@ export class Div extends StatusComponent {
     _._div({}, inner);
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface StatusComponents {
     div: Div;
   }
@@ -28,7 +33,7 @@ export class Span extends OutputComponent {
     _._span({}, inner);
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     span: Span;
   }
@@ -40,7 +45,7 @@ export class BreakLine extends OutputComponent {
     _._br();
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     br: BreakLine;
   }
@@ -52,7 +57,7 @@ export class Heading1 extends OutputComponent {
     _._h1({}, inner);
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     h1: Heading1;
   }
@@ -65,7 +70,7 @@ export class Paragraph extends OutputComponent {
   }
 }
 
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     p: Paragraph;
   }
@@ -82,7 +87,7 @@ export class Anchor extends OutputComponent {
     );
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     a: Anchor;
   }
@@ -103,7 +108,7 @@ export class Button extends TriggerComponent<MouseEvent> {
     );
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface TriggerComponents {
     button: Button;
   }
@@ -125,7 +130,7 @@ export class TextInput extends OutputComponent {
       });
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     textInput: TextInput;
   }
@@ -147,7 +152,7 @@ export class PasswordInput extends StatusComponent {
       });
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface StatusComponents {
     passwordInput: PasswordInput;
   }
@@ -161,7 +166,7 @@ export class ToggleButton extends StatusComponent {
     }
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface StatusComponents {
     toggleButton: ToggleButton;
   }
@@ -188,7 +193,7 @@ export class Checkbox extends StatusComponent {
     });
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface StatusComponents {
     checkbox: Checkbox;
   }
@@ -211,7 +216,7 @@ export class UnorderedList extends OutputComponent {
     });
   }
 }
-declare module "../context" {
+declare module "refina" {
   interface CustomContext<C> {
     ul: UnorderedList extends C
       ? <T>(
@@ -230,7 +235,7 @@ export class ListItem extends OutputComponent {
   }
 }
 
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     li: ListItem;
   }
@@ -245,7 +250,7 @@ export class Image extends OutputComponent {
     });
   }
 }
-declare module "./index" {
+declare module "refina" {
   interface OutputComponents {
     img: Image;
   }

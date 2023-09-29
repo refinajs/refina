@@ -13,5 +13,3 @@ export type ComponentFuncs<C> = TriggerComponentFuncs<C> &
   StatusComponentFuncs<C> &
   CallbackComponentFuncs<C> &
   OutputComponentFuncs<C>;
-
-export * from "./basic.r";

@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { d, app } from "refina";
+import "@refina/basic-components";
 import logo from "../assets/github-mark-white.svg";
 
 function login() {
