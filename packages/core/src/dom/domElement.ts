@@ -1,5 +1,11 @@
 import { D } from "../data";
-import { DOMElementTagNameMap, DOMNodeComponent, Content } from "./base";
+import {
+  DOMElementTagNameMap,
+  DOMNodeComponent,
+  Content,
+  MaybeChildNode,
+  DOMNodeComponentActionResult,
+} from "./base";
 
 type DOMElementType<E extends keyof DOMElementTagNameMap> =
   E extends keyof HTMLElementTagNameMap
@@ -14,40 +20,48 @@ export class DOMElementComponent<
   children: DOMNodeComponent[] = [];
   protected createdChildren = new Set<DOMNodeComponent>();
 
-  createDOM() {
+  createDOM(): DOMNodeComponentActionResult {
+    let lastEl: MaybeChildNode = null;
     for (const child of this.children) {
       child.createDOM();
-      child.appendTo(this.node);
+      lastEl = child.appendTo(this.node) ?? lastEl;
       this.createdChildren.add(child);
     }
+    return {
+      lastEl,
+      thisEl: this.node,
+    };
   }
 
-  updateDOM() {
+  updateDOM(): DOMNodeComponentActionResult {
     let createdUnused = new Set<DOMNodeComponent>(this.createdChildren);
-    let lastChildEl: null | ChildNode = null;
+    let lastEl: MaybeChildNode = null;
     for (const child of this.children) {
       if (this.createdChildren.has(child)) {
-        child.updateDOM();
+        lastEl = child.updateDOM().thisEl ?? lastEl;
         createdUnused.delete(child);
       } else {
-        child.createDOM();
-        if (lastChildEl) {
-          child.insertAfter(lastChildEl);
+        lastEl = child.createDOM().thisEl ?? lastEl;
+        if (lastEl) {
+          lastEl = child.insertAfter(lastEl) ?? lastEl;
         } else {
           if (this.node.firstChild) {
-            child.insertBefore(this.node.firstChild);
+            lastEl = child.prependTo(this.node) ?? lastEl;
           } else {
-            child.appendTo(this.node);
+            lastEl = child.appendTo(this.node) ?? lastEl;
           }
         }
         child.updateDOM();
       }
-      lastChildEl = child.node as ChildNode;
     }
     for (const unusedChild of createdUnused) {
       unusedChild.removeFrom(this.node);
     }
     this.createdChildren = new Set(this.children);
+    return {
+      lastEl,
+      thisEl: this.node,
+    };
   }
 
   currentClasses = new Set<string>();

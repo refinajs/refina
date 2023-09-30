@@ -1,9 +1,13 @@
 import { D } from "../data";
-import { DOMNodeComponent } from "./base";
+import { DOMNodeComponent, DOMNodeComponentActionResult } from "./base";
 
 export class TextNodeComponent extends DOMNodeComponent {
-  createDOM() {}
-  updateDOM() {}
+  createDOM(): DOMNodeComponentActionResult {
+    return { lastEl: null, thisEl: null };
+  }
+  updateDOM(): DOMNodeComponentActionResult {
+    return { lastEl: null, thisEl: null };
+  }
 }
 
 export type TextNodeFunc = {

@@ -13,4 +13,5 @@ export * from "./base";
 export * from "./cbElement";
 export * from "./domElement";
 export * from "./portal";
+export * from "./root";
 export * from "./textNode";

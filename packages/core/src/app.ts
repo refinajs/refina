@@ -1,11 +1,6 @@
 import { AppContext, AppView, IntrinsicAppContext } from "./context";
 import { D, dangerously_setD } from "./data/index";
-import {
-  DOMElementComponent,
-  DOMNodeComponent,
-  DOMPortalComponent,
-  HTMLElementComponent,
-} from "./dom";
+import { DOMElementComponent, DOMNodeComponent, DOMRootComponent } from "./dom";
 import { Router } from "./router/router";
 
 export class App {
@@ -17,14 +12,13 @@ export class App {
     if (!rootElement) {
       throw new Error(`Root element ${rootElementId} not found`);
     }
-    this.root = new DOMElementComponent("~", rootElement);
+    this.root = new DOMRootComponent("_", rootElement);
     this.resetState();
   }
 
-  root: DOMElementComponent<keyof HTMLElementTagNameMap>;
+  root: DOMRootComponent;
   refMap: Map<string, any> = new Map();
   nodeMap: Map<Node, DOMNodeComponent> = new Map();
-  portalMap: Map<HTMLElementComponent, DOMPortalComponent> = new Map();
   _: AppContext | undefined;
   router = new Router(this);
   runtimeData: Record<symbol, any> | undefined;
@@ -38,7 +32,7 @@ export class App {
     this.processedComponents.add(ikey);
   }
 
-  currrentHTMLParent: DOMElementComponent;
+  currentDOMParent: DOMElementComponent;
 
   eventRecevierIkey: string | null;
   get eventRecevier() {
@@ -60,7 +54,8 @@ export class App {
 
   protected resetState() {
     this.root.children = [];
-    this.currrentHTMLParent = this.root;
+    this.root.portals = new Set();
+    this.currentDOMParent = this.root;
     this.eventRecevierIkey = null;
     this.idPrefix = ["root"];
   }

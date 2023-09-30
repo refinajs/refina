@@ -11,8 +11,6 @@ import {
   DOMFuncs,
   DOMNodeComponent,
   DOMPortalComponent,
-  HTMLElementComponent,
-  DOMPortalMountTarget,
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
@@ -236,7 +234,7 @@ export class IntrinsicContext<C> {
     if (funcName[0] === "_") {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
-      let [data, inner] = args;
+      const [data, inner] = args;
       return this.$processHTMLElement(
         ckey,
         tagName,
@@ -248,8 +246,8 @@ export class IntrinsicContext<C> {
     }
     if (funcName === "portal") {
       // Now this is a portal
-      let [inner, mountTarget] = args;
-      return this.$processPortalElement(ckey, inner, mountTarget);
+      const [inner] = args;
+      return this.$processPortalElement(ckey, inner);
     }
     // Now this is a user-defined component
     const func = contextFuncs[funcName as keyof typeof contextFuncs];
@@ -342,7 +340,7 @@ export class IntrinsicContext<C> {
     const ikey = this.$app.ikey;
     this.$app.markComponentProcessed(ikey);
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
-    const oldParent = this.$app.currrentHTMLParent;
+    const oldParent = this.$app.currentDOMParent;
 
     if (!ec) {
       ec = new DOMElementComponent<keyof HTMLElementTagNameMap>(
@@ -372,13 +370,13 @@ export class IntrinsicContext<C> {
       this.$pendingNoPreserve = false;
     }
 
-    this.$app.currrentHTMLParent = ec!;
+    this.$app.currentDOMParent = ec!;
 
     inner(context as unknown as Context);
 
     this.$app.callHookAfterThisComponent();
 
-    this.$app.currrentHTMLParent = oldParent;
+    this.$app.currentDOMParent = oldParent;
 
     this.$app.popKey(ckey);
 
@@ -401,7 +399,7 @@ export class IntrinsicContext<C> {
     const ikey = this.$app.ikey;
     this.$app.markComponentProcessed(ikey);
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
-    const oldParent = this.$app.currrentHTMLParent;
+    const oldParent = this.$app.currentDOMParent;
 
     if (!ec) {
       ec = new DOMElementComponent<keyof SVGElementTagNameMap>(
@@ -431,13 +429,13 @@ export class IntrinsicContext<C> {
       this.$pendingNoPreserve = false;
     }
 
-    this.$app.currrentHTMLParent = ec!;
+    this.$app.currentDOMParent = ec!;
 
     inner(context as unknown as Context);
 
     this.$app.callHookAfterThisComponent();
 
-    this.$app.currrentHTMLParent = oldParent;
+    this.$app.currentDOMParent = oldParent;
 
     this.$app.popKey(ckey);
 
@@ -458,7 +456,7 @@ export class IntrinsicContext<C> {
     } else {
       if (t.node.textContent !== text) t.node.textContent = text;
     }
-    this.$app.currrentHTMLParent.children.push(t);
+    this.$app.currentDOMParent.children.push(t);
 
     this.$app.popKey(ckey);
 
@@ -471,83 +469,64 @@ export class IntrinsicContext<C> {
 
     return t!;
   }
-  protected $processPortalElement(
-    ckey: string,
-    inner: D<View>,
-    mountTarget: DOMPortalMountTarget = this.$app.root.node,
-  ) {
+  protected $processPortalElement(ckey: string, inner: D<View>) {
     this.$app.callHookAfterThisComponent();
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
-    const targetIkey = ikey + ".target";
-    const shadowIkey = ikey + ".shadow";
     this.$app.markComponentProcessed(ikey);
 
-    const oldParent = this.$app.currrentHTMLParent;
+    const oldParent = this.$app.currentDOMParent;
 
-    const normalizedMountTarget =
-      typeof mountTarget === "string"
-        ? document.getElementById(mountTarget)
-        : mountTarget;
-    if (normalizedMountTarget === null) {
-      throw new Error(`Cannot find mount target ${mountTarget}`);
+    // let targetComponent: HTMLElementComponent;
+    // if (normalizedMountTarget instanceof DOMElementComponent) {
+    //   targetComponent = normalizedMountTarget;
+    // } else {
+    //   const storedTargetComponent = this.$app.nodeMap.get(
+    //     normalizedMountTarget,
+    //   ) as HTMLElementComponent | undefined;
+    //   if (storedTargetComponent === undefined) {
+    //     targetComponent = new DOMElementComponent(
+    //       targetIkey,
+    //       normalizedMountTarget,
+    //     );
+    //     this.$app.nodeMap.set(normalizedMountTarget, targetComponent);
+    //   } else {
+    //     targetComponent = storedTargetComponent;
+    //   }
+    // }
+
+    let portal = this.$app.refMap.get(ikey) as DOMPortalComponent;
+
+    if (!portal) {
+      portal = new DOMPortalComponent(ikey, this.$app.root.node);
+      this.$app.refMap.set(ikey, portal);
     }
-
-    let targetComponent: HTMLElementComponent;
-    if (normalizedMountTarget instanceof DOMElementComponent) {
-      targetComponent = normalizedMountTarget;
-    } else {
-      const storedTargetComponent = this.$app.nodeMap.get(
-        normalizedMountTarget,
-      ) as HTMLElementComponent | undefined;
-      if (storedTargetComponent === undefined) {
-        targetComponent = new DOMElementComponent(
-          targetIkey,
-          normalizedMountTarget,
-        );
-        this.$app.nodeMap.set(normalizedMountTarget, targetComponent);
-      } else {
-        targetComponent = storedTargetComponent;
-      }
-    }
-
-    let shadowComponent = this.$app.portalMap.get(targetComponent);
-
-    if (!shadowComponent) {
-      shadowComponent = new DOMPortalComponent(
-        shadowIkey,
-        targetComponent.node,
-      );
-      this.$app.portalMap.set(targetComponent, shadowComponent);
-    }
-    oldParent.children.push(shadowComponent);
-    shadowComponent.children = [];
+    oldParent.children.push(portal);
+    this.$app.root.portals.add(portal);
+    portal.children = [];
 
     const context = new IntrinsicContext(this.$app);
 
-    this.$pendingRef.current = shadowComponent;
+    this.$pendingRef.current = portal;
     this.$pendingRef = this.$lastRef;
 
     if (this.$isNoPreserve) {
-      // FIXME: not sure if this is correct
-      this.$app.noPreserveComponents.add(targetIkey);
-      this.$app.noPreserveComponents.add(shadowIkey);
       if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
-      this.$pendingNoPreserve = false;
+      else throw new Error(`Portal cannot be no-preserve.`);
     }
 
-    this.$app.currrentHTMLParent = shadowComponent!;
+    this.$app.currentDOMParent = portal!;
 
     getD(inner)(context as unknown as Context);
 
     this.$app.callHookAfterThisComponent();
 
-    this.$app.currrentHTMLParent = oldParent;
+    this.$app.currentDOMParent = oldParent;
 
     this.$app.popKey(ckey);
 
-    return shadowComponent!;
+    return portal!;
   }
 }
 
