@@ -87,7 +87,7 @@ export function createCallbackComponentFunc<
         },
       });
       this.$cbComponent = componentProxy;
-      this.$app.hookAfterThisComponent = () => {
+      this.$app.pushHook("afterThisComponent", () => {
         const context = new IntrinsicCallbackComponentContext(
           this,
           componentProxy as any,
@@ -102,7 +102,7 @@ export function createCallbackComponentFunc<
           context.$firstHTMLELement?.addClasses(context.$classesArg);
           context.$firstHTMLELement?.addStyle(context.$styleArg);
         }
-      };
+      });
       ret = true;
     } else {
       // this.$receiving

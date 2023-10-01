@@ -3,6 +3,12 @@ import { D, dangerously_setD } from "./data/index";
 import { DOMElementComponent, DOMNodeComponent, DOMRootComponent } from "./dom";
 import { Router } from "./router/router";
 
+export interface AppHookMap {
+  afterThisComponent: () => void;
+  beforeModifyDOM: () => void;
+  afterModifyDOM: () => void;
+}
+
 export class App {
   constructor(
     public main: AppView,
@@ -65,7 +71,9 @@ export class App {
       throw new Error("App already mounted");
     }
     this.execUpdate();
+    this.callAndResetHook("beforeModifyDOM");
     this.root.createDOM();
+    this.callAndResetHook("afterModifyDOM");
     this.mounted = true;
   }
   nextTick() {
@@ -89,7 +97,9 @@ export class App {
         console.log(`[+] update executing start`);
         const startTime = window.performance.now();
         this.execUpdate();
+        this.callAndResetHook("beforeModifyDOM");
         this.root.updateDOM();
+        this.callAndResetHook("afterModifyDOM");
         console.log(
           `[-] update executed in ${window.performance.now() - startTime}ms`,
         );
@@ -161,13 +171,25 @@ export class App {
     this.execMain();
   }
 
-  hookAfterThisComponent: null | (() => void) = null;
-  callHookAfterThisComponent() {
-    if (this.hookAfterThisComponent) {
-      const hook = this.hookAfterThisComponent;
-      this.hookAfterThisComponent = null;
-      hook();
+  hooks: { [K in keyof AppHookMap]?: AppHookMap[K][] } = {};
+  callAndResetHook<K extends keyof AppHookMap>(
+    hookName: K,
+    ...args: Parameters<AppHookMap[K]>
+  ): ReturnType<AppHookMap[K]>[] | null {
+    const hookList = this.hooks[hookName];
+    if (hookList) {
+      this.hooks[hookName] = undefined;
+      //@ts-ignore
+      return hookList.map((hook) => hook(...args));
     }
+    return null;
+  }
+  pushHook<K extends keyof AppHookMap>(
+    hookName: K,
+    ...hooks: AppHookMap[K][]
+  ): void {
+    this.hooks[hookName] ??= [];
+    this.hooks[hookName]!.push(...hooks);
   }
 
   setD<T>(d: D<T>, v: T): boolean {

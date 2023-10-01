@@ -4,7 +4,7 @@ import {
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
-import { D, Ref, getD, ref } from "./data/index";
+import { D, Ref, getD, mergeRefs, ref } from "./data/index";
 import {
   Content,
   DOMElementComponent,
@@ -99,8 +99,6 @@ export class IntrinsicContext<C> {
   }
   $cbComponent: C = null as any;
 
-  protected $lastRef = ref<any>();
-
   $preventDefault(): true {
     const ev = this.$app.eventData;
     if (typeof ev?.preventDefault !== "function") {
@@ -126,11 +124,17 @@ export class IntrinsicContext<C> {
     return true;
   }
 
-  $ref<C2>(ref: Ref<C2>): this is Context<C2> {
-    this.$pendingRef = ref;
+  $pendingRef: Ref<any> | null = null;
+  $ref<C2>(ref: Ref<C2>, ...refs: Ref<C2>[]): this is Context<C2> {
+    this.$pendingRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
     return true;
   }
-  $pendingRef = this.$lastRef;
+  $setRef(current: any) {
+    if (this.$pendingRef !== null) {
+      this.$pendingRef.current = current;
+      this.$pendingRef = null;
+    }
+  }
 
   $noPreserve(deep: boolean = true): true {
     this.$pendingNoPreserve = deep ? "deep" : true;
@@ -281,7 +285,7 @@ export class IntrinsicContext<C> {
     ckey: string,
     ctor: ComponentConstructor<T>,
   ) {
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
@@ -292,8 +296,7 @@ export class IntrinsicContext<C> {
       this.$app.refMap.set(ikey, component);
     }
 
-    this.$pendingRef.current = component;
-    this.$pendingRef = this.$lastRef;
+    this.$setRef(component);
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
@@ -334,7 +337,7 @@ export class IntrinsicContext<C> {
     data ??= {};
     inner = this.$normalizeContent(inner);
 
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
@@ -361,8 +364,7 @@ export class IntrinsicContext<C> {
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
 
-    this.$pendingRef.current = ec;
-    this.$pendingRef = this.$lastRef;
+    this.$setRef(ec);
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
@@ -374,7 +376,7 @@ export class IntrinsicContext<C> {
 
     inner(context as unknown as Context);
 
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.currentDOMParent = oldParent;
 
@@ -393,7 +395,7 @@ export class IntrinsicContext<C> {
     data ??= {};
     inner = this.$normalizeContent(inner);
 
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
@@ -420,8 +422,7 @@ export class IntrinsicContext<C> {
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
 
-    this.$pendingRef.current = ec;
-    this.$pendingRef = this.$lastRef;
+    this.$setRef(ec);
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
@@ -433,7 +434,7 @@ export class IntrinsicContext<C> {
 
     inner(context as unknown as Context);
 
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.currentDOMParent = oldParent;
 
@@ -442,7 +443,7 @@ export class IntrinsicContext<C> {
     return ec!;
   }
   protected $processTextNode(ckey: string, text: string) {
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
@@ -470,7 +471,7 @@ export class IntrinsicContext<C> {
     return t!;
   }
   protected $processPortalElement(ckey: string, inner: D<View>) {
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
@@ -508,8 +509,7 @@ export class IntrinsicContext<C> {
 
     const context = new IntrinsicContext(this.$app);
 
-    this.$pendingRef.current = portal;
-    this.$pendingRef = this.$lastRef;
+    this.$setRef(portal);
 
     if (this.$isNoPreserve) {
       if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
@@ -520,7 +520,7 @@ export class IntrinsicContext<C> {
 
     getD(inner)(context as unknown as Context);
 
-    this.$app.callHookAfterThisComponent();
+    this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.currentDOMParent = oldParent;
 
