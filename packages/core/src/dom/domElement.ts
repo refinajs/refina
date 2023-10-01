@@ -1,10 +1,10 @@
 import { D } from "../data";
 import {
+  Content,
   DOMElementTagNameMap,
   DOMNodeComponent,
-  Content,
-  MaybeChildNode,
   DOMNodeComponentActionResult,
+  MaybeChildNode,
 } from "./base";
 
 type DOMElementType<E extends keyof DOMElementTagNameMap> =
@@ -41,7 +41,7 @@ export class DOMElementComponent<
         lastEl = child.updateDOM().thisEl ?? lastEl;
         createdUnused.delete(child);
       } else {
-        lastEl = child.createDOM().thisEl ?? lastEl;
+        child.createDOM();
         if (lastEl) {
           lastEl = child.insertAfter(lastEl) ?? lastEl;
         } else {

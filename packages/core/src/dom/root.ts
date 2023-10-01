@@ -28,9 +28,7 @@ export class DOMRootComponent extends DOMElementComponent<
         lastEl = portal.updateMount(lastEl) ?? lastEl;
         createdUnusedPortals.delete(portal);
       } else {
-        portal.createDOM();
         lastEl = portal.mount(lastEl) ?? lastEl;
-        portal.updateDOM();
       }
     }
     for (const unusedPortal of createdUnusedPortals) {

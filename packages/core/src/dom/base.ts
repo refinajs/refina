@@ -28,7 +28,7 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
     element.after(this.node);
     return this.node as unknown as MaybeChildNode;
   }
-  removeFrom(parent: Element) {
+  removeFrom(parent: Element): void {
     parent.removeChild(this.node);
   }
 }
