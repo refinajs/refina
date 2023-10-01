@@ -149,7 +149,7 @@ export class IntrinsicContext<C> {
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
-    this.$pendingClasses = this.$pendingClasses.concat(
+    this.$pendingCls = this.$pendingCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]
@@ -159,26 +159,27 @@ export class IntrinsicContext<C> {
     );
     return true;
   }
-  protected $pendingClasses: string[] = [];
-  get $classes() {
-    const classes = this.$pendingClasses;
-    this.$pendingClasses = [];
+  protected $pendingCls: string[] = [];
+  get clsToApply() {
+    const classes = this.$pendingCls;
+    this.$pendingCls = [];
     return classes;
   }
 
-  $css(style: string): void;
-  $css(template: TemplateStringsArray, ...args: any[]): void;
-  $css(...args: any[]): void {
-    this.$pendingStyle +=
+  $css(style: string): true;
+  $css(template: TemplateStringsArray, ...args: any[]): true;
+  $css(...args: any[]): true {
+    this.$pendingCSS +=
       ";" +
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]);
+    return true;
   }
-  protected $pendingStyle: string = "";
-  get $style() {
-    const style = this.$pendingStyle;
-    this.$pendingStyle = "";
+  protected $pendingCSS: string = "";
+  get $cssToApply() {
+    const style = this.$pendingCSS;
+    this.$pendingCSS = "";
     return style;
   }
 
@@ -229,8 +230,8 @@ export class IntrinsicContext<C> {
       return this.$processSVGElement(
         ckey,
         tagName,
-        this.$classes,
-        this.$style,
+        this.clsToApply,
+        this.$cssToApply,
         data,
         inner,
       );
@@ -242,8 +243,8 @@ export class IntrinsicContext<C> {
       return this.$processHTMLElement(
         ckey,
         tagName,
-        this.$classes,
-        this.$style,
+        this.clsToApply,
+        this.$cssToApply,
         data,
         inner,
       );
@@ -263,10 +264,10 @@ export class IntrinsicContext<C> {
   }
 
   $$t(ckey: string, text: D<string>): any {
-    if (this.$classes.length > 0) {
+    if (this.clsToApply.length > 0) {
       throw new Error(`Text node cannot have classes`);
     }
-    if (this.$style.length > 0) {
+    if (this.$cssToApply.length > 0) {
       throw new Error(`Text node cannot have style`);
     }
     return this.$processTextNode(ckey, getD(text));
@@ -314,10 +315,10 @@ export class IntrinsicContext<C> {
     if (typeof contentValue === "string" || typeof contentValue === "number") {
       const text = contentValue;
       return () => {
-        if (this.$classes.length > 0) {
+        if (this.clsToApply.length > 0) {
           throw new Error(`Text node cannot have classes`);
         }
-        if (this.$style.length > 0) {
+        if (this.$cssToApply.length > 0) {
           throw new Error(`Text node cannot have style`);
         }
         this.$processTextNode("_t", String(text));
