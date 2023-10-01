@@ -4,8 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "pnpm run dev:app",
+    "dev": "pnpm run dev:fluentui",
     "dev:app": "pnpm -r --parallel --filter \"@refina/example-app...\" run dev",
+    "dev:fluentui": "pnpm -r --parallel --filter \"@refina/example-fluentui...\" run dev",
     "dev:gh-login": "pnpm -r --parallel --filter \"@refina/example-gh-login...\" run dev",
     "build": "pnpm -r run build",
     "check": "pnpm -r --parallel run check",
