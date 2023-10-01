@@ -34,18 +34,15 @@
   "license": "MIT",
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "autoprefixer": "^10.4.15",
-    "postcss": "^8.4.27",
-    "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "material-icons": "^1.13.11",
+    "@floating-ui/dom": "^1.5.3",
+    "@fluentui/keyboard-keys": "^9.0.6",
+    "@fluentui/tokens": "1.0.0-alpha.9",
+    "@refina/fluentui-icons": "workspace:^",
+    "@refina/griffel": "workspace:^",
+    "keyborg": "^2.0.0",
     "refina": "workspace:^"
-  },
-  "peerDependencies": {
-    "autoprefixer": "^10.4.15",
-    "postcss": "^8.4.27",
-    "tailwindcss": "^3.3.3"
   }
 }
