@@ -1,0 +1,12 @@
+{
+  "include": ["./generator.ts"],
+  "exclude": ["./dist"],
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "composite": true
+  }
+}

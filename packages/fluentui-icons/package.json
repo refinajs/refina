@@ -1,0 +1,48 @@
+{
+  "name": "@refina/fluentui-icons",
+  "version": "0.0.0",
+  "description": "The FluentUI icons library for Refina framework.",
+  "keywords": [
+    "refina",
+    "fluentui",
+    "icons"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    "./*": {
+      "import": {
+        "types": "./dist/*",
+        "default": "./dist/*"
+      }
+    }
+  },
+  "scripts": {
+    "build": "ts-node --esm --project ./tsconfig.json ./generator.ts",
+    "check": "tsc --noEmit",
+    "prepare": "pnpm build"
+  },
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.6.5",
+    "lodash": "^4.17.21",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@fluentui/svg-icons": "^1.1.218",
+    "@refina/griffel": "workspace:^",
+    "refina": "workspace:^"
+  }
+}
