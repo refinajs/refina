@@ -1,0 +1,40 @@
+{
+  "name": "@refina/griffel",
+  "version": "0.0.0",
+  "description": "Griffel.js support for Refina framework.",
+  "keywords": [
+    "refina",
+    "griffel"
+  ],
+  "files": [
+    "./src"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    }
+  },
+  "scripts": {},
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@griffel/core": "^1.14.2",
+    "refina": "workspace:^"
+  }
+}
