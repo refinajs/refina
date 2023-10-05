@@ -6,3 +6,4 @@ export * from "./fLabel";
 export * from "./fProgressBar";
 export * from "./fSlider";
 export * from "./fSwitch";
+export * from "./fTabs";
