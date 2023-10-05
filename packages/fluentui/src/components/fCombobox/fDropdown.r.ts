@@ -3,6 +3,7 @@ import "@refina/fluentui-icons/checkmark.r.ts";
 import "@refina/fluentui-icons/chevronDown.r.ts";
 import {
   D,
+  DArray,
   DOMElementComponent,
   HTMLElementComponent,
   TriggerComponent,
@@ -127,7 +128,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
   main(
     _: TriggerComponentContext<OptionValue, this>,
     selected: D<OptionValue | "">,
-    options: D<D<OptionValue>[]>,
+    options: DArray<OptionValue>,
     disabled: D<boolean | D<boolean>[]> = false,
     placeholder?: D<string>,
   ): void {
@@ -322,7 +323,7 @@ declare module "refina" {
     fDropdown: FDropdown<any> extends C
       ? <OptionValue extends string>(
           current: D<OptionValue | null>,
-          options: D<D<OptionValue>[]>,
+          options: DArray<OptionValue>,
           disabled?: D<boolean | D<boolean>[]>,
           placeholder?: D<string>,
         ) => void

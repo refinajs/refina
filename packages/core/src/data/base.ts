@@ -41,6 +41,12 @@ export function getD<T>(d: D<T>): T {
     : (d as T);
 }
 
+export type DArray<T> = D<D<T>[]>;
+
+export function getDArray<T>(d: DArray<T>): T[] {
+  return getD(d).map(getD);
+}
+
 export function dangerously_setD<T>(d: D<T>, v: T): boolean {
   //@ts-ignore
   if (d[PDSymbol]) {

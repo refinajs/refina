@@ -1,13 +1,13 @@
-import { D, getD } from "refina";
+import { DArray, getDArray } from "refina";
 import { FCheckboxState } from ".";
 
 /**
  * @returns the mixed state if any of the sources is mixed, true if any of the sources is true and none is false, false otherwise
  */
 export function calcMixedCheckboxState(
-  sources: D<D<boolean | FCheckboxState>[]>,
+  sources: DArray<boolean | FCheckboxState>,
 ): FCheckboxState {
-  const sourcesSet = new Set(getD(sources).map(getD));
+  const sourcesSet = new Set(getDArray(sources));
   return sourcesSet.has("mixed")
     ? "mixed"
     : sourcesSet.has(true)
