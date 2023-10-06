@@ -4,9 +4,13 @@ import { Context, contextFuncs } from "refina";
 export {
   createDarkTheme,
   createLightTheme,
-  type BrandVariants,
-  type Theme,
+  teamsDarkTheme,
+  teamsHighContrastTheme,
+  teamsLightTheme,
+  webDarkTheme,
+  webLightTheme,
 } from "@fluentui/tokens";
+export type { BrandVariants, Theme } from "@fluentui/tokens";
 
 export let darkTheme: Theme = webDarkTheme;
 export let lightTheme: Theme = webLightTheme;
