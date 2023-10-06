@@ -1,6 +1,7 @@
 export * from "./fButton";
 export * from "./fCheckbox";
 export * from "./fCombobox";
+export * from "./fDialog";
 export * from "./fDivider";
 export * from "./fInput";
 export * from "./fLabel";
