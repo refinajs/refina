@@ -1,4 +1,4 @@
-import { BrandVariants, Theme, createDarkTheme, createLightTheme, setTheme } from "@refina/fluentui";
+import { BrandVariants, Theme, createDarkTheme, createLightTheme } from "@refina/fluentui";
 import { app, byIndex, d, getD } from "refina";
 
 const myNewTheme: BrandVariants = {
@@ -28,8 +28,6 @@ const lightTheme: Theme = {
   ...createLightTheme(myNewTheme),
 };
 
-setTheme(darkTheme, lightTheme);
-
 const switchTest = d(true);
 const checkboxSources = [d(false), d(false), d(true), d(false)];
 const sliderTest = d(5);
@@ -37,6 +35,8 @@ const dropdownTest = d("");
 const textInputTest = d("");
 
 app((_) => {
+  _.useTheme(darkTheme, lightTheme);
+
   _.fDivider("button");
   _.fButton("Button");
   _.fPrimaryButton("Primary Button");
