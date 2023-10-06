@@ -27,6 +27,7 @@ export class App {
   nodeMap: Map<Node, DOMNodeComponent> = new Map();
   _: AppContext | undefined;
   router = new Router(this);
+  permanentData: Record<symbol, any> = {};
   runtimeData: Record<symbol, any> | undefined;
   noPreserveComponents = new Set<string>();
   protected processedComponents = new Set<string>();

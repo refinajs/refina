@@ -183,6 +183,9 @@ export class IntrinsicContext<C> {
     return style;
   }
 
+  get $permanentData() {
+    return this.$app.permanentData;
+  }
   protected get $runtimeData() {
     return this.$app.runtimeData!;
   }
