@@ -43,9 +43,8 @@ contextFuncs.usePositioning = function (
 
 declare module "refina" {
   interface CustomContext<C> {
-    usePositioning: (
-      options: PositioningOptions,
-      enabled?: boolean,
-    ) => PositioningRefs;
+    usePositioning: never extends C
+      ? (options: PositioningOptions, enabled?: boolean) => PositioningRefs
+      : never;
   }
 }
