@@ -30,38 +30,72 @@ const lightTheme: Theme = {
 
 setTheme(darkTheme, lightTheme);
 
-const test = d("");
-const test1 = d(true);
-const sources = [d(false), d(false), d(true), d(false)];
-const slider = d(5);
+const switchTest = d(true);
+const checkboxSources = [d(false), d(false), d(true), d(false)];
+const sliderTest = d(5);
+const dropdownTest = d("");
+const textInputTest = d("");
 
 app((_) => {
-  _.fSwitch("Switch", test1);
+  _.fDivider("button");
+  _.fButton("Button");
+  _.fPrimaryButton("Primary Button");
+  _.fCircularButton("Circular Button");
+
+  _.fDivider("switch");
+  _.fSwitch("Switch", switchTest);
+  _.fSwitch("Switch (Disabled)", switchTest, true);
+
+  _.fDivider("checkbox");
+  _.for(checkboxSources, byIndex, (source, index) => _.fCheckbox(`Checkbox ${index}`, source));
   _._br();
-  _.for(sources, byIndex, (source, index) => _.fCheckbox(`Checkbox ${index}`, source));
-  _._br();
-  const sourcesSet = new Set(sources.map(getD));
+  const sourcesSet = new Set(checkboxSources.map(getD));
   const mixedState = sourcesSet.has(true) ? (sourcesSet.has(false) ? "mixed" : true) : false;
   if (_.fCheckbox("Checkbox (Mixable)", mixedState)) {
-    sources.forEach((source) => (source.value = _.$ev));
+    checkboxSources.forEach((source) => (source.value = _.$ev));
   }
+  _._br();
+  _.fCheckbox("Checkbox (Disabled)", true, true);
 
+  _.fDivider("progress bar");
   _.fProgressBar("indertermine");
   _._br();
   _.fProgressBar(0.5, "warning");
 
+  _.fDivider("slider");
+  _.t`${sliderTest}`;
   _._br();
+  _.fSlider(sliderTest, false, 3, 13, 2);
+  _._br();
+  _.fSlider(sliderTest, true);
 
-  _.t`${slider}`;
+  _.fDivider("dropdown");
+  _.t(dropdownTest.value ?? "unselected");
   _._br();
-  _.fSlider(slider, false, 3, 13, 2);
+  _.fDropdown(dropdownTest, ["111", "222", "333", "444"], [false, true, false, false], "placeholder");
 
+  _.fDivider("text input");
+  _.fTextInput(textInputTest, false, "test");
   _._br();
-  _._br();
+  _.fTextInput(textInputTest, true, "test");
 
-  _._h1({}, test.value ?? "unselected");
-  _.fDropdown(test, ["111", "222", "333", "444"], [false, true, false, false], "placeholder");
+  _.fDivider("tabs");
+  _.fTabs("First Tab", "AAA", "Second Tab", "BBB", "Third Tab", "CCC", "Fourth Tab", "DDD");
+
+  _.fDivider("dialog");
+  _.fDialog(
+    (_, open) => {
+      _.fButton("Open") && open();
+    },
+    "Title",
+    "Content",
+    (_, close) => {
+      if (_.fButton("Action1")) {
+        close();
+      }
+      _.fPrimaryButton("Action2");
+    },
+    "end",
+    false,
+  );
 });
-// // _.rTextInput(test, false, "test");
-
-// // _.rTabs("First Tab", "AAA", "Second Tab", "BBB", "Third Tab", "CCC", "Fourth Tab", "DDD");
