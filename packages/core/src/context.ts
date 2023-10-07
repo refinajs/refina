@@ -140,9 +140,9 @@ export class IntrinsicContext<C> {
     this.$pendingNoPreserve = deep ? "deep" : true;
     return true;
   }
-  protected $pendingNoPreserve: boolean | "deep" = false;
-  protected $allNoPreserve = false;
-  protected get $isNoPreserve() {
+  $pendingNoPreserve: boolean | "deep" = false;
+  $allNoPreserve = false;
+  get $isNoPreserve() {
     return Boolean(this.$allNoPreserve || this.$pendingNoPreserve);
   }
 
@@ -251,11 +251,6 @@ export class IntrinsicContext<C> {
         data,
         inner,
       );
-    }
-    if (funcName === "portal") {
-      // Now this is a portal
-      const [inner] = args;
-      return this.$processPortalElement(ckey, inner);
     }
     // Now this is a user-defined component
     const func = contextFuncs[funcName as keyof typeof contextFuncs];
@@ -473,64 +468,6 @@ export class IntrinsicContext<C> {
     }
 
     return t!;
-  }
-  protected $processPortalElement(ckey: string, inner: D<View>) {
-    this.$app.callAndResetHook("afterThisComponent");
-
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
-    this.$app.markComponentProcessed(ikey);
-
-    const oldParent = this.$app.currentDOMParent;
-
-    // let targetComponent: HTMLElementComponent;
-    // if (normalizedMountTarget instanceof DOMElementComponent) {
-    //   targetComponent = normalizedMountTarget;
-    // } else {
-    //   const storedTargetComponent = this.$app.nodeMap.get(
-    //     normalizedMountTarget,
-    //   ) as HTMLElementComponent | undefined;
-    //   if (storedTargetComponent === undefined) {
-    //     targetComponent = new DOMElementComponent(
-    //       targetIkey,
-    //       normalizedMountTarget,
-    //     );
-    //     this.$app.nodeMap.set(normalizedMountTarget, targetComponent);
-    //   } else {
-    //     targetComponent = storedTargetComponent;
-    //   }
-    // }
-
-    let portal = this.$app.refMap.get(ikey) as DOMPortalComponent;
-
-    if (!portal) {
-      portal = new DOMPortalComponent(ikey, this.$app.root.node);
-      this.$app.refMap.set(ikey, portal);
-    }
-    oldParent.children.push(portal);
-    this.$app.root.portals.add(portal);
-    portal.children = [];
-
-    const context = new IntrinsicContext(this.$app);
-
-    this.$setRef(portal);
-
-    if (this.$isNoPreserve) {
-      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
-      else throw new Error(`Portal cannot be no-preserve.`);
-    }
-
-    this.$app.currentDOMParent = portal!;
-
-    getD(inner)(context as unknown as Context);
-
-    this.$app.callAndResetHook("afterThisComponent");
-
-    this.$app.currentDOMParent = oldParent;
-
-    this.$app.popKey(ckey);
-
-    return portal!;
   }
 }
 

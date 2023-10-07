@@ -1,6 +1,6 @@
-import { D } from "../data";
+import { Context, IntrinsicContext, View, contextFuncs } from "../context";
+import { D, getD } from "../data";
 import {
-  Content,
   DOMNodeComponent,
   DOMNodeComponentActionResult,
   MaybeChildNode,
@@ -97,6 +97,49 @@ export class DOMPortalComponent extends DOMElementComponent {
   removeFrom(_parent: Element) {}
 }
 
-export type DOMPortalFunc<C> = {
-  portal: DOMPortalComponent extends C ? (inner: D<Content>) => void : never;
+contextFuncs.portal = function (this: Context, ckey: string, inner: D<View>) {
+  this.$app.callAndResetHook("afterThisComponent");
+
+  this.$app.pushKey(ckey);
+  const ikey = this.$app.ikey;
+  this.$app.markComponentProcessed(ikey);
+
+  const oldParent = this.$app.currentDOMParent;
+
+  let portal = this.$app.refMap.get(ikey) as DOMPortalComponent;
+
+  if (!portal) {
+    portal = new DOMPortalComponent(ikey, this.$app.root.node);
+    this.$app.refMap.set(ikey, portal);
+  }
+  oldParent.children.push(portal);
+  this.$app.root.portals.add(portal);
+  portal.children = [];
+
+  const context = new IntrinsicContext(this.$app);
+
+  this.$setRef(portal);
+
+  if (this.$isNoPreserve) {
+    if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
+    else throw new Error(`Portal cannot be no-preserve.`);
+  }
+
+  this.$app.currentDOMParent = portal!;
+
+  getD(inner)(context as unknown as Context);
+
+  this.$app.callAndResetHook("afterThisComponent");
+
+  this.$app.currentDOMParent = oldParent;
+
+  this.$app.popKey(ckey);
+
+  return portal!;
 };
+
+declare module "../context" {
+  interface CustomContext<C> {
+    portal: DOMPortalComponent extends C ? (inner: D<View>) => void : never;
+  }
+}
