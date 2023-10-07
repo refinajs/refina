@@ -2,7 +2,7 @@ import {
   Context,
   CustomContext,
   ToFullContext,
-  contextFuncs,
+  addCustomContextFunc,
 } from "../context";
 import {
   Component,
@@ -47,7 +47,7 @@ export function statusComponent<
 >(name: N) {
   return <T extends ComponentConstructor<StatusComponent>>(ctor: T) => {
     //@ts-ignore
-    contextFuncs[name] = function (this: Context, ckey, ...args) {
+    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
       const component = this.$beginComponent(ckey, ctor) as StatusComponent;
 
       component.$status ??= false;
@@ -71,7 +71,7 @@ export function statusComponent<
       this.$endComponent(ckey);
 
       return component.$status;
-    };
+    });
     return ctor;
   };
 }

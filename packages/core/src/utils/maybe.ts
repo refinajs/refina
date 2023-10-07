@@ -1,5 +1,3 @@
-import { Context, contextFuncs } from "../context";
-
 const maybeSymbol = Symbol("nothing");
 
 export interface Nothing<T extends {}> {

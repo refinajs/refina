@@ -1,4 +1,9 @@
-import { Context, IntrinsicContext, View, contextFuncs } from "../context";
+import {
+  Context,
+  IntrinsicContext,
+  View,
+  addCustomContextFunc,
+} from "../context";
 import { D, getD } from "../data";
 import {
   DOMNodeComponent,
@@ -97,7 +102,7 @@ export class DOMPortalComponent extends DOMElementComponent {
   removeFrom(_parent: Element) {}
 }
 
-contextFuncs.portal = function (this: Context, ckey: string, inner: D<View>) {
+addCustomContextFunc("portal", function (ckey: string, inner: D<View>) {
   this.$app.callAndResetHook("afterThisComponent");
 
   this.$app.pushKey(ckey);
@@ -136,7 +141,7 @@ contextFuncs.portal = function (this: Context, ckey: string, inner: D<View>) {
   this.$app.popKey(ckey);
 
   return portal!;
-};
+});
 
 declare module "../context" {
   interface CustomContext<C> {

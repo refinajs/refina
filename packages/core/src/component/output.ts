@@ -2,7 +2,7 @@ import {
   Context,
   CustomContext,
   ToFullContext,
-  contextFuncs,
+  addCustomContextFunc,
 } from "../context";
 import {
   Component,
@@ -28,7 +28,7 @@ export function outputComponent<
 >(name: N) {
   return <T extends ComponentConstructor<OutputComponent>>(ctor: T) => {
     //@ts-ignore
-    contextFuncs[name] = function (this: Context, ckey, ...args) {
+    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
       const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
       const context = new IntrinsicOutputComponentContext(this, component);
@@ -46,7 +46,7 @@ export function outputComponent<
       this.$endComponent(ckey);
 
       return;
-    };
+    });
     return ctor;
   };
 }

@@ -2,7 +2,7 @@ import {
   Context,
   CustomContext,
   ToFullContext,
-  contextFuncs,
+  addCustomContextFunc,
 } from "../context";
 import {
   Component,
@@ -49,7 +49,7 @@ export function triggerComponent<
 >(name: N) {
   return <T extends ComponentConstructor<TriggerComponent<any>>>(ctor: T) => {
     //@ts-ignore
-    contextFuncs[name] = function (this: Context, ckey, ...args) {
+    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
       const component = this.$beginComponent(
         ckey,
         ctor,
@@ -75,7 +75,7 @@ export function triggerComponent<
       this.$endComponent(ckey);
 
       return isReceiver;
-    };
+    });
     return ctor;
   };
 }

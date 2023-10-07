@@ -1,4 +1,4 @@
-import { Context, contextFuncs } from "../context";
+import { addCustomContextFunc } from "../context";
 import { matchPath } from "./base";
 
 type RouteParamsImpl<
@@ -27,7 +27,7 @@ type RouteParams<S extends string> = {
 
 const routeMatchedSymbol = Symbol("routeMatched");
 
-contextFuncs.route = function (this: Context, ckey: string, path: string) {
+addCustomContextFunc("route", function (ckey: string, path: string) {
   if (path[0] !== "/") {
     path = "/" + path;
   }
@@ -59,11 +59,11 @@ contextFuncs.route = function (this: Context, ckey: string, path: string) {
 
   this.$customData[routeMatchedSymbol] = true;
   return true;
-};
+});
 
-contextFuncs.routeNotFound = function (this: Context, ckey: string) {
+addCustomContextFunc("routeNotFound", function (ckey: string) {
   return !this.$customData[routeMatchedSymbol];
-};
+});
 
 declare module "../context" {
   interface CustomContext<C> {

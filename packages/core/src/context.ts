@@ -4,19 +4,18 @@ import {
   ComponentConstructor,
   ComponentFuncs,
 } from "./component/index";
-import { D, Ref, getD, mergeRefs, ref } from "./data/index";
+import { D, Ref, getD, mergeRefs } from "./data/index";
 import {
   Content,
   DOMElementComponent,
   DOMFuncs,
   DOMNodeComponent,
-  DOMPortalComponent,
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
 import { Maybe } from "./utils/index";
 
-export const contextFuncs = {} as {
+export type CustomContextFuncs = {
   [K in keyof CustomContext<any>]: K extends `$${string}`
     ? CustomContext<any>[K]
     : CustomContext<any>[K] extends (...args: any) => any
@@ -27,6 +26,26 @@ export const contextFuncs = {} as {
       ) => ReturnType<CustomContext<any>[K]>
     : never;
 };
+
+declare global {
+  interface Window {
+    __CONTEXT_FUNCS__: CustomContextFuncs;
+  }
+}
+
+export function addCustomContextFunc<N extends keyof CustomContextFuncs>(
+  name: N,
+  func: CustomContextFuncs[N] & ThisType<Context>,
+) {
+  window.__CONTEXT_FUNCS__ ??= {} as any;
+  window.__CONTEXT_FUNCS__[name] = func;
+}
+
+export function getCustomContextFunc<N extends keyof CustomContextFuncs>(
+  name: N,
+): CustomContextFuncs[N] {
+  return window.__CONTEXT_FUNCS__[name];
+}
 
 export interface CustomContext<C> {}
 
@@ -253,7 +272,7 @@ export class IntrinsicContext<C> {
       );
     }
     // Now this is a user-defined component
-    const func = contextFuncs[funcName as keyof typeof contextFuncs];
+    const func = getCustomContextFunc(funcName as keyof CustomContextFuncs);
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
     }

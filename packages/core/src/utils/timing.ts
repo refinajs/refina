@@ -1,8 +1,8 @@
-import { Context, contextFuncs } from "../context";
+import { addCustomContextFunc } from "../context";
 
 const registeredCallbacks = new Set<string>();
 
-contextFuncs.now = function (this: Context, ckey: string, precisionMs = 1000) {
+addCustomContextFunc("now", function (ckey: string, precisionMs = 1000) {
   if (this.$updating && !registeredCallbacks.has(ckey)) {
     registeredCallbacks.add(ckey);
     setTimeout(() => {
@@ -11,23 +11,21 @@ contextFuncs.now = function (this: Context, ckey: string, precisionMs = 1000) {
     }, precisionMs);
   }
   return Date.now();
-};
+});
 
-contextFuncs.setInterval = function (
-  this: Context,
-  ckey: string,
-  callback: () => void,
-  interval: number,
-) {
-  if (this.$updating && !registeredCallbacks.has(ckey)) {
-    registeredCallbacks.add(ckey);
-    setTimeout(() => {
-      registeredCallbacks.delete(ckey);
-      callback();
-      this.$app.update();
-    }, interval);
-  }
-};
+addCustomContextFunc(
+  "setInterval",
+  function (ckey: string, callback: () => void, interval: number) {
+    if (this.$updating && !registeredCallbacks.has(ckey)) {
+      registeredCallbacks.add(ckey);
+      setTimeout(() => {
+        registeredCallbacks.delete(ckey);
+        callback();
+        this.$app.update();
+      }, interval);
+    }
+  },
+);
 
 declare module "../context" {
   interface CustomContext<C> {

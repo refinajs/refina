@@ -1,7 +1,7 @@
-import { Context, contextFuncs } from "../context";
+import { addCustomContextFunc } from "../context";
 import { BeforeRouteContext } from "./router";
 
-contextFuncs.beforeRoute = function (this: Context, ckey: string) {
+addCustomContextFunc("beforeRoute", function (ckey: string) {
   const pendingRoute = this.$router.pendingRoute;
   if (pendingRoute) {
     const beforeRouteContext = this as unknown as BeforeRouteContext;
@@ -12,7 +12,7 @@ contextFuncs.beforeRoute = function (this: Context, ckey: string) {
     return true;
   }
   return false;
-};
+});
 
 declare module "../context" {
   interface CustomContext<C> {

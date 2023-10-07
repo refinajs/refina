@@ -2,7 +2,7 @@ import {
   Context,
   CustomContext,
   ToFullContext,
-  contextFuncs,
+  addCustomContextFunc,
 } from "../context";
 import {
   Component,
@@ -130,11 +130,13 @@ export function callbackComponent<
   N extends keyof CallbackComponents | keyof CustomContext<any>,
 >(name: N) {
   return <T extends ComponentConstructor<CallbackComponent<any>>>(ctor: T) => {
-    //@ts-ignore
-    contextFuncs[name] = createCallbackComponentFunc<
-      CallbackComponentEvs<CallbackComponent<any>>,
-      CallbackComponent<any>
-    >(ctor);
+    addCustomContextFunc(
+      name,
+      createCallbackComponentFunc<
+        CallbackComponentEvs<CallbackComponent<any>>,
+        CallbackComponent<any>
+      >(ctor) as any,
+    );
     return ctor;
   };
 }
