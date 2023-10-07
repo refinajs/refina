@@ -31,9 +31,7 @@ export class IntrinsicComponentContext<
     super($caller.$app);
     this.$classesArg = $caller.clsToApply;
     this.$styleArg = $caller.$cssToApply;
-    //@ts-ignore
     this.$allNoPreserve = $caller.$pendingNoPreserve === "deep";
-    //@ts-ignore
     $caller.$pendingNoPreserve = false;
   }
 

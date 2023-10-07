@@ -18,7 +18,6 @@ export abstract class CallbackComponent<
 > extends Component {
   $status: boolean;
   $listendEvs = new Set<keyof Evs>();
-  //@ts-ignore
   abstract main(_: CallbackComponentContext<Evs, this>, ...args: any[]): void;
 
   $preventDefault(): true {
