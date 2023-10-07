@@ -460,7 +460,7 @@ export class IntrinsicContext<C> {
 
     this.$app.popKey(ckey);
 
-    this.$firstDOMNode ??= t!;
+    this.$setFirstDOMNode(t!);
 
     if (this.$allNoPreserve || this.$pendingNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
