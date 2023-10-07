@@ -79,8 +79,7 @@ export function createCallbackComponentFunc<
             target.$listendEvs.add(ev);
             return () => false;
           }
-          //@ts-ignore
-          return target[prop];
+          return target[prop as keyof S];
         },
       });
       this.$cbComponent = componentProxy;
