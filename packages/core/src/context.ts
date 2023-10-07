@@ -160,7 +160,7 @@ export class IntrinsicContext<C> {
     return true;
   }
   protected $pendingCls: string[] = [];
-  get clsToApply() {
+  get $clsToApply() {
     const classes = this.$pendingCls;
     this.$pendingCls = [];
     return classes;
@@ -233,7 +233,7 @@ export class IntrinsicContext<C> {
       return this.$processSVGElement(
         ckey,
         tagName,
-        this.clsToApply,
+        this.$clsToApply,
         this.$cssToApply,
         data,
         inner,
@@ -246,7 +246,7 @@ export class IntrinsicContext<C> {
       return this.$processHTMLElement(
         ckey,
         tagName,
-        this.clsToApply,
+        this.$clsToApply,
         this.$cssToApply,
         data,
         inner,
@@ -262,7 +262,7 @@ export class IntrinsicContext<C> {
   }
 
   $$t(ckey: string, text: D<string>): any {
-    if (this.clsToApply.length > 0) {
+    if (this.$clsToApply.length > 0) {
       throw new Error(`Text node cannot have classes`);
     }
     if (this.$cssToApply.length > 0) {
@@ -313,7 +313,7 @@ export class IntrinsicContext<C> {
     if (typeof contentValue === "string" || typeof contentValue === "number") {
       const text = contentValue;
       return () => {
-        if (this.clsToApply.length > 0) {
+        if (this.$clsToApply.length > 0) {
           throw new Error(`Text node cannot have classes`);
         }
         if (this.$cssToApply.length > 0) {

@@ -29,7 +29,7 @@ export class IntrinsicComponentContext<
     public $component: S,
   ) {
     super($caller.$app);
-    this.$classesArg = $caller.clsToApply;
+    this.$classesArg = $caller.$clsToApply;
     this.$styleArg = $caller.$cssToApply;
     this.$allNoPreserve = $caller.$pendingNoPreserve === "deep";
     $caller.$pendingNoPreserve = false;
