@@ -60,11 +60,3 @@ export type ComponentContext<S extends Component, C = any> = ToFullContext<
   C,
   IntrinsicComponentContext<S, C>
 >;
-
-export function componentRegister<F>(func: any): (name: string) => F {
-  return ((name: string) => {
-    return (ctor: ComponentConstructor) => {
-      return func(ctor, name);
-    };
-  }) as any;
-}
