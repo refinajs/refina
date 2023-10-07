@@ -9,7 +9,6 @@ import {
   ComponentConstructor,
   ComponentFuncArgs,
   IntrinsicComponentContext,
-  componentRegister,
 } from "./component";
 
 export abstract class OutputComponent extends Component {

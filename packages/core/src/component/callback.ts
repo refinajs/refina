@@ -4,13 +4,11 @@ import {
   ToFullContext,
   contextFuncs,
 } from "../context";
-import { AppState } from "../app";
 import {
   Component,
   ComponentConstructor,
   ComponentFuncArgs,
   IntrinsicComponentContext,
-  componentRegister,
 } from "./component";
 
 export abstract class CallbackComponent<

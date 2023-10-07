@@ -1,6 +1,6 @@
 import { App } from "../app";
 import { Context, IntrinsicContext, ToFullContext } from "../context";
-import { DOMNodeComponent, DOMElementComponent } from "../dom";
+import { DOMElementComponent, DOMNodeComponent } from "../dom";
 
 export abstract class Component {
   constructor(
