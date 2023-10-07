@@ -1,6 +1,7 @@
 import { Context, IntrinsicContext } from "../context";
 import { Content } from "../dom";
 import { OutputComponent, outputComponent } from "../component/output";
+import { D, getD } from "../data";
 
 const contentCache = new Map<string, Content<any>>();
 
@@ -8,13 +9,16 @@ const contentCache = new Map<string, Content<any>>();
 export class Embed extends OutputComponent {
   main<Args extends any[]>(
     _: Context,
-    content:
+    content: D<
       | Content<Args>
       | (() => Promise<{
           default: Content<Args>;
-        }>),
+        }>)
+    >,
     ...args: Args
   ): void {
+    const contentValue = getD(content);
+
     const context = new IntrinsicContext(_.$app);
 
     function processContent(content: Content<Args>) {
@@ -28,8 +32,8 @@ export class Embed extends OutputComponent {
     if (contentCache.has(this.ikey)) {
       processContent(contentCache.get(this.ikey)!);
     } else {
-      if (typeof content === "function") {
-        const ret = content(context as unknown as Context, ...args);
+      if (typeof contentValue === "function") {
+        const ret = contentValue(context as unknown as Context, ...args);
         if (ret instanceof Promise) {
           _.t`Loading module...`;
           ret.then((r) => {
@@ -39,7 +43,7 @@ export class Embed extends OutputComponent {
           });
         }
       } else {
-        _.t(String(content));
+        _.t(String(contentValue));
       }
     }
   }
@@ -49,11 +53,12 @@ declare module "../context" {
   interface CustomContext<C> {
     embed: never extends C
       ? <Args extends any[]>(
-          content:
+          content: D<
             | Content<Args>
             | (() => Promise<{
                 default: Content<Args>;
-              }>),
+              }>)
+          >,
           ...args: Args
         ) => void
       : never;
