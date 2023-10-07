@@ -27,26 +27,28 @@ export function outputComponent<
   N extends keyof OutputComponents | keyof CustomContext<any>,
 >(name: N) {
   return <T extends ComponentConstructor<OutputComponent>>(ctor: T) => {
-    //@ts-ignore
-    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
-      const component = this.$beginComponent(ckey, ctor) as OutputComponent;
+    addCustomContextFunc(
+      name,
+      function (this: Context, ckey: string, ...args: any[]): any {
+        const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
-      const context = new IntrinsicOutputComponentContext(this, component);
+        const context = new IntrinsicOutputComponentContext(this, component);
 
-      component.main(
-        context as any as OutputComponentContext<OutputComponent>,
-        ...args,
-      );
+        component.main(
+          context as any as OutputComponentContext<OutputComponent>,
+          ...args,
+        );
 
-      if (!context.$classesAndStyleUsed) {
-        context.$firstHTMLELement?.addClasses(context.$classesArg);
-        context.$firstHTMLELement?.addStyle(context.$styleArg);
-      }
+        if (!context.$classesAndStyleUsed) {
+          context.$firstHTMLELement?.addClasses(context.$classesArg);
+          context.$firstHTMLELement?.addStyle(context.$styleArg);
+        }
 
-      this.$endComponent(ckey);
+        this.$endComponent(ckey);
 
-      return;
-    });
+        return;
+      },
+    );
     return ctor;
   };
 }

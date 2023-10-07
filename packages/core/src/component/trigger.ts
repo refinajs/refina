@@ -48,34 +48,36 @@ export function triggerComponent<
   N extends keyof TriggerComponents | keyof CustomContext<any>,
 >(name: N) {
   return <T extends ComponentConstructor<TriggerComponent<any>>>(ctor: T) => {
-    //@ts-ignore
-    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
-      const component = this.$beginComponent(
-        ckey,
-        ctor,
-      ) as TriggerComponent<any>;
+    addCustomContextFunc(
+      name,
+      function (this: Context, ckey: any, ...args: any[]): any {
+        const component = this.$beginComponent(
+          ckey,
+          ctor,
+        ) as TriggerComponent<any>;
 
-      const context = new IntrinsicTriggerComponentContext(this, component);
+        const context = new IntrinsicTriggerComponentContext(this, component);
 
-      component.main(
-        context as unknown as TriggerComponentContext<
-          unknown,
-          TriggerComponent<any>
-        >,
-        ...args,
-      );
+        component.main(
+          context as unknown as TriggerComponentContext<
+            unknown,
+            TriggerComponent<any>
+          >,
+          ...args,
+        );
 
-      const isReceiver = this.$app.isReceiver;
+        const isReceiver = this.$app.isReceiver;
 
-      if (!context.$classesAndStyleUsed) {
-        context.$firstHTMLELement?.addClasses(context.$classesArg);
-        context.$firstHTMLELement?.addStyle(context.$styleArg);
-      }
+        if (!context.$classesAndStyleUsed) {
+          context.$firstHTMLELement?.addClasses(context.$classesArg);
+          context.$firstHTMLELement?.addStyle(context.$styleArg);
+        }
 
-      this.$endComponent(ckey);
+        this.$endComponent(ckey);
 
-      return isReceiver;
-    });
+        return isReceiver;
+      },
+    );
     return ctor;
   };
 }

@@ -46,32 +46,34 @@ export function statusComponent<
   N extends keyof StatusComponents | keyof CustomContext<any>,
 >(name: N) {
   return <T extends ComponentConstructor<StatusComponent>>(ctor: T) => {
-    //@ts-ignore
-    addCustomContextFunc(name, function (this: Context, ckey, ...args) {
-      const component = this.$beginComponent(ckey, ctor) as StatusComponent;
+    addCustomContextFunc(
+      name,
+      function (this: Context, ckey: string, ...args: any[]): any {
+        const component = this.$beginComponent(ckey, ctor) as StatusComponent;
 
-      component.$status ??= false;
+        component.$status ??= false;
 
-      const context = new IntrinsicStatusComponentContext(this, component);
+        const context = new IntrinsicStatusComponentContext(this, component);
 
-      component.main(
-        context as any as StatusComponentContext<
-          StatusComponent & {
-            $status: boolean;
-          }
-        >,
-        ...args,
-      );
+        component.main(
+          context as any as StatusComponentContext<
+            StatusComponent & {
+              $status: boolean;
+            }
+          >,
+          ...args,
+        );
 
-      if (!context.$classesAndStyleUsed) {
-        context.$firstHTMLELement?.addClasses(context.$classesArg);
-        context.$firstHTMLELement?.addStyle(context.$styleArg);
-      }
+        if (!context.$classesAndStyleUsed) {
+          context.$firstHTMLELement?.addClasses(context.$classesArg);
+          context.$firstHTMLELement?.addStyle(context.$styleArg);
+        }
 
-      this.$endComponent(ckey);
+        this.$endComponent(ckey);
 
-      return component.$status;
-    });
+        return component.$status;
+      },
+    );
     return ctor;
   };
 }
