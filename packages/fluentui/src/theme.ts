@@ -12,14 +12,15 @@ export {
 } from "@fluentui/tokens";
 export type { BrandVariants, Theme } from "@fluentui/tokens";
 
-export let darkTheme: Theme = webDarkTheme;
-export let lightTheme: Theme = webLightTheme;
-
 const currentThemeSymbol = Symbol("currentTheme");
 
 addCustomContextFunc(
   "useTheme",
-  function (ckey: string, dark?: Theme, light?: Theme) {
+  function (
+    ckey: string,
+    dark: Theme = webDarkTheme,
+    light: Theme = webLightTheme,
+  ) {
     const ikey = this.$app.pushKey(ckey);
 
     const theme = light;
