@@ -305,8 +305,7 @@ export class IntrinsicContext<C> {
   ) {
     this.$app.callAndResetHook("afterThisComponent");
 
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
+    const ikey = this.$app.pushKey(ckey);
     this.$app.markComponentProcessed(ikey);
     let component = this.$app.refMap.get(ikey) as T;
     if (!component) {
@@ -357,8 +356,7 @@ export class IntrinsicContext<C> {
 
     this.$app.callAndResetHook("afterThisComponent");
 
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
+    const ikey = this.$app.pushKey(ckey);
 
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     if (!ec) {
@@ -415,8 +413,7 @@ export class IntrinsicContext<C> {
 
     this.$app.callAndResetHook("afterThisComponent");
 
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
+    const ikey = this.$app.pushKey(ckey);
 
     let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     if (!ec) {
@@ -463,8 +460,7 @@ export class IntrinsicContext<C> {
   protected $processTextNode(ckey: string, text: string) {
     this.$app.callAndResetHook("afterThisComponent");
 
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
+    const ikey = this.$app.pushKey(ckey);
     let t = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
     if (!t) {
       t = new TextNodeComponent(ikey, document.createTextNode(text));

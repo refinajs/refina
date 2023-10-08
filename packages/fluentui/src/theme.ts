@@ -20,8 +20,7 @@ const currentThemeSymbol = Symbol("currentTheme");
 addCustomContextFunc(
   "useTheme",
   function (ckey: string, dark?: Theme, light?: Theme) {
-    this.$app.pushKey(ckey);
-    const ikey = this.$app.ikey;
+    const ikey = this.$app.pushKey(ckey);
 
     const theme = light;
 

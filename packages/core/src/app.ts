@@ -203,10 +203,9 @@ export class App {
 
   pushKey(ckey: string) {
     this.idPrefix.push(ckey);
-    // console.log("push" + "  ".repeat(this.idPrefix.length), ckey);
+    return this.ikey;
   }
-  popKey(ckey: string, msg: string = "unknown") {
-    // console.log("pop " + "  ".repeat(this.idPrefix.length), ckey, new Error());
+  popKey(ckey: string, msg?: string) {
     const last = this.idPrefix.pop();
     if (ckey !== last) {
       throw new Error(

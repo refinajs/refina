@@ -105,8 +105,7 @@ export class DOMPortalComponent extends DOMElementComponent {
 addCustomContextFunc("portal", function (ckey: string, inner: D<View>) {
   this.$app.callAndResetHook("afterThisComponent");
 
-  this.$app.pushKey(ckey);
-  const ikey = this.$app.ikey;
+  const ikey = this.$app.pushKey(ckey);
   this.$app.markComponentProcessed(ikey);
 
   const oldParent = this.$app.currentDOMParent;
