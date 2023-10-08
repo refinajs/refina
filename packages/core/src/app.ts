@@ -9,6 +9,12 @@ export interface AppHookMap {
   afterModifyDOM: () => void;
 }
 
+declare global {
+  interface Window {
+    __MAIN_EXECUTED_TIMES__: number;
+  }
+}
+
 export class App {
   constructor(
     public main: AppView,
@@ -149,10 +155,9 @@ export class App {
         }
       }
 
+      window.__MAIN_EXECUTED_TIMES__ ??= 1;
       //@ts-ignore
-      window["__main_executed_times"] ??= 1;
-      //@ts-ignore
-      console.log(`main executed ${window["__main_executed_times"]++} times`);
+      console.log(`main executed ${window.__MAIN_EXECUTED_TIMES__++} times`);
     } catch (e) {
       console.error("Error when executing main:", e, "\nstate:", this.state);
     } finally {
