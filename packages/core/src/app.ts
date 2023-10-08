@@ -1,3 +1,4 @@
+import { AppState } from "./constants";
 import { IntrinsicContext, ToFullContext } from "./context";
 import { D, dangerously_setD } from "./data";
 import { DOMElementComponent, DOMNodeComponent, DOMRootComponent } from "./dom";
@@ -13,11 +14,6 @@ declare global {
   interface Window {
     __MAIN_EXECUTED_TIMES__: number;
   }
-}
-
-export enum AppState {
-  update,
-  recv,
 }
 
 export class IntrinsicAppContext<C> extends IntrinsicContext<C> {

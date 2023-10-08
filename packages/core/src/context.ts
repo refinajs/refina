@@ -1,10 +1,7 @@
-import { App, AppState } from "./app";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentFuncs,
-} from "./component/index";
-import { D, Ref, getD, mergeRefs } from "./data/index";
+import type { App } from "./app";
+import { Component, ComponentConstructor, ComponentFuncs } from "./component";
+import { AppState } from "./constants";
+import { D, Ref, getD, mergeRefs } from "./data";
 import {
   Content,
   DOMElementComponent,
@@ -13,7 +10,7 @@ import {
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
-import { Maybe } from "./utils/index";
+import { Maybe } from "./utils";
 import { View } from "./view";
 
 export type CustomContextFuncs = {

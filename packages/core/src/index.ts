@@ -9,3 +9,4 @@ export * from "./utils";
 export * from "./dom";
 export * from "./app";
 export * from "./view";
+export * from "./constants";
