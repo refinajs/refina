@@ -1,5 +1,5 @@
 import { computePosition } from "@floating-ui/dom";
-import { HTMLElementComponent, addCustomContextFunc, ref } from "refina";
+import { addCustomContextFunc, ref } from "refina";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, PositioningRefs } from "./types";
 import { toFloatingUIPlacement } from "./utils/toFloatingUIPlacement";

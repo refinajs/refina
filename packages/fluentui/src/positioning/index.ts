@@ -3,3 +3,4 @@ export * from "./createArrowStyles";
 export * from "./createSlideStyles";
 export * from "./types";
 export * from "./utils";
+export * from "./usePositioning";
