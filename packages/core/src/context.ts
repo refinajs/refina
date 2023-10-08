@@ -58,23 +58,6 @@ export type ToFullContext<C, I> = I &
   ComponentFuncs<C> &
   CustomContext<C>;
 
-function updateElementAttribute(
-  element: Pick<HTMLElement, "setAttribute" | "removeAttribute"> &
-    Record<string, any>,
-  data: Record<string, any>,
-) {
-  for (const key in data) {
-    const value = data[key];
-    if (value === undefined) {
-      element.removeAttribute(key);
-    } else if (typeof value === "string") {
-      element.setAttribute(key, String(value));
-    } else {
-      element[key] = value;
-    }
-  }
-}
-
 export class IntrinsicContext<C> {
   constructor(public readonly $app: App) {}
 
@@ -328,7 +311,7 @@ export class IntrinsicContext<C> {
     }
 
     if (this.$updating) {
-      updateElementAttribute(ec.node, data);
+      Object.assign(ec.node, data);
       ec.setClasses(classes);
       ec.setStyle(style);
     }
@@ -385,7 +368,14 @@ export class IntrinsicContext<C> {
     }
 
     if (this.$updating) {
-      updateElementAttribute(ec.node, data);
+      for (const key in data) {
+        const value = data[key];
+        if (value === undefined) {
+          ec.node.removeAttribute(key);
+        } else {
+          ec.node.setAttribute(key, String(value));
+        }
+      }
       ec.setClasses(classes);
       ec.setStyle(style);
     }
