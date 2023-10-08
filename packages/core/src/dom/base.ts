@@ -1,4 +1,4 @@
-import { View } from "../context";
+import { View } from "../view";
 
 export type MaybeChildNode = ChildNode | null;
 

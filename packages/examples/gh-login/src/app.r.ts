@@ -75,7 +75,7 @@ const $app = app((_) => {
         _.$cls`mt-4 block w-full text-center bg-[#238636] px-4 py-[5px] rounded-[6px] font-[500] text-white
           disabled:bg-[#23863699] disabled:text-[#ffffff80] disabled:border-[#f0f6fc1a]`;
         if (_.button(loading ? "Signing in…" : "Sign in", loading)) {
-          _.$preventDefault();
+          _.$ev.preventDefault();
           login();
         }
         _.$cls`float-right text-xs absolute top-0 right-0 text-[#2f81f7]`;

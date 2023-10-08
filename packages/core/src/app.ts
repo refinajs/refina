@@ -1,7 +1,7 @@
-import { AppContext, AppView, IntrinsicAppContext } from "./context";
-import { D, dangerously_setD } from "./data/index";
+import { IntrinsicContext, ToFullContext } from "./context";
+import { D, dangerously_setD } from "./data";
 import { DOMElementComponent, DOMNodeComponent, DOMRootComponent } from "./dom";
-import { Router } from "./router/router";
+import { Router } from "./router";
 
 export interface AppHookMap {
   afterThisComponent: () => void;
@@ -14,6 +14,41 @@ declare global {
     __MAIN_EXECUTED_TIMES__: number;
   }
 }
+
+export enum AppState {
+  update,
+  recv,
+}
+
+export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
+  $rootCls(cls: string): true;
+  $rootCls(template: TemplateStringsArray, ...args: any[]): true;
+  $rootCls(...args: any[]): true {
+    this.$app.root.setClasses(
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+      )
+        .split(/\s/)
+        .filter(Boolean),
+    );
+    return true;
+  }
+
+  $rootCss(style: string): void;
+  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
+  $rootCss(...args: any[]): void {
+    this.$app.root.setStyle(
+      Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0],
+    );
+  }
+}
+
+export type AppContext<C = any> = ToFullContext<C, IntrinsicAppContext<C>>;
+
+export type AppView = (_: AppContext) => void;
 
 export class App {
   constructor(
@@ -156,7 +191,6 @@ export class App {
       }
 
       window.__MAIN_EXECUTED_TIMES__ ??= 1;
-      //@ts-ignore
       console.log(`main executed ${window.__MAIN_EXECUTED_TIMES__++} times`);
     } catch (e) {
       console.error("Error when executing main:", e, "\nstate:", this.state);
@@ -226,11 +260,6 @@ message: ${msg}`,
   get isReceiver() {
     return this.eventRecevierIkey === this.ikey;
   }
-}
-
-export enum AppState {
-  update = "update", // 更新Element的props，若元素不存在则创建
-  recv = "recv", // 接收消息，不得改变DOM
 }
 
 export function app(view: AppView, rootElementId: string = "root") {

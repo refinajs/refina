@@ -14,6 +14,7 @@ import {
   createCbHTMLElementComponentFunction,
 } from "./dom";
 import { Maybe } from "./utils/index";
+import { View } from "./view";
 
 export type CustomContextFuncs = {
   [K in keyof CustomContext<any>]: K extends `$${string}`
@@ -25,6 +26,12 @@ export type CustomContextFuncs = {
         ...args: Parameters<CustomContext<any>[K]>
       ) => ReturnType<CustomContext<any>[K]>
     : never;
+} & {
+  [K in keyof ComponentFuncs<any>]: (
+    this: Context,
+    ckey: string,
+    ...args: Parameters<ComponentFuncs<any>[K]>
+  ) => ReturnType<ComponentFuncs<any>[K]>;
 };
 
 declare global {
@@ -49,10 +56,10 @@ export function getCustomContextFunc<N extends keyof CustomContextFuncs>(
 
 export interface CustomContext<C> {}
 
-export type ToFullContext<C, I> = ComponentFuncs<C> &
-  CustomContext<C> &
+export type ToFullContext<C, I> = I &
   DOMFuncs<C> &
-  I;
+  ComponentFuncs<C> &
+  CustomContext<C>;
 
 function updateElementAttribute(
   element: Pick<HTMLElement, "setAttribute" | "removeAttribute"> &
@@ -66,30 +73,21 @@ function updateElementAttribute(
     } else if (typeof value === "string") {
       element.setAttribute(key, String(value));
     } else {
-      //@ts-ignore
       element[key] = value;
     }
   }
 }
 
 export class IntrinsicContext<C> {
-  constructor(public readonly $app: App) {
-    Object.defineProperty(this, "$ev", {
-      get() {
-        return $app.eventData;
-      },
-    });
-    Object.defineProperty(this, "$", {
-      get() {
-        return this.$app.eventRecevier ?? this.$cbComponent;
-      },
-    });
-  }
+  constructor(public readonly $app: App) {}
 
   $update() {
     this.$app.update();
   }
 
+  $getD<T>(d: D<T>): T {
+    return getD(d);
+  }
   $setD<T>(d: D<T>, v: T): boolean {
     return this.$app.setD(d, v);
   }
@@ -98,7 +96,6 @@ export class IntrinsicContext<C> {
     m.value = value;
     this.$update();
   }
-
   $clearMaybe(m: Maybe<any>) {
     m.clear();
     this.$update();
@@ -113,35 +110,19 @@ export class IntrinsicContext<C> {
   get $receiving() {
     return this.$state === AppState.recv;
   }
+
+  get $() {
+    return this.$app.eventRecevier ?? this.$cbComponent;
+  }
+  get $ev() {
+    return this.$app.eventData;
+  }
+
   get $router() {
     return this.$app.router;
   }
-  $cbComponent: C = null as any;
 
-  $preventDefault(): true {
-    const ev = this.$app.eventData;
-    if (typeof ev?.preventDefault !== "function") {
-      throw new Error(`Cannot prevent default on ${ev}.`);
-    }
-    ev.preventDefault();
-    return true;
-  }
-  $stopPropagation(): true {
-    const ev = this.$app.eventData;
-    if (typeof ev?.stopPropagation !== "function") {
-      throw new Error(`Cannot stop propagation on ${ev}.`);
-    }
-    ev.stopPropagation();
-    return true;
-  }
-  $stopImmediatePropagation(): true {
-    const ev = this.$app.eventData;
-    if (typeof ev?.stopImmediatePropagation !== "function") {
-      throw new Error(`Cannot stop immediate propagation on ${ev}.`);
-    }
-    ev.stopImmediatePropagation();
-    return true;
-  }
+  $cbComponent: C = null as any;
 
   $pendingRef: Ref<any> | null = null;
   $ref<C2>(ref: Ref<C2>, ...refs: Ref<C2>[]): this is Context<C2> {
@@ -205,27 +186,8 @@ export class IntrinsicContext<C> {
   get $permanentData() {
     return this.$app.permanentData;
   }
-  protected get $runtimeData() {
+  get $runtimeData() {
     return this.$app.runtimeData!;
-  }
-  $provide(key: symbol, value: unknown): true {
-    this.$runtimeData[key] = value;
-    return true;
-  }
-  $unprovide(key: symbol): true {
-    delete this.$runtimeData[key];
-    return true;
-  }
-  $forceInject<T>(key: symbol, errorMessage?: string): T {
-    if (!(key in this.$runtimeData)) {
-      throw new Error(
-        errorMessage ?? `Cannot inject ${key.toString()}: not provided.`,
-      );
-    }
-    return this.$runtimeData[key];
-  }
-  $inject<T>(key: symbol, fallback?: T): T {
-    return this.$runtimeData[key] ?? fallback;
   }
 
   $customData: Record<symbol, any> = {};
@@ -486,43 +448,7 @@ export class IntrinsicContext<C> {
   }
 }
 
-export type Context<C = any> = ToFullContext<C, IntrinsicContext<C>>;
-
-export type View<Args extends any[] = []> = (
-  context: Context,
-  ...args: Args
-) => void;
-
-export function view<Args extends any[] = []>(view: View<Args>): View<Args> {
-  return view;
-}
-
-export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
-  $rootCls(cls: string): true;
-  $rootCls(template: TemplateStringsArray, ...args: any[]): true;
-  $rootCls(...args: any[]): true {
-    this.$app.root.setClasses(
-      (Array.isArray(args[0])
-        ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]
-      )
-        .split(/\s/)
-        .filter(Boolean),
-    );
-    return true;
-  }
-
-  $rootCss(style: string): void;
-  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
-  $rootCss(...args: any[]): void {
-    this.$app.root.setStyle(
-      Array.isArray(args[0])
-        ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0],
-    );
-  }
-}
-
-export type AppContext<C = any> = ToFullContext<C, IntrinsicAppContext<C>>;
-
-export type AppView = (_: AppContext) => void;
+export type Context<C = any> = ToFullContext<
+  C,
+  Omit<IntrinsicContext<C>, "$" | "$ev">
+>;

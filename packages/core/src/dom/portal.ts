@@ -1,10 +1,6 @@
-import {
-  Context,
-  IntrinsicContext,
-  View,
-  addCustomContextFunc,
-} from "../context";
+import { Context, IntrinsicContext, addCustomContextFunc } from "../context";
 import { D, getD } from "../data";
+import { View } from "../view";
 import {
   DOMNodeComponent,
   DOMNodeComponentActionResult,
