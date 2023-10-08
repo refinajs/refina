@@ -141,9 +141,11 @@ export class App {
         );
       }
 
-      for (const ikey of this.noPreserveComponents) {
-        if (!this.processedComponents.has(ikey)) {
-          this.refMap.delete(ikey);
+      if (this.state === AppState.update) {
+        for (const ikey of this.noPreserveComponents) {
+          if (!this.processedComponents.has(ikey)) {
+            this.refMap.delete(ikey);
+          }
         }
       }
 

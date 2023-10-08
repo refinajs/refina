@@ -359,10 +359,8 @@ export class IntrinsicContext<C> {
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
-    this.$app.markComponentProcessed(ikey);
-    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
-    const oldParent = this.$app.currentDOMParent;
 
+    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     if (!ec) {
       ec = new DOMElementComponent<keyof HTMLElementTagNameMap>(
         ikey,
@@ -371,18 +369,19 @@ export class IntrinsicContext<C> {
       this.$app.refMap.set(ikey, ec);
       this.$app.nodeMap.set(ec.node, ec);
     }
-    updateElementAttribute(ec.node, data);
-    ec.setClasses(classes);
-    ec.setStyle(style);
-    oldParent.children.push(ec);
-    ec.children = [];
 
-    const context = new IntrinsicContext(this.$app);
-
-    this.$setFirstDOMNode(ec!);
-    this.$setFirstHTMLELement(ec!);
+    if (this.$updating) {
+      updateElementAttribute(ec.node, data);
+      ec.setClasses(classes);
+      ec.setStyle(style);
+    }
 
     this.$setRef(ec);
+    this.$setFirstDOMNode(ec!);
+    this.$setFirstHTMLELement(ec!);
+    this.$app.markComponentProcessed(ikey);
+
+    const context = new IntrinsicContext(this.$app);
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
@@ -390,16 +389,17 @@ export class IntrinsicContext<C> {
       this.$pendingNoPreserve = false;
     }
 
+    const oldParent = this.$app.currentDOMParent;
+    oldParent.children.push(ec);
+    ec.children = [];
     this.$app.currentDOMParent = ec!;
 
     inner(context as unknown as Context);
-
     this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.currentDOMParent = oldParent;
 
     this.$app.popKey(ckey);
-
     return ec!;
   }
   protected $processSVGElement<E extends keyof SVGElementTagNameMap>(
@@ -417,10 +417,8 @@ export class IntrinsicContext<C> {
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
-    this.$app.markComponentProcessed(ikey);
-    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
-    const oldParent = this.$app.currentDOMParent;
 
+    let ec = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
     if (!ec) {
       ec = new DOMElementComponent<keyof SVGElementTagNameMap>(
         ikey,
@@ -429,18 +427,19 @@ export class IntrinsicContext<C> {
       this.$app.refMap.set(ikey, ec);
       this.$app.nodeMap.set(ec.node, ec);
     }
-    updateElementAttribute(ec.node, data);
-    ec.setClasses(classes);
-    ec.setStyle(style);
-    oldParent.children.push(ec);
-    ec.children = [];
 
-    const context = new IntrinsicContext(this.$app);
-
-    this.$setFirstDOMNode(ec!);
-    this.$setFirstHTMLELement(ec!);
+    if (this.$updating) {
+      updateElementAttribute(ec.node, data);
+      ec.setClasses(classes);
+      ec.setStyle(style);
+    }
 
     this.$setRef(ec);
+    this.$setFirstDOMNode(ec!);
+    this.$setFirstHTMLELement(ec!);
+    this.$app.markComponentProcessed(ikey);
+
+    const context = new IntrinsicContext(this.$app);
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
@@ -448,16 +447,17 @@ export class IntrinsicContext<C> {
       this.$pendingNoPreserve = false;
     }
 
+    const oldParent = this.$app.currentDOMParent;
+    oldParent.children.push(ec);
+    ec.children = [];
     this.$app.currentDOMParent = ec!;
 
     inner(context as unknown as Context);
-
     this.$app.callAndResetHook("afterThisComponent");
 
     this.$app.currentDOMParent = oldParent;
 
     this.$app.popKey(ckey);
-
     return ec!;
   }
   protected $processTextNode(ckey: string, text: string) {
@@ -465,27 +465,27 @@ export class IntrinsicContext<C> {
 
     this.$app.pushKey(ckey);
     const ikey = this.$app.ikey;
-    this.$app.markComponentProcessed(ikey);
     let t = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
-
     if (!t) {
       t = new TextNodeComponent(ikey, document.createTextNode(text));
       this.$app.refMap.set(ikey, t);
       this.$app.nodeMap.set(t.node, t);
-    } else {
-      if (t.node.textContent !== text) t.node.textContent = text;
+    } else if (this.$updating && t.node.textContent !== text) {
+      t.node.textContent = text;
     }
-    this.$app.currentDOMParent.children.push(t);
 
-    this.$app.popKey(ckey);
-
-    this.$setFirstDOMNode(t!);
+    this.$setRef(t);
+    this.$setFirstDOMNode(t);
+    this.$app.markComponentProcessed(ikey);
 
     if (this.$allNoPreserve || this.$pendingNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
       this.$pendingNoPreserve = false;
     }
 
+    this.$app.currentDOMParent.children.push(t);
+
+    this.$app.popKey(ckey);
     return t!;
   }
 }
