@@ -1,3 +1,6 @@
+/*
+ * WARNING: Do not change the order of the exports below without testing.
+ */
 export * from "./component";
 export * from "./context";
 export * from "./data";
