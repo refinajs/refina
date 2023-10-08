@@ -70,6 +70,9 @@ export interface PositioningOptions {
    * its boundaries, use a specified fallback positions.
    */
   fallbackPositions?: PositioningShorthandValue[];
+
+  targetRef?: Ref<HTMLElementComponent>;
+  containerRef?: Ref<HTMLElementComponent>;
 }
 
 /**
