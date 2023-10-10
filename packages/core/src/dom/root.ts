@@ -53,28 +53,4 @@ export class DOMRootComponent extends DOMElementComponent<
   insertAfter(_element: ChildNode): never {
     throw new Error("Cannot insert after root");
   }
-
-  registeredEventListeners: {
-    [K in keyof HTMLElementEventMap]?: [
-      (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
-      boolean | AddEventListenerOptions | undefined,
-    ][];
-  } = {};
-  beforeExecMain() {
-    Object.entries(this.registeredEventListeners).forEach(
-      ([type, listeners]) =>
-        listeners?.forEach(([listener, options]) =>
-          this.node.removeEventListener(type, listener as any, options),
-        ),
-    );
-  }
-  registerEventListener<K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions,
-  ): void {
-    this.registeredEventListeners[type] ??= [];
-    this.registeredEventListeners[type]!.push([listener, options]);
-    this.node.addEventListener(type, listener as any, options);
-  }
 }

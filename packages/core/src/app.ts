@@ -166,7 +166,7 @@ export class App {
     try {
       this.running = true;
       this._ = new IntrinsicAppContext(this) as any;
-      this.root.beforeExecMain();
+      this.clearEventListeners();
       this.runtimeData = {};
       this.processedComponents.clear();
       this.main(this._ as AppContext);
@@ -256,6 +256,72 @@ message: ${msg}`,
   }
   get isReceiver() {
     return this.eventRecevierIkey === this.ikey;
+  }
+
+  protected registeredWindowEventListeners: {
+    [K in keyof WindowEventMap]?: [
+      (this: Window, ev: WindowEventMap[K]) => any,
+      boolean | AddEventListenerOptions | undefined,
+    ][];
+  } = {};
+  protected registeredDocumentEventListeners: {
+    [K in keyof DocumentEventMap]?: [
+      (this: Document, ev: DocumentEventMap[K]) => any,
+      boolean | AddEventListenerOptions | undefined,
+    ][];
+  } = {};
+  protected registeredRootEventListeners: {
+    [K in keyof HTMLElementEventMap]?: [
+      (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
+      boolean | AddEventListenerOptions | undefined,
+    ][];
+  } = {};
+  clearEventListeners() {
+    Object.entries(this.registeredWindowEventListeners).forEach(
+      ([type, listeners]) =>
+        listeners?.forEach(([listener, options]) =>
+          window.removeEventListener(type, listener as any, options),
+        ),
+    );
+    Object.entries(this.registeredDocumentEventListeners).forEach(
+      ([type, listeners]) =>
+        listeners?.forEach(([listener, options]) =>
+          document.removeEventListener(type, listener as any, options),
+        ),
+    );
+    Object.entries(this.registeredRootEventListeners).forEach(
+      ([type, listeners]) =>
+        listeners?.forEach(([listener, options]) =>
+          this.root.node.removeEventListener(type, listener as any, options),
+        ),
+    );
+  }
+  registerWindowEventListener<K extends keyof WindowEventMap>(
+    type: K,
+    listener: (this: Window, ev: WindowEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    this.registeredWindowEventListeners[type] ??= [];
+    this.registeredWindowEventListeners[type]!.push([listener, options]);
+    window.addEventListener(type, listener, options);
+  }
+  registerDocumentEventListener<K extends keyof DocumentEventMap>(
+    type: K,
+    listener: (this: Document, ev: DocumentEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ) {
+    this.registeredDocumentEventListeners[type] ??= [];
+    this.registeredDocumentEventListeners[type]!.push([listener, options]);
+    document.addEventListener(type, listener, options);
+  }
+  registerRootEventListener<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    this.registeredRootEventListeners[type] ??= [];
+    this.registeredRootEventListeners[type]!.push([listener, options]);
+    this.root.node.addEventListener(type, listener as any, options);
   }
 }
 
