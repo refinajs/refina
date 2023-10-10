@@ -329,7 +329,15 @@ export class IntrinsicContext<C> {
     }
 
     if (this.$updating) {
-      Object.assign(ec.node, data);
+      for (const key in data) {
+        if (data[key] === undefined) {
+          // @ts-ignore
+          delete ec.node[key];
+        } else {
+          // @ts-ignore
+          ec.node[key] = data[key];
+        }
+      }
       ec.setClasses(classes);
       ec.setStyle(style);
     }
