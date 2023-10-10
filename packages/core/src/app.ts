@@ -166,6 +166,7 @@ export class App {
     try {
       this.running = true;
       this._ = new IntrinsicAppContext(this) as any;
+      this.root.beforeExecMain();
       this.runtimeData = {};
       this.processedComponents.clear();
       this.main(this._ as AppContext);
