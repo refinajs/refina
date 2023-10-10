@@ -48,6 +48,9 @@ addCustomContextFunc(
         setTimeout(setPosition);
       }
     });
+
+    this.$app.registerWindowEventListener("resize", setPosition);
+
     return { targetRef, containerRef };
   },
 );
