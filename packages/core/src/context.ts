@@ -98,6 +98,10 @@ export class IntrinsicContext<C> {
     return this.$app.eventData;
   }
 
+  get $root() {
+    return this.$app.root;
+  }
+
   get $router() {
     return this.$app.router;
   }
