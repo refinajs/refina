@@ -45,14 +45,14 @@ export class FModalPopover extends TriggerComponent<void> {
         true,
       );
 
-      const positioningOptions = {
+      const {} = _.usePositioning({
         targetRef,
         containerRef: this.contentRef,
         position: "above" as const,
         align: "center" as const,
-        arrowPadding: 2 * popoverSurfaceBorderRadius,
-      };
-      const {} = _.usePositioning(positioningOptions);
+        // arrowPadding: 2 * popoverSurfaceBorderRadius,
+        fallbackPositions: ["above", "after", "after-top", "before", "before-top"],
+      });
 
       _.portal(() => {
         surfaceStyles.root("medium")(_);
