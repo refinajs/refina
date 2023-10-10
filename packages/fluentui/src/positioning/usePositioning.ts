@@ -1,5 +1,5 @@
 import { computePosition } from "@floating-ui/dom";
-import { addCustomContextFunc, ref } from "refina";
+import { AppState, addCustomContextFunc, ref } from "refina";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, PositioningRefs } from "./types";
 import { toFloatingUIPlacement } from "./utils/toFloatingUIPlacement";
@@ -18,7 +18,7 @@ addCustomContextFunc(
 
     const { align, position, offset, fallbackPositions } = options;
 
-    this.$app.pushHook("afterModifyDOM", () => {
+    const setPosition = () => {
       if (targetRef.current == null || containerRef.current == null) {
         throw new Error("targetRef or containerRef of useFloating is not set");
       }
@@ -41,6 +41,12 @@ addCustomContextFunc(
         containerNode.style.top = `${y}px`;
         containerNode.style.position = strategy;
       });
+    };
+
+    this.$app.pushHook("afterModifyDOM", () => {
+      if (this.$app.state === AppState.update) {
+        setTimeout(setPosition);
+      }
     });
     return { targetRef, containerRef };
   },
