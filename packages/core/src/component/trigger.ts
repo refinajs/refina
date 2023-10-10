@@ -24,11 +24,13 @@ export class IntrinsicTriggerComponentContext<
   C = any,
 > extends IntrinsicComponentContext<S, C> {
   $fire = (data: Ev) => {
-    if (typeof data === "object" && data !== null && data instanceof Event) {
-      data = {
-        ...data,
-        $isCurrent: data.target === data.currentTarget,
-      };
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      data instanceof Event &&
+      !Object.hasOwn(data, "$isCurrent")
+    ) {
+      (data as any).$isCurrent = data.target === data.currentTarget;
     }
     this.$app.recv(this.$component.ikey, data);
     return false as const;
