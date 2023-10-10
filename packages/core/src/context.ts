@@ -120,6 +120,19 @@ export class IntrinsicContext<C> {
     }
   }
 
+  $mainEl: HTMLElement | null = null;
+  protected $isNextNodeMain = false;
+  $main(): true {
+    this.$isNextNodeMain = true;
+    return true;
+  }
+  protected $setMainEl(node: HTMLElement | null) {
+    if (this.$isNextNodeMain) {
+      this.$mainEl = node;
+      this.$isNextNodeMain = false;
+    }
+  }
+
   $noPreserve(deep: boolean = true): true {
     this.$pendingNoPreserve = deep ? "deep" : true;
     return true;
@@ -268,7 +281,8 @@ export class IntrinsicContext<C> {
     }
     return component;
   }
-  $endComponent(ckey: string) {
+  $endComponent(component: Component, ckey: string) {
+    this.$setMainEl(component.mainEl);
     this.$app.popKey(ckey);
   }
 
@@ -321,6 +335,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
+    this.$setMainEl(ec.mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);
@@ -385,6 +400,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
+    this.$setMainEl(ec.mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);
@@ -424,6 +440,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(t);
+    this.$setMainEl(null);
     this.$setFirstDOMNode(t);
     this.$app.markComponentProcessed(ikey);
 

@@ -19,11 +19,13 @@ addCustomContextFunc(
     const { align, position, offset, fallbackPositions } = options;
 
     const setPosition = () => {
-      if (targetRef.current == null || containerRef.current == null) {
-        throw new Error("targetRef or containerRef of useFloating is not set");
+      if (!targetRef.current?.mainEl || !containerRef.current?.mainEl) {
+        throw new Error(
+          "targetRef or containerRef of useFloating is not set or has no mainEl",
+        );
       }
-      const targetNode = targetRef.current.node,
-        containerNode = containerRef.current.node;
+      const targetNode = targetRef.current.mainEl,
+        containerNode = containerRef.current.mainEl;
 
       const placement = toFloatingUIPlacement(align, position, false);
 

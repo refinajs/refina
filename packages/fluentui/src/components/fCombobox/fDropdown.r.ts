@@ -13,10 +13,10 @@ import {
   ref,
   triggerComponent,
 } from "refina";
+import "../../positioning";
 import dropdownStyles from "./fDropdown.styles";
 import listboxStyles from "./listbox.styles";
 import optionStyles from "./option.styles";
-import "../../positioning";
 
 /**
  * enum of actions available in any type of managed dropdown control
@@ -154,7 +154,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
 
     if (this.open) {
       _.$app.pushHook("afterModifyDOM", () => {
-        containerRef.current!.node.style.width = `${rootRef.current!.node.clientWidth}px`;
+        containerRef.current!.mainEl!.style.width = `${rootRef.current!.mainEl.clientWidth}px`;
       });
     }
 

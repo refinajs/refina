@@ -8,6 +8,8 @@ export abstract class Component {
     public readonly app: App,
   ) {}
 
+  mainEl: HTMLElement | null;
+
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (
@@ -47,12 +49,10 @@ export class IntrinsicComponentContext<
     this.$caller.$setFirstHTMLELement(element);
   }
 
-  $classesAndStyleUsed = false;
   $main(): true {
     this.$pendingCls = this.$classesArg;
     this.$pendingCSS = this.$styleArg;
-    this.$classesAndStyleUsed = true;
-    return true;
+    return super.$main();
   }
 }
 

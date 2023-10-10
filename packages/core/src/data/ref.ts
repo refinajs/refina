@@ -24,3 +24,7 @@ export function mergeRefs<T>(...refs: Ref<T>[]): MergedRef<T> {
     },
   };
 }
+
+export type MainElRef<T extends HTMLElement = HTMLElement> = Ref<{
+  readonly mainEl: T | null;
+}>;

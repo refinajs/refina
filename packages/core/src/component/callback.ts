@@ -94,10 +94,13 @@ export function createCallbackComponentFunc<
           ...args,
         );
 
-        if (!context.$classesAndStyleUsed) {
+        if (!context.$mainEl) {
+          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
           context.$firstHTMLELement?.addClasses(context.$classesArg);
           context.$firstHTMLELement?.addStyle(context.$styleArg);
         }
+
+        component.mainEl = context.$mainEl;
       });
       ret = true;
     } else {
@@ -121,7 +124,7 @@ export function createCallbackComponentFunc<
       );
       ret = this.$app.isReceiver;
     }
-    this.$endComponent(ckey);
+    this.$endComponent(component, ckey);
     return ret;
   };
 }

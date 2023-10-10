@@ -68,12 +68,15 @@ export function triggerComponent<
 
         const isReceiver = this.$app.isReceiver;
 
-        if (!context.$classesAndStyleUsed) {
+        if (!context.$mainEl) {
+          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
           context.$firstHTMLELement?.addClasses(context.$classesArg);
           context.$firstHTMLELement?.addStyle(context.$styleArg);
         }
 
-        this.$endComponent(ckey);
+        component.mainEl = context.$mainEl;
+
+        this.$endComponent(component, ckey);
 
         return isReceiver;
       },

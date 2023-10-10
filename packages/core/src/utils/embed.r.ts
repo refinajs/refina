@@ -1,7 +1,7 @@
-import { Context, IntrinsicContext } from "../context";
-import { Content } from "../dom";
 import { OutputComponent, outputComponent } from "../component/output";
+import { Context, IntrinsicContext } from "../context";
 import { D, getD } from "../data";
+import { Content } from "../dom";
 
 const contentCache = new Map<string, Content<any>>();
 
@@ -41,6 +41,9 @@ export class Embed extends OutputComponent {
             processContent(r.default);
             _.$app.update();
           });
+        } else {
+          _.$firstDOMNode = context.$firstDOMNode;
+          _.$firstHTMLELement = context.$firstHTMLELement;
         }
       } else {
         _.t(String(contentValue));

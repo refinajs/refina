@@ -1,8 +1,8 @@
-import { HTMLElementComponent, Ref } from "refina";
+import { MainElRef } from "refina";
 
 export interface PositioningRefs {
-  targetRef: Ref<HTMLElementComponent>;
-  containerRef: Ref<HTMLElementComponent>;
+  targetRef: MainElRef;
+  containerRef: MainElRef;
 }
 
 export type Rect = {
@@ -71,8 +71,8 @@ export interface PositioningOptions {
    */
   fallbackPositions?: PositioningShorthandValue[];
 
-  targetRef?: Ref<HTMLElementComponent>;
-  containerRef?: Ref<HTMLElementComponent>;
+  targetRef?: MainElRef;
+  containerRef?: MainElRef;
 }
 
 /**

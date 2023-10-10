@@ -5,6 +5,7 @@ export * from "./fDialog";
 export * from "./fDivider";
 export * from "./fInput";
 export * from "./fLabel";
+export * from "./fPopover";
 export * from "./fProgressBar";
 export * from "./fSlider";
 export * from "./fSwitch";
