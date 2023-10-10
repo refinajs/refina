@@ -31,8 +31,6 @@ export interface PD<T> {
   [Symbol.toPrimitive](): T;
 }
 
-export type PDType<T> = Readonly<T> & PD<T>;
-
 export type D<T> = T | PD<T>;
 
 export function getD<T>(d: D<T>): T {

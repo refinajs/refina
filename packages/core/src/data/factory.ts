@@ -1,9 +1,9 @@
-import { IntrinsicPD, PD, PDType } from "./base";
+import { IntrinsicPD, PD } from "./base";
 
 export interface CustomDFactoryMember<T> {}
 
 export type DFactory<T> = {
-  <V extends T>(v: V): PDType<V>;
+  <V extends T>(v: V): PD<V>;
   $initializer: (v: T, d: PD<T>) => T;
   $getter: (v: T, d: PD<T>) => T;
   $setter: (v: T, d: PD<T>) => T;
@@ -20,7 +20,7 @@ export function createDFactory<T>(
       factory.$initializer,
       factory.$getter,
       factory.$setter,
-    ) as any as PDType<T>;
+    ) as any as PD<T>;
   };
   factory.$initializer = $initializer;
   factory.$getter = $getter;
