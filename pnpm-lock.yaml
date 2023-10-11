@@ -43,40 +43,6 @@ importers:
         specifier: workspace:^
         version: link:../plugin
 
-  packages/examples/app:
-    dependencies:
-      '@refina/fluentui':
-        specifier: workspace:^
-        version: link:../../fluentui
-      refina:
-        specifier: workspace:^
-        version: link:../../core
-    devDependencies:
-      '@refina/tsconfig':
-        specifier: workspace:^
-        version: link:../../tsconfig
-      autoprefixer:
-        specifier: ^10.4.15
-        version: 10.4.16(postcss@8.4.30)
-      postcss:
-        specifier: ^8.4.27
-        version: 8.4.30
-      tailwindcss:
-        specifier: ^3.3.3
-        version: 3.3.3
-      typescript:
-        specifier: ^5.1.6
-        version: 5.2.2
-      vite:
-        specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
-      vite-plugin-inspect:
-        specifier: ^0.7.35
-        version: 0.7.38(vite@4.4.9)
-      vite-plugin-refina:
-        specifier: workspace:^
-        version: link:../../plugin
-
   packages/examples/fluentui:
     dependencies:
       '@refina/fluentui':
