@@ -15,7 +15,7 @@ export type { BrandVariants, Theme } from "@fluentui/tokens";
 const currentThemeSymbol = Symbol("currentTheme");
 
 addCustomContextFunc(
-  "useTheme",
+  "provideFTheme",
   function (
     ckey: string,
     dark: Theme = webDarkTheme,
@@ -27,7 +27,7 @@ addCustomContextFunc(
 
     const currentTheme = this.$permanentData[currentThemeSymbol];
     if (currentTheme && currentTheme.setBy !== ikey) {
-      throw new Error("useTheme can only be called once.");
+      throw new Error("provideFTheme can only be called once.");
     }
     if (!currentTheme || currentTheme.theme !== theme) {
       for (const key in theme) {
@@ -49,6 +49,8 @@ addCustomContextFunc(
 
 declare module "refina" {
   interface CustomContext<C> {
-    useTheme: never extends C ? (dark?: Theme, light?: Theme) => void : never;
+    provideFTheme: never extends C
+      ? (dark?: Theme, light?: Theme) => void
+      : never;
   }
 }
