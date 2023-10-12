@@ -9,7 +9,7 @@ import {
 import { DOMElementComponent } from "./domElement";
 
 export class DOMPortalComponent extends DOMElementComponent {
-  childrenToRemove: Set<DOMNodeComponent>;
+  protected childrenToRemove: Set<DOMNodeComponent>;
 
   createDOM(): DOMNodeComponentActionResult {
     let lastEl: MaybeChildNode = null;
