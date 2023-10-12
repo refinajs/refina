@@ -35,7 +35,7 @@ const dropdownTest = d("");
 const textInputTest = d("");
 
 app((_) => {
-  _.useTheme(darkTheme, lightTheme);
+  _.provideFTheme(darkTheme, lightTheme);
 
   _.fDivider("button");
   _.fButton("Button");
@@ -97,5 +97,17 @@ app((_) => {
     },
     "end",
     false,
+  );
+
+  _.fDivider("popover");
+  _.fPopover(
+    (_, targetRef, open) => {
+      _.$ref(targetRef) && _.fButton("Popover Trigger") && open();
+    },
+    (_, close) => {
+      _._h1({}, "Title");
+      _._p({}, "Content content content content");
+      _.fButton("Close") && close();
+    },
   );
 });
