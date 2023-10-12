@@ -7,6 +7,7 @@ import {
   DOMElementComponent,
   DOMFuncs,
   DOMNodeComponent,
+  SVGElementFuncData,
   TextNodeComponent,
   createCbHTMLElementComponentFunction,
 } from "./dom";
@@ -374,7 +375,7 @@ export class IntrinsicContext<C> {
     tagName: E,
     classes: string[],
     style: string,
-    data?: Partial<SVGElementTagNameMap[E]>,
+    data?: SVGElementFuncData,
     inner?: D<Content>,
   ) {
     data ??= {};
@@ -400,7 +401,12 @@ export class IntrinsicContext<C> {
         if (value === undefined) {
           ec.node.removeAttribute(key);
         } else {
-          ec.node.setAttribute(key, String(value));
+          if (typeof value === "function") {
+            //@ts-ignore
+            ec.node[key] = value;
+          } else {
+            ec.node.setAttribute(key, String(value));
+          }
         }
       }
       ec.setClasses(classes);

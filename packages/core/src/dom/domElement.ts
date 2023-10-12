@@ -124,10 +124,15 @@ export type HTMLElementFuncs<C> = {
     : never;
 };
 
+export type SVGElementFuncData = Record<
+  string,
+  D<string | number | ((...args: any[]) => any)>
+>;
+
 export type SVGElementFuncs<C> = {
   [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C
     ? (
-        data?: Record<string, D<string | number>>,
+        data?: SVGElementFuncData,
         inner?: D<Content>,
         //@ts-ignore
       ) => this is Context<DOMElementComponent<E>>
