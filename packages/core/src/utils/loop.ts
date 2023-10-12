@@ -51,7 +51,7 @@ declare module "../context" {
     for: never extends C
       ? <T = unknown>(
           arr: D<Iterable<T>>,
-          key: keyof T | ((item: T, index: number) => D<string>),
+          key: KeyFunc<T>,
           body: (item: T, index: number) => void,
         ) => void
       : never;
