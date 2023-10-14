@@ -260,39 +260,39 @@ message: ${msg}`,
 
   protected registeredWindowEventListeners: {
     [K in keyof WindowEventMap]?: [
-      (this: Window, ev: WindowEventMap[K]) => any,
-      boolean | AddEventListenerOptions | undefined,
+      listener: (this: Window, ev: WindowEventMap[K]) => any,
+      capture: boolean | undefined,
     ][];
   } = {};
   protected registeredDocumentEventListeners: {
     [K in keyof DocumentEventMap]?: [
-      (this: Document, ev: DocumentEventMap[K]) => any,
-      boolean | AddEventListenerOptions | undefined,
+      listener: (this: Document, ev: DocumentEventMap[K]) => any,
+      capture: boolean | undefined,
     ][];
   } = {};
   protected registeredRootEventListeners: {
     [K in keyof HTMLElementEventMap]?: [
-      (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
-      boolean | AddEventListenerOptions | undefined,
+      listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
+      capture: boolean | undefined,
     ][];
   } = {};
   clearEventListeners() {
     Object.entries(this.registeredWindowEventListeners).forEach(
       ([type, listeners]) =>
-        listeners?.forEach(([listener, options]) =>
-          window.removeEventListener(type, listener as any, options),
+        listeners?.forEach(([listener, capture]) =>
+          window.removeEventListener(type, listener as any, capture),
         ),
     );
     Object.entries(this.registeredDocumentEventListeners).forEach(
       ([type, listeners]) =>
-        listeners?.forEach(([listener, options]) =>
-          document.removeEventListener(type, listener as any, options),
+        listeners?.forEach(([listener, capture]) =>
+          document.removeEventListener(type, listener as any, capture),
         ),
     );
     Object.entries(this.registeredRootEventListeners).forEach(
       ([type, listeners]) =>
-        listeners?.forEach(([listener, options]) =>
-          this.root.node.removeEventListener(type, listener as any, options),
+        listeners?.forEach(([listener, capture]) =>
+          this.root.node.removeEventListener(type, listener as any, capture),
         ),
     );
   }
@@ -302,16 +302,22 @@ message: ${msg}`,
     options?: boolean | AddEventListenerOptions,
   ) {
     this.registeredWindowEventListeners[type] ??= [];
-    this.registeredWindowEventListeners[type]!.push([listener, options]);
+    this.registeredWindowEventListeners[type]!.push([
+      listener,
+      typeof options === "boolean" ? options : options?.capture,
+    ]);
     window.addEventListener(type, listener, options);
   }
   registerDocumentEventListener<K extends keyof DocumentEventMap>(
     type: K,
     listener: (this: Document, ev: DocumentEventMap[K]) => any,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | AddEventListenerOptions,
   ) {
     this.registeredDocumentEventListeners[type] ??= [];
-    this.registeredDocumentEventListeners[type]!.push([listener, options]);
+    this.registeredDocumentEventListeners[type]!.push([
+      listener,
+      typeof options === "boolean" ? options : options?.capture,
+    ]);
     document.addEventListener(type, listener, options);
   }
   registerRootEventListener<K extends keyof HTMLElementEventMap>(
@@ -320,7 +326,10 @@ message: ${msg}`,
     options?: boolean | AddEventListenerOptions,
   ) {
     this.registeredRootEventListeners[type] ??= [];
-    this.registeredRootEventListeners[type]!.push([listener, options]);
+    this.registeredRootEventListeners[type]!.push([
+      listener,
+      typeof options === "boolean" ? options : options?.capture,
+    ]);
     this.root.node.addEventListener(type, listener as any, options);
   }
 }
