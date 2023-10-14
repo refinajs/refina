@@ -105,6 +105,8 @@ IMGUI（Immediate Mode GUI）在 UI 状态管理上，是传统的 RMGUI 的反�
 
 ## refina 的设计
 
+> **注意**：本框架的设计尚未定型，以下内容很多已经不再适用。
+
 - App
   - mount
   - DOM Tree
