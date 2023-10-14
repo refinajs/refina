@@ -116,15 +116,15 @@ export class App {
   }
   nextTick() {
     setTimeout(() => {
-      console.log(`[!] next tick`);
+      console.debug(`[!] next tick`);
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
-        console.log(
+        console.debug(
           `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`,
         );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
-        console.log(
+        console.debug(
           `[-] recv executed with id ${receiver} in ${
             window.performance.now() - startTime
           }ms`,
@@ -132,13 +132,13 @@ export class App {
         this.nextTick();
       } else if (this.needUpdate) {
         this.needUpdate = false;
-        console.log(`[+] update executing start`);
+        console.debug(`[+] update executing start`);
         const startTime = window.performance.now();
         this.execUpdate();
         this.callAndResetHook("beforeModifyDOM");
         this.root.updateDOM();
         this.callAndResetHook("afterModifyDOM");
-        console.log(
+        console.debug(
           `[-] update executed in ${window.performance.now() - startTime}ms`,
         );
       }
@@ -148,7 +148,7 @@ export class App {
     if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger an update in update state");
     }
-    console.log(`[*] update queued`);
+    console.debug(`[*] update queued`);
     this.needUpdate = true;
     if (!this.running) this.nextTick();
   }
@@ -156,7 +156,7 @@ export class App {
     if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger a recv in update state");
     }
-    console.log(`[*] recv queued with receiver ${receiver}`);
+    console.debug(`[*] recv queued with receiver ${receiver}`);
     this.recvQueue.push({ receiver, data });
     this.needUpdate = true;
     if (!this.running) this.nextTick();
@@ -188,7 +188,7 @@ export class App {
       }
 
       window.__MAIN_EXECUTED_TIMES__ ??= 1;
-      console.log(`main executed ${window.__MAIN_EXECUTED_TIMES__++} times`);
+      console.debug(`main executed ${window.__MAIN_EXECUTED_TIMES__++} times`);
     } catch (e) {
       console.error("Error when executing main:", e, "\nstate:", this.state);
     } finally {
