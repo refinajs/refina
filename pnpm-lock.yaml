@@ -102,6 +102,31 @@ importers:
         specifier: workspace:^
         version: link:../../plugin
 
+  packages/examples/mdui:
+    dependencies:
+      '@refina/mdui':
+        specifier: workspace:^
+        version: link:../../mdui
+      refina:
+        specifier: workspace:^
+        version: link:../../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../../tsconfig
+      typescript:
+        specifier: ^5.1.6
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.8
+        version: 4.4.9(@types/node@20.6.5)
+      vite-plugin-inspect:
+        specifier: ^0.7.35
+        version: 0.7.38(vite@4.4.9)
+      vite-plugin-refina:
+        specifier: workspace:^
+        version: link:../../plugin
+
   packages/fluentui:
     dependencies:
       '@floating-ui/dom':
@@ -169,6 +194,22 @@ importers:
       '@griffel/core':
         specifier: ^1.14.2
         version: 1.14.2
+      refina:
+        specifier: workspace:^
+        version: link:../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
+  packages/mdui:
+    dependencies:
+      mdui:
+        specifier: ^1.0.2
+        version: 1.0.2
       refina:
         specifier: workspace:^
         version: link:../core
@@ -1249,6 +1290,28 @@ packages:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
     dev: true
 
+  /mdn-polyfills@5.20.0:
+    resolution: {integrity: sha512-AbTv1ytcoOUAkxw6u5oo2QPf27kEZgxBAQr49jFb4i2VnTnFGfJbcIQ9UDBOdfNECeXsgkYFwB2BkdeTfOzztw==}
+    dev: false
+
+  /mdui.jq@2.0.1:
+    resolution: {integrity: sha512-BNT4q/4gAqDYVNUVHmYoJoIu04Rmz0Ow0j38VwZgIahWphpyDdOxReQZzMUGDizXZUJ0+r+JpdKVxKMVP27VAg==}
+    engines: {node: '>=14'}
+    dependencies:
+      mdn-polyfills: 5.20.0
+      promise-polyfill: 8.3.0
+    dev: false
+
+  /mdui@1.0.2:
+    resolution: {integrity: sha512-LIaDjVjzyPY8PUjlhCXiE4mOXinh+jv38H/zsrR00/Y9OWzdncPlvir3mzZGuxT4sh9rHOrh06zfsOPoBjIhzA==}
+    engines: {node: '>=14'}
+    dependencies:
+      mdn-polyfills: 5.20.0
+      mdui.jq: 2.0.1
+      normalize.css: 8.0.1
+      promise-polyfill: 8.3.0
+    dev: false
+
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: true
@@ -1317,6 +1380,10 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /normalize.css@8.0.1:
+    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
+    dev: false
 
   /npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -1494,6 +1561,10 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
     dev: true
+
+  /promise-polyfill@8.3.0:
+    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
+    dev: false
 
   /punycode@2.3.0:
     resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}

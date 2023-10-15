@@ -1,0 +1,39 @@
+{
+  "name": "@refina/mdui",
+  "version": "0.0.0",
+  "description": "The MDUI components for Refina framework.",
+  "keywords": [
+    "refina",
+    "material design",
+    "mdui",
+    "components"
+  ],
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./node_modules/mdui/dist/css/mdui.css"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "mdui": "^1.0.2",
+    "refina": "workspace:^"
+  }
+}
