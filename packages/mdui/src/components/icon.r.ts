@@ -1,6 +1,6 @@
 import { Content, D, getD, OutputComponent, OutputComponentContext, outputComponent } from "refina";
 import type { IconName } from "./icon.asset";
-import { fontMap } from "./icon.asset";
+// import { fontMap } from "./icon.asset";
 import mdui from "mdui";
 
 @outputComponent("mdIcon")
