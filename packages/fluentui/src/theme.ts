@@ -31,10 +31,12 @@ addCustomContextFunc(
     }
     if (!currentTheme || currentTheme.theme !== theme) {
       for (const key in theme) {
-        this.$app.root.node.style.setProperty(
-          `--${String(key)}`,
-          String(theme[key as keyof Theme]),
-        );
+        this.$app.pushHook("beforeModifyDOM", () => {
+          this.$app.root.node.style.setProperty(
+            `--${String(key)}`,
+            String(theme[key as keyof Theme]),
+          );
+        });
       }
 
       this.$permanentData[currentFThemeSymbol] = {
