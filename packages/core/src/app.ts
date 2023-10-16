@@ -17,10 +17,11 @@ declare global {
 }
 
 export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
+  $pendingRootCls: string[] = [];
   $rootCls(cls: string): true;
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
   $rootCls(...args: any[]): true {
-    this.$app.root.setClasses(
+    this.$pendingRootCls = this.$pendingRootCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]
@@ -31,14 +32,15 @@ export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
     return true;
   }
 
+  $pendingRootCSS: string = "";
   $rootCss(style: string): void;
   $rootCss(template: TemplateStringsArray, ...args: any[]): void;
   $rootCss(...args: any[]): void {
-    this.$app.root.setStyle(
-      Array.isArray(args[0])
+    this.$pendingRootCSS +=
+      ";" +
+      (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0],
-    );
+        : args[0]);
   }
 }
 
@@ -170,6 +172,8 @@ export class App {
       this.runtimeData = {};
       this.processedComponents.clear();
       this.main(this._ as AppContext);
+      this.root.setClasses(this._!.$pendingRootCls);
+      this.root.setStyle(this._!.$pendingRootCSS);
       this._ = undefined;
       this.runtimeData = undefined;
 
