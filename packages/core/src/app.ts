@@ -111,6 +111,7 @@ export class App {
       throw new Error("App already mounted");
     }
     this.execUpdate();
+    this.runtimeData = undefined;
     this.callAndResetHook("beforeModifyDOM");
     this.root.createDOM();
     this.callAndResetHook("afterModifyDOM");
@@ -126,6 +127,7 @@ export class App {
         );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
+        this.runtimeData = undefined;
         console.debug(
           `[-] recv executed with id ${receiver} in ${
             window.performance.now() - startTime
@@ -140,6 +142,7 @@ export class App {
         this.callAndResetHook("beforeModifyDOM");
         this.root.updateDOM();
         this.callAndResetHook("afterModifyDOM");
+        this.runtimeData = undefined;
         console.debug(
           `[-] update executed in ${window.performance.now() - startTime}ms`,
         );
@@ -175,7 +178,6 @@ export class App {
       this.root.setClasses(this._!.$pendingRootCls);
       this.root.setStyle(this._!.$pendingRootCSS);
       this._ = undefined;
-      this.runtimeData = undefined;
 
       if (initialKey !== this.ikey) {
         throw new Error(
