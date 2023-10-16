@@ -2,14 +2,18 @@
 import { app } from "refina";
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
+// let visible = false;
 
 app((_) => {
-  _.provideMDTheme("red", "orange");
-  // _.t`Hello, world!`;
-  // _._br();
-  // _.mdButton("Click me!");
+  _._h1({}, "Test MDUI!");
+
+  _.provideMDTheme("red", "indigo");
+
+  _.mdButton("Normal Button");
   _.mdButton((_) => {
     _.mdIcon("credit_card");
-    _.t`Click me!`;
+    _.t`Button with Icon`;
   });
+  _.mdButton("Disabled Button", true);
+  _.mdIconButton("devices");
 });

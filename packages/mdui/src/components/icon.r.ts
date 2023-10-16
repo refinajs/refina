@@ -4,7 +4,7 @@ import { fontMap } from "./icon.asset";
 import mdui from "mdui";
 
 @outputComponent("mdIcon")
-export class MDIcon extends OutputComponent {
+export class MdIcon extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<IconName>): void {
     _.$cls`mdui-icon` && _.$cls`material-icons`;
     // _._i({}, fontMap[getD(inner)]);
@@ -16,6 +16,6 @@ export class MDIcon extends OutputComponent {
 
 declare module "refina" {
   interface OutputComponents {
-    mdIcon: MDIcon;
+    mdIcon: MdIcon;
   }
 }
