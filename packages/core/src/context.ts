@@ -209,7 +209,7 @@ export class IntrinsicContext<C> {
       const tagName = (funcName[4].toLowerCase() +
         funcName.slice(5)) as keyof SVGElementTagNameMap;
       let [data, inner] = args;
-      return this.$processSVGElement(
+      this.$processSVGElement(
         ckey,
         tagName,
         this.$clsToApply,
@@ -217,12 +217,13 @@ export class IntrinsicContext<C> {
         data,
         inner,
       );
+      return;
     }
     if (funcName[0] === "_") {
       // Now this is a HTML element
       const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
       const [data, inner] = args;
-      return this.$processHTMLElement(
+      this.$processHTMLElement(
         ckey,
         tagName,
         this.$clsToApply,
@@ -230,6 +231,7 @@ export class IntrinsicContext<C> {
         data,
         inner,
       );
+      return;
     }
     // Now this is a user-defined component
     const func = getCustomContextFunc(funcName as keyof CustomContextFuncs);

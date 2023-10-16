@@ -120,7 +120,7 @@ export type HTMLElementFuncs<C> = {
         data?: Partial<HTMLElementTagNameMap[E]>,
         inner?: D<Content>,
         //@ts-ignore
-      ) => this is Context<DOMElementComponent<E>>
+      ) => void
     : never;
 };
 
@@ -135,6 +135,6 @@ export type SVGElementFuncs<C> = {
         data?: SVGElementFuncData,
         inner?: D<Content>,
         //@ts-ignore
-      ) => this is Context<DOMElementComponent<E>>
+      ) => void
     : never;
 };
