@@ -12,7 +12,7 @@ export {
 } from "@fluentui/tokens";
 export type { BrandVariants, Theme } from "@fluentui/tokens";
 
-const currentThemeSymbol = Symbol("currentTheme");
+const currentFThemeSymbol = Symbol("currentFTheme");
 
 addCustomContextFunc(
   "provideFTheme",
@@ -25,7 +25,7 @@ addCustomContextFunc(
 
     const theme = light;
 
-    const currentTheme = this.$permanentData[currentThemeSymbol];
+    const currentTheme = this.$permanentData[currentFThemeSymbol];
     if (currentTheme && currentTheme.setBy !== ikey) {
       throw new Error("provideFTheme can only be called once.");
     }
@@ -37,7 +37,7 @@ addCustomContextFunc(
         );
       }
 
-      this.$permanentData[currentThemeSymbol] = {
+      this.$permanentData[currentFThemeSymbol] = {
         setBy: ikey,
         theme,
       };
