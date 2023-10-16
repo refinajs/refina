@@ -1,5 +1,5 @@
 import { Content, D, TriggerComponent, TriggerComponentContext, getD, triggerComponent } from "refina";
-import { IconName } from "./icon.asset";
+import { IconName } from "../icon";
 
 @triggerComponent("mdIntrinsicButton")
 export class MdIntrinsicButton extends TriggerComponent<void> {
@@ -15,7 +15,7 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
     _.$cls("mdui-btn");
     getD(ripple) && _.$cls("mdui-ripple");
     getD(raised) && _.$cls("mdui-btn-raised");
-    getD(accent) && _.$cls("mdui-color-theme-accent");
+    getD(accent) && _.$cls("mdui-color-theme-primary");
     getD(icon) && _.$cls("mdui-btn-icon");
     _._button(
       {

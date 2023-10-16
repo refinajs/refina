@@ -1,3 +1,4 @@
-export * from "./button.r";
-export * from "./icon.r";
-export * from "./spacer.r";
+export * from "./button";
+export * from "./icon";
+export * from "./spacer";
+export * from "./toolbar";
