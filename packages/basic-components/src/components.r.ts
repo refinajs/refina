@@ -13,6 +13,7 @@ import {
   TriggerComponentContext,
   ref,
   DOMElementComponent,
+  KeyFunc,
 } from "refina";
 
 @statusComponent("div")
@@ -204,7 +205,7 @@ export class UnorderedList extends OutputComponent {
   main<T>(
     _: OutputComponentContext<this>,
     data: D<Iterable<T>>,
-    key: keyof T | ((item: T, index: number) => D<string>),
+    key: KeyFunc<T>,
     body: (item: T, index: number) => void,
   ): void {
     _._ul({}, () => {
