@@ -7,7 +7,7 @@ import "@refina/mdui/styles.css";
 app((_) => {
   _._h1({}, "Test MDUI!");
 
-  _.provideMDTheme("red", "indigo");
+  _.provideMDTheme("indigo", "red");
 
   _.mdButton("Normal Button");
   _.mdButton((_) => {
@@ -18,8 +18,8 @@ app((_) => {
   _.mdIconButton("devices");
 
   _.mdToolbar((_) => {
-    _.mdIconButton("menu");
+    _.mdIconButton("menu", false);
     _.mdSpacer();
-    _.mdIconButton("refresh");
+    _.mdIconButton("refresh", false);
   });
 });

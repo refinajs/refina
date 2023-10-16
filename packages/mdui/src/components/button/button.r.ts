@@ -1,12 +1,13 @@
 import { Content, D, TriggerComponent, TriggerComponentContext, getD, triggerComponent } from "refina";
 import { IconName } from "../icon";
+import { color } from "../../theme/color";
 
 @triggerComponent("mdIntrinsicButton")
 export class MdIntrinsicButton extends TriggerComponent<void> {
   main(
     _: TriggerComponentContext<void, this>,
     inner: D<Content>,
-    accent: D<boolean> = true,
+    color: D<color> = undefined,
     raised: D<boolean> = true,
     disabled: D<boolean> = false,
     ripple: D<boolean> = true,
@@ -15,7 +16,8 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
     _.$cls("mdui-btn");
     getD(ripple) && _.$cls("mdui-ripple");
     getD(raised) && _.$cls("mdui-btn-raised");
-    getD(accent) && _.$cls("mdui-color-theme-primary");
+    getD(color) === "primary" && _.$cls("mdui-color-theme");
+    getD(color) === "accent" && _.$cls("mdui-color-theme-accent");
     getD(icon) && _.$cls("mdui-btn-icon");
     _._button(
       {
@@ -31,19 +33,24 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
 @triggerComponent("mdButton")
 export class MdButton extends TriggerComponent<void> {
   main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.mdIntrinsicButton(inner, true, true, getD(disabled), true, false) && _.$fire();
+    _.mdIntrinsicButton(inner, "primary", true, getD(disabled), true, false) && _.$fire();
   }
 }
 
 @triggerComponent("mdIconButton")
 export class MdIconButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, icon: IconName, disabled: D<boolean> = false): void {
+  main(
+    _: TriggerComponentContext<void, this>,
+    icon: IconName,
+    raised: D<boolean> = true,
+    disabled: D<boolean> = false,
+  ): void {
     _.mdIntrinsicButton(
       (_) => {
         _.mdIcon(icon);
       },
-      true,
-      true,
+      undefined,
+      raised,
       getD(disabled),
       true,
       true,
