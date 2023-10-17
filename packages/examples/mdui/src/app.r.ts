@@ -1,8 +1,10 @@
 /// <reference types="vite/client" />
-import MdUI, { mdui } from "@refina/mdui";
-import "@refina/mdui/styles.css";
 import { app, d } from "refina";
+import "@refina/mdui";
+import "@refina/mdui/styles.css";
 
+import mdui from "../../../mdui/node_modules/mdui";
+import MdUI from "@refina/mdui";
 // let visible = false;
 let val = d("string");
 
@@ -21,6 +23,7 @@ app.use(MdUI)((_) => {
   _.mdAppbar("toolbar", (_) => {
     _.mdToolbar((_) => {
       _.mdIconButton("menu", false);
+      _.mdTitle("123");
       _.mdSpacer();
       _.mdIconButton("refresh", false);
     });
@@ -35,7 +38,3 @@ app.use(MdUI)((_) => {
     _._p({}, "You 've typed '123'");
   }
 });
-
-setInterval(() => {
-  mdui.mutation();
-}, 1000);

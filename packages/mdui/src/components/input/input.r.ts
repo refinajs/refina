@@ -1,6 +1,6 @@
-import mdui from "mdui";
 import { D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
 import MdUI from "../../plugin";
+import { UpdateMDUI } from "../../symbol";
 
 @MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
@@ -29,7 +29,7 @@ export class MdInput extends TriggerComponent<string> {
           },
         });
     });
-    mdui.mutation();
+    _.$permanentData[UpdateMDUI] = true;
   }
 }
 

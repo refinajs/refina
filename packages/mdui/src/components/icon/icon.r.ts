@@ -1,8 +1,8 @@
 import { D, OutputComponent, OutputComponentContext, getD } from "refina";
 import type { IconName } from "./icon.asset";
 // import { fontMap } from "./icon.asset";
-import mdui from "mdui";
 import MdUI from "../../plugin";
+import { UpdateMDUI } from "../../symbol";
 
 @MdUI.outputComponent("mdIcon")
 export class MdIcon extends OutputComponent {
@@ -11,7 +11,7 @@ export class MdIcon extends OutputComponent {
     // _._i({}, fontMap[getD(inner)]);
     _._i({}, getD(inner)); // I don't know why but it works
 
-    mdui.mutation();
+    _.$permanentData[UpdateMDUI] = true;
   }
 }
 
