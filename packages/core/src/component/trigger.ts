@@ -1,24 +1,14 @@
-import { Context, CustomContext, ToFullContext } from "../context";
+import { Context } from "../context";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentFuncArgs,
   IntrinsicComponentContext,
 } from "./component";
 
 export abstract class TriggerComponent<Ev> extends Component {
-  abstract main(_: TriggerComponentContext<Ev, this>, ...args: any[]): void;
-}
-
-export type TriggerComponentEventData<S extends TriggerComponent<any>> =
-  S extends TriggerComponent<infer Ev> ? Ev : never;
-
-export class IntrinsicTriggerComponentContext<
-  Ev,
-  S extends TriggerComponent<Ev>,
-  C = any,
-> extends IntrinsicComponentContext<S, C> {
-  $fire = (data: Ev) => {
+  protected $fire = (data: Ev) => {
     if (
       typeof data === "object" &&
       data !== null &&
@@ -27,19 +17,18 @@ export class IntrinsicTriggerComponentContext<
     ) {
       (data as any).$isCurrent = data.target === data.currentTarget;
     }
-    this.$app.recv(this.$component.ikey, data);
+    this.$app.recv(this.$ikey, data);
     return false as const;
   };
-  $fireWith = (data: Ev) => () => {
+  protected $fireWith = (data: Ev) => () => {
     this.$fire(data);
     return false as const;
   };
+  abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
-export type TriggerComponentContext<
-  Ev,
-  S extends TriggerComponent<Ev>,
-  C = any,
-> = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
+
+export type TriggerComponentEventData<S extends TriggerComponent<any>> =
+  S extends TriggerComponent<infer Ev> ? Ev : never;
 
 export function createTriggerComponentFunc<
   T extends ComponentConstructor<TriggerComponent<any>>,
@@ -47,25 +36,22 @@ export function createTriggerComponentFunc<
   return function (this: Context, ckey: any, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as TriggerComponent<any>;
 
-    const context = new IntrinsicTriggerComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this, component);
 
     component.main(
-      context as unknown as TriggerComponentContext<
-        unknown,
-        TriggerComponent<any>
-      >,
+      context as unknown as ComponentContext<TriggerComponent<any>>,
       ...args,
     );
 
     const isReceiver = this.$app.isReceiver;
 
     if (!context.$mainEl) {
-      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
       context.$firstHTMLELement?.addClasses(context.$classesArg);
       context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
-    component.mainEl = context.$mainEl;
+    component.$mainEl = context.$mainEl;
 
     this.$endComponent(component, ckey);
 

@@ -1,10 +1,10 @@
 import {
+  ComponentContext,
   Content,
   D,
   HTMLElementComponent,
   MainElRef,
   TriggerComponent,
-  TriggerComponentContext,
   View,
   d,
   getD,
@@ -18,7 +18,7 @@ export class FModalPopover extends TriggerComponent<void> {
   arrowRef = ref<HTMLElementComponent<"div">>();
   contentRef = ref<HTMLElementComponent<"div">>();
   main(
-    _: TriggerComponentContext<void, this>,
+    _: ComponentContext<this>,
     targetRef: MainElRef,
     open: D<boolean>,
     inner: D<Content<[close: () => void]>>,
@@ -27,7 +27,7 @@ export class FModalPopover extends TriggerComponent<void> {
     const innerValue = getD(inner);
     const close = () => {
       _.$setD(open, false);
-      _.$fire();
+      this.$fire();
     };
 
     if (getD(open)) {
@@ -35,7 +35,7 @@ export class FModalPopover extends TriggerComponent<void> {
         "click",
         (ev) => {
           const target = ev.composedPath()[0] as HTMLElement;
-          const isOutside = [this.contentRef, targetRef].every((ref) => !ref.current!.mainEl!.contains(target));
+          const isOutside = [this.contentRef, targetRef].every((ref) => !ref.current!.$mainEl!.contains(target));
 
           if (isOutside) {
             close();
@@ -83,7 +83,7 @@ export class FPopover extends TriggerComponent<boolean> {
   open = d(false);
   targetRef = ref<HTMLElementComponent>();
   main(
-    _: TriggerComponentContext<boolean, this>,
+    _: ComponentContext<this>,
     trigger: D<View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>>,
     inner: D<Content<[close: () => void]>>,
     // withArrow: D<boolean> = false,
@@ -94,7 +94,7 @@ export class FPopover extends TriggerComponent<boolean> {
       }),
     );
     if (_.fModalPopover(this.targetRef, this.open, inner /*, withArrow*/)) {
-      _.$fire(this.open.value);
+      this.$fire(this.open.value);
     }
   }
 }

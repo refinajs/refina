@@ -17,7 +17,7 @@ type DOMElementType<E extends keyof DOMElementTagNameMap> =
 export class DOMElementComponent<
   E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
 > extends DOMNodeComponent<DOMElementType<E>> {
-  get mainEl() {
+  get $mainEl() {
     return this.node as HTMLElement;
   }
 

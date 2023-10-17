@@ -1,4 +1,4 @@
-import { Content, D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import { ComponentContext, Content, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTab.styles";
 
@@ -6,7 +6,7 @@ import styles from "./fTab.styles";
 export class FTab extends TriggerComponent<void> {
   buttonEl = ref<HTMLElementComponent<"button">>();
   main(
-    _: TriggerComponentContext<void, this>,
+    _: ComponentContext<this>,
     selected: D<boolean>,
     content: D<Content>,
     disabled: D<boolean> = false,
@@ -18,7 +18,7 @@ export class FTab extends TriggerComponent<void> {
     _.$ref(this.buttonEl) &&
       _._button(
         {
-          onclick: _.$fireWith(),
+          onclick: this.$fireWith(),
           disabled: disabledValue,
         },
         (_) => {

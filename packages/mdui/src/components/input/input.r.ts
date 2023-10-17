@@ -1,16 +1,12 @@
-import { D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import mdui from "mdui";
+import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
 import MdUI from "../../plugin";
 import { UpdateMDUI } from "../../symbol";
 
 @MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
   inputEl = ref<HTMLElementComponent<"input">>();
-  main(
-    _: TriggerComponentContext<string, this>,
-    value: D<string>,
-    label: D<string> = "",
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: ComponentContext<this>, value: D<string>, label: D<string> = "", disabled: D<boolean> = false): void {
     _.$cls`mdui-textfield` && _.$cls`mdui-textfield-floating-label`;
     _._div({}, () => {
       _.$cls`mdui-textfield-label`;
@@ -24,7 +20,7 @@ export class MdInput extends TriggerComponent<string> {
           oninput: () => {
             const newValue = this.inputEl.current!.node.value;
             _.$setD(value, newValue);
-            _.$fire(newValue);
+            this.$fire(newValue);
             console.log("oninput", newValue);
           },
         });

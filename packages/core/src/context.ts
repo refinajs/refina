@@ -161,6 +161,30 @@ export class IntrinsicContext<C> {
     return style;
   }
 
+  $rootCls(cls: string): true;
+  $rootCls(template: TemplateStringsArray, ...args: any[]): true;
+  $rootCls(...args: any[]): true {
+    this.$app.pendingRootCls = this.$app.pendingRootCls.concat(
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+      )
+        .split(/\s/)
+        .filter(Boolean),
+    );
+    return true;
+  }
+
+  $rootCss(style: string): void;
+  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
+  $rootCss(...args: any[]): void {
+    this.$app.pendingRootCSS +=
+      ";" +
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]);
+  }
+
   get $permanentData() {
     return this.$app.permanentData;
   }
@@ -267,7 +291,7 @@ export class IntrinsicContext<C> {
     return component;
   }
   $endComponent(component: Component, ckey: string) {
-    this.$setMainEl(component.mainEl);
+    this.$setMainEl(component.$mainEl);
     this.$app.popKey(ckey);
   }
 
@@ -328,7 +352,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
-    this.$setMainEl(ec.mainEl);
+    this.$setMainEl(ec.$mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);
@@ -398,7 +422,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
-    this.$setMainEl(ec.mainEl);
+    this.$setMainEl(ec.$mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);

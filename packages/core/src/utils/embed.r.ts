@@ -30,15 +30,15 @@ export class Embed extends OutputComponent {
       }
     }
 
-    if (contentCache.has(this.ikey)) {
-      processContent(contentCache.get(this.ikey)!);
+    if (contentCache.has(this.$ikey)) {
+      processContent(contentCache.get(this.$ikey)!);
     } else {
       if (typeof contentValue === "function") {
         const ret = contentValue(context as unknown as Context, ...args);
         if (ret instanceof Promise) {
           _.t`Loading module...`;
           ret.then((r) => {
-            contentCache.set(this.ikey, r.default);
+            contentCache.set(this.$ikey, r.default);
             processContent(r.default);
             _.$app.update();
           });

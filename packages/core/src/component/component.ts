@@ -4,11 +4,15 @@ import { DOMElementComponent, DOMNodeComponent } from "../dom";
 
 export abstract class Component {
   constructor(
-    public readonly ikey: string,
-    public readonly app: App,
+    public readonly $ikey: string,
+    public readonly $app: App,
   ) {}
 
-  mainEl: HTMLElement | null;
+  $mainEl: HTMLElement | null;
+
+  $update() {
+    this.$app.update();
+  }
 
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }

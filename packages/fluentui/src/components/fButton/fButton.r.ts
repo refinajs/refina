@@ -1,4 +1,4 @@
-import { Content, D, TriggerComponent, TriggerComponentContext, getD } from "refina";
+import { Content, D, TriggerComponent, ComponentContext, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fButton.styles";
 import { FButtonApperance, FButtonShape } from "./types";
@@ -6,7 +6,7 @@ import { FButtonApperance, FButtonShape } from "./types";
 @FluentUI.triggerComponent("fIntrinsicButton")
 export class FIntrinsicButton extends TriggerComponent<void> {
   main(
-    _: TriggerComponentContext<void, this>,
+    _: ComponentContext<this>,
     shape: D<FButtonShape>,
     appearance: D<FButtonApperance>,
     inner: D<Content>,
@@ -18,7 +18,7 @@ export class FIntrinsicButton extends TriggerComponent<void> {
       {
         type: "button",
         disabled: disabledValue,
-        onclick: _.$fireWith(),
+        onclick: this.$fireWith(),
       },
       inner,
     );
@@ -27,22 +27,22 @@ export class FIntrinsicButton extends TriggerComponent<void> {
 
 @FluentUI.triggerComponent("fButton")
 export class FButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "secondary", inner, disabled) && _.$fire();
+  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
+    _.fIntrinsicButton("rounded", "secondary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fPrimaryButton")
 export class FPrimaryButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "primary", inner, disabled) && _.$fire();
+  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
+    _.fIntrinsicButton("rounded", "primary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fCircularButton")
 export class FCircularButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("circular", "secondary", inner, disabled) && _.$fire();
+  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
+    _.fIntrinsicButton("circular", "secondary", inner, disabled) && this.$fire();
   }
 }
 

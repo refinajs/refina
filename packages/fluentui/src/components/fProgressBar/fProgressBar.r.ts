@@ -1,11 +1,11 @@
-import { D, OutputComponent, OutputComponentContext, getD } from "refina";
+import { ComponentContext, D, OutputComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fProgressBar.styles";
 import { ProgressBarColor, ProgressBarValue } from "./types";
 
 @FluentUI.outputComponent("fProgressBar")
 export class FProgressBar extends OutputComponent {
-  main(_: OutputComponentContext<this>, value: D<ProgressBarValue>, color?: ProgressBarColor): void {
+  main(_: ComponentContext<this>, value: D<ProgressBarValue>, color?: ProgressBarColor): void {
     const valueValue = getD(value);
     styles.root(_);
     _._div({}, () => {

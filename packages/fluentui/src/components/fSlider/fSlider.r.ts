@@ -1,4 +1,4 @@
-import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import { ComponentContext, D, DOMElementComponent, TriggerComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
@@ -14,7 +14,7 @@ function clamp(value: number, min: number, max: number) {
 export class FSlider extends TriggerComponent<number> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(
-    _: TriggerComponentContext<number, this>,
+    _: ComponentContext<this>,
     value: D<number>,
     disabled: D<boolean> = false,
     min: D<number> = 0,
@@ -39,7 +39,7 @@ export class FSlider extends TriggerComponent<number> {
       const onChange = () => {
         const newValue = clamp(Number(this.inputEl.current!.node.value), minValue, maxValue);
         _.$setD(value, newValue);
-        _.$fire(newValue);
+        this.$fire(newValue);
       };
       styles.input(disabledValue)(_);
       _.$ref(this.inputEl) &&

@@ -1,25 +1,20 @@
-import { Context, CustomContext, ToFullContext } from "../context";
+import { Context } from "../context";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentFuncArgs,
   IntrinsicComponentContext,
 } from "./component";
 
 export abstract class StatusComponent extends Component {
-  $status: boolean;
-  abstract main(_: StatusComponentContext<this>, ...args: any[]): void;
-}
-export class IntrinsicStatusComponentContext<
-  S extends StatusComponent,
-  C = any,
-> extends IntrinsicComponentContext<S, C> {
+  $_status: boolean;
   get $status() {
-    return this.$component.$status;
+    return this.$_status;
   }
   set $status(v: boolean) {
-    if (this.$component.$status === v) return;
-    this.$component.$status = v;
+    if (this.$_status === v) return;
+    this.$_status = v;
     this.$update();
   }
   $on = () => {
@@ -31,11 +26,8 @@ export class IntrinsicStatusComponentContext<
   $toggle = () => {
     this.$status = !this.$status;
   };
+  abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
-export type StatusComponentContext<
-  S extends StatusComponent,
-  C = any,
-> = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 
 export function createStatusComponentFunc<
   T extends ComponentConstructor<StatusComponent>,
@@ -45,10 +37,10 @@ export function createStatusComponentFunc<
 
     component.$status ??= false;
 
-    const context = new IntrinsicStatusComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this, component);
 
     component.main(
-      context as any as StatusComponentContext<
+      context as any as ComponentContext<
         StatusComponent & {
           $status: boolean;
         }
@@ -57,12 +49,12 @@ export function createStatusComponentFunc<
     );
 
     if (!context.$mainEl) {
-      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
       context.$firstHTMLELement?.addClasses(context.$classesArg);
       context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
-    component.mainEl = context.$mainEl;
+    component.$mainEl = context.$mainEl;
 
     this.$endComponent(component, ckey);
 

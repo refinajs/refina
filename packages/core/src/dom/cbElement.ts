@@ -1,6 +1,6 @@
 import {
   CallbackComponent,
-  CallbackComponentContext,
+  ComponentContext,
   ToCallbackComponentFuncs,
   createCallbackComponentFunc,
 } from "../component";
@@ -16,13 +16,13 @@ export function createCbHTMLElementComponentFunction<
     implements CbHTMLElementComponent<E>
   {
     main(
-      _: CallbackComponentContext<HTMLElementEventMap, this>,
+      _: ComponentContext<this>,
       data: Partial<HTMLElementTagNameMap[E]> = {},
       inner: D<Content> = () => {},
     ) {
       const elementData: any = { ...data };
       for (const ev of this.$listendEvs) {
-        elementData[`on${ev}`] = _.$firer(ev);
+        elementData[`on${ev}`] = this.$firer(ev);
       }
       (
         _.$$ as (
@@ -58,7 +58,7 @@ export function getCbHTMLElementComponentFunction<
 export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
   extends CallbackComponent<HTMLElementEventMap> {
   main(
-    _: CallbackComponentContext<HTMLElementEventMap, this>,
+    _: ComponentContext<this>,
     data?: Partial<HTMLElementTagNameMap[E]>,
     inner?: D<Content>,
   ): void;

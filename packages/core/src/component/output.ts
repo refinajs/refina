@@ -1,22 +1,15 @@
-import { Context, CustomContext, ToFullContext } from "../context";
+import { Context } from "../context";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentFuncArgs,
   IntrinsicComponentContext,
 } from "./component";
 
 export abstract class OutputComponent extends Component {
-  abstract main(_: OutputComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
-export class IntrinsicOutputComponentContext<
-  S extends OutputComponent,
-  C = any,
-> extends IntrinsicComponentContext<S, C> {}
-export type OutputComponentContext<
-  S extends OutputComponent,
-  C = any,
-> = ToFullContext<C, IntrinsicOutputComponentContext<S, C>>;
 
 export function createOutputComponentFunc<
   T extends ComponentConstructor<OutputComponent>,
@@ -24,20 +17,20 @@ export function createOutputComponentFunc<
   return function (this: Context, ckey: string, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
-    const context = new IntrinsicOutputComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this, component);
 
     component.main(
-      context as any as OutputComponentContext<OutputComponent>,
+      context as any as ComponentContext<OutputComponent>,
       ...args,
     );
 
     if (!context.$mainEl) {
-      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
       context.$firstHTMLELement?.addClasses(context.$classesArg);
       context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
-    component.mainEl = context.$mainEl;
+    component.$mainEl = context.$mainEl;
 
     this.$endComponent(component, ckey);
 
