@@ -1,9 +1,9 @@
-import { OutputComponent, OutputComponentContext } from "refina";
+import { ComponentContext, OutputComponent } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdSpacer")
 export class MdSpacer extends OutputComponent {
-  main(_: OutputComponentContext<this>): void {
+  main(_: ComponentContext<this>): void {
     _.$cls`mdui-toolbar-spacer`;
     _._div();
   }

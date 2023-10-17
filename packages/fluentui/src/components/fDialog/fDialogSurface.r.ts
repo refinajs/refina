@@ -1,10 +1,10 @@
-import { Content, D, TriggerComponent, TriggerComponentContext } from "refina";
+import { ComponentContext, Content, D, TriggerComponent } from "refina";
 import FluentUI from "../../plugin";
 import dialogSurfaceStyles from "./dialogSurface.styles";
 
 @FluentUI.triggerComponent("fDialogSurface")
 export class FDialogSurface extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<this>, inner: D<Content>): void {
+  main(_: ComponentContext<this>, inner: D<Content>): void {
     _.portal(() => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({

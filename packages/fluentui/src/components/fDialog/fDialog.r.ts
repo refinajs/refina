@@ -1,4 +1,4 @@
-import { Content, D, TriggerComponent, TriggerComponentContext, View, d, getD } from "refina";
+import { ComponentContext, Content, D, TriggerComponent, View, d, getD } from "refina";
 import FluentUI from "../../plugin";
 import "./fDialogBody.r";
 import "./fDialogSurface.r";
@@ -6,7 +6,7 @@ import "./fDialogSurface.r";
 @FluentUI.triggerComponent("fModalDialog")
 export class FModalDialog extends TriggerComponent<void> {
   main(
-    _: TriggerComponentContext<this>,
+    _: ComponentContext<this>,
     open: D<boolean>,
     title: D<Content>,
     content: D<Content>,
@@ -37,7 +37,7 @@ export class FModalDialog extends TriggerComponent<void> {
 export class FDialog extends TriggerComponent<boolean> {
   open = d(false);
   main(
-    _: TriggerComponentContext<this>,
+    _: ComponentContext<this>,
     trigger: D<View<[open: () => void]>>,
     title: D<Content>,
     content: D<Content>,

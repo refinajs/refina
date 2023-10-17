@@ -1,7 +1,8 @@
-import { Context, CustomContext, ToFullContext } from "../context";
+import { Context } from "../context";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentFuncArgs,
   IntrinsicComponentContext,
 } from "./component";
@@ -11,7 +12,7 @@ export abstract class CallbackComponent<
 > extends Component {
   $status: boolean;
   $listendEvs = new Set<keyof Evs>();
-  abstract main(_: CallbackComponentContext<Evs, this>, ...args: any[]): void;
+  abstract main(_: ComponentContext<this>, ...args: any[]): void;
 
   $preventDefault(): true {
     const ev = (this as any).$ev;
@@ -21,39 +22,33 @@ export abstract class CallbackComponent<
     ev.preventDefault();
     return true;
   }
-}
-export type CallbackComponentEvs<C extends CallbackComponent<any>> =
-  C extends CallbackComponent<infer Evs> ? Evs : never;
-export class IntrinsicCallbackComponentContext<
-  Evs extends Record<string, any>,
-  S extends CallbackComponent<Evs>,
-  C = any,
-> extends IntrinsicComponentContext<S, C> {
-  $firer<Evn extends keyof Evs>(name: Evn): (data: Evs[Evn]) => void {
+
+  protected $firer<Evn extends keyof Evs>(name: Evn): (data: Evs[Evn]) => void {
     return (data: Evs[Evn]) => {
       //@ts-ignore
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$app.recv(this.$component.$ikey, name);
+      this.$app.recv(this.$ikey, name);
       return false;
     };
   }
-  $firerWith<Evn extends keyof Evs>(name: Evn, data: Evs[Evn]): () => void {
+  protected $firerWith<Evn extends keyof Evs>(
+    name: Evn,
+    data: Evs[Evn],
+  ): () => void {
     return () => {
       //@ts-ignore
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$app.recv(this.$component.$ikey, name);
+      this.$app.recv(this.$ikey, name);
     };
   }
 }
-export type CallbackComponentContext<
-  Evs extends Record<string, any>,
-  S extends CallbackComponent<any>,
-  C = any,
-> = ToFullContext<C, IntrinsicCallbackComponentContext<Evs, S, C>>;
+export type CallbackComponentEvs<C extends CallbackComponent<any>> =
+  C extends CallbackComponent<infer Evs> ? Evs : never;
+
 export function createCallbackComponentFunc<
   Evs extends Record<string, any>,
   S extends CallbackComponent<Evs>,
@@ -79,15 +74,12 @@ export function createCallbackComponentFunc<
       });
       this.$cbComponent = componentProxy;
       this.$app.pushHook("afterThisComponent", () => {
-        const context = new IntrinsicCallbackComponentContext(
+        const context = new IntrinsicComponentContext(
           this,
           componentProxy as any,
         );
 
-        component.main(
-          context as any as CallbackComponentContext<Evs, S>,
-          ...args,
-        );
+        component.main(context as any as ComponentContext<S>, ...args);
 
         if (!context.$mainEl) {
           context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
@@ -108,15 +100,9 @@ export function createCallbackComponentFunc<
           component.$evName === ev;
       });
 
-      const context = new IntrinsicCallbackComponentContext(
-        this,
-        component as any,
-      );
+      const context = new IntrinsicComponentContext(this, component as any);
 
-      component.main(
-        context as any as CallbackComponentContext<Evs, S>,
-        ...args,
-      );
+      component.main(context as any as ComponentContext<S>, ...args);
       ret = this.$app.isReceiver;
     }
     this.$endComponent(component, ckey);

@@ -1,4 +1,4 @@
-import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import { ComponentContext, D, DOMElementComponent, TriggerComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
@@ -14,7 +14,7 @@ function clamp(value: number, min: number, max: number) {
 export class FSlider extends TriggerComponent<number> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(
-    _: TriggerComponentContext<this>,
+    _: ComponentContext<this>,
     value: D<number>,
     disabled: D<boolean> = false,
     min: D<number> = 0,

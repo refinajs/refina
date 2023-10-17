@@ -10,6 +10,10 @@ export abstract class Component {
 
   $mainEl: HTMLElement | null;
 
+  $update() {
+    this.$app.update();
+  }
+
   abstract main(_: ComponentContext<this>, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (

@@ -2,12 +2,12 @@ import * as keys from "@fluentui/keyboard-keys";
 import "@refina/fluentui-icons/checkmark.r.ts";
 import "@refina/fluentui-icons/chevronDown.r.ts";
 import {
+  ComponentContext,
   D,
   DArray,
   DOMElementComponent,
   HTMLElementComponent,
   TriggerComponent,
-  TriggerComponentContext,
   bySelf,
   getD,
   ref,
@@ -126,7 +126,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
   buttonEl = ref<DOMElementComponent<"button">>();
 
   main(
-    _: TriggerComponentContext<this>,
+    _: ComponentContext<this>,
     selected: D<OptionValue | "">,
     options: DArray<OptionValue>,
     disabled: D<boolean | D<boolean>[]> = false,

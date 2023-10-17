@@ -20,7 +20,7 @@ function generateComponent(
     .join(";\n      ");
   return `@FIcons.outputComponent("${componentFuncName}")
 export class ${componentClassName} extends OutputComponent {
-  main(_: OutputComponentContext<this>): void {
+  main(_: ComponentContext<this>): void {
     _._svgSvg(
       {
         width: "${width}",
@@ -127,7 +127,7 @@ fileNames.forEach((fileName, index) => {
 const componentsEntries = Object.entries(components);
 componentsEntries.forEach(([lowerCamelIconName, codes], index) => {
   const code =
-    `import { OutputComponent, OutputComponentContext } from "refina";
+    `import { OutputComponent, ComponentContext } from "refina";
 import FIcons from "../plugin";\n\n` + codes.join("\n");
   const outputFileName = `${lowerCamelIconName}.r.ts`;
   const outputFilePath = join(distDir, outputFileName);
