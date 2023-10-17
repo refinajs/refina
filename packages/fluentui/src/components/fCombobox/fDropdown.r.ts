@@ -154,7 +154,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
 
     if (this.open) {
       _.$app.pushHook("afterModifyDOM", () => {
-        containerRef.current!.mainEl!.style.width = `${rootRef.current!.mainEl.clientWidth}px`;
+        containerRef.current!.$mainEl!.style.width = `${rootRef.current!.$mainEl.clientWidth}px`;
       });
     }
 

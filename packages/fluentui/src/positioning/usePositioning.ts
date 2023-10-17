@@ -20,13 +20,13 @@ FluentUI.register(
     const { align, position, offset, fallbackPositions } = options;
 
     const setPosition = () => {
-      if (!targetRef.current?.mainEl || !containerRef.current?.mainEl) {
+      if (!targetRef.current?.$mainEl || !containerRef.current?.$mainEl) {
         throw new Error(
-          "targetRef or containerRef of useFloating is not set or has no mainEl",
+          "targetRef or containerRef of useFloating is not set or has no $mainEl",
         );
       }
-      const targetNode = targetRef.current.mainEl,
-        containerNode = containerRef.current.mainEl;
+      const targetNode = targetRef.current.$mainEl,
+        containerNode = containerRef.current.$mainEl;
 
       const placement = toFloatingUIPlacement(align, position, false);
 

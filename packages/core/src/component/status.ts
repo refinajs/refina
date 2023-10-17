@@ -57,12 +57,12 @@ export function createStatusComponentFunc<
     );
 
     if (!context.$mainEl) {
-      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
       context.$firstHTMLELement?.addClasses(context.$classesArg);
       context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
-    component.mainEl = context.$mainEl;
+    component.$mainEl = context.$mainEl;
 
     this.$endComponent(component, ckey);
 

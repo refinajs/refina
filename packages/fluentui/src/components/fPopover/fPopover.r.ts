@@ -35,7 +35,7 @@ export class FModalPopover extends TriggerComponent<void> {
         "click",
         (ev) => {
           const target = ev.composedPath()[0] as HTMLElement;
-          const isOutside = [this.contentRef, targetRef].every((ref) => !ref.current!.mainEl!.contains(target));
+          const isOutside = [this.contentRef, targetRef].every((ref) => !ref.current!.$mainEl!.contains(target));
 
           if (isOutside) {
             close();

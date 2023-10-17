@@ -27,7 +27,7 @@ export class IntrinsicTriggerComponentContext<
     ) {
       (data as any).$isCurrent = data.target === data.currentTarget;
     }
-    this.$app.recv(this.$component.ikey, data);
+    this.$app.recv(this.$component.$ikey, data);
     return false as const;
   };
   $fireWith = (data: Ev) => () => {
@@ -60,12 +60,12 @@ export function createTriggerComponentFunc<
     const isReceiver = this.$app.isReceiver;
 
     if (!context.$mainEl) {
-      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
       context.$firstHTMLELement?.addClasses(context.$classesArg);
       context.$firstHTMLELement?.addStyle(context.$styleArg);
     }
 
-    component.mainEl = context.$mainEl;
+    component.$mainEl = context.$mainEl;
 
     this.$endComponent(component, ckey);
 

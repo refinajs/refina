@@ -291,7 +291,7 @@ export class IntrinsicContext<C> {
     return component;
   }
   $endComponent(component: Component, ckey: string) {
-    this.$setMainEl(component.mainEl);
+    this.$setMainEl(component.$mainEl);
     this.$app.popKey(ckey);
   }
 
@@ -352,7 +352,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
-    this.$setMainEl(ec.mainEl);
+    this.$setMainEl(ec.$mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);
@@ -422,7 +422,7 @@ export class IntrinsicContext<C> {
     }
 
     this.$setRef(ec);
-    this.$setMainEl(ec.mainEl);
+    this.$setMainEl(ec.$mainEl);
     this.$setFirstDOMNode(ec!);
     this.$setFirstHTMLELement(ec!);
     this.$app.markComponentProcessed(ikey);

@@ -35,7 +35,7 @@ export class IntrinsicCallbackComponentContext<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$app.recv(this.$component.ikey, name);
+      this.$app.recv(this.$component.$ikey, name);
       return false;
     };
   }
@@ -45,7 +45,7 @@ export class IntrinsicCallbackComponentContext<
       this.$component.$evName = name;
       //@ts-ignore
       this.$component.$ev = data;
-      this.$app.recv(this.$component.ikey, name);
+      this.$app.recv(this.$component.$ikey, name);
     };
   }
 }
@@ -90,12 +90,12 @@ export function createCallbackComponentFunc<
         );
 
         if (!context.$mainEl) {
-          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+          context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
           context.$firstHTMLELement?.addClasses(context.$classesArg);
           context.$firstHTMLELement?.addStyle(context.$styleArg);
         }
 
-        component.mainEl = context.$mainEl;
+        component.$mainEl = context.$mainEl;
       });
       ret = true;
     } else {
