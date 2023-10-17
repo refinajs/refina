@@ -2,12 +2,20 @@ import { Plugin } from "refina";
 import { Router } from "./router";
 
 const RouterPlugin = new Plugin("router", (app) => {
-  app.router = new Router(app);
+  const router = new Router(app);
+  app.router = router;
+  app.addPermanentHook("initializeContext", (context) => {
+    context.$router = router;
+    console.warn("!!!!");
+  });
 });
 export default RouterPlugin;
 
 declare module "refina" {
   interface App {
     router: Router;
+  }
+  interface IntrinsicContext<C> {
+    $router: Router;
   }
 }
