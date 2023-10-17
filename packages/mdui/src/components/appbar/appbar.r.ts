@@ -8,11 +8,11 @@ export class MdAppbar extends OutputComponent {
     _.$cls`mdui-appbar-fixed`;
     _._div({}, inner);
     if (getD(content) === "toolbar") {
-      _.$root.addClasses(["mdui-appbar-with-toolbar"]);
+      _.$app._!.$rootCls`mdui-appbar-with-toolbar`;
     } else if (getD(content) === "tab") {
-      _.$root.addClasses(["mdui-appbar-with-tab"]);
+      _.$app._!.$rootCls`mdui-appbar-with-tab`;
     } else if (getD(content) === "both") {
-      _.$root.addClasses(["mdui-appbar-with-tab-larger"]);
+      _.$app._!.$rootCls`mdui-appbar-with-tab-larger`;
     } else {
       console.info("Why do you want an appbar with nothing inside?");
     }
