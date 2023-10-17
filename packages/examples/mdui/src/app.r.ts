@@ -26,8 +26,10 @@ app((_) => {
       _.mdIconButton("refresh", false);
     });
   });
+
   _._br();
   _._br();
+  _.mdDivider();
 
   _.mdInput(val, "Label");
   if (val.value === "123") {
