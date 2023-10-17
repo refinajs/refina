@@ -16,10 +16,11 @@ app((_) => {
   });
   _.mdButton("Disabled Button", true);
   _.mdIconButton("devices");
-
-  _.mdToolbar((_) => {
-    _.mdIconButton("menu", false);
-    _.mdSpacer();
-    _.mdIconButton("refresh", false);
+  _.mdAppbar("toolbar", (_) => {
+    _.mdToolbar((_) => {
+      _.mdIconButton("menu", false);
+      _.mdSpacer();
+      _.mdIconButton("refresh", false);
+    });
   });
 });
