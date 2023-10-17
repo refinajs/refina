@@ -244,9 +244,11 @@ export class App {
   }
 
   setD<T>(d: D<T>, v: T): boolean {
-    const ret = dangerously_setD(d, v);
-    this.update();
-    return ret;
+    if (dangerously_setD(d, v)) {
+      this.update();
+      return true;
+    }
+    return false;
   }
 
   pushKey(ckey: string) {
