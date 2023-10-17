@@ -34,9 +34,11 @@ const sliderTest = d(5);
 const dropdownTest = d("");
 const textInputTest = d("");
 
-app.use(FluentUI)((_) => {
-  _.provideFTheme(darkTheme, lightTheme);
-
+app.use(
+  FluentUI,
+  darkTheme,
+  lightTheme,
+)((_) => {
   _.fDivider("button");
   _.fButton("Button");
   _.fPrimaryButton("Primary Button");
