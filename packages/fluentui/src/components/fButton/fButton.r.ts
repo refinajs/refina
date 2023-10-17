@@ -6,7 +6,7 @@ import { FButtonApperance, FButtonShape } from "./types";
 @FluentUI.triggerComponent("fIntrinsicButton")
 export class FIntrinsicButton extends TriggerComponent<void> {
   main(
-    _: TriggerComponentContext<void, this>,
+    _: TriggerComponentContext<this>,
     shape: D<FButtonShape>,
     appearance: D<FButtonApperance>,
     inner: D<Content>,
@@ -27,21 +27,21 @@ export class FIntrinsicButton extends TriggerComponent<void> {
 
 @FluentUI.triggerComponent("fButton")
 export class FButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
+  main(_: TriggerComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
     _.fIntrinsicButton("rounded", "secondary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fPrimaryButton")
 export class FPrimaryButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
+  main(_: TriggerComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
     _.fIntrinsicButton("rounded", "primary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fCircularButton")
 export class FCircularButton extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
+  main(_: TriggerComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
     _.fIntrinsicButton("circular", "secondary", inner, disabled) && this.$fire();
   }
 }

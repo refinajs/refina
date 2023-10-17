@@ -4,7 +4,7 @@ import dialogSurfaceStyles from "./dialogSurface.styles";
 
 @FluentUI.triggerComponent("fDialogSurface")
 export class FDialogSurface extends TriggerComponent<void> {
-  main(_: TriggerComponentContext<void, this>, inner: D<Content>): void {
+  main(_: TriggerComponentContext<this>, inner: D<Content>): void {
     _.portal(() => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({

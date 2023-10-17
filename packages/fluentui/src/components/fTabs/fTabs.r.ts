@@ -18,7 +18,7 @@ type RepeatedTuple<T extends readonly any[]> =
 @FluentUI.triggerComponent("fTabs")
 export class FTabs extends TriggerComponent<string> {
   selected: string;
-  main(_: TriggerComponentContext<string, this>, ...nameAndContents: (D<string> | D<Content>)[]) {
+  main(_: TriggerComponentContext<this>, ...nameAndContents: (D<string> | D<Content>)[]) {
     const names: string[] = [],
       contents: D<Content>[] = [];
     for (let i = 0; i < nameAndContents.length; i += 2) {

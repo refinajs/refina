@@ -6,7 +6,7 @@ import styles from "./fInput.styles";
 export class FTextInput extends TriggerComponent<string> {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(
-    _: TriggerComponentContext<string, this>,
+    _: TriggerComponentContext<this>,
     value: D<string>,
     disabled: D<boolean> = false,
     placeholder?: D<string>,

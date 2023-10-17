@@ -126,7 +126,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
   buttonEl = ref<DOMElementComponent<"button">>();
 
   main(
-    _: TriggerComponentContext<OptionValue, this>,
+    _: TriggerComponentContext<this>,
     selected: D<OptionValue | "">,
     options: DArray<OptionValue>,
     disabled: D<boolean | D<boolean>[]> = false,

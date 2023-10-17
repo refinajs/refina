@@ -5,12 +5,7 @@ import MdUI from "../../plugin";
 @MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
   inputEl = ref<HTMLElementComponent<"input">>();
-  main(
-    _: TriggerComponentContext<string, this>,
-    value: D<string>,
-    label: D<string> = "",
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: TriggerComponentContext<this>, value: D<string>, label: D<string> = "", disabled: D<boolean> = false): void {
     _.$cls`mdui-textfield` && _.$cls`mdui-textfield-floating-label`;
     _._div({}, () => {
       _.$cls`mdui-textfield-label`;

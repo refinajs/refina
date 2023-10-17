@@ -94,7 +94,7 @@ declare module "refina" {
 
 @Basics.triggerComponent("button")
 export class Button extends TriggerComponent<MouseEvent> {
-  main(_: TriggerComponentContext<MouseEvent, this>, inner: D<Content>, disabled: D<boolean> = false) {
+  main(_: TriggerComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
         onclick: (ev) => {

@@ -14,7 +14,7 @@ function clamp(value: number, min: number, max: number) {
 export class FSlider extends TriggerComponent<number> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(
-    _: TriggerComponentContext<number, this>,
+    _: TriggerComponentContext<this>,
     value: D<number>,
     disabled: D<boolean> = false,
     min: D<number> = 0,
