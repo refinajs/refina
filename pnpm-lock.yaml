@@ -240,6 +240,19 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  packages/router:
+    dependencies:
+      refina:
+        specifier: workspace:^
+        version: link:../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   packages/tsconfig:
     devDependencies:
       typescript:

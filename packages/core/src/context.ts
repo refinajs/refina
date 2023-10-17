@@ -83,10 +83,6 @@ export class IntrinsicContext<C> {
     return this.$app.root;
   }
 
-  get $router() {
-    return this.$app.router;
-  }
-
   $cbComponent: C = null as any;
 
   $pendingRef: Ref<any> | null = null;

@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "refina";
 
 export interface BeforeRouteContext {
   $routeFrom: string | null;

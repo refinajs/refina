@@ -65,7 +65,7 @@ RouterPlugin.register("routeNotFound", function (ckey: string) {
   return !this.$customData[routeMatchedSymbol];
 });
 
-declare module "../context" {
+declare module "refina" {
   interface CustomContext<C> {
     route: never extends C
       ? <const S extends string>(

@@ -6,7 +6,6 @@ import {
   DOMNodeComponent,
   DOMRootComponent,
 } from "../dom";
-import { Router } from "../router";
 
 export interface AppRuntimeHookMap {
   afterThisComponent: () => void;
@@ -50,7 +49,6 @@ export class App {
   refMap: Map<string, any> = new Map();
   nodeMap: Map<Node, DOMNodeComponent> = new Map();
   _: Context | undefined;
-  router = new Router(this);
   permanentData: Record<symbol, any> = {};
   runtimeData: Record<symbol, any> | undefined;
   noPreserveComponents = new Set<string>();
