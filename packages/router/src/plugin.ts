@@ -6,7 +6,6 @@ const RouterPlugin = new Plugin("router", (app) => {
   app.router = router;
   app.addPermanentHook("initializeContext", (context) => {
     context.$router = router;
-    console.warn("!!!!");
   });
 });
 export default RouterPlugin;

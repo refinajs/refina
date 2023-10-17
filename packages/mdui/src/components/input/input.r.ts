@@ -21,7 +21,6 @@ export class MdInput extends TriggerComponent<string> {
             const newValue = this.inputEl.current!.node.value;
             _.$setD(value, newValue);
             this.$fire(newValue);
-            console.log("oninput", newValue);
           },
         });
     });
