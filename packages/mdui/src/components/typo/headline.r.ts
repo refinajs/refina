@@ -1,13 +1,13 @@
 import { D, OutputComponent, OutputComponentContext, getD } from "refina";
 import MdUI from "../../plugin";
 
-@MdUI.outputComponent("mdTitle")
-export class MdTitle extends OutputComponent {
+@MdUI.outputComponent("mdHeadline")
+export class MdHeadline extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<string>, opacity: D<boolean> = false): void {
     if (getD(opacity)) {
-      _.$cls`mdui-typo-title-opacity`;
+      _.$cls`mdui-typo-headline-opacity`;
     } else {
-      _.$cls`mdui-typo-title`;
+      _.$cls`mdui-typo-headline`;
     }
     _._div({}, inner);
   }
@@ -15,6 +15,6 @@ export class MdTitle extends OutputComponent {
 
 declare module "refina" {
   interface OutputComponents {
-    mdTitle: MdTitle;
+    mdHeadline: MdHeadline;
   }
 }

@@ -23,7 +23,7 @@ app.use(MdUI)((_) => {
   _.mdAppbar("toolbar", (_) => {
     _.mdToolbar((_) => {
       _.mdIconButton("menu", false);
-      _.mdTitle("123");
+      _.mdTitle("123", true);
       _.mdSpacer();
       _.mdIconButton("refresh", false);
     });
@@ -37,4 +37,6 @@ app.use(MdUI)((_) => {
   if (val.value === "123") {
     _._p({}, "You 've typed '123'");
   }
+  _.mdTitle("123", true);
+  _.mdTitle("123");
 });
