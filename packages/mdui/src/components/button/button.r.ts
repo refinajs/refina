@@ -1,8 +1,9 @@
-import { Content, D, TriggerComponent, TriggerComponentContext, getD, triggerComponent } from "refina";
-import { IconName } from "../icon";
+import { Content, D, TriggerComponent, TriggerComponentContext, getD } from "refina";
+import MdUI from "../../plugin";
 import { color } from "../../theme/color";
+import { IconName } from "../icon";
 
-@triggerComponent("mdIntrinsicButton")
+@MdUI.triggerComponent("mdIntrinsicButton")
 export class MdIntrinsicButton extends TriggerComponent<void> {
   main(
     _: TriggerComponentContext<void, this>,
@@ -30,14 +31,14 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
   }
 }
 
-@triggerComponent("mdButton")
+@MdUI.triggerComponent("mdButton")
 export class MdButton extends TriggerComponent<void> {
   main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
     _.mdIntrinsicButton(inner, "primary", true, getD(disabled), true, false) && _.$fire();
   }
 }
 
-@triggerComponent("mdIconButton")
+@MdUI.triggerComponent("mdIconButton")
 export class MdIconButton extends TriggerComponent<void> {
   main(
     _: TriggerComponentContext<void, this>,

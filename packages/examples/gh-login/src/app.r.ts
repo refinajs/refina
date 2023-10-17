@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { d, app } from "refina";
-import "@refina/basic-components";
+import Basics from "@refina/basic-components";
+import { app, d } from "refina";
 import logo from "../assets/github-mark-white.svg";
 
 function login() {
@@ -25,7 +25,7 @@ let loading = false,
   msgType = "",
   msg = "";
 
-const $app = app((_) => {
+const $app = app.use(Basics)((_) => {
   _.$rootCss`font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";`;
   _.$rootCls`m-auto bg-[#0d1117] text-[#e6edf3] text-sm`;
   _.$cls`pb-6 pt-8 w-full text-center`;

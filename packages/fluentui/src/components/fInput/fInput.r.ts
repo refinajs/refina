@@ -1,15 +1,8 @@
-import {
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  TriggerComponentContext,
-  getD,
-  ref,
-  triggerComponent,
-} from "refina";
+import { D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import FluentUI from "../../plugin";
 import styles from "./fInput.styles";
 
-@triggerComponent("fTextInput")
+@FluentUI.triggerComponent("fTextInput")
 export class FTextInput extends TriggerComponent<string> {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(

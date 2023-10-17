@@ -1,7 +1,7 @@
-import { addCustomContextFunc } from "../context";
+import RouterPlugin from "./plugin";
 import { BeforeRouteContext } from "./router";
 
-addCustomContextFunc("beforeRoute", function (ckey: string) {
+RouterPlugin.register("beforeRoute", function (ckey: string) {
   const pendingRoute = this.$router.pendingRoute;
   if (pendingRoute) {
     const beforeRouteContext = this as unknown as BeforeRouteContext;

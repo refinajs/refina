@@ -1,4 +1,5 @@
-import { Context, IntrinsicContext, addCustomContextFunc } from "../context";
+import { Prelude } from "../constants";
+import { Context, IntrinsicContext } from "../context";
 import { D, getD } from "../data";
 import { View } from "../view";
 import {
@@ -98,7 +99,7 @@ export class DOMPortalComponent extends DOMElementComponent {
   removeFrom(_parent: Element) {}
 }
 
-addCustomContextFunc("portal", function (ckey: string, inner: D<View>) {
+Prelude.register("portal", function (ckey: string, inner: D<View>) {
   this.$app.callAndResetHook("afterThisComponent");
 
   const ikey = this.$app.pushKey(ckey);

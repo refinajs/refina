@@ -1,13 +1,12 @@
 /// <reference types="vite/client" />
-import { app, d } from "refina";
-import "@refina/mdui";
+import MdUI, { mdui } from "@refina/mdui";
 import "@refina/mdui/styles.css";
+import { app, d } from "refina";
 
-import mdui from "../../../mdui/node_modules/mdui";
 // let visible = false;
 let val = d("string");
 
-app((_) => {
+app.use(MdUI)((_) => {
   _._h1({}, "Test MDUI!");
 
   _.provideMDTheme("indigo", "red");

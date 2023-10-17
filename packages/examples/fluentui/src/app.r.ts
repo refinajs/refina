@@ -1,4 +1,4 @@
-import { BrandVariants, Theme, createDarkTheme, createLightTheme } from "@refina/fluentui";
+import FluentUI, { BrandVariants, Theme, createDarkTheme, createLightTheme } from "@refina/fluentui";
 import { app, byIndex, d, getD } from "refina";
 
 const myNewTheme: BrandVariants = {
@@ -34,7 +34,7 @@ const sliderTest = d(5);
 const dropdownTest = d("");
 const textInputTest = d("");
 
-app((_) => {
+app.use(FluentUI)((_) => {
   _.provideFTheme(darkTheme, lightTheme);
 
   _.fDivider("button");

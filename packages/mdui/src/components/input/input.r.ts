@@ -1,15 +1,8 @@
-import {
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  TriggerComponentContext,
-  getD,
-  ref,
-  triggerComponent,
-} from "refina";
 import mdui from "mdui";
+import { D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import MdUI from "../../plugin";
 
-@triggerComponent("mdInput")
+@MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
   inputEl = ref<HTMLElementComponent<"input">>();
   main(

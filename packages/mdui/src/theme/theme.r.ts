@@ -1,9 +1,9 @@
-import { addCustomContextFunc } from "refina";
+import MdUI from "../plugin";
 import { AccentHue, PrimaryHue } from "./theme.const";
 
 const currentThemeSymbol = Symbol("currentMDTheme");
 
-addCustomContextFunc(
+MdUI.register(
   "provideMDTheme",
   function (ckey: string, primaryHue: PrimaryHue | undefined, accentHue: AccentHue | undefined): void {
     const ikey = this.$app.pushKey(ckey);
