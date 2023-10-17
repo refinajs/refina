@@ -45,7 +45,7 @@ export class Router {
     }, path);
   }
   get goto() {
-    return this.push;
+    return this.push.bind(this);
   }
   replace(path: string) {
     this.setPendingRoute((path) => {
