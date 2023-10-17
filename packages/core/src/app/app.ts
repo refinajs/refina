@@ -137,15 +137,15 @@ export class App {
       }
     }, 0);
   }
-  update() {
+  update = () => {
     if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger an update in update state");
     }
     console.debug(`[*] update queued`);
     this.needUpdate = true;
     if (!this.running) this.nextTick();
-  }
-  recv(receiver: string, data: any) {
+  };
+  recv = (receiver: string, data: any) => {
     if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger a recv in update state");
     }
@@ -153,7 +153,7 @@ export class App {
     this.recvQueue.push({ receiver, data });
     this.needUpdate = true;
     if (!this.running) this.nextTick();
-  }
+  };
   protected execMain() {
     const initialKey = this.ikey;
     try {
@@ -243,13 +243,13 @@ export class App {
     this.permanentHooks[hookName]!.push(...hooks);
   }
 
-  setD<T>(d: D<T>, v: T): boolean {
+  setD = <T>(d: D<T>, v: T): boolean => {
     if (dangerously_setD(d, v)) {
       this.update();
       return true;
     }
     return false;
-  }
+  };
 
   pushKey(ckey: string) {
     this.idPrefix.push(ckey);
