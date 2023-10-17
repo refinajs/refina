@@ -16,7 +16,7 @@ export class FSwitch extends TriggerComponent<boolean> {
           if (!disabledValue) {
             const newState = !stateValue;
             _.$setD(state, newState);
-            _.$fire(newState);
+            this.$fire(newState);
           }
         },
       },

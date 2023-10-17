@@ -98,7 +98,7 @@ export class Button extends TriggerComponent<MouseEvent> {
     _._button(
       {
         onclick: (ev) => {
-          _.$fire(ev);
+          this.$fire(ev);
         },
         disabled: getD(disabled),
         type: "button",

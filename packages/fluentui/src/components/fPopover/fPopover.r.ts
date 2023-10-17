@@ -27,7 +27,7 @@ export class FModalPopover extends TriggerComponent<void> {
     const innerValue = getD(inner);
     const close = () => {
       _.$setD(open, false);
-      _.$fire();
+      this.$fire();
     };
 
     if (getD(open)) {
@@ -94,7 +94,7 @@ export class FPopover extends TriggerComponent<boolean> {
       }),
     );
     if (_.fModalPopover(this.targetRef, this.open, inner /*, withArrow*/)) {
-      _.$fire(this.open.value);
+      this.$fire(this.open.value);
     }
   }
 }

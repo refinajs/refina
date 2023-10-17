@@ -18,7 +18,7 @@ export class FIntrinsicButton extends TriggerComponent<void> {
       {
         type: "button",
         disabled: disabledValue,
-        onclick: _.$fireWith(),
+        onclick: this.$fireWith(),
       },
       inner,
     );
@@ -28,21 +28,21 @@ export class FIntrinsicButton extends TriggerComponent<void> {
 @FluentUI.triggerComponent("fButton")
 export class FButton extends TriggerComponent<void> {
   main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "secondary", inner, disabled) && _.$fire();
+    _.fIntrinsicButton("rounded", "secondary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fPrimaryButton")
 export class FPrimaryButton extends TriggerComponent<void> {
   main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "primary", inner, disabled) && _.$fire();
+    _.fIntrinsicButton("rounded", "primary", inner, disabled) && this.$fire();
   }
 }
 
 @FluentUI.triggerComponent("fCircularButton")
 export class FCircularButton extends TriggerComponent<void> {
   main(_: TriggerComponentContext<void, this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("circular", "secondary", inner, disabled) && _.$fire();
+    _.fIntrinsicButton("circular", "secondary", inner, disabled) && this.$fire();
   }
 }
 

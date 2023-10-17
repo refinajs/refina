@@ -7,6 +7,22 @@ import {
 } from "./component";
 
 export abstract class TriggerComponent<Ev> extends Component {
+  $fire = (data: Ev) => {
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      data instanceof Event &&
+      !Object.hasOwn(data, "$isCurrent")
+    ) {
+      (data as any).$isCurrent = data.target === data.currentTarget;
+    }
+    this.$app.recv(this.$ikey, data);
+    return false as const;
+  };
+  $fireWith = (data: Ev) => () => {
+    this.$fire(data);
+    return false as const;
+  };
   abstract main(_: TriggerComponentContext<Ev, this>, ...args: any[]): void;
 }
 
@@ -17,24 +33,7 @@ export class IntrinsicTriggerComponentContext<
   Ev,
   S extends TriggerComponent<Ev>,
   C = any,
-> extends IntrinsicComponentContext<S, C> {
-  $fire = (data: Ev) => {
-    if (
-      typeof data === "object" &&
-      data !== null &&
-      data instanceof Event &&
-      !Object.hasOwn(data, "$isCurrent")
-    ) {
-      (data as any).$isCurrent = data.target === data.currentTarget;
-    }
-    this.$app.recv(this.$component.$ikey, data);
-    return false as const;
-  };
-  $fireWith = (data: Ev) => () => {
-    this.$fire(data);
-    return false as const;
-  };
-}
+> extends IntrinsicComponentContext<S, C> {}
 export type TriggerComponentContext<
   Ev,
   S extends TriggerComponent<Ev>,

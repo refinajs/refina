@@ -25,7 +25,7 @@ export class FCheckbox extends TriggerComponent<boolean> {
         onclick: () => {
           const newState = checkedValue !== true;
           _.$setD(checked, newState);
-          _.$fire(newState);
+          this.$fire(newState);
         },
       },
       () => {

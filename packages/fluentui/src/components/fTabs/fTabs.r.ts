@@ -37,7 +37,7 @@ export class FTabs extends TriggerComponent<string> {
     _._div({}, () => {
       if (_.fTabList(selectedIndex, names, false)) {
         this.selected = names[_.$ev];
-        _.$fire(this.selected);
+        this.$fire(this.selected);
       }
       styles.panels(_);
       _._div({}, contents[selectedIndex]);

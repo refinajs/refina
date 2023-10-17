@@ -64,7 +64,7 @@ export class FTabList extends TriggerComponent<number> {
         });
         if (_.$ref(tabRef) && _.fTab(tabSelected, content, tabDisabled[index], tabSelected)) {
           _.$setD(selected, index);
-          _.$fire(index);
+          this.$fire(index);
         }
       }),
     );

@@ -34,7 +34,7 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
           _._button(
             {
               type: "button",
-              onclick: _.$fireWith(fromCloseButtonSym),
+              onclick: this.$fireWith(fromCloseButtonSym),
             },
             () => _.fiDismiss20Regular(),
           );
@@ -51,7 +51,7 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
           typeof actionsValue === "function"
             ? (ctx) =>
                 actionsValue(ctx, (ev) => {
-                  _.$fire(ev);
+                  this.$fire(ev);
                 })
             : actionsValue,
         );

@@ -18,7 +18,7 @@ export class FTab extends TriggerComponent<void> {
     _.$ref(this.buttonEl) &&
       _._button(
         {
-          onclick: _.$fireWith(),
+          onclick: this.$fireWith(),
           disabled: disabledValue,
         },
         (_) => {

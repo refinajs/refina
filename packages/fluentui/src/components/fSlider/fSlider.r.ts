@@ -39,7 +39,7 @@ export class FSlider extends TriggerComponent<number> {
       const onChange = () => {
         const newValue = clamp(Number(this.inputEl.current!.node.value), minValue, maxValue);
         _.$setD(value, newValue);
-        _.$fire(newValue);
+        this.$fire(newValue);
       };
       styles.input(disabledValue)(_);
       _.$ref(this.inputEl) &&

@@ -20,13 +20,13 @@ export class FModalDialog extends TriggerComponent<void> {
         _.fDialogSurface(() => {
           if (_.fDialogBody(title, content, actions, actionsPosition, closeButton)) {
             _.$setD(open, false);
-            _.$fire();
+            this.$fire();
           }
         })
       ) {
         if (!persist) {
           _.$setD(open, false);
-          _.$fire();
+          this.$fire();
         }
       }
     }
