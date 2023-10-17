@@ -1,9 +1,5 @@
 import { AppState } from "../constants";
-import {
-  CustomContextFuncs,
-  IntrinsicContext,
-  ToFullContext,
-} from "../context";
+import { Context, CustomContextFuncs, IntrinsicContext } from "../context";
 import { D, dangerously_setD } from "../data";
 import {
   DOMElementComponent,
@@ -28,37 +24,7 @@ declare global {
   }
 }
 
-export class IntrinsicAppContext<C> extends IntrinsicContext<C> {
-  $pendingRootCls: string[] = [];
-  $rootCls(cls: string): true;
-  $rootCls(template: TemplateStringsArray, ...args: any[]): true;
-  $rootCls(...args: any[]): true {
-    this.$pendingRootCls = this.$pendingRootCls.concat(
-      (Array.isArray(args[0])
-        ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]
-      )
-        .split(/\s/)
-        .filter(Boolean),
-    );
-    return true;
-  }
-
-  $pendingRootCSS: string = "";
-  $rootCss(style: string): void;
-  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
-  $rootCss(...args: any[]): void {
-    this.$pendingRootCSS +=
-      ";" +
-      (Array.isArray(args[0])
-        ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]);
-  }
-}
-
-export type AppContext<C = any> = ToFullContext<C, IntrinsicAppContext<C>>;
-
-export type AppView = (_: AppContext) => void;
+export type AppView = (_: Context) => void;
 
 export class App {
   constructor(
@@ -83,7 +49,7 @@ export class App {
   root: DOMRootComponent;
   refMap: Map<string, any> = new Map();
   nodeMap: Map<Node, DOMNodeComponent> = new Map();
-  _: AppContext | undefined;
+  _: Context | undefined;
   router = new Router(this);
   permanentData: Record<symbol, any> = {};
   runtimeData: Record<symbol, any> | undefined;
@@ -108,6 +74,9 @@ export class App {
   protected idPrefix: string[];
 
   state: AppState;
+
+  pendingRootCSS: string;
+  pendingRootCls: string[];
 
   mounted = false;
   running = false;
@@ -189,13 +158,11 @@ export class App {
     const initialKey = this.ikey;
     try {
       this.running = true;
-      this._ = new IntrinsicAppContext(this) as any;
+      this._ = new IntrinsicContext(this) as any;
       this.clearEventListeners();
       this.runtimeData = {};
       this.processedComponents.clear();
-      this.main(this._ as AppContext);
-      this.root.setClasses(this._!.$pendingRootCls);
-      this.root.setStyle(this._!.$pendingRootCSS);
+      this.main(this._ as Context);
       this._ = undefined;
 
       if (initialKey !== this.ikey) {
@@ -232,7 +199,11 @@ export class App {
     this.state = AppState.update;
     this.eventRecevierIkey = null;
     this.eventData = undefined;
+    this.pendingRootCSS = "";
+    this.pendingRootCls = [];
     this.execMain();
+    this.root.setClasses(this.pendingRootCls);
+    this.root.setStyle(this.pendingRootCSS);
   }
 
   runtimeHooks: { [K in keyof AppRuntimeHookMap]?: AppRuntimeHookMap[K][] } =
