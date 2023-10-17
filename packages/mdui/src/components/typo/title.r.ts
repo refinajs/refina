@@ -1,9 +1,9 @@
-import { D, OutputComponent, OutputComponentContext, getD } from "refina";
+import { D, OutputComponent, ComponentContext, getD } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdTitle")
 export class MdTitle extends OutputComponent {
-  main(_: OutputComponentContext<this>, inner: D<string>, opacity: D<boolean> = false): void {
+  main(_: ComponentContext<this>, inner: D<string>, opacity: D<boolean> = false): void {
     if (getD(opacity)) {
       _.$cls`mdui-typo-title-opacity`;
     } else {
