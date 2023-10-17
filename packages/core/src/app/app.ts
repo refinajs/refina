@@ -15,6 +15,7 @@ export interface AppRuntimeHookMap {
 
 export interface AppPermanentHookMap extends AppRuntimeHookMap {
   beforeMain: () => void;
+  initializeContext: (context: Context) => void;
 }
 
 declare global {
@@ -160,6 +161,7 @@ export class App {
       this.clearEventListeners();
       this.runtimeData = {};
       this.processedComponents.clear();
+      this.callPermanentHook("beforeMain");
       this.main(this._ as Context);
       this._ = undefined;
 
@@ -219,6 +221,17 @@ export class App {
       //@ts-ignore
       return runtimeHooks.map((hook) => hook(...args));
     }
+    const permanentHooks = this.permanentHooks[hookName];
+    if (permanentHooks) {
+      //@ts-ignore
+      return permanentHooks.map((hook) => hook(...args));
+    }
+    return null;
+  }
+  callPermanentHook<K extends keyof AppPermanentHookMap>(
+    hookName: K,
+    ...args: Parameters<AppPermanentHookMap[K]>
+  ): ReturnType<AppPermanentHookMap[K]>[] | null {
     const permanentHooks = this.permanentHooks[hookName];
     if (permanentHooks) {
       //@ts-ignore

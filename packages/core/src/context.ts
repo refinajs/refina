@@ -40,7 +40,9 @@ export type ToFullContext<C, I> = I &
   CustomContext<C>;
 
 export class IntrinsicContext<C> {
-  constructor(public readonly $app: App) {}
+  constructor(public readonly $app: App) {
+    $app.callPermanentHook("initializeContext", this as unknown as Context);
+  }
 
   get $update() {
     return this.$app.update;
