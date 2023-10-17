@@ -42,15 +42,15 @@ export type ToFullContext<C, I> = I &
 export class IntrinsicContext<C> {
   constructor(public readonly $app: App) {}
 
-  $update() {
-    this.$app.update();
+  get $update() {
+    return this.$app.update;
   }
 
-  $getD<T>(d: D<T>): T {
-    return getD(d);
+  get $getD() {
+    return getD;
   }
-  $setD<T>(d: D<T>, v: T): boolean {
-    return this.$app.setD(d, v);
+  get $setD() {
+    return this.$app.setD;
   }
 
   $setMaybe<T extends {}>(m: Maybe<T>, value: T) {
