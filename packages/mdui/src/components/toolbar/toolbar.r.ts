@@ -1,6 +1,7 @@
-import { Content, D, OutputComponent, OutputComponentContext, outputComponent } from "refina";
+import { Content, D, OutputComponent, OutputComponentContext } from "refina";
+import MdUI from "../../plugin";
 
-@outputComponent("mdToolbar")
+@MdUI.outputComponent("mdToolbar")
 export class MdToolbar extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<Content>): void {
     _.$cls`mdui-toolbar`;

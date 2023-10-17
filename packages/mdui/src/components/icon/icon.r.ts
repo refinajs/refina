@@ -1,9 +1,10 @@
-import { Content, D, getD, OutputComponent, OutputComponentContext, outputComponent } from "refina";
+import { D, OutputComponent, OutputComponentContext, getD } from "refina";
 import type { IconName } from "./icon.asset";
 // import { fontMap } from "./icon.asset";
 import mdui from "mdui";
+import MdUI from "../../plugin";
 
-@outputComponent("mdIcon")
+@MdUI.outputComponent("mdIcon")
 export class MdIcon extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<IconName>): void {
     _.$cls`mdui-icon` && _.$cls`material-icons`;

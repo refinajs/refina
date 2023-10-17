@@ -18,6 +18,10 @@ export interface AppRuntimeHookMap {
   afterModifyDOM: () => void;
 }
 
+export interface AppPermanentHookMap extends AppRuntimeHookMap {
+  beforeMain: () => void;
+}
+
 declare global {
   interface Window {
     __MAIN_EXECUTED_TIMES__: number;
@@ -233,6 +237,9 @@ export class App {
 
   runtimeHooks: { [K in keyof AppRuntimeHookMap]?: AppRuntimeHookMap[K][] } =
     {};
+  permanentHooks: {
+    [K in keyof AppPermanentHookMap]?: AppPermanentHookMap[K][];
+  } = {};
   callAndResetHook<K extends keyof AppRuntimeHookMap>(
     hookName: K,
     ...args: Parameters<AppRuntimeHookMap[K]>
@@ -242,6 +249,11 @@ export class App {
       this.runtimeHooks[hookName] = undefined;
       //@ts-ignore
       return runtimeHooks.map((hook) => hook(...args));
+    }
+    const permanentHooks = this.permanentHooks[hookName];
+    if (permanentHooks) {
+      //@ts-ignore
+      return permanentHooks.map((hook) => hook(...args));
     }
     return null;
   }
