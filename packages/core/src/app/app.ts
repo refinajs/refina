@@ -264,6 +264,13 @@ export class App {
     this.runtimeHooks[hookName] ??= [];
     this.runtimeHooks[hookName]!.push(...hooks);
   }
+  addPermanentHook<K extends keyof AppPermanentHookMap>(
+    hookName: K,
+    ...hooks: AppPermanentHookMap[K][]
+  ): void {
+    this.permanentHooks[hookName] ??= [];
+    this.permanentHooks[hookName]!.push(...hooks);
+  }
 
   setD<T>(d: D<T>, v: T): boolean {
     const ret = dangerously_setD(d, v);
