@@ -39,4 +39,10 @@ app.use(MdUI)((_) => {
   }
   _.mdTitle("123", true);
   _.mdTitle("123");
+
+  _.mdSheet((_) => {
+    _.mdTitle("This is title");
+    // _._span({}, "Username: ");
+    _.mdInput(val, "用户名");
+  });
 });
