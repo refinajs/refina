@@ -11,8 +11,8 @@ import {
   bySelf,
   getD,
   ref,
-  triggerComponent,
 } from "refina";
+import FluentUI from "../../plugin";
 import "../../positioning";
 import dropdownStyles from "./fDropdown.styles";
 import listboxStyles from "./listbox.styles";
@@ -116,7 +116,7 @@ function getIndexFromAction(action: DropdownActions, currentIndex: number, maxIn
   }
 }
 
-@triggerComponent("fDropdown")
+@FluentUI.triggerComponent("fDropdown")
 export class FDropdown<OptionValue extends string> extends TriggerComponent<OptionValue> {
   activeIndex = 0;
   focusVisible = false;

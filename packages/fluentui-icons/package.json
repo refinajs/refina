@@ -8,16 +8,13 @@
     "icons"
   ],
   "files": [
+    "index.ts",
     "dist"
   ],
   "type": "module",
   "exports": {
-    "./*": {
-      "import": {
-        "types": "./dist/*",
-        "default": "./dist/*"
-      }
-    }
+    ".": "./plugin.ts",
+    "./*": "./dist/*"
   },
   "scripts": {
     "build": "ts-node --esm --project ./tsconfig.json ./generator.ts",

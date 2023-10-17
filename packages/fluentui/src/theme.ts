@@ -1,5 +1,5 @@
 import { Theme, webDarkTheme, webLightTheme } from "@fluentui/tokens";
-import { addCustomContextFunc } from "refina";
+import FluentUI from "./plugin";
 
 export {
   createDarkTheme,
@@ -14,7 +14,7 @@ export type { BrandVariants, Theme } from "@fluentui/tokens";
 
 const currentFThemeSymbol = Symbol("currentFTheme");
 
-addCustomContextFunc(
+FluentUI.register(
   "provideFTheme",
   function (
     ckey: string,

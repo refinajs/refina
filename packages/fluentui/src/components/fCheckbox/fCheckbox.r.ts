@@ -1,12 +1,13 @@
-import "@refina/fluentui-icons/square.r.ts";
 import "@refina/fluentui-icons/checkmark.r.ts";
-import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, triggerComponent, ref, getD } from "refina";
+import "@refina/fluentui-icons/square.r.ts";
+import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fCheckbox.styles";
 
 export type FCheckboxState = true | false | "mixed";
 
-@triggerComponent("fCheckbox")
+@FluentUI.triggerComponent("fCheckbox")
 export class FCheckbox extends TriggerComponent<boolean> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(

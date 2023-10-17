@@ -1,4 +1,5 @@
-import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref, triggerComponent } from "refina";
+import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
 function getPercent(value: number, min: number, max: number) {
@@ -9,7 +10,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-@triggerComponent("fSlider")
+@FluentUI.triggerComponent("fSlider")
 export class FSlider extends TriggerComponent<number> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(

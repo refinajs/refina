@@ -1,8 +1,8 @@
-import { Content, D, HTMLElementComponent, getD, ref } from "refina";
-import { TriggerComponent, TriggerComponentContext, triggerComponent } from "refina";
+import { Content, D, HTMLElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import FluentUI from "../../plugin";
 import styles from "./fTab.styles";
 
-@triggerComponent("fTab")
+@FluentUI.triggerComponent("fTab")
 export class FTab extends TriggerComponent<void> {
   buttonEl = ref<HTMLElementComponent<"button">>();
   main(

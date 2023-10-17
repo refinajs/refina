@@ -1,19 +1,9 @@
-import {
-  Content,
-  Context,
-  D,
-  TriggerComponent,
-  TriggerComponentContext,
-  View,
-  d,
-  getD,
-  triggerComponent,
-} from "refina";
+import { Content, D, TriggerComponent, TriggerComponentContext, View, d, getD } from "refina";
+import FluentUI from "../../plugin";
 import "./fDialogBody.r";
 import "./fDialogSurface.r";
-import { fromCloseButtonSym } from "./fDialogBody.r";
 
-@triggerComponent("fModalDialog")
+@FluentUI.triggerComponent("fModalDialog")
 export class FModalDialog extends TriggerComponent<void> {
   main(
     _: TriggerComponentContext<void, this>,
@@ -43,7 +33,7 @@ export class FModalDialog extends TriggerComponent<void> {
   }
 }
 
-@triggerComponent("fDialog")
+@FluentUI.triggerComponent("fDialog")
 export class FDialog extends TriggerComponent<boolean> {
   open = d(false);
   main(

@@ -1,8 +1,9 @@
-import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, triggerComponent, ref } from "refina";
-import styles from "./fSwitch.styles";
 import "@refina/fluentui-icons/circle.r.ts";
+import { D, DOMElementComponent, TriggerComponent, TriggerComponentContext, getD, ref } from "refina";
+import FluentUI from "../../plugin";
+import styles from "./fSwitch.styles";
 
-@triggerComponent("fSwitch")
+@FluentUI.triggerComponent("fSwitch")
 export class FSwitch extends TriggerComponent<boolean> {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: TriggerComponentContext<boolean, this>, label: D<string>, state: D<boolean>, disabled: D<boolean> = false) {

@@ -32,26 +32,6 @@ export type CustomContextFuncs = {
   ) => ReturnType<ComponentFuncs<any>[K]>;
 };
 
-declare global {
-  interface Window {
-    __CONTEXT_FUNCS__: CustomContextFuncs;
-  }
-}
-
-export function addCustomContextFunc<N extends keyof CustomContextFuncs>(
-  name: N,
-  func: CustomContextFuncs[N] & ThisType<Context>,
-) {
-  window.__CONTEXT_FUNCS__ ??= {} as any;
-  window.__CONTEXT_FUNCS__[name] = func;
-}
-
-export function getCustomContextFunc<N extends keyof CustomContextFuncs>(
-  name: N,
-): CustomContextFuncs[N] {
-  return window.__CONTEXT_FUNCS__[name];
-}
-
 export interface CustomContext<C> {}
 
 export type ToFullContext<C, I> = I &
@@ -234,7 +214,9 @@ export class IntrinsicContext<C> {
       return;
     }
     // Now this is a user-defined component
-    const func = getCustomContextFunc(funcName as keyof CustomContextFuncs);
+    const func = this.$app.getCustomContextFunc(
+      funcName as keyof CustomContextFuncs,
+    );
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
     }

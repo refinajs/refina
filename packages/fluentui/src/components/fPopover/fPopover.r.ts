@@ -9,12 +9,11 @@ import {
   d,
   getD,
   ref,
-  triggerComponent,
 } from "refina";
-import { popoverSurfaceBorderRadius } from "./constants";
+import FluentUI from "../../plugin";
 import surfaceStyles from "./surface.styles";
 
-@triggerComponent("fModalPopover")
+@FluentUI.triggerComponent("fModalPopover")
 export class FModalPopover extends TriggerComponent<void> {
   arrowRef = ref<HTMLElementComponent<"div">>();
   contentRef = ref<HTMLElementComponent<"div">>();
@@ -79,7 +78,7 @@ export class FModalPopover extends TriggerComponent<void> {
   }
 }
 
-@triggerComponent("fPopover")
+@FluentUI.triggerComponent("fPopover")
 export class FPopover extends TriggerComponent<boolean> {
   open = d(false);
   targetRef = ref<HTMLElementComponent>();

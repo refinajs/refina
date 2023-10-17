@@ -1,5 +1,6 @@
-import { Context, addCustomContextFunc } from "../context";
-import { D, getD } from "../data/index";
+import { Prelude } from "../constants";
+import { Context } from "../context";
+import { D, getD } from "../data";
 
 type KeyHelper<T> = {
   [K in keyof T]: T[K] extends string | number | bigint ? K : never;
@@ -13,7 +14,7 @@ function normalizeKey<T>(key: KeyFunc<T>) {
   return typeof key === "function" ? key : byProp(key);
 }
 
-addCustomContextFunc("for", function <
+Prelude.register("for", function <
   T,
 >(this: Context, ckey: string, arr: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) {
   this.$app.pushKey(ckey);
@@ -30,7 +31,7 @@ addCustomContextFunc("for", function <
   return false;
 });
 
-addCustomContextFunc(
+Prelude.register(
   "forRange",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
     this.$app.pushKey(ckey);

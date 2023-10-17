@@ -1,8 +1,9 @@
-import { Content, D, OutputComponent, OutputComponentContext, getD, outputComponent } from "refina";
+import { Content, D, OutputComponent, OutputComponentContext, getD } from "refina";
+import FluentUI from "../../plugin";
 import styles from "./fDivider.styles";
 import { DividerContentAlignment } from "./types";
 
-@outputComponent("fDivider")
+@FluentUI.outputComponent("fDivider")
 export class FDivider extends OutputComponent {
   main(
     _: OutputComponentContext<this>,

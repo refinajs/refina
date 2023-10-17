@@ -1,9 +1,4 @@
-import {
-  Context,
-  CustomContext,
-  ToFullContext,
-  addCustomContextFunc,
-} from "../context";
+import { Context, CustomContext, ToFullContext } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -126,20 +121,6 @@ export function createCallbackComponentFunc<
     }
     this.$endComponent(component, ckey);
     return ret;
-  };
-}
-export function callbackComponent<
-  N extends keyof CallbackComponents | keyof CustomContext<any>,
->(name: N) {
-  return <T extends ComponentConstructor<CallbackComponent<any>>>(ctor: T) => {
-    addCustomContextFunc(
-      name,
-      createCallbackComponentFunc<
-        CallbackComponentEvs<CallbackComponent<any>>,
-        CallbackComponent<any>
-      >(ctor) as any,
-    );
-    return ctor;
   };
 }
 

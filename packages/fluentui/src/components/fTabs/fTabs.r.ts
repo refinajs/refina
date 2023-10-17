@@ -1,4 +1,5 @@
-import { Content, D, TriggerComponent, TriggerComponentContext, byProp, getD, triggerComponent } from "refina";
+import { Content, D, TriggerComponent, TriggerComponentContext, getD } from "refina";
+import FluentUI from "../../plugin";
 import "./fTabList.r";
 import styles from "./fTabs.styles";
 
@@ -14,7 +15,7 @@ type RepeatedTuple<T extends readonly any[]> =
         >>>>>>>>>>>>>
     >>>;
 
-@triggerComponent("fTabs")
+@FluentUI.triggerComponent("fTabs")
 export class FTabs extends TriggerComponent<string> {
   selected: string;
   main(_: TriggerComponentContext<string, this>, ...nameAndContents: (D<string> | D<Content>)[]) {

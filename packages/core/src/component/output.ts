@@ -1,9 +1,4 @@
-import {
-  Context,
-  CustomContext,
-  ToFullContext,
-  addCustomContextFunc,
-} from "../context";
+import { Context, CustomContext, ToFullContext } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -23,36 +18,30 @@ export type OutputComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicOutputComponentContext<S, C>>;
 
-export function outputComponent<
-  N extends keyof OutputComponents | keyof CustomContext<any>,
->(name: N) {
-  return <T extends ComponentConstructor<OutputComponent>>(ctor: T) => {
-    addCustomContextFunc(
-      name,
-      function (this: Context, ckey: string, ...args: any[]): any {
-        const component = this.$beginComponent(ckey, ctor) as OutputComponent;
+export function createOutputComponentFunc<
+  T extends ComponentConstructor<OutputComponent>,
+>(ctor: T) {
+  return function (this: Context, ckey: string, ...args: any[]): any {
+    const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
-        const context = new IntrinsicOutputComponentContext(this, component);
+    const context = new IntrinsicOutputComponentContext(this, component);
 
-        component.main(
-          context as any as OutputComponentContext<OutputComponent>,
-          ...args,
-        );
-
-        if (!context.$mainEl) {
-          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
-          context.$firstHTMLELement?.addClasses(context.$classesArg);
-          context.$firstHTMLELement?.addStyle(context.$styleArg);
-        }
-
-        component.mainEl = context.$mainEl;
-
-        this.$endComponent(component, ckey);
-
-        return;
-      },
+    component.main(
+      context as any as OutputComponentContext<OutputComponent>,
+      ...args,
     );
-    return ctor;
+
+    if (!context.$mainEl) {
+      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$firstHTMLELement?.addClasses(context.$classesArg);
+      context.$firstHTMLELement?.addStyle(context.$styleArg);
+    }
+
+    component.mainEl = context.$mainEl;
+
+    this.$endComponent(component, ckey);
+
+    return;
   };
 }
 

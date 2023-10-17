@@ -1,9 +1,4 @@
-import {
-  Context,
-  CustomContext,
-  ToFullContext,
-  addCustomContextFunc,
-} from "../context";
+import { Context, CustomContext, ToFullContext } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -42,42 +37,36 @@ export type StatusComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicStatusComponentContext<S, C>>;
 
-export function statusComponent<
-  N extends keyof StatusComponents | keyof CustomContext<any>,
->(name: N) {
-  return <T extends ComponentConstructor<StatusComponent>>(ctor: T) => {
-    addCustomContextFunc(
-      name,
-      function (this: Context, ckey: string, ...args: any[]): any {
-        const component = this.$beginComponent(ckey, ctor) as StatusComponent;
+export function createStatusComponentFunc<
+  T extends ComponentConstructor<StatusComponent>,
+>(ctor: T) {
+  return function (this: Context, ckey: string, ...args: any[]): any {
+    const component = this.$beginComponent(ckey, ctor) as StatusComponent;
 
-        component.$status ??= false;
+    component.$status ??= false;
 
-        const context = new IntrinsicStatusComponentContext(this, component);
+    const context = new IntrinsicStatusComponentContext(this, component);
 
-        component.main(
-          context as any as StatusComponentContext<
-            StatusComponent & {
-              $status: boolean;
-            }
-          >,
-          ...args,
-        );
-
-        if (!context.$mainEl) {
-          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
-          context.$firstHTMLELement?.addClasses(context.$classesArg);
-          context.$firstHTMLELement?.addStyle(context.$styleArg);
+    component.main(
+      context as any as StatusComponentContext<
+        StatusComponent & {
+          $status: boolean;
         }
-
-        component.mainEl = context.$mainEl;
-
-        this.$endComponent(component, ckey);
-
-        return component.$status;
-      },
+      >,
+      ...args,
     );
-    return ctor;
+
+    if (!context.$mainEl) {
+      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$firstHTMLELement?.addClasses(context.$classesArg);
+      context.$firstHTMLELement?.addStyle(context.$styleArg);
+    }
+
+    component.mainEl = context.$mainEl;
+
+    this.$endComponent(component, ckey);
+
+    return component.$status;
   };
 }
 

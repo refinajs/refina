@@ -1,10 +1,18 @@
-import { AppState } from "./constants";
-import { IntrinsicContext, ToFullContext } from "./context";
-import { D, dangerously_setD } from "./data";
-import { DOMElementComponent, DOMNodeComponent, DOMRootComponent } from "./dom";
-import { Router } from "./router";
+import { AppState } from "../constants";
+import {
+  CustomContextFuncs,
+  IntrinsicContext,
+  ToFullContext,
+} from "../context";
+import { D, dangerously_setD } from "../data";
+import {
+  DOMElementComponent,
+  DOMNodeComponent,
+  DOMRootComponent,
+} from "../dom";
+import { Router } from "../router";
 
-export interface AppHookMap {
+export interface AppRuntimeHookMap {
   afterThisComponent: () => void;
   beforeModifyDOM: () => void;
   afterModifyDOM: () => void;
@@ -59,6 +67,13 @@ export class App {
     }
     this.root = new DOMRootComponent("_", rootElement);
     this.resetState();
+  }
+
+  contextFuncs: CustomContextFuncs = {} as any;
+  getCustomContextFunc<N extends keyof CustomContextFuncs>(
+    name: N,
+  ): CustomContextFuncs[N] {
+    return this.contextFuncs[name] as any;
   }
 
   root: DOMRootComponent;
@@ -216,25 +231,26 @@ export class App {
     this.execMain();
   }
 
-  hooks: { [K in keyof AppHookMap]?: AppHookMap[K][] } = {};
-  callAndResetHook<K extends keyof AppHookMap>(
+  runtimeHooks: { [K in keyof AppRuntimeHookMap]?: AppRuntimeHookMap[K][] } =
+    {};
+  callAndResetHook<K extends keyof AppRuntimeHookMap>(
     hookName: K,
-    ...args: Parameters<AppHookMap[K]>
-  ): ReturnType<AppHookMap[K]>[] | null {
-    const hookList = this.hooks[hookName];
-    if (hookList) {
-      this.hooks[hookName] = undefined;
+    ...args: Parameters<AppRuntimeHookMap[K]>
+  ): ReturnType<AppRuntimeHookMap[K]>[] | null {
+    const runtimeHooks = this.runtimeHooks[hookName];
+    if (runtimeHooks) {
+      this.runtimeHooks[hookName] = undefined;
       //@ts-ignore
-      return hookList.map((hook) => hook(...args));
+      return runtimeHooks.map((hook) => hook(...args));
     }
     return null;
   }
-  pushHook<K extends keyof AppHookMap>(
+  pushHook<K extends keyof AppRuntimeHookMap>(
     hookName: K,
-    ...hooks: AppHookMap[K][]
+    ...hooks: AppRuntimeHookMap[K][]
   ): void {
-    this.hooks[hookName] ??= [];
-    this.hooks[hookName]!.push(...hooks);
+    this.runtimeHooks[hookName] ??= [];
+    this.runtimeHooks[hookName]!.push(...hooks);
   }
 
   setD<T>(d: D<T>, v: T): boolean {
@@ -338,10 +354,4 @@ message: ${msg}`,
     ]);
     this.root.node.addEventListener(type, listener as any, options);
   }
-}
-
-export function app(view: AppView, rootElementId: string = "root") {
-  const $app = new App(view, rootElementId);
-  $app.mount();
-  return $app;
 }

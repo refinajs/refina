@@ -1,10 +1,11 @@
 import { computePosition } from "@floating-ui/dom";
-import { AppState, addCustomContextFunc, ref } from "refina";
+import { AppState, ref } from "refina";
+import FluentUI from "../plugin";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, PositioningRefs } from "./types";
 import { toFloatingUIPlacement } from "./utils/toFloatingUIPlacement";
 
-addCustomContextFunc(
+FluentUI.register(
   "usePositioning",
   function (
     _ckey: string,

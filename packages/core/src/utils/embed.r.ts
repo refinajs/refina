@@ -1,11 +1,12 @@
-import { OutputComponent, outputComponent } from "../component/output";
+import { Prelude } from "../constants";
+import { OutputComponent } from "../component/output";
 import { Context, IntrinsicContext } from "../context";
 import { D, getD } from "../data";
 import { Content } from "../dom";
 
 const contentCache = new Map<string, Content<any>>();
 
-@outputComponent("embed")
+@Prelude.outputComponent("embed")
 export class Embed extends OutputComponent {
   main<Args extends any[]>(
     _: Context,

@@ -1,8 +1,8 @@
-import { addCustomContextFunc } from "../context";
+import { Prelude } from "../constants";
 
 const registeredCallbacks = new Set<string>();
 
-addCustomContextFunc("now", function (ckey: string, precisionMs = 1000) {
+Prelude.register("now", function (ckey: string, precisionMs = 1000) {
   if (this.$updating && !registeredCallbacks.has(ckey)) {
     registeredCallbacks.add(ckey);
     setTimeout(() => {
@@ -13,7 +13,7 @@ addCustomContextFunc("now", function (ckey: string, precisionMs = 1000) {
   return Date.now();
 });
 
-addCustomContextFunc(
+Prelude.register(
   "setInterval",
   function (ckey: string, callback: () => void, interval: number) {
     if (this.$updating && !registeredCallbacks.has(ckey)) {

@@ -1,22 +1,20 @@
 import {
-  statusComponent,
-  StatusComponent,
-  StatusComponentContext,
-  D,
   Content,
-  outputComponent,
-  OutputComponent,
-  OutputComponentContext,
-  getD,
-  triggerComponent,
-  TriggerComponent,
-  TriggerComponentContext,
-  ref,
+  D,
   DOMElementComponent,
   KeyFunc,
+  OutputComponent,
+  OutputComponentContext,
+  StatusComponent,
+  StatusComponentContext,
+  TriggerComponent,
+  TriggerComponentContext,
+  getD,
+  ref,
 } from "refina";
+import Basics from "./plugin";
 
-@statusComponent("div")
+@Basics.statusComponent("div")
 export class Div extends StatusComponent {
   main(_: StatusComponentContext<this>, inner: D<Content>) {
     _._div({}, inner);
@@ -28,7 +26,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("span")
+@Basics.outputComponent("span")
 export class Span extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._span({}, inner);
@@ -40,7 +38,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("br")
+@Basics.outputComponent("br")
 export class BreakLine extends OutputComponent {
   main(_: OutputComponentContext<this>) {
     _._br();
@@ -52,7 +50,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("h1")
+@Basics.outputComponent("h1")
 export class Heading1 extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._h1({}, inner);
@@ -64,7 +62,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("p")
+@Basics.outputComponent("p")
 export class Paragraph extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._p({}, inner);
@@ -77,7 +75,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("a")
+@Basics.outputComponent("a")
 export class Anchor extends OutputComponent {
   main(_: OutputComponentContext<this>, href: D<string>, inner: D<Content>) {
     _._a(
@@ -94,7 +92,7 @@ declare module "refina" {
   }
 }
 
-@triggerComponent("button")
+@Basics.triggerComponent("button")
 export class Button extends TriggerComponent<MouseEvent> {
   main(_: TriggerComponentContext<MouseEvent, this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
@@ -115,7 +113,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("textInput")
+@Basics.outputComponent("textInput")
 export class TextInput extends OutputComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: OutputComponentContext<this>, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
@@ -137,7 +135,7 @@ declare module "refina" {
   }
 }
 
-@statusComponent("passwordInput")
+@Basics.statusComponent("passwordInput")
 export class PasswordInput extends StatusComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: StatusComponentContext<this>, value: D<string>) {
@@ -159,7 +157,7 @@ declare module "refina" {
   }
 }
 
-@statusComponent("toggleButton")
+@Basics.statusComponent("toggleButton")
 export class ToggleButton extends StatusComponent {
   main(_: StatusComponentContext<this>, inner: D<Content>) {
     if (_.button(inner)) {
@@ -173,7 +171,7 @@ declare module "refina" {
   }
 }
 
-@statusComponent("checkbox")
+@Basics.statusComponent("checkbox")
 export class Checkbox extends StatusComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(
@@ -200,7 +198,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("ul")
+@Basics.outputComponent("ul")
 export class UnorderedList extends OutputComponent {
   main<T>(
     _: OutputComponentContext<this>,
@@ -229,7 +227,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("li")
+@Basics.outputComponent("li")
 export class ListItem extends OutputComponent {
   main(_: OutputComponentContext<this>, inner: D<Content>) {
     _._li({}, inner);
@@ -242,7 +240,7 @@ declare module "refina" {
   }
 }
 
-@outputComponent("img")
+@Basics.outputComponent("img")
 export class Image extends OutputComponent {
   main(_: OutputComponentContext<this>, src: D<string>, alt: D<string>): void {
     _._img({

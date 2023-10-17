@@ -1,15 +1,5 @@
-import {
-  Content,
-  D,
-  DArray,
-  Ref,
-  TriggerComponent,
-  TriggerComponentContext,
-  byIndex,
-  getD,
-  ref,
-  triggerComponent,
-} from "refina";
+import { Content, D, DArray, Ref, TriggerComponent, TriggerComponentContext, byIndex, getD, ref } from "refina";
+import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./animatedIndicator.styles";
 import "./fTab.r";
 import { FTab } from "./fTab.r";
@@ -40,7 +30,7 @@ function getTabRect(tabRef: Ref<FTab>): Rect {
   };
 }
 
-@triggerComponent("fTabList")
+@FluentUI.triggerComponent("fTabList")
 export class FTabList extends TriggerComponent<number> {
   tabRefs = new Map<number, Ref<FTab>>();
   main(

@@ -1,9 +1,4 @@
-import {
-  Context,
-  CustomContext,
-  ToFullContext,
-  addCustomContextFunc,
-} from "../context";
+import { Context, CustomContext, ToFullContext } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -46,44 +41,35 @@ export type TriggerComponentContext<
   C = any,
 > = ToFullContext<C, IntrinsicTriggerComponentContext<Ev, S, C>>;
 
-export function triggerComponent<
-  N extends keyof TriggerComponents | keyof CustomContext<any>,
->(name: N) {
-  return <T extends ComponentConstructor<TriggerComponent<any>>>(ctor: T) => {
-    addCustomContextFunc(
-      name,
-      function (this: Context, ckey: any, ...args: any[]): any {
-        const component = this.$beginComponent(
-          ckey,
-          ctor,
-        ) as TriggerComponent<any>;
+export function createTriggerComponentFunc<
+  T extends ComponentConstructor<TriggerComponent<any>>,
+>(ctor: T) {
+  return function (this: Context, ckey: any, ...args: any[]): any {
+    const component = this.$beginComponent(ckey, ctor) as TriggerComponent<any>;
 
-        const context = new IntrinsicTriggerComponentContext(this, component);
+    const context = new IntrinsicTriggerComponentContext(this, component);
 
-        component.main(
-          context as unknown as TriggerComponentContext<
-            unknown,
-            TriggerComponent<any>
-          >,
-          ...args,
-        );
-
-        const isReceiver = this.$app.isReceiver;
-
-        if (!context.$mainEl) {
-          context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
-          context.$firstHTMLELement?.addClasses(context.$classesArg);
-          context.$firstHTMLELement?.addStyle(context.$styleArg);
-        }
-
-        component.mainEl = context.$mainEl;
-
-        this.$endComponent(component, ckey);
-
-        return isReceiver;
-      },
+    component.main(
+      context as unknown as TriggerComponentContext<
+        unknown,
+        TriggerComponent<any>
+      >,
+      ...args,
     );
-    return ctor;
+
+    const isReceiver = this.$app.isReceiver;
+
+    if (!context.$mainEl) {
+      context.$mainEl = context.$firstHTMLELement?.mainEl ?? null;
+      context.$firstHTMLELement?.addClasses(context.$classesArg);
+      context.$firstHTMLELement?.addStyle(context.$styleArg);
+    }
+
+    component.mainEl = context.$mainEl;
+
+    this.$endComponent(component, ckey);
+
+    return isReceiver;
   };
 }
 
