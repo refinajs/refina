@@ -1,14 +1,11 @@
 import RouterPlugin from "./plugin";
-import { BeforeRouteContext } from "./router";
+import { BeforeRouteContext, beforeRouteSymbol } from "./router";
 
 RouterPlugin.register("beforeRoute", function (ckey: string) {
-  const pendingRoute = this.$app.router.pendingRoute;
+  if (this.$app.eventRecevier !== beforeRouteSymbol) return false;
+  const pendingRoute = this.$app.eventData as BeforeRouteContext;
   if (pendingRoute) {
-    const beforeRouteContext = this as unknown as BeforeRouteContext;
-    beforeRouteContext.$routeFrom = pendingRoute.$routeFrom;
-    beforeRouteContext.$routeTo = pendingRoute.$routeTo;
-    beforeRouteContext.$routeNext = pendingRoute.$routeNext;
-    this.$app.router.pendingRoute = null;
+    Object.assign(this, pendingRoute);
     return true;
   }
   return false;

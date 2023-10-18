@@ -1,5 +1,7 @@
 import { App } from "refina";
 
+export const beforeRouteSymbol = Symbol("before route");
+
 export interface BeforeRouteContext {
   $routeFrom: string | null;
   $routeTo: string;
@@ -7,37 +9,39 @@ export interface BeforeRouteContext {
 }
 
 export class Router {
-  pendingRoute: null | BeforeRouteContext;
   constructor(public app: App) {
+    this.updateCurrentPath();
+
     this.setPendingRoute(
       (path) => {
         history.replaceState({}, "", path);
       },
-      window.location.href,
+      this.currentPath,
       null,
     );
+
+    window.addEventListener("popstate", (ev) => {
+      this.setPendingRoute((path) => {
+        history.replaceState({}, "", path);
+      }, window.location.pathname);
+    });
   }
-  // base: "/",
-  toAbsolute(path: string) {
-    // if (path[0] === "/" && this.base.at(-1) === "/") {
-    //   return this.base.slice(0, -1) + path;
-    // }
-    // return this.base + path;
-    return path;
+  currentPath: string;
+  updateCurrentPath() {
+    this.currentPath = window.location.pathname;
   }
   setPendingRoute(
     next: (path: string) => void,
     to: string,
     from: string | null = window.location.pathname,
   ) {
-    this.pendingRoute = {
+    this.app.recv(beforeRouteSymbol, {
       $routeFrom: from,
       $routeTo: to,
       $routeNext: (path: string = to) => {
-        next(this.toAbsolute(path));
+        next(path);
       },
-    };
-    this.app.update();
+    });
   }
   push(path: string) {
     this.setPendingRoute((path) => {

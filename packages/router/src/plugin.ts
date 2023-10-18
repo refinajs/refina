@@ -7,6 +7,9 @@ const RouterPlugin = new Plugin("router", (app) => {
   app.addPermanentHook("initializeContext", (context) => {
     context.$router = router;
   });
+  app.addPermanentHook("afterMain", () => {
+    router.updateCurrentPath();
+  });
 });
 export default RouterPlugin;
 

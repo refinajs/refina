@@ -1,4 +1,4 @@
-import { matchPath } from "./base";
+import { matchPath } from "./utils";
 import RouterPlugin from "./plugin";
 
 type RouteParamsImpl<
