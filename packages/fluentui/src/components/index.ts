@@ -4,6 +4,7 @@ export * from "./fCheckbox";
 export * from "./fCombobox";
 export * from "./fDialog";
 export * from "./fDivider";
+export * from "./fField";
 export * from "./fInput";
 export * from "./fLabel";
 export * from "./fPopover";
