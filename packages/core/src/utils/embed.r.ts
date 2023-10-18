@@ -2,8 +2,7 @@ import { OutputComponent } from "../component";
 import { Prelude } from "../constants";
 import { Context, IntrinsicContext } from "../context";
 import { D, getD } from "../data";
-import { Content } from "../dom";
-import { View } from "../view";
+import { Content, DOMElementComponent, DOMNodeComponent } from "../dom";
 
 const contentCache = new Map<string, Content<any>>();
 
@@ -15,6 +14,8 @@ type EmbededContent<Args extends any[]> =
 
 @Prelude.outputComponent("embed")
 export class Embed extends OutputComponent {
+  $firstDOMNode: DOMNodeComponent | null = null;
+  $firstHTMLELement: DOMElementComponent | null = null;
   main<Args extends any[]>(_: Context, content: D<EmbededContent<Args>>, ...args: Args): void {
     const contentValue: EmbededContent<Args> = contentCache.get(this.$ikey) ?? getD(content);
 
@@ -29,8 +30,8 @@ export class Embed extends OutputComponent {
           _.$app.update();
         });
       } else {
-        _.$firstDOMNode = context.$firstDOMNode;
-        _.$firstHTMLELement = context.$firstHTMLELement;
+        _.$firstDOMNode = this.$firstDOMNode = context.$firstDOMNode;
+        _.$firstHTMLELement = this.$firstHTMLELement = context.$firstHTMLELement;
       }
     } else {
       _.t(String(contentValue));
@@ -40,7 +41,7 @@ export class Embed extends OutputComponent {
 
 declare module "../context" {
   interface CustomContext<C> {
-    embed: never extends C
+    embed: Embed extends C
       ? <Args extends any[]>(
           content: D<
             | Content<Args>
