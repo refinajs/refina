@@ -45,4 +45,10 @@ app.use(MdUI)((_) => {
     // _._span({}, "Username: ");
     _.mdInput(val, "用户名");
   });
+
+  _.mdList((_) => {
+    _.mdListItem("Item 1");
+    _.mdListItem("Item 2");
+    _.mdListItem("Item 3");
+  });
 });
