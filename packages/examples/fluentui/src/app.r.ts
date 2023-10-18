@@ -128,4 +128,9 @@ app.use(
     "error",
     "Validation Message",
   );
+
+  _.fDivider("tooltip");
+  _.fTooltip((_) => {
+    _.fButton("[ ]");
+  }, "tooltip content");
 });
