@@ -112,4 +112,9 @@ app.use(
       _.fButton("Close") && close();
     },
   );
+
+  _.fDivider("accordion");
+  _.fAccordion("Header", () => {
+    _._p({}, "Content content content content ".repeat(10));
+  });
 });
