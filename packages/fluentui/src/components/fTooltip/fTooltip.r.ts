@@ -7,7 +7,6 @@ import styles from "./fTooltip.styles";
 @FluentUI.outputComponent("fTooltip")
 export class FTooltip extends OutputComponent {
   visible = false;
-  updatePosition = () => {};
   embedRef = ref<Embed>();
   timeout = NaN;
   clearTimeout = () => {
@@ -20,7 +19,6 @@ export class FTooltip extends OutputComponent {
       const delay = visibleTooltip && visibleTooltip.ikey !== this.$ikey ? 0 : 250;
       this.timeout = setTimeout(() => {
         this.visible = true;
-        this.updatePosition();
         _.$update();
       }, delay);
     };
@@ -31,9 +29,17 @@ export class FTooltip extends OutputComponent {
       }, 250);
     };
 
+    let triggerElement = this.embedRef.current?.$firstHTMLELement?.node;
+    if (triggerElement) {
+      triggerElement.onpointerenter = null;
+      triggerElement.onpointerleave = null;
+      triggerElement.onfocus = null;
+      triggerElement.onblur = null;
+    }
+
     _.$ref(this.embedRef) && _.embed(inner);
 
-    const triggerElement = this.embedRef.current?.$firstHTMLELement?.node;
+    triggerElement = this.embedRef.current?.$firstHTMLELement?.node;
     if (triggerElement) {
       const mergeCallbacks =
         <E>(cb1: ((ev: E) => void) | null, cb2: (ev: E) => void) =>
@@ -85,11 +91,9 @@ export class FTooltip extends OutputComponent {
         position: "above" as const,
         align: "center" as const,
         offset: 4,
-        immediate: false,
         ...resolvePositioningShorthand("above"),
       };
-      const { containerRef, updatePosition } = _.usePositioning(positioningOptions, this.visible);
-      this.updatePosition = updatePosition;
+      const { containerRef } = _.usePositioning(positioningOptions, this.visible);
 
       _.portal(() => {
         styles.content(this.visible)(_);
