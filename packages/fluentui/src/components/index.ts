@@ -1,3 +1,4 @@
+export * from "./fAccordion";
 export * from "./fButton";
 export * from "./fCheckbox";
 export * from "./fCombobox";
