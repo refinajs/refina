@@ -64,9 +64,15 @@ export class App {
 
   currentDOMParent: DOMElementComponent;
 
-  eventRecevierIkey: string | null;
-  get eventRecevier() {
-    return this.refMap.get(this.eventRecevierIkey!);
+  eventRecevier: string | symbol | null;
+  get eventRecevierRef() {
+    if (typeof this.eventRecevier === "symbol")
+      throw new Error(
+        `Cannot get ref of eventRecevier of type symbol: ${String(
+          this.eventRecevier,
+        )}`,
+      );
+    return this.refMap.get(this.eventRecevier!);
   }
   eventData: any;
 
@@ -79,7 +85,7 @@ export class App {
 
   mounted = false;
   running = false;
-  recvQueue: { receiver: string; data: any }[] = [];
+  recvQueue: { receiver: string | symbol; data: any }[] = [];
   needUpdate = false;
   protected get needNextTickRun() {
     return this.recvQueue.length > 0 || this.needUpdate;
@@ -89,7 +95,7 @@ export class App {
     this.root.children = [];
     this.root.portals = new Set();
     this.currentDOMParent = this.root;
-    this.eventRecevierIkey = null;
+    this.eventRecevier = null;
     this.idPrefix = ["root"];
   }
 
@@ -110,13 +116,15 @@ export class App {
       if (this.recvQueue.length > 0) {
         const { receiver, data } = this.recvQueue.shift()!;
         console.debug(
-          `[+] recv executing start with id ${receiver}, remaining ${this.recvQueue.length}`,
+          `[+] recv executing start with id ${String(receiver)}, remaining ${
+            this.recvQueue.length
+          }`,
         );
         const startTime = window.performance.now();
         this.execRecv(receiver, data);
         this.runtimeData = undefined;
         console.debug(
-          `[-] recv executed with id ${receiver} in ${
+          `[-] recv executed with id ${String(receiver)} in ${
             window.performance.now() - startTime
           }ms`,
         );
@@ -144,11 +152,11 @@ export class App {
     this.needUpdate = true;
     if (!this.running) this.nextTick();
   };
-  recv = (receiver: string, data: any) => {
+  recv = (receiver: string | symbol, data: any) => {
     if (this.running && this.state === AppState.update) {
       throw new Error("Cannot trigger a recv in update state");
     }
-    console.debug(`[*] recv queued with receiver ${receiver}`);
+    console.debug(`[*] recv queued with receiver ${String(receiver)}`);
     this.recvQueue.push({ receiver, data });
     this.needUpdate = true;
     if (!this.running) this.nextTick();
@@ -187,17 +195,17 @@ export class App {
       this.running = false;
     }
   }
-  protected execRecv(receiver: string, data: any = null) {
+  protected execRecv(receiver: string | symbol, data: any = null) {
     this.resetState();
     this.state = AppState.recv;
-    this.eventRecevierIkey = receiver;
+    this.eventRecevier = receiver;
     this.eventData = data;
     this.execMain();
   }
   protected execUpdate() {
     this.resetState();
     this.state = AppState.update;
-    this.eventRecevierIkey = null;
+    this.eventRecevier = null;
     this.eventData = undefined;
     this.pendingRootCSS = "";
     this.pendingRootCls = [];
@@ -280,7 +288,7 @@ message: ${msg}`,
     return this.idPrefix.join(".");
   }
   get isReceiver() {
-    return this.eventRecevierIkey === this.ikey;
+    return this.eventRecevier === this.ikey;
   }
 
   protected registeredWindowEventListeners: {

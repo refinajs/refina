@@ -75,7 +75,7 @@ export class IntrinsicContext<C> {
   }
 
   get $() {
-    return this.$app.eventRecevier ?? this.$cbComponent;
+    return this.$app.eventRecevierRef ?? this.$cbComponent;
   }
   get $ev() {
     return this.$app.eventData;
