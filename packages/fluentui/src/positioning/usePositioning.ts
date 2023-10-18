@@ -49,6 +49,8 @@ FluentUI.register(
     if (options.immediate !== false) {
       this.$app.pushHook("afterModifyDOM", () => {
         if (this.$app.state === AppState.update) {
+          // call twice to ensure the correct position as a workaround
+          setTimeout(updatePosition);
           setTimeout(updatePosition);
         }
       });
