@@ -15,6 +15,7 @@ export interface AppRuntimeHookMap {
 
 export interface AppPermanentHookMap extends AppRuntimeHookMap {
   beforeMain: () => void;
+  afterMain: () => void;
   initializeContext: (context: Context) => void;
 }
 
@@ -171,6 +172,7 @@ export class App {
       this.processedComponents.clear();
       this.callPermanentHook("beforeMain");
       this.main(this._ as Context);
+      this.callPermanentHook("afterMain");
       this._ = undefined;
 
       if (initialKey !== this.ikey) {
