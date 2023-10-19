@@ -3,7 +3,7 @@ import MdUI from "../../plugin";
 import mdui from "mdui";
 
 @MdUI.outputComponent("mdDialog")
-export class mdDialog extends OutputComponent {
+export class MdDialog extends OutputComponent {
   dialogEl = ref<HTMLElementComponent<"div">>();
   main(
     _: ComponentContext<this>,
@@ -30,6 +30,6 @@ export class mdDialog extends OutputComponent {
 
 declare module "refina" {
   interface OutputComponents {
-    mdDialog: mdDialog;
+    mdDialog: MdDialog;
   }
 }

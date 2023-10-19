@@ -7,5 +7,6 @@ export * from "./input";
 export * from "./list";
 export * from "./sheet";
 export * from "./spacer";
+export * from "./table";
 export * from "./toolbar";
 export * from "./typo";
