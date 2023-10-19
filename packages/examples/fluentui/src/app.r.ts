@@ -114,9 +114,9 @@ app.use(
   );
 
   _.fDivider("accordion");
-  _.fAccordion("Header", () => {
+  if (_.fAccordion("Header")) {
     _._p({}, "Content content content content ".repeat(10));
-  });
+  }
 
   _.fDivider("field");
   _.fField(
