@@ -12,56 +12,104 @@ import {
 } from "refina";
 import Basics from "./plugin";
 
-@Basics.statusComponent("div")
-export class Div extends StatusComponent {
+@Basics.outputComponent("div")
+export class BasicDiv extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     _._div({}, inner);
   }
 }
 declare module "refina" {
-  interface StatusComponents {
-    div: Div;
+  interface OutputComponents {
+    div: BasicDiv;
   }
 }
 
 @Basics.outputComponent("span")
-export class Span extends OutputComponent {
+export class BasicSpan extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     _._span({}, inner);
   }
 }
 declare module "refina" {
   interface OutputComponents {
-    span: Span;
+    span: BasicSpan;
   }
 }
 
 @Basics.outputComponent("br")
-export class BreakLine extends OutputComponent {
+export class BasicBr extends OutputComponent {
   main(_: ComponentContext<this>) {
     _._br();
   }
 }
 declare module "refina" {
   interface OutputComponents {
-    br: BreakLine;
+    br: BasicBr;
   }
 }
 
 @Basics.outputComponent("h1")
-export class Heading1 extends OutputComponent {
+export class BasicH1 extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     _._h1({}, inner);
   }
 }
 declare module "refina" {
   interface OutputComponents {
-    h1: Heading1;
+    h1: BasicH1;
+  }
+}
+
+@Basics.outputComponent("h3")
+export class BasicH3 extends OutputComponent {
+  main(_: ComponentContext<this>, inner: D<Content>) {
+    _._h3({}, inner);
+  }
+}
+declare module "refina" {
+  interface OutputComponents {
+    h3: BasicH3;
+  }
+}
+
+@Basics.outputComponent("h4")
+export class BasicH4 extends OutputComponent {
+  main(_: ComponentContext<this>, inner: D<Content>) {
+    _._h4({}, inner);
+  }
+}
+declare module "refina" {
+  interface OutputComponents {
+    h4: BasicH4;
+  }
+}
+
+@Basics.outputComponent("h5")
+export class BasicH5 extends OutputComponent {
+  main(_: ComponentContext<this>, inner: D<Content>) {
+    _._h5({}, inner);
+  }
+}
+declare module "refina" {
+  interface OutputComponents {
+    h5: BasicH5;
+  }
+}
+
+@Basics.outputComponent("h6")
+export class BasicH6 extends OutputComponent {
+  main(_: ComponentContext<this>, inner: D<Content>) {
+    _._h6({}, inner);
+  }
+}
+declare module "refina" {
+  interface OutputComponents {
+    h6: BasicH6;
   }
 }
 
 @Basics.outputComponent("p")
-export class Paragraph extends OutputComponent {
+export class BasicP extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     _._p({}, inner);
   }
@@ -69,12 +117,12 @@ export class Paragraph extends OutputComponent {
 
 declare module "refina" {
   interface OutputComponents {
-    p: Paragraph;
+    p: BasicP;
   }
 }
 
 @Basics.outputComponent("a")
-export class Anchor extends OutputComponent {
+export class BaiscA extends OutputComponent {
   main(_: ComponentContext<this>, href: D<string>, inner: D<Content>) {
     _._a(
       {
@@ -86,12 +134,12 @@ export class Anchor extends OutputComponent {
 }
 declare module "refina" {
   interface OutputComponents {
-    a: Anchor;
+    a: BaiscA;
   }
 }
 
 @Basics.triggerComponent("button")
-export class Button extends TriggerComponent<MouseEvent> {
+export class BasicButton extends TriggerComponent<MouseEvent> {
   main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
@@ -107,12 +155,12 @@ export class Button extends TriggerComponent<MouseEvent> {
 }
 declare module "refina" {
   interface TriggerComponents {
-    button: Button;
+    button: BasicButton;
   }
 }
 
 @Basics.outputComponent("textInput")
-export class TextInput extends OutputComponent {
+export class BasicTextInput extends OutputComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
     _.$ref(this.inputEl) &&
@@ -129,12 +177,12 @@ export class TextInput extends OutputComponent {
 }
 declare module "refina" {
   interface OutputComponents {
-    textInput: TextInput;
+    textInput: BasicTextInput;
   }
 }
 
 @Basics.statusComponent("passwordInput")
-export class PasswordInput extends StatusComponent {
+export class BasicPasswordInput extends StatusComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, value: D<string>) {
     _.$ref(this.inputEl) &&
@@ -151,12 +199,12 @@ export class PasswordInput extends StatusComponent {
 }
 declare module "refina" {
   interface StatusComponents {
-    passwordInput: PasswordInput;
+    passwordInput: BasicPasswordInput;
   }
 }
 
 @Basics.statusComponent("toggleButton")
-export class ToggleButton extends StatusComponent {
+export class BasicToggleButton extends StatusComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     if (_.button(inner)) {
       this.$toggle();
@@ -165,12 +213,12 @@ export class ToggleButton extends StatusComponent {
 }
 declare module "refina" {
   interface StatusComponents {
-    toggleButton: ToggleButton;
+    toggleButton: BasicToggleButton;
   }
 }
 
 @Basics.statusComponent("checkbox")
-export class Checkbox extends StatusComponent {
+export class BasicCheckbox extends StatusComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, label: D<string>, value: D<boolean> = this.inputEl.current?.node.checked ?? false) {
     _._label({}, () => {
@@ -188,12 +236,12 @@ export class Checkbox extends StatusComponent {
 }
 declare module "refina" {
   interface StatusComponents {
-    checkbox: Checkbox;
+    checkbox: BasicCheckbox;
   }
 }
 
 @Basics.outputComponent("ul")
-export class UnorderedList extends OutputComponent {
+export class BasicUl extends OutputComponent {
   main<T>(
     _: ComponentContext<this>,
     data: D<Iterable<T>>,
@@ -211,7 +259,7 @@ export class UnorderedList extends OutputComponent {
 }
 declare module "refina" {
   interface CustomContext<C> {
-    ul: UnorderedList extends C
+    ul: BasicUl extends C
       ? <T>(
           data: D<Iterable<T>>,
           key: keyof T | ((item: T, index: number) => D<string>),
@@ -222,7 +270,7 @@ declare module "refina" {
 }
 
 @Basics.outputComponent("li")
-export class ListItem extends OutputComponent {
+export class BasicLi extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>) {
     _._li({}, inner);
   }
@@ -230,13 +278,13 @@ export class ListItem extends OutputComponent {
 
 declare module "refina" {
   interface OutputComponents {
-    li: ListItem;
+    li: BasicLi;
   }
 }
 
 @Basics.outputComponent("img")
-export class Image extends OutputComponent {
-  main(_: ComponentContext<this>, src: D<string>, alt: D<string>): void {
+export class BasicImg extends OutputComponent {
+  main(_: ComponentContext<this>, src: D<string>, alt: D<string> = ""): void {
     _._img({
       src: getD(src),
       alt: getD(alt),
@@ -245,6 +293,6 @@ export class Image extends OutputComponent {
 }
 declare module "refina" {
   interface OutputComponents {
-    img: Image;
+    img: BasicImg;
   }
 }
