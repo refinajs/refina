@@ -1,9 +1,8 @@
 /// <reference types="vite/client" />
-import { app, d, getD } from "refina";
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
+import { app, d } from "refina";
 
-import mdui from "../../../mdui/node_modules/mdui";
 import MdUI from "@refina/mdui";
 // let visible = false;
 let val = d("string");
@@ -52,23 +51,6 @@ app.use(MdUI)((_) => {
     _.mdListItem("Item 3");
   });
 
-  // let trigger = () => {}
-  // _.mdDialog(
-  //   "Hello",
-  //   (_) => {
-  //     _._p("123")
-  //   },
-  //   (_) => {
-  //     _.mdButton("Confirm")
-  //     _.mdButton("Reject")
-  //   },
-  //   (trig) => { trigger = trig }
-  // );
-
-  // if (_.mdButton("123")) {
-  //   trigger()
-  // }
-
   _.mdDialog(
     "Hello",
     (_) => {
@@ -82,6 +64,26 @@ app.use(MdUI)((_) => {
       if (_.mdButton("123")) {
         trig();
       }
+    },
+  );
+
+  _.mdTable(
+    (_) => {
+      _._th({}, "title");
+      _._th({}, "desc");
+      _._th({}, "comment");
+    },
+    (_) => {
+      _._tr({}, (_) => {
+        _._td({}, "123");
+        _._td({}, "123");
+        _._td({}, "123");
+      });
+      _._tr({}, (_) => {
+        _._td({}, "456");
+        _._td({}, "456");
+        _._td({}, "567");
+      });
     },
   );
 });
