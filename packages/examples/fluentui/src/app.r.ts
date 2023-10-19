@@ -80,6 +80,8 @@ app.use(
   _.fTextInput(textInputTest, false, "test");
   _._br();
   _.fTextInput(textInputTest, true, "test");
+  _._br();
+  _.fUnderlineTextInput(textInputTest, false, "underline");
 
   _.fDivider("tabs");
   _.fTabs("First Tab", "AAA", "Second Tab", "BBB", "Third Tab", "CCC", "Fourth Tab", "DDD");

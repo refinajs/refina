@@ -2,9 +2,10 @@ import { tokens, typographyStyles } from "@fluentui/tokens";
 import {
   makeResetStyles,
   makeStyles,
-  shorthands,
   mergeClasses,
+  shorthands,
 } from "@refina/griffel";
+import { InputAppearance } from "./input.types";
 
 export const inputClassNames = {
   root: "fui-Input",
@@ -262,13 +263,18 @@ const contentStyles = makeStyles({
 });
 
 export default {
-  root: (disabled: boolean, invalid: boolean) =>
+  root: (appearance: InputAppearance, disabled: boolean, invalid: boolean) =>
     mergeClasses(
       inputClassNames.root,
       rootClassName,
       rootStyles.medium,
-      rootStyles.outline,
-      !disabled && rootStyles.outlineInteractive,
+      rootStyles[appearance],
+      !disabled && appearance === "outline" && rootStyles.outlineInteractive,
+      !disabled &&
+        appearance === "underline" &&
+        rootStyles.underlineInteractive,
+      !disabled && appearance === "filled" && rootStyles.filledInteractive,
+      appearance === "filled" && rootStyles.filled,
       !disabled && invalid && rootStyles.invalid,
       disabled && rootStyles.disabled,
     ),
