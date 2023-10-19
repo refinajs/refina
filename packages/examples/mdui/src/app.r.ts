@@ -53,16 +53,19 @@ app.use(MdUI)((_) => {
 
   _.mdDialog(
     "Hello",
-    (_) => {
+    (open, close) => (_) => {
       _._p("123");
     },
-    (_) => {
-      _.mdButton("Confirm");
-      _.mdButton("Reject");
+    (open, close) => (_) => {
+      if (_.mdButton("Confirm")) {
+        close();
+        console.log("123");
+      }
+      _.mdButton("Reject") && close();
     },
-    (trig) => {
+    (open, close) => {
       if (_.mdButton("123")) {
-        trig();
+        open();
       }
     },
   );
