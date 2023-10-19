@@ -8,7 +8,7 @@ import {
 } from "./component";
 
 export abstract class StatusComponent extends Component {
-  $_status: boolean;
+  $_status: boolean = false;
   get $status() {
     return this.$_status;
   }
@@ -34,8 +34,6 @@ export function createStatusComponentFunc<
 >(ctor: T) {
   return function (this: Context, ckey: string, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as StatusComponent;
-
-    component.$status ??= false;
 
     const context = new IntrinsicComponentContext(this, component);
 
