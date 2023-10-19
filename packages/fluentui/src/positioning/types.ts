@@ -1,8 +1,9 @@
 import { MainElRef } from "refina";
 
-export interface PositioningRefs {
+export interface UsePositioninggResult {
   targetRef: MainElRef;
   containerRef: MainElRef;
+  updatePosition: () => void;
 }
 
 export type Rect = {
@@ -73,6 +74,8 @@ export interface PositioningOptions {
 
   targetRef?: MainElRef;
   containerRef?: MainElRef;
+
+  immediate?: boolean;
 }
 
 /**

@@ -117,4 +117,20 @@ app.use(
   _.fAccordion("Header", () => {
     _._p({}, "Content content content content ".repeat(10));
   });
+
+  _.fDivider("field");
+  _.fField(
+    () => {
+      _.fTextInput(textInputTest, false, "test");
+    },
+    "Username",
+    true,
+    "error",
+    "Validation Message",
+  );
+
+  _.fDivider("tooltip");
+  _.fTooltip((_) => {
+    _.fButton("[ ]");
+  }, "tooltip content");
 });

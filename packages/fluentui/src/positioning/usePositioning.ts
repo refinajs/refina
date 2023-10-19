@@ -2,7 +2,7 @@ import { computePosition } from "@floating-ui/dom";
 import { AppState, ref } from "refina";
 import FluentUI from "../plugin";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
-import type { PositioningOptions, PositioningRefs } from "./types";
+import type { PositioningOptions, UsePositioninggResult } from "./types";
 import { toFloatingUIPlacement } from "./utils/toFloatingUIPlacement";
 
 FluentUI.register(
@@ -11,15 +11,15 @@ FluentUI.register(
     _ckey: string,
     options: PositioningOptions = {},
     enabled: boolean = true,
-  ): PositioningRefs {
+  ): UsePositioninggResult {
     const targetRef = options.targetRef ?? ref(),
       containerRef = options.containerRef ?? ref();
 
-    if (!enabled) return { targetRef, containerRef };
+    if (!enabled) return { targetRef, containerRef, updatePosition: () => {} };
 
     const { align, position, offset, fallbackPositions } = options;
 
-    const setPosition = () => {
+    const updatePosition = () => {
       if (!targetRef.current?.$mainEl || !containerRef.current?.$mainEl) {
         throw new Error(
           "targetRef or containerRef of useFloating is not set or has no $mainEl",
@@ -46,22 +46,29 @@ FluentUI.register(
       });
     };
 
-    this.$app.pushHook("afterModifyDOM", () => {
-      if (this.$app.state === AppState.update) {
-        setTimeout(setPosition);
-      }
-    });
+    if (options.immediate !== false) {
+      this.$app.pushHook("afterModifyDOM", () => {
+        if (this.$app.state === AppState.update) {
+          // call twice to ensure the correct position as a workaround
+          setTimeout(updatePosition);
+          setTimeout(updatePosition);
+        }
+      });
+    }
 
-    this.$app.registerWindowEventListener("resize", setPosition);
+    this.$app.registerWindowEventListener("resize", updatePosition);
 
-    return { targetRef, containerRef };
+    return { targetRef, containerRef, updatePosition };
   },
 );
 
 declare module "refina" {
   interface CustomContext<C> {
     usePositioning: never extends C
-      ? (options: PositioningOptions, enabled?: boolean) => PositioningRefs
+      ? (
+          options: PositioningOptions,
+          enabled?: boolean,
+        ) => UsePositioninggResult
       : never;
   }
 }
