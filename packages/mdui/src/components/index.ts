@@ -1,5 +1,6 @@
 export * from "./appbar";
 export * from "./button";
+export * from "./dialog";
 export * from "./divider";
 export * from "./icon";
 export * from "./input";

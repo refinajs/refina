@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { app, d } from "refina";
+import { app, d, getD } from "refina";
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
 
@@ -51,4 +51,37 @@ app.use(MdUI)((_) => {
     _.mdListItem("Item 2");
     _.mdListItem("Item 3");
   });
+
+  // let trigger = () => {}
+  // _.mdDialog(
+  //   "Hello",
+  //   (_) => {
+  //     _._p("123")
+  //   },
+  //   (_) => {
+  //     _.mdButton("Confirm")
+  //     _.mdButton("Reject")
+  //   },
+  //   (trig) => { trigger = trig }
+  // );
+
+  // if (_.mdButton("123")) {
+  //   trigger()
+  // }
+
+  _.mdDialog(
+    "Hello",
+    (_) => {
+      _._p("123");
+    },
+    (_) => {
+      _.mdButton("Confirm");
+      _.mdButton("Reject");
+    },
+    (trig) => {
+      if (_.mdButton("123")) {
+        trig();
+      }
+    },
+  );
 });
