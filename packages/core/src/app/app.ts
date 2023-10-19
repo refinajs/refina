@@ -146,17 +146,11 @@ export class App {
     }, 0);
   }
   update = () => {
-    if (this.running && this.state === AppState.update) {
-      throw new Error("Cannot trigger an update in update state");
-    }
     console.debug(`[*] update queued`);
     this.needUpdate = true;
     if (!this.running) this.nextTick();
   };
   recv = (receiver: string | symbol, data: any) => {
-    if (this.running && this.state === AppState.update) {
-      throw new Error("Cannot trigger a recv in update state");
-    }
     console.debug(`[*] recv queued with receiver ${String(receiver)}`);
     this.recvQueue.push({ receiver, data });
     this.needUpdate = true;
