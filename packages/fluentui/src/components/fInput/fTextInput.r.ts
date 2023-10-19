@@ -13,21 +13,28 @@ export class FTextInput extends TriggerComponent<string> {
       placeholderValue = getD(placeholder);
 
     styles.root(this.appearance, disabledValue, false)(_);
-    _._span({}, () => {
-      styles.input(disabledValue)(_);
-      _.$ref(this.inputEl) &&
-        _._input({
-          type: "text",
-          value: valueValue,
-          disabled: disabledValue,
-          placeholder: placeholderValue,
-          oninput: () => {
-            const newValue = this.inputEl.current!.node.value;
-            _.$setD(value, newValue);
-            this.$fire(newValue);
-          },
-        });
-    });
+    _._span(
+      {
+        onclick: () => {
+          this.inputEl.current?.node.focus();
+        },
+      },
+      () => {
+        styles.input(disabledValue)(_);
+        _.$ref(this.inputEl) &&
+          _._input({
+            type: "text",
+            value: valueValue,
+            disabled: disabledValue,
+            placeholder: placeholderValue,
+            oninput: () => {
+              const newValue = this.inputEl.current!.node.value;
+              _.$setD(value, newValue);
+              this.$fire(newValue);
+            },
+          });
+      },
+    );
   }
 }
 
