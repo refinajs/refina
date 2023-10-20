@@ -3,9 +3,11 @@ import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdToolbar")
 export class MdToolbar extends OutputComponent {
-  main(_: ComponentContext<this>, inner: D<Content>): void {
+  main(_: ComponentContext<this>, inner: D<Content>, colored: D<boolean> = true): void {
     _.$cls`mdui-toolbar`;
-    _.$cls`mdui-color-theme`;
+    if (colored) {
+      _.$cls`mdui-color-theme`;
+    }
     _._div({}, inner);
   }
 }
