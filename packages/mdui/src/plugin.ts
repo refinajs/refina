@@ -1,6 +1,7 @@
 import mdui from "mdui";
 import { Plugin } from "refina";
-import { UpdateMDUI, UpdateSelectItems } from "./symbol";
+import { UpdateDialogSize, UpdateMDUI, UpdateSelectItems } from "./symbol";
+import { Dialog } from "mdui/es/components/dialog/class";
 
 const MdUI = new Plugin("mdui", (app) => {
   app.addPermanentHook("afterModifyDOM", () => {
@@ -9,9 +10,14 @@ const MdUI = new Plugin("mdui", (app) => {
       app.permanentData[UpdateMDUI] = false;
     }
 
-    if (app.permanentData[UpdateSelectItems] === true) {
-      mdui.handleUpdate();
-      app.permanentData[UpdateSelectItems] = false;
+    // if (app.permanentData[UpdateSelectItems] === true) {
+    //   mdui.handleUpdate();
+    //   app.permanentData[UpdateSelectItems] = false;
+    // }
+
+    if (app.permanentData[UpdateDialogSize] !== undefined) {
+      (app.permanentData[UpdateDialogSize] as Dialog).handleUpdate();
+      app.permanentData[UpdateDialogSize] = undefined;
     }
   });
 });

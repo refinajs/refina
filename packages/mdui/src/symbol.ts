@@ -1,4 +1,3 @@
-const UpdateMDUI = Symbol("UpdateMDUI");
-const UpdateSelectItems = Symbol("UpdateSelectItems");
-
-export { UpdateMDUI, UpdateSelectItems };
+export const UpdateMDUI = Symbol("UpdateMDUI");
+export const UpdateSelectItems = Symbol("UpdateSelectItems");
+export const UpdateDialogSize = Symbol("UpdateDialogSize");
