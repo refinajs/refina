@@ -33,6 +33,7 @@ const checkboxSources = [d(false), d(false), d(true), d(false)];
 const sliderTest = d(5);
 const dropdownTest = d("");
 const textInputTest = d("");
+const numberInputTest = d(NaN);
 
 app.use(
   FluentUI,
@@ -76,8 +77,12 @@ app.use(
   _._br();
   _.fDropdown(dropdownTest, ["111", "222", "333", "444"], [false, true, false, false], "placeholder");
 
-  _.fDivider("text input");
-  _.fTextInput(textInputTest, false, "test");
+  _.fDivider("input");
+  _.fTextInput(textInputTest, false, "text input");
+  _._br();
+  _.fNumberInput(numberInputTest, false, "number input");
+  _._br();
+  _.fPasswordInput(textInputTest, false, "password input");
   _._br();
   _.fTextInput(textInputTest, true, "test");
   _._br();
