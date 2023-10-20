@@ -2,7 +2,6 @@ import mdui from "mdui";
 import { Dialog } from "mdui/es/components/dialog/class";
 import { ComponentContext, Content, Context, D, HTMLElementComponent, OutputComponent, getD } from "refina";
 import MdUI from "../../plugin";
-import { UpdateMDUI } from "../../symbol";
 
 @MdUI.outputComponent("mdDialog")
 export class MdDialog extends OutputComponent {

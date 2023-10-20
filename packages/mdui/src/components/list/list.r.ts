@@ -1,4 +1,4 @@
-import { ComponentContext, Content, D, OutputComponent } from "refina";
+import { ComponentContext, Content, D, OutputComponent, TriggerComponent } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdList")
@@ -9,17 +9,26 @@ export class MdList extends OutputComponent {
   }
 }
 
-@MdUI.outputComponent("mdListItem")
-export class MdListItem extends OutputComponent {
+@MdUI.triggerComponent("mdListItem")
+export class MdListItem extends TriggerComponent<void> {
   main(_: ComponentContext<this>, inner: D<Content>): void {
     _.$cls`mdui-list-item`;
-    _._div({}, inner);
+    _._div(
+      {
+        onclick: () => {
+          this.$fire();
+        },
+      },
+      inner,
+    );
   }
 }
 
 declare module "refina" {
   interface OutputComponents {
     mdList: MdList;
+  }
+  interface TriggerComponents {
     mdListItem: MdListItem;
   }
 }
