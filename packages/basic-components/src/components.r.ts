@@ -143,7 +143,7 @@ export class BasicButton extends TriggerComponent<MouseEvent> {
   main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
-        onclick: (ev) => {
+        onclick: ev => {
           this.$fire(ev);
         },
         disabled: getD(disabled),

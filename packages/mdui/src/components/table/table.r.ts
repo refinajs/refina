@@ -5,9 +5,9 @@ import MdUI from "../../plugin";
 export class MdTable extends OutputComponent {
   main(_: ComponentContext<this>, head: D<Content>, body: D<Content>): void {
     _.$cls`mdui-table-fluid`;
-    _._div({}, (_) => {
+    _._div({}, _ => {
       _.$cls`mdui-table`;
-      _._table({}, (_) => {
+      _._table({}, _ => {
         _._thead({}, head);
         _._tbody({}, body);
       });

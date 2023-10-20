@@ -49,8 +49,8 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
         _._div(
           {},
           typeof actionsValue === "function"
-            ? (ctx) =>
-                actionsValue(ctx, (ev) => {
+            ? ctx =>
+                actionsValue(ctx, ev => {
                   this.$fire(ev);
                 })
             : actionsValue,

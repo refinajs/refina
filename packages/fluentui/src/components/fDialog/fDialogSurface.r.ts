@@ -9,13 +9,13 @@ export class FDialogSurface extends TriggerComponent<void> {
     _.fPortal(() => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({
-        onmousedown: (ev) => {
+        onmousedown: ev => {
           ev.stopPropagation();
         },
-        onmouseup: (ev) => {
+        onmouseup: ev => {
           ev.stopPropagation();
         },
-        onclick: (ev) => {
+        onclick: ev => {
           ev.stopPropagation();
           this.$fire();
         },
@@ -25,7 +25,7 @@ export class FDialogSurface extends TriggerComponent<void> {
       _._div(
         {
           tabIndex: -1,
-          onkeydown: (event) => {
+          onkeydown: event => {
             if (event.key === "Escape" && !event.defaultPrevented) {
               this.$fire();
               // stop propagation to avoid conflicting with other elements that listen for `Escape`

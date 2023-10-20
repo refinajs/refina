@@ -3,7 +3,8 @@
     {
       "files": ["*.r.js", "*.r.ts"],
       "options": {
-        "printWidth": 120
+        "printWidth": 120,
+        "arrowParens": "avoid"
       }
     }
   ]

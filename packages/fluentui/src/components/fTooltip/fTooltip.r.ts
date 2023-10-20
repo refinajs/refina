@@ -72,7 +72,7 @@ export class FTooltip extends OutputComponent {
 
       _.$app.registerDocumentEventListener(
         "keydown",
-        (ev) => {
+        ev => {
           if (ev.key === "Escape") {
             if (this.visible) {
               this.visible = false;

@@ -170,7 +170,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
 
     dropdownStyles.root(rootDisabled, false)(_);
     _.$ref(rootRef) &&
-      _._div({}, (_) => {
+      _._div({}, _ => {
         dropdownStyles.button(selectedValue === "" && placeholder !== undefined, rootDisabled)(_);
         _.$ref(this.buttonEl, targetRef) &&
           _._button(
@@ -189,7 +189,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
               onfocus: () => {
                 _.$update();
               },
-              onkeydown: (ev) => {
+              onkeydown: ev => {
                 const action = getDropdownActionFromKey(ev, this.open);
                 const maxIndex = optionsValue.length - 1;
                 let newIndex = this.activeIndex;
@@ -235,7 +235,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                 _.$update();
               },
             },
-            (_) => {
+            _ => {
               _.t(selectedValue === "" ? placeholderValue ?? "" : selectedValue);
 
               dropdownStyles.expandIcon(rootDisabled)(_);
@@ -262,7 +262,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     this.ignoreNextBlur = true;
                     _.$update();
                   },
-                  onkeydown: (ev) => {
+                  onkeydown: ev => {
                     const action = getDropdownActionFromKey(ev, this.open);
                     const maxIndex = optionsValue.length - 1;
                     let newIndex = this.activeIndex;
@@ -294,7 +294,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     optionStyles.root(active, this.focusVisible, optionDisabled, selected)(_);
                     _._div(
                       {
-                        onclick: (ev) => {
+                        onclick: ev => {
                           if (optionDisabled) {
                             ev.preventDefault();
                           } else {
@@ -305,7 +305,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                           _.$update();
                         },
                       },
-                      (_) => {
+                      _ => {
                         optionStyles.checkIcon(optionDisabled, selected, false)(_);
                         _.fiCheckmarkFilled();
                         _.t(optionValue);

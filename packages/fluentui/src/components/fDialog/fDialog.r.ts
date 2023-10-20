@@ -45,7 +45,7 @@ export class FDialog extends TriggerComponent<boolean> {
     actionsPosition: D<"start" | "end"> = "end",
     persist: D<boolean> = false,
   ): void {
-    _.embed((ctx) =>
+    _.embed(ctx =>
       getD(trigger)(ctx, () => {
         this.open.value = true;
         _.$update();

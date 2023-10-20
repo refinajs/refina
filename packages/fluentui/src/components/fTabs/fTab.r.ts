@@ -21,7 +21,7 @@ export class FTab extends TriggerComponent<void> {
           onclick: this.$fireWith(),
           disabled: disabledValue,
         },
-        (_) => {
+        _ => {
           styles.content(false, false)(_);
           _._span({}, content);
 

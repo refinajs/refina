@@ -42,7 +42,7 @@ export class MdButton extends TriggerComponent<void> {
 export class MdIconButton extends TriggerComponent<void> {
   main(_: ComponentContext<this>, icon: IconName, raised: D<boolean> = true, disabled: D<boolean> = false): void {
     _.mdIntrinsicButton(
-      (_) => {
+      _ => {
         _.mdIcon(icon);
       },
       undefined,

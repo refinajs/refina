@@ -9,20 +9,20 @@ let val = d("string");
 
 let v = d("123");
 
-app.use(MdUI)((_) => {
+app.use(MdUI)(_ => {
   _._h1({}, "Test MDUI!");
 
   _.provideMDTheme("indigo", "red");
 
   _.mdButton("Normal Button");
-  _.mdButton((_) => {
+  _.mdButton(_ => {
     _.mdIcon("credit_card");
     _.t`Button with Icon`;
   });
   _.mdButton("Disabled Button", true);
   _.mdIconButton("devices");
-  _.mdAppbar("toolbar", (_) => {
-    _.mdToolbar((_) => {
+  _.mdAppbar("toolbar", _ => {
+    _.mdToolbar(_ => {
       _.mdIconButton("menu", false);
       _.mdTitle("123", true);
       _.mdSpacer();
@@ -41,13 +41,13 @@ app.use(MdUI)((_) => {
   _.mdTitle("123", true);
   _.mdTitle("123");
 
-  _.mdSheet((_) => {
+  _.mdSheet(_ => {
     _.mdTitle("This is title");
     // _._span({}, "Username: ");
     _.mdInput(val, "用户名");
   });
 
-  _.mdList((_) => {
+  _.mdList(_ => {
     _.mdListItem("Item 1") && console.log("123");
     _.mdListItem("Item 2");
     _.mdListItem("Item 3");
@@ -56,7 +56,7 @@ app.use(MdUI)((_) => {
   _.mdDialog(
     (_, open) => _.mdButton("123") && open(),
     "Hello",
-    (_) => _._p("123"),
+    _ => _._p("123"),
     (_, close) => {
       if (_.mdButton("Confirm")) {
         close();
@@ -67,18 +67,18 @@ app.use(MdUI)((_) => {
   );
 
   _.mdTable(
-    (_) => {
+    _ => {
       _._th({}, "title");
       _._th({}, "desc");
       _._th({}, "comment");
     },
-    (_) => {
-      _._tr({}, (_) => {
+    _ => {
+      _._tr({}, _ => {
         _._td({}, "123");
         _._td({}, "123");
         _._td({}, "123");
       });
-      _._tr({}, (_) => {
+      _._tr({}, _ => {
         _._td({}, "456");
         _._td({}, "456");
         _._td({}, "567");

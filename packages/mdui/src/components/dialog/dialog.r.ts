@@ -50,7 +50,7 @@ export class MdDialog extends OutputComponent {
     _.embed(toContent(true, trigger));
     _.$cls`mdui-dialog`;
     _.$ref(this.dialogRef) &&
-      _._div({}, (_) => {
+      _._div({}, _ => {
         _.$cls`mdui-dialog-title`;
         _._div({}, toContent(false, title));
         _.$cls`mdui-dialog-content`;

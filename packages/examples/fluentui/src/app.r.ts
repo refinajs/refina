@@ -39,7 +39,7 @@ app.use(
   FluentUI,
   darkTheme,
   lightTheme,
-)((_) => {
+)(_ => {
   _.fDivider("button");
   _.fButton("Button");
   _.fPrimaryButton("Primary Button");
@@ -55,7 +55,7 @@ app.use(
   const sourcesSet = new Set(checkboxSources.map(getD));
   const mixedState = sourcesSet.has(true) ? (sourcesSet.has(false) ? "mixed" : true) : false;
   if (_.fCheckbox("Checkbox (Mixable)", mixedState)) {
-    checkboxSources.forEach((source) => (source.value = _.$ev));
+    checkboxSources.forEach(source => (source.value = _.$ev));
   }
   _._br();
   _.fCheckbox("Checkbox (Disabled)", true, true);
@@ -137,7 +137,7 @@ app.use(
   );
 
   _.fDivider("tooltip");
-  _.fTooltip((_) => {
+  _.fTooltip(_ => {
     _.fButton("[ ]");
   }, "tooltip content");
 });

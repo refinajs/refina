@@ -27,7 +27,7 @@ export class FTabs extends TriggerComponent<string> {
     }
 
     this.selected ??= nameAndContents[0] as string;
-    let selectedIndex = names.findIndex((name) => name === this.selected);
+    let selectedIndex = names.findIndex(name => name === this.selected);
     if (selectedIndex === -1) {
       selectedIndex = 0;
       this.selected = names[0] as string;

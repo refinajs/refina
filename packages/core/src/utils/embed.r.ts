@@ -25,7 +25,7 @@ export class Embed extends OutputComponent {
       const ret: unknown = contentValue(context as unknown as Context, ...args);
       if (ret instanceof Promise) {
         _.t`Loading module...`;
-        ret.then((r) => {
+        ret.then(r => {
           contentCache.set(this.$ikey, r.default);
           _.$app.update();
         });

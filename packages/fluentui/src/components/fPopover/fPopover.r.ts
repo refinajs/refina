@@ -34,9 +34,9 @@ export class FModalPopover extends TriggerComponent<void> {
     if (getD(open)) {
       _.$app.registerRootEventListener(
         "click",
-        (ev) => {
+        ev => {
           const target = ev.composedPath()[0] as HTMLElement;
-          const isOutside = [this.contentRef, targetRef].every((ref) => !ref.current!.$mainEl!.contains(target));
+          const isOutside = [this.contentRef, targetRef].every(ref => !ref.current!.$mainEl!.contains(target));
 
           if (isOutside) {
             close();
@@ -59,19 +59,19 @@ export class FModalPopover extends TriggerComponent<void> {
         _.$ref(this.contentRef) &&
           _._div(
             {
-              onkeydown: (ev) => {
+              onkeydown: ev => {
                 if (ev.key === "Escape" && this.contentRef.current?.node.contains(ev.target as Node)) {
                   ev.preventDefault();
                   close();
                 }
               },
             },
-            (_) => {
+            _ => {
               // if (getD(withArrow)) {
               //   surfaceStyles.arrow("medium")(_);
               //   _.$ref(this.arrowRef) && _._div();
               // }
-              _.embed((ctx) => (typeof innerValue === "function" ? innerValue(ctx, close) : innerValue));
+              _.embed(ctx => (typeof innerValue === "function" ? innerValue(ctx, close) : innerValue));
             },
           );
       });
@@ -89,8 +89,8 @@ export class FPopover extends TriggerComponent<boolean> {
     inner: D<Content<[close: () => void]>>,
     // withArrow: D<boolean> = false,
   ): void {
-    _.embed((ctx) =>
-      getD(trigger)(ctx, this.targetRef, (open) => {
+    _.embed(ctx =>
+      getD(trigger)(ctx, this.targetRef, open => {
         this.open.value = getD(open) ?? !this.open.value;
       }),
     );
