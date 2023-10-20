@@ -51,6 +51,7 @@ export class FDialog extends TriggerComponent<boolean> {
         _.$update();
       }),
     );
+    _.$main();
     _.fModalDialog(this.open, title, content, actions, actionsPosition, persist);
   }
 }

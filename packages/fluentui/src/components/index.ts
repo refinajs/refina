@@ -8,6 +8,7 @@ export * from "./fField";
 export * from "./fInput";
 export * from "./fLabel";
 export * from "./fPopover";
+export * from "./fPortal";
 export * from "./fProgressBar";
 export * from "./fSlider";
 export * from "./fSwitch";

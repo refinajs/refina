@@ -1,6 +1,7 @@
 import { ComponentContext, Content, D, Embed, OutputComponent, ref } from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
+import "../fPortal";
 import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
 import styles from "./fTooltip.styles";
 
@@ -95,7 +96,7 @@ export class FTooltip extends OutputComponent {
       };
       const { containerRef } = _.usePositioning(positioningOptions, this.visible);
 
-      _.portal(() => {
+      _.fPortal(() => {
         styles.content(this.visible)(_);
         _.$ref(containerRef) &&
           _._div(

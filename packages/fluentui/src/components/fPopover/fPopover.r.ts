@@ -11,6 +11,7 @@ import {
   ref,
 } from "refina";
 import FluentUI from "../../plugin";
+import "../fPortal";
 import surfaceStyles from "./surface.styles";
 
 @FluentUI.triggerComponent("fModalPopover")
@@ -53,7 +54,7 @@ export class FModalPopover extends TriggerComponent<void> {
         fallbackPositions: ["above", "after", "after-top", "before", "before-top"],
       });
 
-      _.portal(() => {
+      _.fPortal(() => {
         surfaceStyles.root("medium")(_);
         _.$ref(this.contentRef) &&
           _._div(

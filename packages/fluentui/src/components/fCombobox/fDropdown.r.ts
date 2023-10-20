@@ -14,6 +14,7 @@ import {
 } from "refina";
 import FluentUI from "../../plugin";
 import "../../positioning";
+import "../fPortal";
 import dropdownStyles from "./fDropdown.styles";
 import listboxStyles from "./listbox.styles";
 import optionStyles from "./option.styles";
@@ -242,7 +243,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
             },
           );
         if (this.open) {
-          _.portal(
+          _.fPortal(
             () =>
               dropdownStyles.listbox(_) &&
               listboxStyles.root(_) &&
