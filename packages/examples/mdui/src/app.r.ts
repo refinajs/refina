@@ -7,6 +7,8 @@ import MdUI from "@refina/mdui";
 // let visible = false;
 let val = d("string");
 
+let v = d("123");
+
 app.use(MdUI)((_) => {
   _._h1({}, "Test MDUI!");
 
@@ -53,22 +55,23 @@ app.use(MdUI)((_) => {
 
   _.mdDialog(
     "Hello",
-    (open, close) => (_) => {
+    (close) => (_) => {
       _._p("123");
     },
-    (open, close) => (_) => {
+    (close) => (_) => {
       if (_.mdButton("Confirm")) {
         close();
         console.log("123");
       }
       _.mdButton("Reject") && close();
     },
-    (open, close) => {
+    (open) => {
       if (_.mdButton("123")) {
         open();
       }
     },
   );
+  // Testing...
 
   _.mdTable(
     (_) => {
@@ -89,4 +92,8 @@ app.use(MdUI)((_) => {
       });
     },
   );
+
+  _.mdInput(v, "Input:", () => {
+    console.log(v.value);
+  });
 });
