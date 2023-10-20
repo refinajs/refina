@@ -3,17 +3,12 @@ import FluentUI from "../../plugin";
 import styles from "./fButton.styles";
 import { FButtonApperance, FButtonShape } from "./types";
 
-@FluentUI.triggerComponent("fIntrinsicButton")
-export class FIntrinsicButton extends TriggerComponent<void> {
-  main(
-    _: ComponentContext<this>,
-    shape: D<FButtonShape>,
-    appearance: D<FButtonApperance>,
-    inner: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
+export abstract class FIntrinsicButton extends TriggerComponent<void> {
+  abstract shape: FButtonShape;
+  abstract appearance: FButtonApperance;
+  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
     const disabledValue = getD(disabled);
-    styles.root(getD(shape), getD(appearance), false, disabledValue, false)(_);
+    styles.root(this.shape, this.appearance, false, disabledValue, false)(_);
     _._button(
       {
         type: "button",
@@ -26,29 +21,25 @@ export class FIntrinsicButton extends TriggerComponent<void> {
 }
 
 @FluentUI.triggerComponent("fButton")
-export class FButton extends TriggerComponent<void> {
-  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "secondary", inner, disabled) && this.$fire();
-  }
+export class FButton extends FIntrinsicButton {
+  shape: FButtonShape = "rounded";
+  appearance: FButtonApperance = "secondary";
 }
 
 @FluentUI.triggerComponent("fPrimaryButton")
-export class FPrimaryButton extends TriggerComponent<void> {
-  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("rounded", "primary", inner, disabled) && this.$fire();
-  }
+export class FPrimaryButton extends FIntrinsicButton {
+  shape: FButtonShape = "rounded";
+  appearance: FButtonApperance = "primary";
 }
 
 @FluentUI.triggerComponent("fCircularButton")
-export class FCircularButton extends TriggerComponent<void> {
-  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.fIntrinsicButton("circular", "secondary", inner, disabled) && this.$fire();
-  }
+export class FCircularButton extends FIntrinsicButton {
+  shape: FButtonShape = "circular";
+  appearance: FButtonApperance = "secondary";
 }
 
 declare module "refina" {
   interface TriggerComponents {
-    fIntrinsicButton: FIntrinsicButton;
     fButton: FButton;
     fPrimaryButton: FPrimaryButton;
     fCircularButton: FCircularButton;
