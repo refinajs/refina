@@ -48,7 +48,7 @@ app.use(MdUI)((_) => {
   });
 
   _.mdList((_) => {
-    _.mdListItem("Item 1");
+    _.mdListItem("Item 1") && console.log("123");
     _.mdListItem("Item 2");
     _.mdListItem("Item 3");
   });
@@ -65,7 +65,6 @@ app.use(MdUI)((_) => {
       _.mdButton("Reject") && close();
     },
   );
-  // Testing...
 
   _.mdTable(
     (_) => {

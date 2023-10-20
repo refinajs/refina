@@ -2,7 +2,7 @@ import mdui from "mdui";
 import { Dialog } from "mdui/es/components/dialog/class";
 import { ComponentContext, Content, Context, D, HTMLElementComponent, OutputComponent, getD } from "refina";
 import MdUI from "../../plugin";
-import { UpdateMDUI } from "../../symbol";
+import { UpdateDialogSize } from "../../symbol";
 
 @MdUI.outputComponent("mdDialog")
 export class MdDialog extends OutputComponent {
@@ -58,6 +58,7 @@ export class MdDialog extends OutputComponent {
         _.$cls`mdui-dialog-actions`;
         _._div({}, toContent(false, actions));
       });
+    _.$permanentData[UpdateDialogSize] = this.dialogRef.dialog;
   }
 }
 
