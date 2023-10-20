@@ -8,7 +8,7 @@ export class FProgressBar extends OutputComponent {
   main(_: ComponentContext<this>, value: D<ProgressBarValue>, color?: ProgressBarColor): void {
     const valueValue = getD(value);
     styles.root(_);
-    _._div({}, () => {
+    _._div({}, _ => {
       styles.bar(valueValue, getD(color))(_);
       if (valueValue !== "indertermine") _.$css(`width: ${Math.min(100, Math.max(0, valueValue * 100))}%`);
       _._div();

@@ -45,7 +45,7 @@ export class FTabList extends TriggerComponent<number> {
     const tabDisabled = typeof disabledRawValue === "boolean" ? [] : disabledRawValue.map(d => getD(d) ?? false);
 
     styles.root(tabListDisabled)(_);
-    _._div({}, () =>
+    _._div({}, _ =>
       _.for(contents, byIndex, (content, index) => {
         let tabRef = this.tabRefs.get(index);
         if (!tabRef) {

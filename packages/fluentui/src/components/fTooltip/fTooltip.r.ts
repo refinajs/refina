@@ -96,7 +96,7 @@ export class FTooltip extends OutputComponent {
       };
       const { containerRef } = _.usePositioning(positioningOptions, this.visible);
 
-      _.fPortal(() => {
+      _.fPortal(_ => {
         styles.content(this.visible)(_);
         _.$ref(containerRef) &&
           _._div(

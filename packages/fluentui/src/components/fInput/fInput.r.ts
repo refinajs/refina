@@ -22,7 +22,7 @@ export abstract class FInput<T> extends TriggerComponent<T> {
           this.inputEl.current?.node.focus();
         },
       },
-      () => {
+      _ => {
         styles.input(disabledValue)(_);
         _.$ref(this.inputEl) &&
           _._input({

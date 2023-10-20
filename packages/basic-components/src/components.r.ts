@@ -221,7 +221,7 @@ declare module "refina" {
 export class BasicCheckbox extends StatusComponent {
   inputEl = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, label: D<string>, value: D<boolean> = this.inputEl.current?.node.checked ?? false) {
-    _._label({}, () => {
+    _._label({}, _ => {
       _.t(label);
       _.$ref(this.inputEl) &&
         _._input({
@@ -248,9 +248,9 @@ export class BasicUl extends OutputComponent {
     key: KeyFunc<T>,
     body: (item: T, index: number) => void,
   ): void {
-    _._ul({}, () => {
+    _._ul({}, _ => {
       _.for(data, key, (item, index) => {
-        _._li({}, () => {
+        _._li({}, _ => {
           body(item, index);
         });
       });

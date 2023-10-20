@@ -6,7 +6,7 @@ import dialogSurfaceStyles from "./dialogSurface.styles";
 @FluentUI.triggerComponent("fDialogSurface")
 export class FDialogSurface extends TriggerComponent<void> {
   main(_: ComponentContext<this>, inner: D<Content>): void {
-    _.fPortal(() => {
+    _.fPortal(_ => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({
         onmousedown: ev => {

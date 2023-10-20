@@ -34,7 +34,7 @@ export class FTabs extends TriggerComponent<string> {
     }
 
     styles.root(_);
-    _._div({}, () => {
+    _._div({}, _ => {
       if (_.fTabList(selectedIndex, names, false)) {
         this.selected = names[_.$ev];
         this.$fire(this.selected);

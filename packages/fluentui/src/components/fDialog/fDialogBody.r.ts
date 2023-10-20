@@ -23,20 +23,20 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
       closeButtonValue = getD(closeButton);
 
     dialogBodyStyles.root(_);
-    _._div({}, () => {
+    _._div({}, _ => {
       dialogTitleStyles.root(!closeButtonValue)(_);
       _._div({}, title);
 
       if (closeButtonValue) {
         dialogTitleStyles.action(_);
-        _._div({}, () => {
+        _._div({}, _ => {
           dialogTitleStyles.closeButton(_);
           _._button(
             {
               type: "button",
               onclick: this.$fireWith(fromCloseButtonSym),
             },
-            () => _.fiDismiss20Regular(),
+            _ => _.fiDismiss20Regular(),
           );
         });
       }

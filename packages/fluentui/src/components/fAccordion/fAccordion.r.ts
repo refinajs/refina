@@ -10,9 +10,9 @@ export class FAccordion extends StatusComponent {
     const disabledValue = getD(disabled);
 
     itemStyles.root(_);
-    _._div({}, () => {
+    _._div({}, _ => {
       headerStyles.root(disabledValue)(_);
-      _._div({}, () => {
+      _._div({}, _ => {
         headerStyles.button(disabledValue)(_);
         _._button(
           {
@@ -21,9 +21,9 @@ export class FAccordion extends StatusComponent {
               this.$toggle();
             },
           },
-          () => {
+          _ => {
             headerStyles.expandIcon(_);
-            _._span({}, () => {
+            _._span({}, _ => {
               _.$css` transform: rotate(${this.$status ? 90 : 0}deg)`;
               _.fiChevronRightRegular();
             });

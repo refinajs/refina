@@ -239,12 +239,12 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
               _.t(selectedValue === "" ? placeholderValue ?? "" : selectedValue);
 
               dropdownStyles.expandIcon(rootDisabled)(_);
-              _._span({}, () => _.fiChevronDownRegular());
+              _._span({}, _ => _.fiChevronDownRegular());
             },
           );
         if (this.open) {
           _.fPortal(
-            () =>
+            _ =>
               dropdownStyles.listbox(_) &&
               listboxStyles.root(_) &&
               _.$ref(containerRef) &&
@@ -285,7 +285,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     _.$update();
                   },
                 },
-                () =>
+                _ =>
                   _.for(options, bySelf, (option, index) => {
                     const optionValue = getD(option);
                     const active = index === this.activeIndex;

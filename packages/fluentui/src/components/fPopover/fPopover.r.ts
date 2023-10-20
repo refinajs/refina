@@ -54,7 +54,7 @@ export class FModalPopover extends TriggerComponent<void> {
         fallbackPositions: ["above", "after", "after-top", "before", "before-top"],
       });
 
-      _.fPortal(() => {
+      _.fPortal(_ => {
         surfaceStyles.root("medium")(_);
         _.$ref(this.contentRef) &&
           _._div(

@@ -35,7 +35,7 @@ export class FSlider extends TriggerComponent<number> {
           : ""
       }
       ${sliderCSSVars.sliderProgressVar}: ${getPercent(valueValue, minValue, maxValue)}%;`;
-    _._div({}, () => {
+    _._div({}, _ => {
       const onChange = () => {
         const newValue = clamp(Number(this.inputEl.current!.node.value), minValue, maxValue);
         _.$setD(value, newValue);

@@ -27,7 +27,7 @@ export class FField extends OutputComponent {
     const stateValue = getD(state);
 
     styles.root(_);
-    _._div({}, () => {
+    _._div({}, _ => {
       styles.label(_);
       _.fLabel(label, required);
 
@@ -35,7 +35,7 @@ export class FField extends OutputComponent {
 
       if (validationMessage) {
         styles.validationMessage(stateValue === "error", stateValue !== "none")(_);
-        _._div({}, () => {
+        _._div({}, _ => {
           styles.validationMessageIcon(stateValue)(_);
           _.embed(validationMessageIcons[stateValue]);
 

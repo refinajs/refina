@@ -12,7 +12,7 @@ export class FDivider extends OutputComponent {
   ): void {
     const innerValue = getD(inner);
     styles.root(getD(alignContent), false, innerValue == undefined)(_);
-    _._div({}, () => styles.wrapper(_) && _._div({}, innerValue));
+    _._div({}, _ => styles.wrapper(_) && _._div({}, innerValue));
   }
 }
 

@@ -28,7 +28,7 @@ export class FCheckbox extends TriggerComponent<boolean> {
           this.$fire(newState);
         },
       },
-      () => {
+      _ => {
         styles.input(_);
         _.$ref(this.inputEl) &&
           _._input({
@@ -37,7 +37,7 @@ export class FCheckbox extends TriggerComponent<boolean> {
           });
 
         styles.indicator(_);
-        _._div({}, () => {
+        _._div({}, _ => {
           if (checkedValue === "mixed") {
             _.fiSquare12Filled();
           } else if (checkedValue === true) {

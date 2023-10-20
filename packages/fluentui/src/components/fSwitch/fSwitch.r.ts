@@ -20,7 +20,7 @@ export class FSwitch extends TriggerComponent<boolean> {
           }
         },
       },
-      () => {
+      _ => {
         styles.input(_);
         _.$ref(this.inputEl) &&
           _._input({
@@ -29,7 +29,7 @@ export class FSwitch extends TriggerComponent<boolean> {
             checked: stateValue,
           });
         styles.indicator(_);
-        _._div({}, () => _.fiCircleFilled());
+        _._div({}, _ => _.fiCircleFilled());
         styles.label(_);
         _.fLabel(label);
       },

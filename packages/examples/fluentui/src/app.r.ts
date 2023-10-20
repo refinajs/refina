@@ -127,7 +127,7 @@ app.use(
 
   _.fDivider("field");
   _.fField(
-    () => {
+    _ => {
       _.fTextInput(textInputTest, false, "test");
     },
     "Username",

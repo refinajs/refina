@@ -17,7 +17,7 @@ export class FModalDialog extends TriggerComponent<void> {
   ): void {
     if (getD(open)) {
       if (
-        _.fDialogSurface(() => {
+        _.fDialogSurface(_ => {
           if (_.fDialogBody(title, content, actions, actionsPosition, closeButton)) {
             _.$setD(open, false);
             this.$fire();

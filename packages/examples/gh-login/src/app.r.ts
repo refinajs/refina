@@ -29,12 +29,12 @@ const $app = app.use(Basics)(_ => {
   _.$rootCss`font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";`;
   _.$rootCls`m-auto bg-[#0d1117] text-[#e6edf3] text-sm`;
   _.$cls`pb-6 pt-8 w-full text-center`;
-  _.div(() => {
+  _.div(_ => {
     _.$cls`inline-block fill-current align-bottom w-12 h-[47px]`;
     _.img(logo, "logo");
   });
   _.$cls`w-[340px] m-auto px-4 pt-1`;
-  _.div(() => {
+  _.div(_ => {
     _.$cls`mb-4 text-center text-2xl font-light p-0 tracking-tight` && _.h1("Sign in to GitHub");
     if (msgType.length > 0) {
       _.$cls`p-4 m-auto mb-2 border rounded-[6px] ${
@@ -43,9 +43,9 @@ const $app = app.use(Basics)(_ => {
           success: "border-[rgb(46,160,67,0.4)] bg-[rgb(46,160,67,0.15)]",
         }[msgType]
       }`;
-      _.div(() => {
+      _.div(_ => {
         _.$cls`px-2`;
-        _.div(() => {
+        _.div(_ => {
           _.$css`font-size: x-large; transform: translate(25px, -10px);`;
           _.$cls`h-10 mr-3 float-right ${
             {
@@ -61,13 +61,13 @@ const $app = app.use(Basics)(_ => {
       });
     }
     _.$cls`border border-[#21262d] rounded-md bg-[#161b22] p-4 mt-3`;
-    _.div(() => {
+    _.div(_ => {
       _.$cls`block mb-2` && _._label({}, "Username or email address");
       _.$cls`mt-1 mb-4 block w-full px-3 py-[5px] bg-[#0d1117] outline-none rounded-[6px]
         border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#aac6ec]`;
       _.textInput(username);
       _.$cls`relative`;
-      _.div(() => {
+      _.div(_ => {
         _.$cls`block mb-2` && _._label({}, "Password");
         _.$cls`mt-1 mb-4 block w-full px-3 py-[5px] bg-[#0d1117] outline-none rounded-[6px]
           border-2 border-[#21262d] focus-visible:border-2 focus-visible:border-[#2f81f7]`;
@@ -83,20 +83,20 @@ const $app = app.use(Basics)(_ => {
       });
     });
     _.$cls`p-4 text-center border border-[#30363d] rounded-[6px] mt-4 mb-[10px] `;
-    _.p(() => {
+    _.p(_ => {
       _.t`New to GitHub? `;
       _.$cls`text-[#2f81f7]` && _.a("Create an account", "/signup?source=login");
       _.t`.`;
     });
   });
   _.$cls`py-10 mt-10 f6 text-xs`;
-  _.div(() => {
+  _.div(_ => {
     _.$cls`flex justify-center`;
-    _._ul({}, () => {
-      _.$cls`mr-4` && _.li(() => _.$cls`text-[#2f81f7]` && _.a("Terms", "/site/terms"));
-      _.$cls`mr-4` && _.li(() => _.$cls`text-[#2f81f7]` && _.a("Privacy", "/site/privacy"));
-      _.$cls`mr-4` && _.li(() => _.$cls`text-[#2f81f7]` && _.a("Docs", "https://docs.github.com/"));
-      _.li(() => _.$cls`text-[#7d8590]` && _.a("Contact GitHub Support", "/contact"));
+    _._ul({}, _ => {
+      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Terms", "/site/terms"));
+      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Privacy", "/site/privacy"));
+      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Docs", "https://docs.github.com/"));
+      _.li(_ => _.$cls`text-[#7d8590]` && _.a("Contact GitHub Support", "/contact"));
     });
   });
 });
