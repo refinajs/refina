@@ -93,7 +93,7 @@ app.use(MdUI)((_) => {
     },
   );
 
-  _.mdInput(v, "Input:", () => {
-    console.log(v.value);
-  });
+  if (_.mdInput(v, "input: ")) {
+    console.log("123");
+  }
 });
