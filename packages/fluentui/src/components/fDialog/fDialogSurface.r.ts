@@ -9,7 +9,16 @@ export class FDialogSurface extends TriggerComponent<void> {
     _.fPortal(() => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({
-        onclick: this.$fireWith(),
+        onmousedown: (ev) => {
+          ev.stopPropagation();
+        },
+        onmouseup: (ev) => {
+          ev.stopPropagation();
+        },
+        onclick: (ev) => {
+          ev.stopPropagation();
+          this.$fire();
+        },
       });
 
       dialogSurfaceStyles.root(_);
