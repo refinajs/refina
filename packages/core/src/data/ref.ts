@@ -2,7 +2,7 @@ export interface Ref<T> {
   current: T | null;
 }
 
-export function ref<T = MainElRef>(current: T | null = null): Ref<T> {
+export function ref<T = MainEl>(current: T | null = null): Ref<T> {
   return { current };
 }
 
@@ -25,6 +25,8 @@ export function mergeRefs<T>(...refs: Ref<T>[]): MergedRef<T> {
   };
 }
 
-export type MainElRef<T extends HTMLElement = HTMLElement> = Ref<{
+type MainEl<T extends HTMLElement = HTMLElement> = {
   readonly $mainEl: T | null;
-}>;
+};
+
+export type MainElRef<T extends HTMLElement = HTMLElement> = Ref<MainEl<T>>;
