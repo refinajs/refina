@@ -17,13 +17,19 @@ export class FTooltip extends OutputComponent {
   main(_: ComponentContext<this>, inner: D<Content>, content: D<Content>): void {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol];
-      const delay = visibleTooltip && visibleTooltip.ikey !== this.$ikey ? 0 : 250;
+      const anotherTooltip = visibleTooltip && visibleTooltip.ikey !== this.$ikey;
+      const delay = anotherTooltip ? 0 : 250;
+      if (anotherTooltip) {
+        visibleTooltip.hide(this.$ikey);
+      }
+      this.clearTimeout();
       this.timeout = setTimeout(() => {
         this.visible = true;
         _.$update();
       }, delay);
     };
     const onTriggerLeave = () => {
+      this.clearTimeout();
       this.timeout = setTimeout(() => {
         this.visible = false;
         _.$update();
