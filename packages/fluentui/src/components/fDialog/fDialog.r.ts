@@ -48,11 +48,13 @@ export class FDialog extends TriggerComponent<boolean> {
     _.embed(ctx =>
       getD(trigger)(ctx, (open = true) => {
         this.open.value = open;
-        _.$update();
+        this.$fire(open);
       }),
     );
     _.$main();
-    _.fModalDialog(this.open, title, content, actions, actionsPosition, persist);
+    if (_.fModalDialog(this.open, title, content, actions, actionsPosition, persist)) {
+      this.$fire(false);
+    }
   }
 }
 
