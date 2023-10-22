@@ -9,7 +9,7 @@ export class FModalDialog extends TriggerComponent<void> {
     _: ComponentContext<this>,
     open: D<boolean>,
     title: D<Content>,
-    content: D<Content>,
+    content: D<Content<[close: () => void]>>,
     actions?: D<Content<[close: () => void]>>,
     actionsPosition: D<"start" | "end"> = "end",
     persist: D<boolean> = false,
@@ -38,16 +38,16 @@ export class FDialog extends TriggerComponent<boolean> {
   open = d(false);
   main(
     _: ComponentContext<this>,
-    trigger: D<View<[open: () => void]>>,
+    trigger: D<View<[open: (open?: boolean) => void]>>,
     title: D<Content>,
-    content: D<Content>,
+    content: D<Content<[close: () => void]>>,
     actions?: D<Content<[close: () => void]>>,
     actionsPosition: D<"start" | "end"> = "end",
     persist: D<boolean> = false,
   ): void {
     _.embed(ctx =>
-      getD(trigger)(ctx, () => {
-        this.open.value = true;
+      getD(trigger)(ctx, (open = true) => {
+        this.open.value = open;
         _.$update();
       }),
     );

@@ -1,5 +1,5 @@
 import "@refina/fluentui-icons/dismiss.r.js";
-import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
+import { ComponentContext, Content, Context, D, TriggerComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";
 import dialogBodyStyles from "./dialogBody.styles";
@@ -14,12 +14,20 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
   main(
     _: ComponentContext<this>,
     title: D<Content>,
-    content: D<Content>,
+    content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
     actions?: D<Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined>,
     actionsPosition: D<"start" | "end"> = "start",
     closeButton: D<boolean> = false,
   ): void {
-    const actionsValue = getD(actions),
+    const wrapper = (content: Content<[close: (ev?: FDialogBodyEventData) => void]>) => {
+      if (typeof content === "function") {
+        return (ctx: Context) => content(ctx, this.$fire);
+      }
+      return content;
+    };
+
+    const contentValue = getD(content),
+      actionsValue = getD(actions),
       closeButtonValue = getD(closeButton);
 
     dialogBodyStyles.root(_);
@@ -42,19 +50,11 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
       }
 
       dialogContentStyles.root(_);
-      _._div({}, content);
+      _._div({}, wrapper(contentValue));
 
       if (actionsValue !== undefined) {
         dialogActionsStyles.root(true, getD(actionsPosition))(_);
-        _._div(
-          {},
-          typeof actionsValue === "function"
-            ? ctx =>
-                actionsValue(ctx, ev => {
-                  this.$fire(ev);
-                })
-            : actionsValue,
-        );
+        _._div({}, wrapper(actionsValue));
       }
     });
   }
