@@ -121,9 +121,9 @@ Prelude.register("awaited", function (ckey: string, id: string | number) {
 
 declare module "../context" {
   interface CustomContext<C> {
-    async: (<T, N extends string | number>(
+    async: (<T, N extends string | number = "">(
       executor: () => Promise<T>,
-      id: N,
+      id?: N,
     ) => //@ts-ignore
     this is {
       [K in N as `$awaited${K}`]: T;
