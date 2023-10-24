@@ -36,8 +36,14 @@ export class FAccordion extends StatusComponent {
   }
 }
 
+@FluentUI.statusComponent("fAccordionDefaultOpen")
+export class FAccordionDefaultOpen extends FAccordion {
+  $_status = true;
+}
+
 declare module "refina" {
   interface StatusComponents {
     fAccordion: FAccordion;
+    fAccordionDefaultOpen: FAccordionDefaultOpen;
   }
 }
