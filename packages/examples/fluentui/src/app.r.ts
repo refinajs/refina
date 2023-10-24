@@ -140,4 +140,7 @@ app.use(
   _.fTooltip(_ => {
     _.fButton("[ ]");
   }, "tooltip content");
+
+  _.fDivider("textarea");
+  _.fTextarea(textInputTest, false, "placeholder", "both");
 });

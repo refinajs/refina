@@ -13,4 +13,5 @@ export * from "./fProgressBar";
 export * from "./fSlider";
 export * from "./fSwitch";
 export * from "./fTabs";
+export * from "./fTextarea";
 export * from "./fTooltip";
