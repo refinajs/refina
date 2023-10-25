@@ -327,7 +327,10 @@ declare module "refina" {
           options: DArray<OptionValue>,
           disabled?: D<boolean | D<boolean>[]>,
           placeholder?: D<string>,
-        ) => void
+        ) => this is {
+          $: FDropdown<OptionValue>;
+          $ev: OptionValue;
+        }
       : never;
   }
 }
