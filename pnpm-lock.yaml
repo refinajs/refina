@@ -41,7 +41,7 @@ importers:
         version: 5.2.2
       vite-plugin-refina:
         specifier: workspace:^
-        version: link:../plugin
+        version: link:../vite-plugin
 
   packages/examples/fluentui:
     dependencies:
@@ -60,13 +60,13 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.4.9
       vite-plugin-inspect:
         specifier: ^0.7.35
         version: 0.7.38(vite@4.4.9)
       vite-plugin-refina:
         specifier: workspace:^
-        version: link:../../plugin
+        version: link:../../vite-plugin
 
   packages/examples/gh-login:
     dependencies:
@@ -94,13 +94,13 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.4.9
       vite-plugin-inspect:
         specifier: ^0.7.35
         version: 0.7.38(vite@4.4.9)
       vite-plugin-refina:
         specifier: workspace:^
-        version: link:../../plugin
+        version: link:../../vite-plugin
 
   packages/examples/mdui:
     dependencies:
@@ -119,13 +119,13 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.4.9
       vite-plugin-inspect:
         specifier: ^0.7.35
         version: 0.7.38(vite@4.4.9)
       vite-plugin-refina:
         specifier: workspace:^
-        version: link:../../plugin
+        version: link:../../vite-plugin
 
   packages/fluentui:
     dependencies:
@@ -253,8 +253,34 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  packages/transformer:
+    dependencies:
+      magic-string:
+        specifier: ^0.30.2
+        version: 0.30.3
+    devDependencies:
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   packages/tsconfig:
     devDependencies:
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
+  packages/vite-plugin:
+    dependencies:
+      '@refina/transformer':
+        specifier: workspace:^
+        version: link:../transformer
+    devDependencies:
+      '@types/node':
+        specifier: ^20.6.5
+        version: 20.6.5
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1970,10 +1996,45 @@ packages:
       open: 9.1.0
       picocolors: 1.0.0
       sirv: 2.0.3
-      vite: 4.4.9(@types/node@20.6.5)
+      vite: 4.4.9
     transitivePeerDependencies:
       - rollup
       - supports-color
+    dev: true
+
+  /vite@4.4.9:
+    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.30
+      rollup: 3.29.3
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: true
 
   /vite@4.4.9(@types/node@20.6.5):
@@ -2010,6 +2071,7 @@ packages:
       rollup: 3.29.3
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}

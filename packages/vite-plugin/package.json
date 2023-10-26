@@ -40,7 +40,7 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "dependencies": {
-    "magic-string": "^0.30.2"
+    "@refina/transformer": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^20.6.5",

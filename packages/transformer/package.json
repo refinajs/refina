@@ -1,0 +1,35 @@
+{
+  "name": "@refina/transformer",
+  "version": "0.0.0",
+  "description": "The code transformer for Refina framework.",
+  "keywords": [
+    "refina",
+    "transformer"
+  ],
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "dependencies": {
+    "magic-string": "^0.30.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

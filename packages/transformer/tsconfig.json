@@ -1,10 +1,10 @@
 {
-  "include": ["./plugin.ts"],
+  "include": ["./src"],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext"],
     "strict": true
   }
 }
