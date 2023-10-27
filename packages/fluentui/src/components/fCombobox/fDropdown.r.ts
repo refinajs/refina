@@ -165,7 +165,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
       }
       const option = getD(optionsValue[index]);
       _.$setD(selected, option);
-      // this.$fire(option);
+      this.$fire(option);
     };
 
     dropdownStyles.root(rootDisabled, false)(_);
