@@ -18,6 +18,7 @@ import "../fPortal";
 import dropdownStyles from "./fDropdown.styles";
 import listboxStyles from "./listbox.styles";
 import optionStyles from "./option.styles";
+import { DropdownAppearance } from "./fDropdown.types";
 
 /**
  * enum of actions available in any type of managed dropdown control
@@ -119,6 +120,8 @@ function getIndexFromAction(action: DropdownActions, currentIndex: number, maxIn
 
 @FluentUI.triggerComponent("fDropdown")
 export class FDropdown<OptionValue extends string> extends TriggerComponent<OptionValue> {
+  appearance: DropdownAppearance = "outline";
+
   activeIndex = 0;
   focusVisible = false;
   ignoreNextBlur = false;
@@ -168,7 +171,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
       this.$fire(option);
     };
 
-    dropdownStyles.root(rootDisabled, false)(_);
+    dropdownStyles.root(this.appearance, rootDisabled, false)(_);
     _.$ref(rootRef) &&
       _._div({}, _ => {
         dropdownStyles.button(selectedValue === "" && placeholder !== undefined, rootDisabled)(_);
@@ -319,6 +322,11 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
   }
 }
 
+@FluentUI.triggerComponent("fUnderlineDropdown")
+export class FUnderlineDropdown<OptionValue extends string> extends FDropdown<OptionValue> {
+  appearance: DropdownAppearance = "underline";
+}
+
 declare module "refina" {
   interface CustomContext<C> {
     fDropdown: FDropdown<any> extends C
@@ -329,6 +337,17 @@ declare module "refina" {
           placeholder?: D<string>,
         ) => this is {
           $: FDropdown<OptionValue>;
+          $ev: OptionValue;
+        }
+      : never;
+    fUnderlineDropdown: FUnderlineDropdown<any> extends C
+      ? <OptionValue extends string>(
+          current: D<OptionValue | null>,
+          options: DArray<OptionValue>,
+          disabled?: D<boolean | D<boolean>[]>,
+          placeholder?: D<string>,
+        ) => this is {
+          $: FUnderlineDropdown<OptionValue>;
           $ev: OptionValue;
         }
       : never;

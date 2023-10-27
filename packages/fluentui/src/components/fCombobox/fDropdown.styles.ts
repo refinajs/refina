@@ -1,5 +1,6 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { DropdownAppearance } from "./fDropdown.types";
 import { iconSizes } from "./tokens";
 
 export const dropdownClassNames = {
@@ -233,13 +234,14 @@ const iconStyles = makeStyles({
 });
 
 export default {
-  root: (disabled: boolean, invalid: boolean) =>
+  root: (appearance: DropdownAppearance, disabled: boolean, invalid: boolean) =>
     mergeClasses(
       dropdownClassNames.root,
       styles.root,
-      styles.outline,
-      !disabled && styles.outlineInteractive,
-      invalid && styles.invalid,
+      styles[appearance],
+      !disabled && appearance === "outline" && styles.outlineInteractive,
+      invalid && appearance !== "underline" && styles.invalid,
+      invalid && appearance === "underline" && styles.invalidUnderline,
       disabled && styles.disabled,
     ),
 
