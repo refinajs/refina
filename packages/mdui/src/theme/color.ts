@@ -1,3 +1,1 @@
-type color = "primary" | "accent" | undefined;
-
-export type { color };
+export type Color = "primary" | "accent" | undefined;

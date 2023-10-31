@@ -1,6 +1,6 @@
 import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
 import MdUI from "../../plugin";
-import { color } from "../../theme/color";
+import { Color } from "../../theme/color";
 import { IconName } from "../icon";
 
 @MdUI.triggerComponent("mdIntrinsicButton")
@@ -8,7 +8,7 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
   main(
     _: ComponentContext<this>,
     inner: D<Content>,
-    color: D<color> = undefined,
+    color: D<Color> = undefined,
     raised: D<boolean> = true,
     disabled: D<boolean> = false,
     ripple: D<boolean> = true,
