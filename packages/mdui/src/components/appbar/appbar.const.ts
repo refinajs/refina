@@ -1,3 +1,8 @@
-type AppbarContent = "toolbar" | "tab" | "both" | "neither";
+export const appbarClassNameMap = {
+  toolbar: "mdui-appbar-with-toolbar",
+  tab: "mdui-appbar-with-tab",
+  both: "mdui-appbar-with-tab-larger",
+  neither: "",
+} as const;
 
-export type { AppbarContent };
+export type AppbarType = keyof typeof appbarClassNameMap;
