@@ -3,10 +3,10 @@ import { DOMNodeComponent, DOMNodeComponentActionResult } from "./base";
 
 export class TextNodeComponent extends DOMNodeComponent {
   createDOM(): DOMNodeComponentActionResult {
-    return { lastEl: null, thisEl: null };
+    return { lastEl: null, thisEl: this.node as ChildNode };
   }
   updateDOM(): DOMNodeComponentActionResult {
-    return { lastEl: null, thisEl: null };
+    return { lastEl: null, thisEl: this.node as ChildNode };
   }
 }
 
