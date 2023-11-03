@@ -126,7 +126,7 @@ export type HTMLElementFuncs<C> = {
 
 export type SVGElementFuncData = Record<
   string,
-  D<string | number | ((...args: any[]) => any)>
+  D<undefined | string | number | ((...args: any[]) => any)>
 >;
 
 export type SVGElementFuncs<C> = {
