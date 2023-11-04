@@ -1,3 +1,2 @@
-export const UpdateMDUI = Symbol("UpdateMDUI");
-export const UpdateSelectItems = Symbol("UpdateSelectItems");
-export const UpdateDialogSize = Symbol("UpdateDialogSize");
+export const updateDialogSizeSym = Symbol("MdUIUpdateDialogSize");
+export const updateTextFieldsSym = Symbol("MdUIUpdateDialogSize");

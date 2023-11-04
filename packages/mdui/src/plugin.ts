@@ -1,25 +1,19 @@
 import mdui from "mdui";
-import { AppState, Plugin } from "refina";
-import { UpdateDialogSize, UpdateMDUI, UpdateSelectItems } from "./symbol";
 import { Dialog } from "mdui/es/components/dialog/class";
+import { AppState, Plugin } from "refina";
+import { updateDialogSizeSym, updateTextFieldsSym } from "./symbol";
 
 const MdUI = new Plugin("mdui", (app) => {
   app.addPermanentHook("afterModifyDOM", () => {
     if (app.state === AppState.update) {
-      if (app.permanentData[UpdateMDUI] === true) {
-        console.warn("Update MDUI");
-        mdui.mutation();
-        app.permanentData[UpdateMDUI] = false;
+      mdui.mutation();
+
+      if (app.runtimeData![updateDialogSizeSym]) {
+        (app.runtimeData![updateDialogSizeSym] as Dialog).handleUpdate();
       }
 
-      // if (app.permanentData[UpdateSelectItems] === true) {
-      //   mdui.handleUpdate();
-      //   app.permanentData[UpdateSelectItems] = false;
-      // }
-
-      if (app.permanentData[UpdateDialogSize] !== undefined) {
-        (app.permanentData[UpdateDialogSize] as Dialog).handleUpdate();
-        app.permanentData[UpdateDialogSize] = undefined;
+      if (app.runtimeData![updateTextFieldsSym]) {
+        mdui.updateTextFields();
       }
     }
   });
