@@ -1,6 +1,6 @@
 import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
 import MdUI from "../../plugin";
-import { updateTextFieldsSym } from "../../symbol";
+import { needUpdateTextFields } from "../../update";
 
 @MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
@@ -19,7 +19,7 @@ export class MdInput extends TriggerComponent<string> {
           oninput: () => {
             const newValue = this.inputEl.current!.node.value;
             _.$setD(value, newValue);
-            _.$runtimeData[updateTextFieldsSym] = true;
+            needUpdateTextFields();
             this.$fire(newValue);
           },
         });
