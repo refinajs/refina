@@ -105,10 +105,10 @@ export class App {
       throw new Error("App already mounted");
     }
     this.execUpdate();
-    this.runtimeData = undefined;
     this.callAndResetHook("beforeModifyDOM");
     this.root.createDOM();
     this.callAndResetHook("afterModifyDOM");
+    this.runtimeData = undefined;
     this.mounted = true;
   }
   nextTick() {
