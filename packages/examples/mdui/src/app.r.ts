@@ -9,10 +9,12 @@ let val = d("string");
 
 let v = d("123");
 
-app.use(MdUI)(_ => {
+app.use(
+  MdUI,
+  "indigo",
+  "red",
+)(_ => {
   _._h1({}, "Test MDUI!");
-
-  _.provideMDTheme("indigo", "red");
 
   _.mdButton("Normal Button");
   _.mdButton(_ => {

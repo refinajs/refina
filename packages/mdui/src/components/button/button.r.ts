@@ -1,6 +1,6 @@
 import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
 import MdUI from "../../plugin";
-import { Color } from "../../theme/color";
+import { Color } from "../../theme";
 import { IconName } from "../icon";
 
 @MdUI.triggerComponent("mdIntrinsicButton")

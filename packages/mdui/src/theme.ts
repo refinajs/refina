@@ -1,0 +1,40 @@
+export type PrimaryHue =
+  | "red"
+  | "pink"
+  | "purple"
+  | "deep-purple"
+  | "indigo"
+  | "blue"
+  | "light-blue"
+  | "cyan"
+  | "teal"
+  | "green"
+  | "light-green"
+  | "lime"
+  | "yellow"
+  | "amber"
+  | "orange"
+  | "deep-orange"
+  | "brown"
+  | "grey"
+  | "blue-grey";
+
+export type AccentHue =
+  | "red"
+  | "pink"
+  | "purple"
+  | "deep-purple"
+  | "indigo"
+  | "blue"
+  | "light-blue"
+  | "cyan"
+  | "teal"
+  | "green"
+  | "light-green"
+  | "lime"
+  | "yellow"
+  | "amber"
+  | "orange"
+  | "deep-orange";
+
+export type Color = "primary" | "accent" | undefined;
