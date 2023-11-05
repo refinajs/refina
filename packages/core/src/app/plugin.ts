@@ -53,6 +53,7 @@ export class Plugin<Args extends any[] = []> {
     name: N,
   ) {
     return <C extends ComponentConstructor<OutputComponent>>(ctor: C) => {
+      //@ts-ignore
       this.register(name, createOutputComponentFunc(ctor));
       return ctor;
     };
