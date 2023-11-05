@@ -104,12 +104,14 @@ export class App {
     if (this.mounted) {
       throw new Error("App already mounted");
     }
-    this.execUpdate();
-    this.callAndResetHook("beforeModifyDOM");
-    this.root.createDOM();
-    this.callAndResetHook("afterModifyDOM");
-    this.runtimeData = undefined;
-    this.mounted = true;
+    setTimeout(() => {
+      this.execUpdate();
+      this.callAndResetHook("beforeModifyDOM");
+      this.root.createDOM();
+      this.callAndResetHook("afterModifyDOM");
+      this.runtimeData = undefined;
+      this.mounted = true;
+    }, 0);
   }
   nextTick() {
     setTimeout(() => {
