@@ -17,7 +17,7 @@ export class PDFromProp<T, O = any> implements PD<T> {
     this.$obj[this.$prop] = v as any;
   }
 
-  [PDSymbol]: true;
+  [PDSymbol] = true as const;
   [Symbol.toPrimitive](): T {
     return this.value;
   }
