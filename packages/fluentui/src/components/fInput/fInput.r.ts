@@ -9,7 +9,7 @@ export abstract class FInput<T> extends TriggerComponent<T> {
   abstract parseValue(v: string): T;
 
   appearance: InputAppearance = "outline";
-  inputEl = ref<HTMLElementComponent<"input">>();
+  inputRef = ref<HTMLElementComponent<"input">>();
   main(_: ComponentContext<this>, value: D<T>, disabled: D<boolean> = false, placeholder: D<string> = ""): void {
     const valueValue = getD(value),
       disabledValue = getD(disabled),
@@ -19,19 +19,19 @@ export abstract class FInput<T> extends TriggerComponent<T> {
     _._span(
       {
         onclick: () => {
-          this.inputEl.current?.node.focus();
+          this.inputRef.current?.node.focus();
         },
       },
       _ => {
         styles.input(disabledValue)(_);
-        _.$ref(this.inputEl) &&
+        _.$ref(this.inputRef) &&
           _._input({
             type: "text",
             value: this.stringifier(valueValue),
             disabled: disabledValue,
             placeholder: placeholderValue,
             oninput: () => {
-              const newValue = this.parseValue(this.inputEl.current!.node.value);
+              const newValue = this.parseValue(this.inputRef.current!.node.value);
               _.$setD(value, newValue);
               this.$fire(newValue);
             },

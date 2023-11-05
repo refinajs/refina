@@ -4,7 +4,7 @@ import styles from "./fTab.styles";
 
 @FluentUI.triggerComponent("fTab")
 export class FTab extends TriggerComponent<void> {
-  buttonEl = ref<HTMLElementComponent<"button">>();
+  buttonRef = ref<HTMLElementComponent<"button">>();
   main(
     _: ComponentContext<this>,
     selected: D<boolean>,
@@ -15,7 +15,7 @@ export class FTab extends TriggerComponent<void> {
     const selectedValue = getD(selected),
       disabledValue = getD(disabled);
     styles.root(disabledValue, selectedValue, animating, false)(_);
-    _.$ref(this.buttonEl) &&
+    _.$ref(this.buttonRef) &&
       _._button(
         {
           onclick: this.$fireWith(),

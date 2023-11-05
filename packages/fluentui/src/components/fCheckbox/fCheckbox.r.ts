@@ -9,11 +9,11 @@ export type FCheckboxState = true | false | "mixed";
 
 @FluentUI.triggerComponent("fCheckbox")
 export class FCheckbox extends TriggerComponent<boolean> {
-  inputEl = ref<DOMElementComponent<"input">>();
+  inputRef = ref<DOMElementComponent<"input">>();
   main(
     _: ComponentContext<this>,
     label: D<string>,
-    checked: D<FCheckboxState> = this.inputEl.current?.node.checked ?? false,
+    checked: D<FCheckboxState> = this.inputRef.current?.node.checked ?? false,
     disabled: D<boolean> = false,
   ) {
     const checkedValue = getD(checked),
@@ -30,7 +30,7 @@ export class FCheckbox extends TriggerComponent<boolean> {
       },
       _ => {
         styles.input(_);
-        _.$ref(this.inputEl) &&
+        _.$ref(this.inputRef) &&
           _._input({
             type: "checkbox",
             checked: checkedValue === true,

@@ -13,7 +13,7 @@ interface Rect {
 }
 
 function getTabRect(tabRef: Ref<FTab>): Rect {
-  const element = tabRef.current!.buttonEl.current!.node;
+  const element = tabRef.current!.buttonRef.current!.node;
   const parentRect = element.parentElement?.getBoundingClientRect() ?? {
     x: 0,
     y: 0,
@@ -56,7 +56,7 @@ export class FTabList extends TriggerComponent<number> {
         _.$app.pushHook("afterModifyDOM", () => {
           const selectedTabRect = getTabRect(this.tabRefs.get(selectedValue)!);
           const thisTabRect = getTabRect(tabRef!);
-          const buttonEl = tabRef!.current!.buttonEl.current!.node;
+          const buttonEl = tabRef!.current!.buttonRef.current!.node;
           const animationOffset = selectedTabRect.x - thisTabRect.x;
           const animationScale = selectedTabRect.width / thisTabRect.width;
           buttonEl.style.setProperty(tabIndicatorCssVars.offsetVar, `${animationOffset}px`);

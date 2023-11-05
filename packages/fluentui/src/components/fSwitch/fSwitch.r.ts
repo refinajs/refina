@@ -5,7 +5,7 @@ import styles from "./fSwitch.styles";
 
 @FluentUI.triggerComponent("fSwitch")
 export class FSwitch extends TriggerComponent<boolean> {
-  inputEl = ref<DOMElementComponent<"input">>();
+  inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, label: D<string>, state: D<boolean>, disabled: D<boolean> = false) {
     const stateValue = getD(state),
       disabledValue = getD(disabled);
@@ -22,7 +22,7 @@ export class FSwitch extends TriggerComponent<boolean> {
       },
       _ => {
         styles.input(_);
-        _.$ref(this.inputEl) &&
+        _.$ref(this.inputRef) &&
           _._input({
             type: "checkbox",
             disabled: disabledValue,

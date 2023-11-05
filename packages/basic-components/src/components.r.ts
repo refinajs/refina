@@ -161,16 +161,16 @@ declare module "refina" {
 
 @Basics.outputComponent("textInput")
 export class BasicTextInput extends OutputComponent {
-  inputEl = ref<DOMElementComponent<"input">>();
+  inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
-    _.$ref(this.inputEl) &&
+    _.$ref(this.inputRef) &&
       _._input({
         type: "text",
         disabled: getD(disabled),
         placeholder: getD(placeholder),
         value: getD(value),
         oninput: () => {
-          _.$setD(value, this.inputEl.current!.node.value);
+          _.$setD(value, this.inputRef.current!.node.value);
         },
       });
   }
@@ -183,14 +183,14 @@ declare module "refina" {
 
 @Basics.statusComponent("passwordInput")
 export class BasicPasswordInput extends StatusComponent {
-  inputEl = ref<DOMElementComponent<"input">>();
+  inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext<this>, value: D<string>) {
-    _.$ref(this.inputEl) &&
+    _.$ref(this.inputRef) &&
       _._input({
         type: "password",
         value: getD(value),
         oninput: () => {
-          _.$setD(value, this.inputEl.current!.node.value);
+          _.$setD(value, this.inputRef.current!.node.value);
         },
         onfocus: this.$on,
         onblur: this.$off,
@@ -219,16 +219,16 @@ declare module "refina" {
 
 @Basics.statusComponent("checkbox")
 export class BasicCheckbox extends StatusComponent {
-  inputEl = ref<DOMElementComponent<"input">>();
-  main(_: ComponentContext<this>, label: D<string>, value: D<boolean> = this.inputEl.current?.node.checked ?? false) {
+  inputRef = ref<DOMElementComponent<"input">>();
+  main(_: ComponentContext<this>, label: D<string>, value: D<boolean> = this.inputRef.current?.node.checked ?? false) {
     _._label({}, _ => {
       _.t(label);
-      _.$ref(this.inputEl) &&
+      _.$ref(this.inputRef) &&
         _._input({
           type: "checkbox",
           onchange: () => {
-            _.$setD(value, this.inputEl.current!.node.checked);
-            this.$status = this.inputEl.current!.node.checked;
+            _.$setD(value, this.inputRef.current!.node.checked);
+            this.$status = this.inputRef.current!.node.checked;
           },
         });
     });

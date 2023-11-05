@@ -6,7 +6,7 @@ import styles from "./fTextarea.styles";
 @FluentUI.triggerComponent("fTextarea")
 export class FTextarea extends TriggerComponent<string> {
   appearance: FTextareaAppearance = "outline";
-  textareaEl = ref<HTMLElementComponent<"textarea">>();
+  inputRef = ref<HTMLElementComponent<"textarea">>();
 
   main(
     _: ComponentContext<this>,
@@ -21,13 +21,13 @@ export class FTextarea extends TriggerComponent<string> {
     styles.root(disabledValue, this.appearance.startsWith("filled"), false, this.appearance)(_);
     _._span({}, _ => {
       styles.textarea(disabledValue, resizeValue)(_);
-      _.$ref(this.textareaEl) &&
+      _.$ref(this.inputRef) &&
         _._textarea({
           value: getD(value),
           disabled: disabledValue,
           placeholder: getD(placeholder),
           oninput: () => {
-            const newVal = this.textareaEl.current!.node.value;
+            const newVal = this.inputRef.current!.node.value;
             _.$setD(value, newVal);
             this.$fire(newVal);
           },

@@ -12,7 +12,7 @@ function clamp(value: number, min: number, max: number) {
 
 @FluentUI.triggerComponent("fSlider")
 export class FSlider extends TriggerComponent<number> {
-  inputEl = ref<DOMElementComponent<"input">>();
+  inputRef = ref<DOMElementComponent<"input">>();
   main(
     _: ComponentContext<this>,
     value: D<number>,
@@ -37,12 +37,12 @@ export class FSlider extends TriggerComponent<number> {
       ${sliderCSSVars.sliderProgressVar}: ${getPercent(valueValue, minValue, maxValue)}%;`;
     _._div({}, _ => {
       const onChange = () => {
-        const newValue = clamp(Number(this.inputEl.current!.node.value), minValue, maxValue);
+        const newValue = clamp(Number(this.inputRef.current!.node.value), minValue, maxValue);
         _.$setD(value, newValue);
         this.$fire(newValue);
       };
       styles.input(disabledValue)(_);
-      _.$ref(this.inputEl) &&
+      _.$ref(this.inputRef) &&
         _._input({
           type: "range",
           disabled: disabledValue,
