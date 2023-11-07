@@ -265,19 +265,6 @@ declare module "refina" {
   }
 }
 
-@Basics.outputComponent("li")
-export class BasicLi extends OutputComponent {
-  main(_: ComponentContext<this>, inner: D<Content>) {
-    _._li({}, inner);
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    li: BasicLi;
-  }
-}
-
 @Basics.outputComponent("img")
 export class BasicImg extends OutputComponent {
   main(_: ComponentContext<this>, src: D<string>, alt: D<string> = ""): void {
