@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
-import { app, byIndex, d } from "refina";
+import { app, byIndex, byProp, d } from "refina";
 
 import MdUI from "@refina/mdui";
 // let visible = false;
@@ -72,17 +72,15 @@ app.use(
       _._th({}, "desc");
       _._th({}, "comment");
     },
-    _ => {
-      _._tr({}, _ => {
-        _._td({}, "123");
-        _._td({}, "123");
-        _._td({}, "123");
-      });
-      _._tr({}, _ => {
-        _._td({}, "456");
-        _._td({}, "456");
-        _._td({}, "567");
-      });
+    [
+      { title: "Item1", desc: "123", comment: "Hello" },
+      { title: "Item2", desc: "456", comment: "Hi" },
+    ],
+    byProp("title"),
+    v => {
+      _.mdTableCell(v.title);
+      _.mdTableCell(v.desc);
+      _.mdTableCell(v.comment);
     },
   );
 
