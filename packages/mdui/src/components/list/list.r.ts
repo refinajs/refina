@@ -1,34 +1,30 @@
-import { ComponentContext, Content, D, OutputComponent, TriggerComponent } from "refina";
+import { ComponentContext, D, KeyFunc, OutputComponent } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdList")
 export class MdList extends OutputComponent {
-  main(_: ComponentContext<this>, inner: D<Content>): void {
+  main<T>(
+    _: ComponentContext<this>,
+    data: D<Iterable<T>>,
+    key: KeyFunc<T>,
+    body: (item: T, index: number) => void,
+  ): void {
     _.$cls`mdui-list`;
-    _._div({}, inner);
-  }
-}
-
-@MdUI.triggerComponent("mdListItem")
-export class MdListItem extends TriggerComponent<void> {
-  main(_: ComponentContext<this>, inner: D<Content>): void {
-    _.$cls`mdui-list-item`;
-    _._div(
-      {
-        onclick: () => {
-          this.$fire();
-        },
-      },
-      inner,
-    );
+    _._div({}, _ => {
+      _.for(data, key, (item, index) => {
+        _.$cls`mdui-list-item`;
+        _._div({}, _ => {
+          body(item, index);
+        });
+      });
+    });
   }
 }
 
 declare module "refina" {
-  interface OutputComponents {
-    mdList: MdList;
-  }
-  interface TriggerComponents {
-    mdListItem: MdListItem;
+  interface CustomContext<C> {
+    mdList: MdList extends C
+      ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
+      : never;
   }
 }

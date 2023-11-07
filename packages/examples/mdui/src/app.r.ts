@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
-import { app, d } from "refina";
+import { app, byIndex, d } from "refina";
 
 import MdUI from "@refina/mdui";
 // let visible = false;
@@ -49,10 +49,8 @@ app.use(
     _.mdInput(val, "用户名");
   });
 
-  _.mdList(_ => {
-    _.mdListItem("Item 1") && console.log("123");
-    _.mdListItem("Item 2");
-    _.mdListItem("Item 3");
+  _.mdList(["Item1", "Item2", "Item3"], byIndex, item => {
+    _._p({}, item);
   });
 
   _.mdDialog(
