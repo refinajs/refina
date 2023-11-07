@@ -67,15 +67,11 @@ app.use(
   );
 
   _.mdTable(
-    _ => {
-      _._th({}, "title");
-      _._th({}, "desc");
-      _._th({}, "comment");
-    },
     [
       { title: "Item1", desc: "123", comment: "Hello" },
       { title: "Item2", desc: "456", comment: "Hi" },
     ],
+    ["title", "description", "comment"],
     byProp("title"),
     v => {
       _.mdTableCell(v.title);
