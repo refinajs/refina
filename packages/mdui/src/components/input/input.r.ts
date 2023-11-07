@@ -16,7 +16,10 @@ export class MdInput extends TriggerComponent<string> {
           type: "text",
           value: getD(value),
           disabled: getD(disabled),
-          oninput: () => {
+          oninput: e => {
+            // Workaround to ignore event triggered by mdui
+            if (!e.isTrusted) return;
+
             const newValue = this.inputRef.current!.node.value;
             _.$setD(value, newValue);
             needUpdateTextFields();
