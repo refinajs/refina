@@ -260,11 +260,7 @@ export class BasicUl extends OutputComponent {
 declare module "refina" {
   interface CustomContext<C> {
     ul: BasicUl extends C
-      ? <T>(
-          data: D<Iterable<T>>,
-          key: keyof T | ((item: T, index: number) => D<string>),
-          body: (item: T, index: number) => void,
-        ) => false
+      ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
       : never;
   }
 }
