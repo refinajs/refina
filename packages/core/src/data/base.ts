@@ -45,9 +45,12 @@ export function getDArray<T>(d: DArray<T>): T[] {
   return getD(d).map(getD);
 }
 
+/**
+ * @returns `true` if the value is changed
+ */
 export function dangerously_setD<T>(d: D<T>, v: T): boolean {
   //@ts-ignore
-  if (d[PDSymbol]) {
+  if (d[PDSymbol] && (d as PD<T>).value !== v) {
     (d as PD<T>).value = v;
     return true;
   }
