@@ -16,7 +16,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./node_modules/mdui/dist/css/mdui.css"
+    "./styles.css": "./node_modules/mdui/dist/css/mdui.css",
+    "./styles.min.css": "./node_modules/mdui/dist/css/mdui.min.css"
   },
   "scripts": {
     "check": "tsc --noEmit"
