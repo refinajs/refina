@@ -6,7 +6,7 @@ import { Content, DOMElementComponent, DOMNodeComponent } from "../dom";
 
 const contentCache = new Map<string, Content<any>>();
 
-type EmbededContent<Args extends any[]> =
+export type EmbededContent<Args extends any[]> =
   | Content<Args>
   | (() => Promise<{
       default: Content<Args>;
@@ -41,16 +41,6 @@ export class Embed extends OutputComponent {
 
 declare module "../context" {
   interface CustomContext<C> {
-    embed: Embed extends C
-      ? <Args extends any[]>(
-          content: D<
-            | Content<Args>
-            | (() => Promise<{
-                default: Content<Args>;
-              }>)
-          >,
-          ...args: Args
-        ) => void
-      : never;
+    embed: Embed extends C ? <Args extends any[]>(content: D<EmbededContent<Args>>, ...args: Args) => void : never;
   }
 }
