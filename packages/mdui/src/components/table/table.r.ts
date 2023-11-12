@@ -1,4 +1,4 @@
-import { ComponentContext, Content, D, DArray, KeyFunc, OutputComponent, byIndex } from "refina";
+import { ComponentContext, Content, D, DArray, KeyFunc, OutputComponent, byIndex, getD } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdTable")
@@ -6,7 +6,7 @@ export class MdTable extends OutputComponent {
   main<T>(
     _: ComponentContext<this>,
     data: D<Iterable<T>>,
-    head: DArray<Content>,
+    head: DArray<Content> | D<Content>,
     key: KeyFunc<T>,
     row: (item: T, index: number) => void,
   ): void {
@@ -15,9 +15,14 @@ export class MdTable extends OutputComponent {
       _.$cls`mdui-table`;
       _._table({}, _ => {
         _._thead({}, _ => {
-          _.for(head, byIndex, item => {
-            _._th({}, item);
-          });
+          const headValue = getD(head);
+          if (Array.isArray(headValue)) {
+            _.for(headValue, byIndex, item => {
+              _._th({}, item);
+            });
+          } else {
+            _.embed(headValue);
+          }
         });
         _._tbody({}, _ => {
           _.for(data, key, (item, index) => {
@@ -31,6 +36,13 @@ export class MdTable extends OutputComponent {
   }
 }
 
+@MdUI.outputComponent("mdTableHeader")
+export class MdTableHeader extends OutputComponent {
+  main(_: ComponentContext<this>, content: D<Content>): void {
+    _._th({}, content);
+  }
+}
+
 @MdUI.outputComponent("mdTableCell")
 export class MdTableCell extends OutputComponent {
   main(_: ComponentContext<this>, content: D<Content>): void {
@@ -41,10 +53,16 @@ export class MdTableCell extends OutputComponent {
 declare module "refina" {
   interface CustomContext<C> {
     mdTable: MdTable extends C
-      ? <T>(data: D<Iterable<T>>, head: DArray<Content>, key: KeyFunc<T>, row: (item: T, index: number) => void) => void
+      ? <T>(
+          data: D<Iterable<T>>,
+          head: DArray<Content> | D<Content>,
+          key: KeyFunc<T>,
+          row: (item: T, index: number) => void,
+        ) => void
       : never;
   }
   interface OutputComponents {
+    mdTableHeader: MdTableHeader;
     mdTableCell: MdTableCell;
   }
 }
