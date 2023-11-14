@@ -5,7 +5,7 @@ import styles from "./fLable.styles";
 @FluentUI.outputComponent("fLabel")
 export class FLabel extends OutputComponent {
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     content: D<Content>,
     required: D<Content | boolean> = false,
     disabled: D<boolean> = false,

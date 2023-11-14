@@ -14,7 +14,7 @@ export abstract class Component {
     this.$app.update();
   }
 
-  abstract main(_: ComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext, ...args: any[]): void;
 }
 export type ComponentConstructor<S extends Component = Component> = new (
   ikey: string,
@@ -26,14 +26,8 @@ export type ComponentFuncArgs<S extends Component> = S extends {
   ? A
   : never;
 
-export class IntrinsicComponentContext<
-  S extends Component,
-  C = any,
-> extends IntrinsicContext<C> {
-  constructor(
-    public $caller: Context,
-    public $component: S,
-  ) {
+export class IntrinsicComponentContext<C = any> extends IntrinsicContext<C> {
+  constructor(public $caller: Context) {
     super($caller.$app);
     this.$classesArg = $caller.$clsToApply;
     this.$styleArg = $caller.$cssToApply;
@@ -60,7 +54,7 @@ export class IntrinsicComponentContext<
   }
 }
 
-export type ComponentContext<S extends Component, C = any> = ToFullContext<
+export type ComponentContext<C = any> = ToFullContext<
   C,
-  IntrinsicComponentContext<S, C>
+  IntrinsicComponentContext<C>
 >;

@@ -34,7 +34,7 @@ function getTabRect(tabRef: Ref<FTab>): Rect {
 export class FTabList extends TriggerComponent<number> {
   tabRefs = new Map<number, Ref<FTab>>();
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     selected: D<number>,
     contents: DArray<Content>,
     disabled: DArray<boolean | undefined> | D<boolean> = false,

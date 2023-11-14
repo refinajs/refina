@@ -11,7 +11,7 @@ export type FCheckboxState = true | false | "mixed";
 export class FCheckbox extends TriggerComponent<boolean> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     label: D<string>,
     checked: D<FCheckboxState> = this.inputRef.current?.node.checked ?? false,
     disabled: D<boolean> = false,

@@ -19,7 +19,7 @@ export class FModalPopover extends TriggerComponent<void> {
   arrowRef = ref<HTMLElementComponent<"div">>();
   contentRef = ref<HTMLElementComponent<"div">>();
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     targetRef: MainElRef,
     open: D<boolean>,
     inner: D<Content<[close: () => void]>>,
@@ -84,7 +84,7 @@ export class FPopover extends TriggerComponent<boolean> {
   open = d(false);
   targetRef = ref<HTMLElementComponent>();
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     trigger: D<View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>>,
     inner: D<Content<[close: () => void]>>,
     // withArrow: D<boolean> = false,

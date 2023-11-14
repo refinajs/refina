@@ -14,7 +14,7 @@ export class FTooltip extends OutputComponent {
     if (!Number.isNaN(this.timeout)) clearTimeout(this.timeout);
   };
 
-  main(_: ComponentContext<this>, inner: D<Content>, content: D<Content>): void {
+  main(_: ComponentContext, inner: D<Content>, content: D<Content>): void {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol];
       const anotherTooltip = visibleTooltip && visibleTooltip.ikey !== this.$ikey;

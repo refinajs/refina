@@ -26,7 +26,7 @@ export abstract class StatusComponent extends Component {
   $toggle = () => {
     this.$status = !this.$status;
   };
-  abstract main(_: ComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext, ...args: any[]): void;
 }
 
 export function createStatusComponentFunc<
@@ -35,16 +35,9 @@ export function createStatusComponentFunc<
   return function (this: Context, ckey: string, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as StatusComponent;
 
-    const context = new IntrinsicComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this);
 
-    component.main(
-      context as any as ComponentContext<
-        StatusComponent & {
-          $status: boolean;
-        }
-      >,
-      ...args,
-    );
+    component.main(context as any as ComponentContext, ...args);
 
     if (!context.$mainEl) {
       context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;

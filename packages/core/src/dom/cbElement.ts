@@ -16,7 +16,7 @@ export function createCbHTMLElementComponentFunction<
     implements CbHTMLElementComponent<E>
   {
     main(
-      _: ComponentContext<this>,
+      _: ComponentContext,
       data: Partial<HTMLElementTagNameMap[E]> = {},
       inner: D<Content> = () => {},
     ) {
@@ -58,7 +58,7 @@ export function getCbHTMLElementComponentFunction<
 export interface CbHTMLElementComponent<E extends keyof HTMLElementTagNameMap>
   extends CallbackComponent<HTMLElementEventMap> {
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     data?: Partial<HTMLElementTagNameMap[E]>,
     inner?: D<Content>,
   ): void;

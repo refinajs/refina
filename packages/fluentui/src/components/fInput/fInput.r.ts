@@ -10,7 +10,7 @@ export abstract class FInput<T> extends TriggerComponent<T> {
 
   appearance: InputAppearance = "outline";
   inputRef = ref<HTMLElementComponent<"input">>();
-  main(_: ComponentContext<this>, value: D<T>, disabled: D<boolean> = false, placeholder: D<string> = ""): void {
+  main(_: ComponentContext, value: D<T>, disabled: D<boolean> = false, placeholder: D<string> = ""): void {
     const valueValue = getD(value),
       disabledValue = getD(disabled),
       placeholderValue = getD(placeholder);

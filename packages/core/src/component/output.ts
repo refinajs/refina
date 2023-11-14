@@ -8,7 +8,7 @@ import {
 } from "./component";
 
 export abstract class OutputComponent extends Component {
-  abstract main(_: ComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext, ...args: any[]): void;
 }
 
 export function createOutputComponentFunc<
@@ -17,12 +17,9 @@ export function createOutputComponentFunc<
   return function (this: Context, ckey: string, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as OutputComponent;
 
-    const context = new IntrinsicComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this);
 
-    component.main(
-      context as any as ComponentContext<OutputComponent>,
-      ...args,
-    );
+    component.main(context as any as ComponentContext, ...args);
 
     if (!context.$mainEl) {
       context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;

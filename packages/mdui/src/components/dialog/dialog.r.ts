@@ -24,7 +24,7 @@ export class MdDialog extends OutputComponent {
     },
   };
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     trigger: Content<[setOpen: (open?: D<boolean>) => void]>,
     title: D<Content<[setClose: (open?: D<boolean>) => void]>>,
     body: D<Content<[setClose: (open?: D<boolean>) => void]>>,

@@ -9,7 +9,7 @@ export class FTextarea extends TriggerComponent<string> {
   inputRef = ref<HTMLElementComponent<"textarea">>();
 
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     value: D<string>,
     disabled: D<boolean> = false,
     placeholder: D<string> = "",

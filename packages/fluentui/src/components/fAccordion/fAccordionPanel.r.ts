@@ -4,7 +4,7 @@ import styles from "./panel.styles";
 
 @FluentUI.outputComponent("fAccordionPanel")
 export class FAccordionPanel extends OutputComponent {
-  main(_: ComponentContext<this>, inner: D<Content>): void {
+  main(_: ComponentContext, inner: D<Content>): void {
     styles.root(_);
     _._div({}, inner);
   }

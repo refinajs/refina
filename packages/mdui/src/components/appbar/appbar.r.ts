@@ -4,7 +4,7 @@ import { appbarClassNameMap, AppbarType } from "./appbar.const";
 
 @MdUI.outputComponent("mdAppbar")
 export class MdAppbar extends OutputComponent {
-  main(_: ComponentContext<this>, type: D<AppbarType>, inner: D<Content>): void {
+  main(_: ComponentContext, type: D<AppbarType>, inner: D<Content>): void {
     _.$rootCls(appbarClassNameMap[getD(type)]);
 
     _.$cls`mdui-appbar mdui-appbar-fixed`;

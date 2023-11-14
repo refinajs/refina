@@ -6,7 +6,7 @@ import "./fDialogSurface.r";
 @FluentUI.triggerComponent("fModalDialog")
 export class FModalDialog extends TriggerComponent<void> {
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     open: D<boolean>,
     title: D<Content>,
     content: D<Content<[close: () => void]>>,
@@ -37,7 +37,7 @@ export class FModalDialog extends TriggerComponent<void> {
 export class FDialog extends TriggerComponent<boolean> {
   open = d(false);
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     trigger: D<View<[open: (open?: boolean) => void]>>,
     title: D<Content>,
     content: D<Content<[close: () => void]>>,

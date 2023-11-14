@@ -4,7 +4,7 @@ import MdUI from "../../plugin";
 @MdUI.outputComponent("mdTable")
 export class MdTable extends OutputComponent {
   main<T>(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     data: D<Iterable<T>>,
     head: DArray<Content> | D<Content>,
     key: KeyFunc<T>,
@@ -38,14 +38,14 @@ export class MdTable extends OutputComponent {
 
 @MdUI.outputComponent("mdTableHeader")
 export class MdTableHeader extends OutputComponent {
-  main(_: ComponentContext<this>, content: D<Content>): void {
+  main(_: ComponentContext, content: D<Content>): void {
     _._th({}, content);
   }
 }
 
 @MdUI.outputComponent("mdTableCell")
 export class MdTableCell extends OutputComponent {
-  main(_: ComponentContext<this>, content: D<Content>): void {
+  main(_: ComponentContext, content: D<Content>): void {
     _._td({}, content);
   }
 }

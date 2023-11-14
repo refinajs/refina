@@ -3,7 +3,7 @@ import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdSheet")
 export class MdSheet extends OutputComponent {
-  main(_: ComponentContext<this>, inner: D<Content>): void {
+  main(_: ComponentContext, inner: D<Content>): void {
     _.$cls`mdui-card`;
     _.$css`padding: 20px;`;
     _._div({}, inner);

@@ -20,7 +20,7 @@ function generateComponent(
     .join(";\n      ");
   return `@FIcons.outputComponent("${componentFuncName}")
 export class ${componentClassName} extends OutputComponent {
-  main(_: ComponentContext<this>): void {
+  main(_: ComponentContext): void {
     _._svgSvg(
       {
         width: "${width}",

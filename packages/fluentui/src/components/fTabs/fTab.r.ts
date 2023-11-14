@@ -6,7 +6,7 @@ import styles from "./fTab.styles";
 export class FTab extends TriggerComponent<void> {
   buttonRef = ref<HTMLElementComponent<"button">>();
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     selected: D<boolean>,
     content: D<Content>,
     disabled: D<boolean> = false,

@@ -17,7 +17,7 @@ const validationMessageIcons = {
 @FluentUI.outputComponent("fField")
 export class FField extends OutputComponent {
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     inner: D<Content>,
     label: D<Content>,
     required?: D<boolean | Content>,

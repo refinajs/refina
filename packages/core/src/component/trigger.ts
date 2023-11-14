@@ -24,7 +24,7 @@ export abstract class TriggerComponent<Ev> extends Component {
     this.$fire(data);
     return false as const;
   };
-  abstract main(_: ComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext, ...args: any[]): void;
 }
 
 export type TriggerComponentEventData<S extends TriggerComponent<any>> =
@@ -36,12 +36,9 @@ export function createTriggerComponentFunc<
   return function (this: Context, ckey: any, ...args: any[]): any {
     const component = this.$beginComponent(ckey, ctor) as TriggerComponent<any>;
 
-    const context = new IntrinsicComponentContext(this, component);
+    const context = new IntrinsicComponentContext(this);
 
-    component.main(
-      context as unknown as ComponentContext<TriggerComponent<any>>,
-      ...args,
-    );
+    component.main(context as unknown as ComponentContext, ...args);
 
     const isReceiver = this.$app.isReceiver;
 

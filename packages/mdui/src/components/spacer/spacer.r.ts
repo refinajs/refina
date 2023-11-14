@@ -3,7 +3,7 @@ import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdSpacer")
 export class MdSpacer extends OutputComponent {
-  main(_: ComponentContext<this>): void {
+  main(_: ComponentContext): void {
     _.$cls`mdui-toolbar-spacer`;
     _._div();
   }

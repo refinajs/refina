@@ -6,7 +6,7 @@ import itemStyles from "./item.styles";
 
 @FluentUI.statusComponent("fAccordion")
 export class FAccordion extends StatusComponent {
-  main(_: ComponentContext<this>, header: D<Content>, disabled: D<boolean> = false): void {
+  main(_: ComponentContext, header: D<Content>, disabled: D<boolean> = false): void {
     const disabledValue = getD(disabled);
 
     itemStyles.root(_);

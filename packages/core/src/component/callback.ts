@@ -12,7 +12,7 @@ export abstract class CallbackComponent<
 > extends Component {
   $status: boolean;
   $listendEvs = new Set<keyof Evs>();
-  abstract main(_: ComponentContext<this>, ...args: any[]): void;
+  abstract main(_: ComponentContext, ...args: any[]): void;
 
   $preventDefault(): true {
     const ev = (this as any).$ev;
@@ -74,12 +74,9 @@ export function createCallbackComponentFunc<
       });
       this.$cbComponent = componentProxy;
       this.$app.pushHook("afterThisComponent", () => {
-        const context = new IntrinsicComponentContext(
-          this,
-          componentProxy as any,
-        );
+        const context = new IntrinsicComponentContext(this);
 
-        component.main(context as any as ComponentContext<S>, ...args);
+        component.main(context as any as ComponentContext, ...args);
 
         if (!context.$mainEl) {
           context.$mainEl = context.$firstHTMLELement?.$mainEl ?? null;
@@ -100,9 +97,9 @@ export function createCallbackComponentFunc<
           component.$evName === ev;
       });
 
-      const context = new IntrinsicComponentContext(this, component as any);
+      const context = new IntrinsicComponentContext(this);
 
-      component.main(context as any as ComponentContext<S>, ...args);
+      component.main(context as any as ComponentContext, ...args);
       ret = this.$app.isReceiver;
     }
     this.$endComponent(component, ckey);

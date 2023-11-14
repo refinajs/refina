@@ -6,7 +6,7 @@ import { FButtonApperance, FButtonShape } from "./types";
 export abstract class FIntrinsicButton extends TriggerComponent<void> {
   abstract shape: FButtonShape;
   abstract appearance: FButtonApperance;
-  main(_: ComponentContext<this>, inner: D<Content>, disabled: D<boolean> = false): void {
+  main(_: ComponentContext, inner: D<Content>, disabled: D<boolean> = false): void {
     const disabledValue = getD(disabled);
     styles.root(this.shape, this.appearance, false, disabledValue, false)(_);
     _._button(

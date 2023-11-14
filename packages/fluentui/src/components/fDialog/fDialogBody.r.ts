@@ -12,7 +12,7 @@ export type FDialogBodyEventData = typeof fromCloseButtonSym | string | number |
 @FluentUI.triggerComponent("fDialogBody")
 export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
   main(
-    _: ComponentContext<this>,
+    _: ComponentContext,
     title: D<Content>,
     content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
     actions?: D<Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined>,
