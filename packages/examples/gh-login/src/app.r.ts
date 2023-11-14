@@ -93,10 +93,10 @@ const $app = app.use(Basics)(_ => {
   _.div(_ => {
     _.$cls`flex justify-center`;
     _._ul({}, _ => {
-      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Terms", "/site/terms"));
-      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Privacy", "/site/privacy"));
-      _.$cls`mr-4` && _.li(_ => _.$cls`text-[#2f81f7]` && _.a("Docs", "https://docs.github.com/"));
-      _.li(_ => _.$cls`text-[#7d8590]` && _.a("Contact GitHub Support", "/contact"));
+      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("Terms", "/site/terms"));
+      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("Privacy", "/site/privacy"));
+      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("Docs", "https://docs.github.com/"));
+      _._li({}, _ => _.$cls`text-[#7d8590]` && _.a("Contact GitHub Support", "/contact"));
     });
   });
 });
