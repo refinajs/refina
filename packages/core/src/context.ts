@@ -9,7 +9,6 @@ import {
   DOMNodeComponent,
   SVGElementFuncData,
   TextNodeComponent,
-  createCbHTMLElementComponentFunction,
 } from "./dom";
 import { Maybe } from "./utils";
 import { View } from "./view";
@@ -75,7 +74,7 @@ export class IntrinsicContext<C> {
   }
 
   get $() {
-    return this.$app.eventRecevierRef ?? this.$cbComponent;
+    return this.$app.eventRecevierRef;
   }
   get $ev() {
     return this.$app.eventData;
@@ -84,8 +83,6 @@ export class IntrinsicContext<C> {
   get $root() {
     return this.$app.root;
   }
-
-  $cbComponent: C = null as any;
 
   $pendingRef: Ref<any> | null = null;
   $ref<C2>(ref: Ref<C2>, ...refs: Ref<C2>[]): this is Context<C2> {
@@ -193,16 +190,6 @@ export class IntrinsicContext<C> {
   $customData: Record<symbol, any> = {};
 
   $$(funcName: string, ckey: string, ...args: any[]): any {
-    if (
-      funcName.startsWith("_cb") &&
-      funcName[3].toUpperCase() === funcName[3]
-    ) {
-      // Now this is a cb-style HTML element
-      const tagName = (funcName[3].toLowerCase() +
-        funcName.slice(4)) as keyof HTMLElementTagNameMap;
-      const func = createCbHTMLElementComponentFunction(tagName);
-      return func.call(this as unknown as Context, ckey, ...args);
-    }
     if (
       funcName.startsWith("_svg") &&
       funcName[4].toUpperCase() === funcName[4]

@@ -1,7 +1,4 @@
 import {
-  CallbackComponent,
-  CallbackComponentEvs,
-  CallbackComponents,
   ComponentConstructor,
   OutputComponent,
   OutputComponents,
@@ -9,7 +6,6 @@ import {
   StatusComponents,
   TriggerComponent,
   TriggerComponents,
-  createCallbackComponentFunc,
   createOutputComponentFunc,
   createStatusComponentFunc,
   createTriggerComponentFunc,
@@ -30,23 +26,6 @@ export class Plugin<Args extends any[] = []> {
     func: CustomContextFuncs[N] & ThisType<Context>,
   ) {
     this.contextFuncs[name] = func;
-  }
-
-  callbackComponent<
-    N extends keyof CallbackComponents | keyof CustomContext<any>,
-  >(name: N) {
-    return <C extends ComponentConstructor<CallbackComponent<any>>>(
-      ctor: C,
-    ) => {
-      this.register(
-        name,
-        createCallbackComponentFunc<
-          CallbackComponentEvs<CallbackComponent<any>>,
-          CallbackComponent<any>
-        >(ctor) as any,
-      );
-      return ctor;
-    };
   }
 
   outputComponent<N extends keyof OutputComponents | keyof CustomContext<any>>(
