@@ -1,4 +1,4 @@
-import { OutputComponent } from "..";
+import { OutputComponent } from "../component";
 import { Prelude } from "../constants";
 import { Context } from "../context";
 import { D } from "../data";
@@ -39,7 +39,7 @@ export class Provide extends OutputComponent {
 }
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     provide: Provide extends C
       ? (<Args extends any[]>(key: symbol, value: any, content: D<EmbededContent<Args>>, ...args: Args) => void) &
           (<Args extends any[]>(obj: Record<symbol, any>, content: D<EmbededContent<Args>>, ...args: Args) => void)

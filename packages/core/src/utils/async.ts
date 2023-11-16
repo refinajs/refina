@@ -17,7 +17,7 @@ type AsyncRecord =
       awaitedValue: any;
     };
 
-Prelude.register(
+Prelude.registerFunc(
   "async",
   function (
     ckey: string,
@@ -69,7 +69,7 @@ Prelude.register(
 
 const awaitRecordsSymbol = Symbol("await record");
 
-Prelude.register(
+Prelude.registerFunc(
   "awaits",
   function (
     ckey: string,
@@ -104,7 +104,7 @@ Prelude.register(
   },
 );
 
-Prelude.register("awaited", function (ckey: string, id: string | number) {
+Prelude.registerFunc("awaited", function (ckey: string, id: string | number) {
   const record = this.$permanentData[awaitRecordsSymbol]?.[id] as AsyncRecord;
   if (record?.state) {
     const { state, awaitedValue } = record;
@@ -120,7 +120,7 @@ Prelude.register("awaited", function (ckey: string, id: string | number) {
 });
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     async: (<T, N extends string | number = "">(
       executor: () => Promise<T>,
       id?: N,

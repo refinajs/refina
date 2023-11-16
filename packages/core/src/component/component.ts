@@ -55,6 +55,6 @@ export class IntrinsicComponentContext<C = any> extends IntrinsicContext<C> {
 }
 
 export type ComponentContext<C = any> = ToFullContext<
-  C,
-  IntrinsicComponentContext<C>
+  IntrinsicComponentContext<C>,
+  C
 >;

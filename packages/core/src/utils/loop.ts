@@ -14,7 +14,7 @@ function normalizeKey<T>(key: KeyFunc<T>) {
   return typeof key === "function" ? key : byProp(key);
 }
 
-Prelude.register("for", function <
+Prelude.registerFunc("for", function <
   T,
 >(this: Context, ckey: string, arr: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) {
   this.$app.pushKey(ckey);
@@ -31,7 +31,7 @@ Prelude.register("for", function <
   return false;
 });
 
-Prelude.register(
+Prelude.registerFunc(
   "forRange",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
     this.$app.pushKey(ckey);
@@ -48,7 +48,7 @@ Prelude.register(
 );
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     for: never extends C
       ? <T = unknown>(
           arr: D<Iterable<T>>,

@@ -1,11 +1,10 @@
 import type { App } from "./app";
-import { Component, ComponentConstructor, ComponentFuncs } from "./component";
+import { Component, ComponentConstructor } from "./component";
 import { AppState } from "./constants";
 import { D, Ref, getD, mergeRefs } from "./data";
 import {
   Content,
   DOMElementComponent,
-  DOMFuncs,
   DOMNodeComponent,
   SVGElementFuncData,
   TextNodeComponent,
@@ -13,30 +12,22 @@ import {
 import { Maybe } from "./utils";
 import { View } from "./view";
 
-export type CustomContextFuncs = {
-  [K in keyof CustomContext<any>]: K extends `$${string}`
-    ? CustomContext<any>[K]
-    : CustomContext<any>[K] extends (...args: any) => any
-    ? (
-        this: Context,
-        ckey: string,
-        ...args: Parameters<CustomContext<any>[K]>
-      ) => ReturnType<CustomContext<any>[K]>
-    : never;
-} & {
-  [K in keyof ComponentFuncs<any>]: (
-    this: Context,
-    ckey: string,
-    ...args: Parameters<ComponentFuncs<any>[K]>
-  ) => ReturnType<ComponentFuncs<any>[K]>;
+export interface ContextFuncs<C> {}
+
+export type ToRealContextFunc<
+  N extends keyof ContextFuncs<any>,
+  Ctx = Context,
+> = N extends `$${string}`
+  ? never
+  : ContextFuncs<any>[N] extends (...args: infer Args) => infer RetVal
+  ? (this: Ctx, ckey: string, ...args: Args) => RetVal
+  : never;
+
+export type RealContextFuncs<Ctx = Context> = {
+  [K in keyof ContextFuncs<any>]: ToRealContextFunc<K, Ctx>;
 };
 
-export interface CustomContext<C> {}
-
-export type ToFullContext<C, I> = I &
-  DOMFuncs<C> &
-  ComponentFuncs<C> &
-  CustomContext<C>;
+export type ToFullContext<I, C> = I & ContextFuncs<C>;
 
 export class IntrinsicContext<C> {
   constructor(public readonly $app: App) {
@@ -224,7 +215,7 @@ export class IntrinsicContext<C> {
     }
     // Now this is a user-defined component
     const func = this.$app.getCustomContextFunc(
-      funcName as keyof CustomContextFuncs,
+      funcName as keyof RealContextFuncs,
     );
     if (!func) {
       throw new Error(`Unknown element ${funcName}`);
@@ -464,6 +455,6 @@ export class IntrinsicContext<C> {
 }
 
 export type Context<C = any> = ToFullContext<
-  C,
-  Omit<IntrinsicContext<C>, "$" | "$ev">
+  Omit<IntrinsicContext<C>, "$" | "$ev">,
+  C
 >;

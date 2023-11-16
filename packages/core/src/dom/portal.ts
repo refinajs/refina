@@ -1,8 +1,6 @@
-import { ComponentContext, IntrinsicComponentContext } from "..";
+import { ComponentContext, IntrinsicComponentContext } from "../component";
 import { Prelude } from "../constants";
-import { Context, IntrinsicContext } from "../context";
 import { D, getD } from "../data";
-import { View } from "../view";
 import {
   DOMNodeComponent,
   DOMNodeComponentActionResult,
@@ -102,7 +100,7 @@ export class DOMPortalComponent extends DOMElementComponent {
 
 export type PortalView = (context: ComponentContext) => void;
 
-Prelude.register("portal", function (ckey: string, inner: D<PortalView>) {
+Prelude.registerFunc("portal", function (ckey: string, inner: D<PortalView>) {
   this.$app.callAndResetHook("afterThisComponent");
 
   const ikey = this.$app.pushKey(ckey);
@@ -143,7 +141,7 @@ Prelude.register("portal", function (ckey: string, inner: D<PortalView>) {
 });
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     portal: DOMPortalComponent extends C
       ? (inner: D<PortalView>) => void
       : never;

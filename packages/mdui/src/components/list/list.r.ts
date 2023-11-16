@@ -17,7 +17,7 @@ export class MdList extends OutputComponent {
 }
 
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     mdList: MdList extends C
       ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
       : never;

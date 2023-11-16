@@ -1,5 +1,5 @@
-import { matchPath } from "./utils";
 import RouterPlugin from "./plugin";
+import { matchPath } from "./utils";
 
 type RouteParamsImpl<
   O extends 0 | 1,
@@ -27,7 +27,7 @@ type RouteParams<S extends string> = {
 
 const routeMatchedSymbol = Symbol("routeMatched");
 
-RouterPlugin.register("route", function (ckey: string, path: string) {
+RouterPlugin.registerFunc("route", function (ckey: string, path: string) {
   if (path[0] !== "/") {
     path = "/" + path;
   }
@@ -61,12 +61,12 @@ RouterPlugin.register("route", function (ckey: string, path: string) {
   return true;
 });
 
-RouterPlugin.register("routeNotFound", function (ckey: string) {
+RouterPlugin.registerFunc("routeNotFound", function (ckey: string) {
   return !this.$customData[routeMatchedSymbol];
 });
 
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     route: never extends C
       ? <const S extends string>(
           path: S,

@@ -1,7 +1,7 @@
 import { D, getD } from "../data";
 import { Prelude } from "../constants";
 
-Prelude.register(
+Prelude.registerFunc(
   "documentTitle",
   function (_ckey: string, title: D<string>): boolean {
     document.title = getD(title);
@@ -10,7 +10,7 @@ Prelude.register(
 );
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     documentTitle: never extends C ? (title: D<string>) => void : never;
   }
 }

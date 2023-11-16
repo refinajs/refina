@@ -10,3 +10,7 @@ export * from "./trigger";
 export type ComponentFuncs<C> = TriggerComponentFuncs<C> &
   StatusComponentFuncs<C> &
   OutputComponentFuncs<C>;
+
+declare module "../context" {
+  interface ContextFuncs<C> extends ComponentFuncs<C> {}
+}

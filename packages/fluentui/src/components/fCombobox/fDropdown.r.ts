@@ -328,7 +328,7 @@ export class FUnderlineDropdown<OptionValue extends string> extends FDropdown<Op
 }
 
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     fDropdown: FDropdown<any> extends C
       ? <OptionValue extends string>(
           current: D<OptionValue | null>,

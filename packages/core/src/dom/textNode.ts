@@ -10,7 +10,9 @@ export class TextNodeComponent extends DOMNodeComponent {
   }
 }
 
-export type TextNodeFunc = {
-  t(template: TemplateStringsArray, ...args: any[]): void;
-  t(text: D<string>): void;
+export type TextNodeFuncs<C> = {
+  t: TextNodeComponent extends C
+    ? ((template: TemplateStringsArray, ...args: any[]) => void) &
+        ((text: D<string>) => void)
+    : never;
 };

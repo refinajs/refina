@@ -5,7 +5,7 @@ import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, UsePositioninggResult } from "./types";
 import { toFloatingUIPlacement } from "./utils/toFloatingUIPlacement";
 
-FluentUI.register(
+FluentUI.registerFunc(
   "usePositioning",
   function (
     _ckey: string,
@@ -63,7 +63,7 @@ FluentUI.register(
 );
 
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     usePositioning: never extends C
       ? (
           options: PositioningOptions,

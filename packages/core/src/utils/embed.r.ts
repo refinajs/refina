@@ -40,7 +40,7 @@ export class Embed extends OutputComponent {
 }
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     embed: Embed extends C ? <Args extends any[]>(content: D<EmbededContent<Args>>, ...args: Args) => void : never;
   }
 }

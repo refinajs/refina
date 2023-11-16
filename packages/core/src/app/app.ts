@@ -1,5 +1,5 @@
 import { AppState } from "../constants";
-import { Context, CustomContextFuncs, IntrinsicContext } from "../context";
+import { Context, IntrinsicContext, RealContextFuncs } from "../context";
 import { D, dangerously_setD } from "../data";
 import {
   DOMElementComponent,
@@ -40,11 +40,11 @@ export class App {
     this.resetState();
   }
 
-  contextFuncs: CustomContextFuncs = {} as any;
-  getCustomContextFunc<N extends keyof CustomContextFuncs>(
+  contextFuncs = {} as RealContextFuncs;
+  getCustomContextFunc<N extends keyof RealContextFuncs>(
     name: N,
-  ): CustomContextFuncs[N] {
-    return this.contextFuncs[name] as any;
+  ): RealContextFuncs[N] {
+    return this.contextFuncs[name];
   }
 
   root: DOMRootComponent;

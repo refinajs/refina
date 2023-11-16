@@ -2,7 +2,7 @@ import { Prelude } from "../constants";
 
 const registeredCallbacks = new Set<string>();
 
-Prelude.register("now", function (ckey: string, precisionMs = 1000) {
+Prelude.registerFunc("now", function (ckey: string, precisionMs = 1000) {
   if (this.$updating && !registeredCallbacks.has(ckey)) {
     registeredCallbacks.add(ckey);
     setTimeout(() => {
@@ -13,7 +13,7 @@ Prelude.register("now", function (ckey: string, precisionMs = 1000) {
   return Date.now();
 });
 
-Prelude.register(
+Prelude.registerFunc(
   "setInterval",
   function (ckey: string, callback: () => void, interval: number) {
     if (this.$updating && !registeredCallbacks.has(ckey)) {
@@ -28,7 +28,7 @@ Prelude.register(
 );
 
 declare module "../context" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     now(precisionMs?: number): number;
     setInterval: never extends C
       ? (callback: () => void, interval: number) => void

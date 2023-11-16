@@ -253,7 +253,7 @@ export class BasicUl extends OutputComponent {
   }
 }
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     ul: BasicUl extends C
       ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
       : never;

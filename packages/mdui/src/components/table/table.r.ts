@@ -51,7 +51,7 @@ export class MdTableCell extends OutputComponent {
 }
 
 declare module "refina" {
-  interface CustomContext<C> {
+  interface ContextFuncs<C> {
     mdTable: MdTable extends C
       ? <T>(
           data: D<Iterable<T>>,

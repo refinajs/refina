@@ -10,7 +10,7 @@ import {
   createStatusComponentFunc,
   createTriggerComponentFunc,
 } from "../component";
-import { Context, CustomContextFuncs, CustomContext } from "../context";
+import { ContextFuncs, RealContextFuncs, ToRealContextFunc } from "../context";
 import { App } from "./app";
 
 export class Plugin<Args extends any[] = []> {
@@ -19,39 +19,42 @@ export class Plugin<Args extends any[] = []> {
     public onInstall: (app: App, ...args: Args) => void = () => {},
   ) {}
 
-  protected contextFuncs: CustomContextFuncs = {} as any;
+  protected contextFuncs: Partial<RealContextFuncs> = {};
 
-  register<N extends keyof CustomContextFuncs>(
+  registerFunc<N extends keyof ContextFuncs<any>>(
     name: N,
-    func: CustomContextFuncs[N] & ThisType<Context>,
+    func: ToRealContextFunc<N>,
   ) {
+    //@ts-ignore
     this.contextFuncs[name] = func;
   }
 
-  outputComponent<N extends keyof OutputComponents | keyof CustomContext<any>>(
+  outputComponent<N extends keyof OutputComponents | keyof ContextFuncs<any>>(
     name: N,
   ) {
     return <C extends ComponentConstructor<OutputComponent>>(ctor: C) => {
       //@ts-ignore
-      this.register(name, createOutputComponentFunc(ctor));
+      this.contextFuncs[name] = createOutputComponentFunc(ctor);
       return ctor;
     };
   }
 
-  statusComponent<N extends keyof StatusComponents | keyof CustomContext<any>>(
+  statusComponent<N extends keyof StatusComponents | keyof ContextFuncs<any>>(
     name: N,
   ) {
     return <C extends ComponentConstructor<StatusComponent>>(ctor: C) => {
-      this.register(name, createStatusComponentFunc(ctor));
+      //@ts-ignore
+      this.contextFuncs[name] = createStatusComponentFunc(ctor);
       return ctor;
     };
   }
 
-  triggerComponent<
-    N extends keyof TriggerComponents | keyof CustomContext<any>,
-  >(name: N) {
+  triggerComponent<N extends keyof TriggerComponents | keyof ContextFuncs<any>>(
+    name: N,
+  ) {
     return <C extends ComponentConstructor<TriggerComponent<any>>>(ctor: C) => {
-      this.register(name, createTriggerComponentFunc(ctor));
+      //@ts-ignore
+      this.contextFuncs[name] = createTriggerComponentFunc(ctor);
       return ctor;
     };
   }
