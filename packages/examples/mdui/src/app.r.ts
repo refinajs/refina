@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import "@refina/mdui";
 import "@refina/mdui/styles.css";
-import { app, byIndex, byProp, d } from "refina";
+import { app, byIndex, d } from "refina";
 
 import MdUI from "@refina/mdui";
 // let visible = false;
@@ -72,7 +72,7 @@ app.use(
       { title: "Item2", desc: "456", comment: "Hi" },
     ],
     ["title", "description", "comment"],
-    byProp("title"),
+    "title",
     v => {
       _.mdTableCell(v.title);
       _.mdTableCell(v.desc);

@@ -11,7 +11,7 @@ export type KeyFunc<T> =
   | ((item: T, index: number) => D<string | number>);
 
 function normalizeKey<T>(key: KeyFunc<T>) {
-  return typeof key === "function" ? key : byProp(key);
+  return typeof key === "function" ? key : (obj: T) => `${obj[key]}`;
 }
 
 Prelude.registerFunc("for", function <
@@ -64,7 +64,3 @@ declare module "../context" {
 
 export const byIndex = (_: any, index: number) => index;
 export const bySelf = (item: any) => `${item}`;
-export const byProp =
-  <T>(key: KeyHelper<T>) =>
-  (obj: T) =>
-    `${obj[key]}`;
