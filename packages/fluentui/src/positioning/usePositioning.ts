@@ -64,7 +64,7 @@ FluentUI.registerFunc(
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    usePositioning: never extends C
+    usePositioning: never extends C["enabled"]
       ? (
           options: PositioningOptions,
           enabled?: boolean,

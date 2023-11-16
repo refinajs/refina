@@ -1,4 +1,4 @@
-import { Context } from "../context";
+import { Context, ContextState } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -67,8 +67,8 @@ export type TriggerComponentFuncAssertThisType<Ev, C> = {
     : Ev;
 };
 
-export type TriggerComponentFuncs<C> = {
-  [K in keyof TriggerComponents]: TriggerComponents[K] extends C
+export type TriggerComponentFuncs<C extends ContextState> = {
+  [K in keyof TriggerComponents]: TriggerComponents[K] extends C["enabled"]
     ? (...args: ComponentFuncArgs<TriggerComponents[K]>) => //@ts-ignore
       this is TriggerComponentFuncAssertThisType<
         TriggerComponentEventData<TriggerComponents[K]>,

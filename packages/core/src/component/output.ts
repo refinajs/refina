@@ -1,4 +1,4 @@
-import { Context } from "../context";
+import { Context, ContextState } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -37,8 +37,8 @@ export function createOutputComponentFunc<
 
 export interface OutputComponents {}
 
-export type OutputComponentFuncs<C> = {
-  [K in keyof OutputComponents]: OutputComponents[K] extends C
+export type OutputComponentFuncs<C extends ContextState> = {
+  [K in keyof OutputComponents]: OutputComponents[K] extends C["enabled"]
     ? (...args: ComponentFuncArgs<OutputComponents[K]>) => void
     : never;
 };

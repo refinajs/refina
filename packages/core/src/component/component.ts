@@ -1,5 +1,10 @@
 import { App } from "../app";
-import { Context, IntrinsicContext, ToFullContext } from "../context";
+import {
+  Context,
+  ContextState,
+  IntrinsicContext,
+  ToFullContext,
+} from "../context";
 import { DOMElementComponent, DOMNodeComponent } from "../dom";
 
 export abstract class Component {
@@ -26,7 +31,9 @@ export type ComponentFuncArgs<S extends Component> = S extends {
   ? A
   : never;
 
-export class IntrinsicComponentContext<C = any> extends IntrinsicContext<C> {
+export class IntrinsicComponentContext<
+  C extends ContextState,
+> extends IntrinsicContext<C> {
   constructor(public $caller: Context) {
     super($caller.$app);
     this.$classesArg = $caller.$clsToApply;
@@ -54,7 +61,5 @@ export class IntrinsicComponentContext<C = any> extends IntrinsicContext<C> {
   }
 }
 
-export type ComponentContext<C = any> = ToFullContext<
-  IntrinsicComponentContext<C>,
-  C
->;
+export type ComponentContext<C extends ContextState = ContextState> =
+  ToFullContext<IntrinsicComponentContext<C>, C>;

@@ -1,3 +1,4 @@
+import { ContextState } from "../context";
 import { HTMLElementFuncs, SVGElementFuncs } from "./domElement";
 import { TextNodeFuncs } from "./textNode";
 
@@ -7,7 +8,7 @@ export * from "./portal";
 export * from "./root";
 export * from "./textNode";
 
-export type DOMFuncs<C> = HTMLElementFuncs<C> &
+export type DOMFuncs<C extends ContextState> = HTMLElementFuncs<C> &
   SVGElementFuncs<C> &
   TextNodeFuncs<C>;
 

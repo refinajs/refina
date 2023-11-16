@@ -329,7 +329,7 @@ export class FUnderlineDropdown<OptionValue extends string> extends FDropdown<Op
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    fDropdown: FDropdown<any> extends C
+    fDropdown: FDropdown<any> extends C["enabled"]
       ? <OptionValue extends string>(
           current: D<OptionValue | null>,
           options: DArray<OptionValue>,
@@ -340,7 +340,7 @@ declare module "refina" {
           $ev: OptionValue;
         }
       : never;
-    fUnderlineDropdown: FUnderlineDropdown<any> extends C
+    fUnderlineDropdown: FUnderlineDropdown<any> extends C["enabled"]
       ? <OptionValue extends string>(
           current: D<OptionValue | null>,
           options: DArray<OptionValue>,

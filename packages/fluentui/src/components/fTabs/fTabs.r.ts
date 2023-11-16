@@ -47,6 +47,8 @@ export class FTabs extends TriggerComponent<string> {
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    fTabs: FTabs extends C ? (...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>) => void : never;
+    fTabs: FTabs extends C["enabled"]
+      ? (...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>) => void
+      : never;
   }
 }

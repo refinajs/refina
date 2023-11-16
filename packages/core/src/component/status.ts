@@ -1,4 +1,4 @@
-import { Context } from "../context";
+import { Context, ContextState } from "../context";
 import {
   Component,
   ComponentConstructor,
@@ -55,8 +55,8 @@ export function createStatusComponentFunc<
 
 export interface StatusComponents {}
 
-export type StatusComponentFuncs<C> = {
-  [K in keyof StatusComponents]: StatusComponents[K] extends C
+export type StatusComponentFuncs<C extends ContextState> = {
+  [K in keyof StatusComponents]: StatusComponents[K] extends C["enabled"]
     ? (...args: ComponentFuncArgs<StatusComponents[K]>) => boolean
     : never;
 };

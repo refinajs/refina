@@ -67,13 +67,13 @@ RouterPlugin.registerFunc("routeNotFound", function (ckey: string) {
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    route: never extends C
+    route: never extends C["enabled"]
       ? <const S extends string>(
           path: S,
         ) => this is {
           $route: RouteParams<S>;
         }
       : never;
-    routeNotFound: never extends C ? () => boolean : never;
+    routeNotFound: never extends C["enabled"] ? () => boolean : never;
   }
 }

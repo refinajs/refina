@@ -1,3 +1,4 @@
+import { ContextState } from "../context";
 import { D } from "../data";
 import {
   Content,
@@ -114,13 +115,9 @@ export type SVGElementComponent<
   E extends keyof SVGElementTagNameMap = keyof SVGElementTagNameMap,
 > = DOMElementComponent<E>;
 
-export type HTMLElementFuncs<C> = {
-  [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C
-    ? (
-        data?: Partial<HTMLElementTagNameMap[E]>,
-        inner?: D<Content>,
-        //@ts-ignore
-      ) => void
+export type HTMLElementFuncs<C extends ContextState> = {
+  [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C["enabled"]
+    ? (data?: Partial<HTMLElementTagNameMap[E]>, inner?: D<Content>) => void
     : never;
 };
 
@@ -129,12 +126,8 @@ export type SVGElementFuncData = Record<
   D<undefined | string | number | ((...args: any[]) => any)>
 >;
 
-export type SVGElementFuncs<C> = {
-  [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C
-    ? (
-        data?: SVGElementFuncData,
-        inner?: D<Content>,
-        //@ts-ignore
-      ) => void
+export type SVGElementFuncs<C extends ContextState> = {
+  [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C["enabled"]
+    ? (data?: SVGElementFuncData, inner?: D<Content>) => void
     : never;
 };

@@ -40,7 +40,7 @@ export class Provide extends OutputComponent {
 
 declare module "../context" {
   interface ContextFuncs<C> {
-    provide: Provide extends C
+    provide: Provide extends C["enabled"]
       ? (<Args extends any[]>(key: symbol, value: any, content: D<EmbededContent<Args>>, ...args: Args) => void) &
           (<Args extends any[]>(obj: Record<symbol, any>, content: D<EmbededContent<Args>>, ...args: Args) => void)
       : never;

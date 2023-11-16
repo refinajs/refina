@@ -49,14 +49,14 @@ Prelude.registerFunc(
 
 declare module "../context" {
   interface ContextFuncs<C> {
-    for: never extends C
+    for: never extends C["enabled"]
       ? <T = unknown>(
           arr: D<Iterable<T>>,
           key: KeyFunc<T>,
           body: (item: T, index: number) => void,
         ) => void
       : never;
-    forRange: never extends C
+    forRange: never extends C["enabled"]
       ? (times: D<number>, body: (index: number) => void) => void
       : never;
   }

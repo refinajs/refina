@@ -11,6 +11,8 @@ Prelude.registerFunc(
 
 declare module "../context" {
   interface ContextFuncs<C> {
-    documentTitle: never extends C ? (title: D<string>) => void : never;
+    documentTitle: never extends C["enabled"]
+      ? (title: D<string>) => void
+      : never;
   }
 }

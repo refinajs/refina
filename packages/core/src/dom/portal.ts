@@ -141,8 +141,8 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<PortalView>) {
 });
 
 declare module "../context" {
-  interface ContextFuncs<C> {
-    portal: DOMPortalComponent extends C
+  interface ContextFuncs<C extends ContextState> {
+    portal: DOMPortalComponent extends C["enabled"]
       ? (inner: D<PortalView>) => void
       : never;
   }

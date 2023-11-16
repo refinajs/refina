@@ -1,3 +1,4 @@
+import { ContextState } from "../context";
 import { OutputComponentFuncs } from "./output";
 import { StatusComponentFuncs } from "./status";
 import { TriggerComponentFuncs } from "./trigger";
@@ -7,7 +8,7 @@ export * from "./output";
 export * from "./status";
 export * from "./trigger";
 
-export type ComponentFuncs<C> = TriggerComponentFuncs<C> &
+export type ComponentFuncs<C extends ContextState> = TriggerComponentFuncs<C> &
   StatusComponentFuncs<C> &
   OutputComponentFuncs<C>;
 

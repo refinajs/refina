@@ -52,7 +52,7 @@ export class MdTableCell extends OutputComponent {
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    mdTable: MdTable extends C
+    mdTable: MdTable extends C["enabled"]
       ? <T>(
           data: D<Iterable<T>>,
           head: DArray<Content> | D<Content>,

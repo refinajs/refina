@@ -1,3 +1,4 @@
+import { ContextState } from "../context";
 import { D } from "../data";
 import { DOMNodeComponent, DOMNodeComponentActionResult } from "./base";
 
@@ -10,8 +11,8 @@ export class TextNodeComponent extends DOMNodeComponent {
   }
 }
 
-export type TextNodeFuncs<C> = {
-  t: TextNodeComponent extends C
+export type TextNodeFuncs<C extends ContextState> = {
+  t: TextNodeComponent extends C["enabled"]
     ? ((template: TemplateStringsArray, ...args: any[]) => void) &
         ((text: D<string>) => void)
     : never;

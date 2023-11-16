@@ -30,7 +30,7 @@ Prelude.registerFunc(
 declare module "../context" {
   interface ContextFuncs<C> {
     now(precisionMs?: number): number;
-    setInterval: never extends C
+    setInterval: never extends C["enabled"]
       ? (callback: () => void, interval: number) => void
       : never;
   }

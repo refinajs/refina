@@ -12,7 +12,11 @@ import {
 import { Maybe } from "./utils";
 import { View } from "./view";
 
-export interface ContextFuncs<C> {}
+export interface ContextState {
+  enabled: any;
+}
+
+export interface ContextFuncs<C extends ContextState> {}
 
 export type ToRealContextFunc<
   N extends keyof ContextFuncs<any>,
@@ -27,9 +31,9 @@ export type RealContextFuncs<Ctx = Context> = {
   [K in keyof ContextFuncs<any>]: ToRealContextFunc<K, Ctx>;
 };
 
-export type ToFullContext<I, C> = I & ContextFuncs<C>;
+export type ToFullContext<I, C extends ContextState> = I & ContextFuncs<C>;
 
-export class IntrinsicContext<C> {
+export class IntrinsicContext<C extends ContextState> {
   constructor(public readonly $app: App) {
     $app.callPermanentHook("initializeContext", this as unknown as Context);
   }
@@ -76,7 +80,14 @@ export class IntrinsicContext<C> {
   }
 
   $pendingRef: Ref<any> | null = null;
-  $ref<C2>(ref: Ref<C2>, ...refs: Ref<C2>[]): this is Context<C2> {
+  $ref<C2>(
+    ref: Ref<C2>,
+    ...refs: Ref<C2>[]
+  ): this is Context<
+    C & {
+      enabled: C2;
+    }
+  > {
     this.$pendingRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
     return true;
   }
@@ -454,7 +465,7 @@ export class IntrinsicContext<C> {
   }
 }
 
-export type Context<C = any> = ToFullContext<
+export type Context<C extends ContextState = ContextState> = ToFullContext<
   Omit<IntrinsicContext<C>, "$" | "$ev">,
   C
 >;

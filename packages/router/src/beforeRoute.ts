@@ -13,6 +13,8 @@ RouterPlugin.registerFunc("beforeRoute", function (ckey: string) {
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    beforeRoute: never extends C ? () => this is BeforeRouteContext : never;
+    beforeRoute: never extends C["enabled"]
+      ? () => this is BeforeRouteContext
+      : never;
   }
 }
