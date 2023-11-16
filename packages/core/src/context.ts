@@ -121,6 +121,15 @@ export class IntrinsicContext<C extends ContextState> {
     return Boolean(this.$allNoPreserve || this.$nextNoPreserve);
   }
 
+  $prop<K extends string | number | symbol, V>(
+    key: K,
+    value: V,
+  ): this is Context<{ enabled: { $props: { [k in K]: V } } }> {
+    this.$nextProps[key] = value;
+    return true;
+  }
+  protected $nextProps: Record<string | number | symbol, any> = {};
+
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
@@ -268,6 +277,9 @@ export class IntrinsicContext<C extends ContextState> {
     }
 
     this.$setRef(component);
+
+    Object.assign(component.$props, this.$nextProps);
+    this.$nextProps = {};
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);

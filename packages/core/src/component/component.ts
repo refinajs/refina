@@ -15,6 +15,8 @@ export abstract class Component {
 
   $mainEl: HTMLElement | null;
 
+  $props = {};
+
   $update() {
     this.$app.update();
   }
