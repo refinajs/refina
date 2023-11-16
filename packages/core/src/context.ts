@@ -188,8 +188,7 @@ export class IntrinsicContext<C extends ContextState> {
   get $runtimeData() {
     return this.$app.runtimeData!;
   }
-
-  $customData: Record<symbol, any> = {};
+  $contextData: Record<symbol, any> = {};
 
   $$(funcName: string, ckey: string, ...args: any[]): any {
     if (
