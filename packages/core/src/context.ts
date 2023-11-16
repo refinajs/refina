@@ -79,7 +79,7 @@ export class IntrinsicContext<C extends ContextState> {
     return this.$app.root;
   }
 
-  $pendingRef: Ref<any> | null = null;
+  $nextRef: Ref<any> | null = null;
   $ref<C2>(
     ref: Ref<C2>,
     ...refs: Ref<C2>[]
@@ -88,13 +88,13 @@ export class IntrinsicContext<C extends ContextState> {
       enabled: C2;
     }
   > {
-    this.$pendingRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
+    this.$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
     return true;
   }
   $setRef(current: any) {
-    if (this.$pendingRef !== null) {
-      this.$pendingRef.current = current;
-      this.$pendingRef = null;
+    if (this.$nextRef !== null) {
+      this.$nextRef.current = current;
+      this.$nextRef = null;
     }
   }
 
@@ -112,19 +112,19 @@ export class IntrinsicContext<C extends ContextState> {
   }
 
   $noPreserve(deep: boolean = true): true {
-    this.$pendingNoPreserve = deep ? "deep" : true;
+    this.$nextNoPreserve = deep ? "deep" : true;
     return true;
   }
-  $pendingNoPreserve: boolean | "deep" = false;
+  $nextNoPreserve: boolean | "deep" = false;
   $allNoPreserve = false;
   get $isNoPreserve() {
-    return Boolean(this.$allNoPreserve || this.$pendingNoPreserve);
+    return Boolean(this.$allNoPreserve || this.$nextNoPreserve);
   }
 
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
-    this.$pendingCls = this.$pendingCls.concat(
+    this.$nextCls = this.$nextCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]
@@ -134,27 +134,27 @@ export class IntrinsicContext<C extends ContextState> {
     );
     return true;
   }
-  protected $pendingCls: string[] = [];
+  protected $nextCls: string[] = [];
   get $clsToApply() {
-    const classes = this.$pendingCls;
-    this.$pendingCls = [];
+    const classes = this.$nextCls;
+    this.$nextCls = [];
     return classes;
   }
 
   $css(style: string): true;
   $css(template: TemplateStringsArray, ...args: any[]): true;
   $css(...args: any[]): true {
-    this.$pendingCSS +=
+    this.$nextCSS +=
       ";" +
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]);
     return true;
   }
-  protected $pendingCSS: string = "";
+  protected $nextCSS: string = "";
   get $cssToApply() {
-    const style = this.$pendingCSS;
-    this.$pendingCSS = "";
+    const style = this.$nextCSS;
+    this.$nextCSS = "";
     return style;
   }
 
@@ -272,7 +272,7 @@ export class IntrinsicContext<C extends ContextState> {
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
       // later set by IntrinsicComponentContext:
-      //   this.$pendingNoPreserve = false;
+      //   this.$nextNoPreserve = false;
     }
     return component;
   }
@@ -347,8 +347,8 @@ export class IntrinsicContext<C extends ContextState> {
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
-      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
-      this.$pendingNoPreserve = false;
+      if (this.$nextNoPreserve === "deep") context.$allNoPreserve = true;
+      this.$nextNoPreserve = false;
     }
 
     const oldParent = this.$app.currentDOMParent;
@@ -417,8 +417,8 @@ export class IntrinsicContext<C extends ContextState> {
 
     if (this.$isNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
-      if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
-      this.$pendingNoPreserve = false;
+      if (this.$nextNoPreserve === "deep") context.$allNoPreserve = true;
+      this.$nextNoPreserve = false;
     }
 
     const oldParent = this.$app.currentDOMParent;
@@ -452,9 +452,9 @@ export class IntrinsicContext<C extends ContextState> {
     this.$setFirstDOMNode(t);
     this.$app.markComponentProcessed(ikey);
 
-    if (this.$allNoPreserve || this.$pendingNoPreserve) {
+    if (this.$allNoPreserve || this.$nextNoPreserve) {
       this.$app.noPreserveComponents.add(ikey);
-      this.$pendingNoPreserve = false;
+      this.$nextNoPreserve = false;
     }
 
     this.$app.currentDOMParent.children.push(t);

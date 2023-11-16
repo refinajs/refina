@@ -38,8 +38,8 @@ export class IntrinsicComponentContext<
     super($caller.$app);
     this.$classesArg = $caller.$clsToApply;
     this.$styleArg = $caller.$cssToApply;
-    this.$allNoPreserve = $caller.$pendingNoPreserve === "deep";
-    $caller.$pendingNoPreserve = false;
+    this.$allNoPreserve = $caller.$nextNoPreserve === "deep";
+    $caller.$nextNoPreserve = false;
   }
 
   $classesArg: string[];
@@ -55,8 +55,8 @@ export class IntrinsicComponentContext<
   }
 
   $main(): true {
-    this.$pendingCls = this.$classesArg;
-    this.$pendingCSS = this.$styleArg;
+    this.$nextCls = this.$classesArg;
+    this.$nextCSS = this.$styleArg;
     return super.$main();
   }
 }

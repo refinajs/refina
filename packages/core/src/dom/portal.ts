@@ -123,7 +123,7 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<PortalView>) {
   this.$setRef(portal);
 
   if (this.$isNoPreserve) {
-    if (this.$pendingNoPreserve === "deep") context.$allNoPreserve = true;
+    if (this.$nextNoPreserve === "deep") context.$allNoPreserve = true;
     else throw new Error(`Portal cannot be no-preserve.`);
   }
 
