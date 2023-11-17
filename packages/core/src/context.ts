@@ -121,11 +121,13 @@ export class IntrinsicContext<C extends ContextState> {
 
   $prop<
     K extends keyof C["enabled"]["$props"],
-    V extends C["enabled"]["$props"][K],
+    const V extends C["enabled"]["$props"][K],
   >(
     key: K,
     value: V,
-  ): this is Context<{ enabled: { $props: { [k in K]: V } } }> {
+  ): this is Context<{
+    enabled: { $tsPropsType: (type: { [k in K]: V }) => void };
+  }> {
     this.$nextProps[key] = value;
     return true;
   }
@@ -279,7 +281,7 @@ export class IntrinsicContext<C extends ContextState> {
 
     this.$setRef(component);
 
-    Object.assign(component.$props, this.$nextProps);
+    component.$props = this.$nextProps;
     this.$nextProps = {};
 
     if (this.$isNoPreserve) {
