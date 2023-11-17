@@ -80,14 +80,12 @@ export class IntrinsicContext<C extends ContextState> {
   }
 
   $nextRef: Ref<any> | null = null;
-  $ref<C2>(
+  $ref<C2 extends C["enabled"]>(
     ref: Ref<C2>,
     ...refs: Ref<C2>[]
-  ): this is Context<
-    C & {
-      enabled: C2;
-    }
-  > {
+  ): this is Context<{
+    enabled: C2;
+  }> {
     this.$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
     return true;
   }
@@ -121,7 +119,10 @@ export class IntrinsicContext<C extends ContextState> {
     return Boolean(this.$allNoPreserve || this.$nextNoPreserve);
   }
 
-  $prop<K extends string | number | symbol, V>(
+  $prop<
+    K extends keyof C["enabled"]["$props"],
+    V extends C["enabled"]["$props"][K],
+  >(
     key: K,
     value: V,
   ): this is Context<{ enabled: { $props: { [k in K]: V } } }> {
