@@ -32,7 +32,7 @@ export class Plugin<Args extends any[] = []> {
   outputComponent<N extends keyof OutputComponents | keyof ContextFuncs<any>>(
     name: N,
   ) {
-    return <C extends ComponentConstructor<OutputComponent>>(ctor: C) => {
+    return <C extends ComponentConstructor<OutputComponent<any>>>(ctor: C) => {
       //@ts-ignore
       this.contextFuncs[name] = createOutputComponentFunc(ctor);
       return ctor;
@@ -42,7 +42,7 @@ export class Plugin<Args extends any[] = []> {
   statusComponent<N extends keyof StatusComponents | keyof ContextFuncs<any>>(
     name: N,
   ) {
-    return <C extends ComponentConstructor<StatusComponent>>(ctor: C) => {
+    return <C extends ComponentConstructor<StatusComponent<any>>>(ctor: C) => {
       //@ts-ignore
       this.contextFuncs[name] = createStatusComponentFunc(ctor);
       return ctor;
@@ -52,7 +52,9 @@ export class Plugin<Args extends any[] = []> {
   triggerComponent<N extends keyof TriggerComponents | keyof ContextFuncs<any>>(
     name: N,
   ) {
-    return <C extends ComponentConstructor<TriggerComponent<any>>>(ctor: C) => {
+    return <C extends ComponentConstructor<TriggerComponent<any, any>>>(
+      ctor: C,
+    ) => {
       //@ts-ignore
       this.contextFuncs[name] = createTriggerComponentFunc(ctor);
       return ctor;

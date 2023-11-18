@@ -2,12 +2,13 @@ import { App } from "../app";
 import {
   Context,
   ContextState,
+  InitialContextState,
   IntrinsicContext,
   ToFullContext,
 } from "../context";
 import { DOMElementComponent, DOMNodeComponent } from "../dom";
 
-export abstract class Component {
+export abstract class Component<Props = {}> {
   constructor(
     public readonly $ikey: string,
     public readonly $app: App,
@@ -15,7 +16,7 @@ export abstract class Component {
 
   $mainEl: HTMLElement | null;
 
-  $props: {};
+  $props: Partial<Props>;
 
   $update() {
     this.$app.update();
@@ -63,5 +64,5 @@ export class IntrinsicComponentContext<
   }
 }
 
-export type ComponentContext<C extends ContextState = ContextState> =
+export type ComponentContext<C extends ContextState = InitialContextState> =
   ToFullContext<IntrinsicComponentContext<C>, C>;

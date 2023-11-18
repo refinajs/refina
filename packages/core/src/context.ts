@@ -13,7 +13,13 @@ import { Maybe } from "./utils";
 import { View } from "./view";
 
 export interface ContextState {
+  mode: "build" | "fill";
   enabled: any;
+}
+
+export interface InitialContextState extends ContextState {
+  mode: "build";
+  enabled: {};
 }
 
 export interface ContextFuncs<C extends ContextState> {}
@@ -31,12 +37,37 @@ export type RealContextFuncs<Ctx = Context> = {
   [K in keyof ContextFuncs<any>]: ToRealContextFunc<K, Ctx>;
 };
 
+type EnabledProps<C extends ContextState> = C["mode"] extends "build"
+  ? C["enabled"] extends {
+      $props: infer T;
+    }
+    ? Record<string | number | symbol, any> & Record<keyof T, never>
+    : Record<string | number | symbol, any>
+  : C["enabled"] extends {
+      $props: infer T;
+    }
+  ? T
+  : {};
+
+type RequireProps<C extends ContextState, Props> = C["mode"] extends "build"
+  ? {
+      mode: "build";
+      enabled: {
+        $props: C["enabled"]["$props"] extends [never]
+          ? Partial<Props>
+          : C["enabled"]["$props"] & Partial<Props>;
+      };
+    }
+  : C;
+
 export type ToFullContext<I, C extends ContextState> = I & ContextFuncs<C>;
 
 export class IntrinsicContext<C extends ContextState> {
   constructor(public readonly $app: App) {
     $app.callPermanentHook("initializeContext", this as unknown as Context);
   }
+
+  declare $tsContextState: C;
 
   get $update() {
     return this.$app.update;
@@ -84,6 +115,7 @@ export class IntrinsicContext<C extends ContextState> {
     ref: Ref<C2>,
     ...refs: Ref<C2>[]
   ): this is Context<{
+    mode: "fill";
     enabled: C2;
   }> {
     this.$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
@@ -119,15 +151,17 @@ export class IntrinsicContext<C extends ContextState> {
     return Boolean(this.$allNoPreserve || this.$nextNoPreserve);
   }
 
-  $prop<
-    K extends keyof C["enabled"]["$props"],
-    const V extends C["enabled"]["$props"][K],
-  >(
+  $prop<K extends keyof EnabledProps<C>, V extends EnabledProps<C>[K]>(
     key: K,
     value: V,
-  ): this is Context<{
-    enabled: { $tsPropsType: (type: { [k in K]: V }) => void };
-  }> {
+  ): this is Context<
+    RequireProps<
+      C,
+      {
+        [P in K]: V;
+      }
+    >
+  > {
     this.$nextProps[key] = value;
     return true;
   }
@@ -479,7 +513,5 @@ export class IntrinsicContext<C extends ContextState> {
   }
 }
 
-export type Context<C extends ContextState = ContextState> = ToFullContext<
-  Omit<IntrinsicContext<C>, "$" | "$ev">,
-  C
->;
+export type Context<C extends ContextState = InitialContextState> =
+  ToFullContext<Omit<IntrinsicContext<C>, "$" | "$ev">, C>;

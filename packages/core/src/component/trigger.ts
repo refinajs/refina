@@ -7,7 +7,10 @@ import {
   IntrinsicComponentContext,
 } from "./component";
 
-export abstract class TriggerComponent<Ev> extends Component {
+export abstract class TriggerComponent<
+  Ev,
+  Props = {},
+> extends Component<Props> {
   protected $fire = (data: Ev) => {
     if (
       typeof data === "object" &&

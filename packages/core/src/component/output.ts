@@ -7,7 +7,7 @@ import {
   IntrinsicComponentContext,
 } from "./component";
 
-export abstract class OutputComponent extends Component {
+export abstract class OutputComponent<Props = {}> extends Component<Props> {
   abstract main(_: ComponentContext, ...args: any[]): void;
 }
 

@@ -7,7 +7,7 @@ import {
   IntrinsicComponentContext,
 } from "./component";
 
-export abstract class StatusComponent extends Component {
+export abstract class StatusComponent<Props = {}> extends Component<Props> {
   $_status: boolean = false;
   get $status() {
     return this.$_status;
