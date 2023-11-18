@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "engine": {
+    "node": "20",
+    "pnpm": "8"
+  },
   "scripts": {
     "dev": "pnpm run dev:fluentui",
     "dev:app": "pnpm -r --parallel --filter \"@refina/example-app...\" run dev",
