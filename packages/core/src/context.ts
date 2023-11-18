@@ -165,6 +165,12 @@ export class IntrinsicContext<C extends ContextState> {
     this.$nextProps[key] = value;
     return true;
   }
+  $props<Props extends EnabledProps<C>>(
+    props: Props,
+  ): this is Context<RequireProps<C, Props>> {
+    Object.assign(this.$nextProps, props);
+    return true;
+  }
   protected $nextProps: Record<string | number | symbol, any> = {};
 
   $cls(cls: string): true;
