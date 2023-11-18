@@ -17,7 +17,7 @@
     "./*": "./dist/*"
   },
   "scripts": {
-    "build": "ts-node --esm --project ./tsconfig.json ./generator.ts",
+    "build": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts",
     "check": "tsc --noEmit",
     "prepare": "pnpm build"
   },
