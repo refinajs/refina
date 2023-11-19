@@ -45,6 +45,11 @@ export function getDArray<T>(d: DArray<T>): T[] {
   return getD(d).map(getD);
 }
 
+export type DRecord<K extends string | number | symbol, V> = D<Record<K, D<V>>>;
+export type DPartialRecord<K extends string | number | symbol, V> = D<
+  Partial<Record<K, D<V>>>
+>;
+
 /**
  * @returns `true` if the value is changed
  */
