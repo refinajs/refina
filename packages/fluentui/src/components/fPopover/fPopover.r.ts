@@ -14,8 +14,8 @@ import FluentUI from "../../plugin";
 import "../fPortal";
 import surfaceStyles from "./surface.styles";
 
-@FluentUI.triggerComponent("fModalPopover")
-export class FModalPopover extends TriggerComponent<void> {
+@FluentUI.triggerComponent("fControlledPopover")
+export class FControlledPopover extends TriggerComponent<void> {
   arrowRef = ref<HTMLElementComponent<"div">>();
   contentRef = ref<HTMLElementComponent<"div">>();
   main(
@@ -94,7 +94,7 @@ export class FPopover extends TriggerComponent<boolean> {
         this.open.value = getD(open) ?? !this.open.value;
       }),
     );
-    if (_.fModalPopover(this.targetRef, this.open, inner /*, withArrow*/)) {
+    if (_.fControlledPopover(this.targetRef, this.open, inner /*, withArrow*/)) {
       this.$fire(this.open.value);
     }
   }
@@ -102,7 +102,7 @@ export class FPopover extends TriggerComponent<boolean> {
 
 declare module "refina" {
   interface TriggerComponents {
-    fModalPopover: FModalPopover;
+    fControlledPopover: FControlledPopover;
     fPopover: FPopover;
   }
 }

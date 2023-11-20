@@ -3,8 +3,8 @@ import FluentUI from "../../plugin";
 import "./fDialogBody.r";
 import "./fDialogSurface.r";
 
-@FluentUI.triggerComponent("fModalDialog")
-export class FModalDialog extends TriggerComponent<void> {
+@FluentUI.triggerComponent("fControlledDialog")
+export class fControlledDialog extends TriggerComponent<void> {
   main(
     _: ComponentContext,
     open: D<boolean>,
@@ -52,7 +52,7 @@ export class FDialog extends TriggerComponent<boolean> {
       }),
     );
     _.$main();
-    if (_.fModalDialog(this.open, title, content, actions, actionsPosition, persist)) {
+    if (_.fControlledDialog(this.open, title, content, actions, actionsPosition, persist)) {
       this.$fire(false);
     }
   }
@@ -60,7 +60,7 @@ export class FDialog extends TriggerComponent<boolean> {
 
 declare module "refina" {
   interface TriggerComponents {
-    fModalDialog: FModalDialog;
+    fControlledDialog: fControlledDialog;
     fDialog: FDialog;
   }
 }
