@@ -107,4 +107,7 @@ app.use(MdUI2)(_ => {
     _.mdTextField(input, "Message");
     _.mdTextField(input, "Message", true);
   });
+  _.embed(componentView, "Tooltip", _ => {
+    _.mdTooltip("Message", _ => _.mdButton("Hover me!")) && console.log(_.$ev);
+  });
 });
