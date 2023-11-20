@@ -7,16 +7,29 @@ import {
   IntrinsicComponentContext,
 } from "./component";
 
-export abstract class StatusComponent<Props = {}> extends Component<Props> {
-  $_status: boolean = false;
+export abstract class StatusComponent<
+  Status,
+  Props = {},
+> extends Component<Props> {
+  abstract $_status: Status;
   get $status() {
     return this.$_status;
   }
-  set $status(v: boolean) {
+  set $status(v: Status) {
     if (this.$_status === v) return;
     this.$_status = v;
     this.$update();
   }
+
+  abstract main(_: ComponentContext, ...args: any[]): void;
+}
+
+export abstract class ToggleComponent<Props = {}> extends StatusComponent<
+  boolean,
+  Props
+> {
+  $_status = false;
+
   $on = () => {
     this.$status = true;
   };
@@ -26,14 +39,13 @@ export abstract class StatusComponent<Props = {}> extends Component<Props> {
   $toggle = () => {
     this.$status = !this.$status;
   };
-  abstract main(_: ComponentContext, ...args: any[]): void;
 }
 
 export function createStatusComponentFunc<
-  T extends ComponentConstructor<StatusComponent>,
+  T extends ComponentConstructor<StatusComponent<any>>,
 >(ctor: T) {
   return function (this: Context, ckey: string, ...args: any[]): any {
-    const component = this.$beginComponent(ckey, ctor) as StatusComponent;
+    const component = this.$beginComponent(ckey, ctor) as StatusComponent<any>;
 
     const context = new IntrinsicComponentContext(this);
 

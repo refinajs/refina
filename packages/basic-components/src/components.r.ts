@@ -6,6 +6,7 @@ import {
   KeyFunc,
   OutputComponent,
   StatusComponent,
+  ToggleComponent,
   TriggerComponent,
   getD,
   ref,
@@ -182,7 +183,7 @@ declare module "refina" {
 }
 
 @Basics.statusComponent("passwordInput")
-export class BasicPasswordInput extends StatusComponent {
+export class BasicPasswordInput extends ToggleComponent {
   inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext, value: D<string>) {
     _.$ref(this.inputRef) &&
@@ -204,7 +205,7 @@ declare module "refina" {
 }
 
 @Basics.statusComponent("toggleButton")
-export class BasicToggleButton extends StatusComponent {
+export class BasicToggleButton extends ToggleComponent {
   main(_: ComponentContext, inner: D<Content>) {
     if (_.button(inner)) {
       this.$toggle();
@@ -218,7 +219,7 @@ declare module "refina" {
 }
 
 @Basics.statusComponent("checkbox")
-export class BasicCheckbox extends StatusComponent {
+export class BasicCheckbox extends ToggleComponent {
   inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext, label: D<string>, value: D<boolean> = this.inputRef.current?.node.checked ?? false) {
     _._label({}, _ => {

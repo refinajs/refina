@@ -1,11 +1,11 @@
 import "@refina/fluentui-icons/chevronRight.r.ts";
-import { ComponentContext, Content, D, StatusComponent, getD } from "refina";
+import { ComponentContext, Content, D, ToggleComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import headerStyles from "./header.styles";
 import itemStyles from "./item.styles";
 
 @FluentUI.statusComponent("fAccordion")
-export class FAccordion extends StatusComponent {
+export class FAccordion extends ToggleComponent {
   main(_: ComponentContext, header: D<Content>, disabled: D<boolean> = false): void {
     const disabledValue = getD(disabled);
 
