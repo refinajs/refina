@@ -78,4 +78,9 @@ app.use(MdUI2)(_ => {
     });
     _.mdSelect(selected, options, true);
   });
+  _.embed(componentView, "Slider", _ => {
+    _.mdSlider(sliderValue2);
+    _.mdSlider(sliderValue2, false, 10);
+    _.mdSlider(sliderValue2, true);
+  });
 });
