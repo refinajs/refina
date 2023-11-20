@@ -12,3 +12,4 @@ export * from "./select.r";
 export * from "./slider.r";
 export * from "./switch.r";
 export * from "./tabs.r";
+export * from "./textField.r";

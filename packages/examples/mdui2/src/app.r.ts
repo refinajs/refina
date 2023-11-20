@@ -17,6 +17,7 @@ const options = ["Option 1", "Option 2", "Option 3"] as const;
 let selected = d<(typeof options)[number]>(options[0]);
 let sliderValue1 = d(40);
 let sliderValue2 = d(60);
+let input = d("Hello");
 
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
@@ -26,6 +27,7 @@ app.use(MdUI2)(_ => {
     _._p({}, `Count is ${count}`);
     _._p({}, `Status is ${status.value}`);
     _._p({}, `Selected is ${selected.value}`);
+    _._p({}, `Input is ${sliderValue1.value}`);
   });
 
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
@@ -99,5 +101,10 @@ app.use(MdUI2)(_ => {
       "Tab 3",
       _ => _._p({}, "Content 3"),
     );
+  });
+  _.embed(componentView, "Text Field", _ => {
+    _.mdTextField(input);
+    _.mdTextField(input, "Message");
+    _.mdTextField(input, "Message", true);
   });
 });
