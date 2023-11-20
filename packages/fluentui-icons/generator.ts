@@ -56,6 +56,17 @@ const iconsDir = join(
 );
 const distDir = join(__dirname, "dist");
 
+if (
+  fs.existsSync(distDir) &&
+  fs.lstatSync(distDir).isDirectory() &&
+  fs.readdirSync(distDir).length > 0
+) {
+  console.log(
+    "Fluentui-icons dist directory is not empty, generating is skipped.",
+  );
+  process.exit(0);
+}
+
 const contents = fs.readdirSync(iconsDir);
 const contentPaths = contents.map((v) => join(iconsDir, v));
 const fileNames: string[] = [];
