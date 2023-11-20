@@ -15,6 +15,8 @@ let count = 0;
 let status = d(false);
 const options = ["Option 1", "Option 2", "Option 3"] as const;
 let selected = d<(typeof options)[number]>(options[0]);
+let sliderValue1 = d(40);
+let sliderValue2 = d(60);
 
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
@@ -48,7 +50,7 @@ app.use(MdUI2)(_ => {
   });
   _.embed(componentView, "Linear Progress", _ => {
     _.mdLinearProgress();
-    _.mdLinearProgress(0.4);
+    _.mdLinearProgress(sliderValue1.value / 100);
   });
   _.embed(componentView, "List", _ =>
     _.mdList(["Item 1", "Item 2", "Item 3"], bySelf, item => {
@@ -63,5 +65,10 @@ app.use(MdUI2)(_ => {
     });
     _._br();
     _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"], true);
+  });
+  _.embed(componentView, "Range Slider", _ => {
+    _.mdRangeSlider([sliderValue1, sliderValue2]);
+    _.mdRangeSlider([sliderValue1, sliderValue2], false, 10);
+    _.mdRangeSlider([sliderValue1, sliderValue2], true);
   });
 });
