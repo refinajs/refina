@@ -21,9 +21,12 @@ let sliderValue2 = d(60);
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
 
-  _._p({}, `Count is ${count}`);
-  _._p({}, `Status is ${status.value}`);
-  _._p({}, `Selected is ${selected.value}`);
+  _.$css`position:sticky;top:0;left:0;right:0;background-color:#AAA;z-index:100`;
+  _._div({}, _ => {
+    _._p({}, `Count is ${count}`);
+    _._p({}, `Status is ${status.value}`);
+    _._p({}, `Selected is ${selected.value}`);
+  });
 
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
   _.embed(componentView, "Badge", _ => {
