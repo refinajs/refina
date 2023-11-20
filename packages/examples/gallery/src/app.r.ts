@@ -1,6 +1,11 @@
 import Basics from "@refina/basic-components";
 import { app } from "refina";
 
+window.addEventListener("popstate", () => {
+  window.location.reload();
+});
+let loading = false;
+
 const examples = [
   {
     id: "fluentui",
@@ -22,7 +27,7 @@ const examples = [
 type ExampleId = (typeof examples)[number]["id"];
 
 function isExample(id: ExampleId) {
-  return location.pathname === `/${id}` || location.pathname === `/${id}/`;
+  return location.hash === `#${id}`;
 }
 
 function removeTailwind() {
@@ -41,17 +46,28 @@ if (isExample("fluentui")) {
   app.use(Basics)(_ => {
     _.$rootCls`p-4`;
 
+    if (loading) return;
+
     _.$cls`font-bold text-3xl`;
     _.h1("Refina example gallery");
-    if (location.pathname === "" || location.pathname === "/") {
+    if (location.hash === "" || location.hash === "#") {
       _.for(examples, "id", example => {
-        _.$cls`block border-2 rounded-lg border-gray-600 my-4 p-2 hover:bg-gray-200`;
-        _.a(`/${example.id}`, _ => {
-          _.span(example.name);
-          _.$cls`float-right text-gray-600 pr-10`;
-          _.span(example.detail);
-        });
+        _.$cls`block border-2 rounded-lg border-gray-600 my-4 p-2 hover:bg-gray-200 w-full`;
+        if (
+          _.button(_ => {
+            _.$cls`float-left`;
+            _.span(example.name);
+            _.$cls`float-right text-gray-600 pr-10`;
+            _.span(example.detail);
+          })
+        ) {
+          loading = true;
+          window.history.pushState(null, "", `${location.protocol}//${location.host}#${example.id}`);
+          window.location.reload();
+        }
       });
+    } else {
+      _.p(`Example ${location.hash} not found.`);
     }
 
     _.$cls`text-gray-600`;
