@@ -127,6 +127,31 @@ importers:
         specifier: workspace:^
         version: link:../../vite-plugin
 
+  packages/examples/mdui2:
+    dependencies:
+      '@refina/mdui2':
+        specifier: workspace:^
+        version: link:../../mdui2
+      refina:
+        specifier: workspace:^
+        version: link:../../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../../tsconfig
+      typescript:
+        specifier: ^5.1.6
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.8
+        version: 4.4.9(@types/node@20.6.5)
+      vite-plugin-inspect:
+        specifier: ^0.7.35
+        version: 0.7.38(vite@4.4.9)
+      vite-plugin-refina:
+        specifier: workspace:^
+        version: link:../../vite-plugin
+
   packages/fluentui:
     dependencies:
       '@floating-ui/dom':
@@ -210,6 +235,25 @@ importers:
       mdui:
         specifier: ^1.0.2
         version: 1.0.2
+      refina:
+        specifier: workspace:^
+        version: link:../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
+  packages/mdui2:
+    dependencies:
+      '@mdi/font':
+        specifier: ^7.3.67
+        version: 7.3.67
+      mdui:
+        specifier: ^2.0.2
+        version: 2.0.2
       refina:
         specifier: workspace:^
         version: link:../core
@@ -560,6 +604,47 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
+  /@lit-labs/motion@1.0.6:
+    resolution: {integrity: sha512-7d4d89CjdEMsU7lNG0gFMZOUowq00CgcJL1ifab0IVFc/fTCcfZyQuRb5vAhetkwPQFmiyP54tvHQ9GuHsLtuQ==}
+    dependencies:
+      lit: 3.1.0
+    dev: false
+
+  /@lit-labs/ssr-dom-shim@1.1.2:
+    resolution: {integrity: sha512-jnOD+/+dSrfTWYfSXBXlo5l5f0q1UuJo3tkbMDCYA2lKUYq79jaxqtGEvnRoh049nt1vdo1+45RinipU6FGY2g==}
+    dev: false
+
+  /@lit/reactive-element@2.0.2:
+    resolution: {integrity: sha512-SVOwLAWUQg3Ji1egtOt1UiFe4zdDpnWHyc5qctSceJ5XIu0Uc76YmGpIjZgx9YJ0XtdW0Jm507sDvjOu+HnB8w==}
+    dependencies:
+      '@lit-labs/ssr-dom-shim': 1.1.2
+    dev: false
+
+  /@material/material-color-utilities@0.2.7:
+    resolution: {integrity: sha512-0FCeqG6WvK4/Cc06F/xXMd/pv4FeisI0c1tUpBbfhA2n9Y8eZEv4Karjbmf2ZqQCPUWMrGp8A571tCjizxoTiQ==}
+    dev: false
+
+  /@mdi/font@7.3.67:
+    resolution: {integrity: sha512-SWxvzRbUQRfewlIV+OF4/YF4DkeTjMWoT8Hh9yeU/5UBVdJZj9Uf4a9+cXjknSIhIaMxZ/4N1O/s7ojApOOGjg==}
+    dev: false
+
+  /@mdui/jq@3.0.1:
+    resolution: {integrity: sha512-B6Dep5XgJHJAuFMDDzbWL5QNThRqExlmht/tpKkb6CF6iHVeGLY9Xpeuyc4qPdF452mFKtbde8jBO+vVJUxL/g==}
+    dependencies:
+      ssr-window: 4.0.2
+      tslib: 2.6.2
+    dev: false
+
+  /@mdui/shared@1.0.2:
+    resolution: {integrity: sha512-7GEsfXcOR8zTA7n9/olDRBy1kL40Xv/haT9CqCQRMV1pY5+sirbUOyzx7Xb0oqKz+SJMj0aL2ZnwIhZhTpTwyQ==}
+    dependencies:
+      '@mdui/jq': 3.0.1
+      '@open-wc/dedupe-mixin': 1.4.0
+      lit: 3.1.0
+      ssr-window: 4.0.2
+      tslib: 2.6.2
+    dev: false
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -580,6 +665,10 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
+
+  /@open-wc/dedupe-mixin@1.4.0:
+    resolution: {integrity: sha512-Sj7gKl1TLcDbF7B6KUhtvr+1UCxdhMbNY5KxdU5IfMFWqL8oy1ZeAcCANjoB1TL0AJTcPmcCFsCbHf8X2jGDUA==}
+    dev: false
 
   /@polka/url@1.0.0-next.23:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
@@ -631,6 +720,10 @@ packages:
 
   /@types/node@20.6.5:
     resolution: {integrity: sha512-2qGq5LAOTh9izcc0+F+dToFigBWiK1phKPt7rNhOqJSr35y8rlIBjDwGtFSgAI6MGIhjwOVNSQZVdJsZJ2uR1w==}
+
+  /@types/trusted-types@2.0.6:
+    resolution: {integrity: sha512-HYtNooPvUY9WAVRBr4u+4Qa9fYD1ze2IUlAD3HoA6oehn1taGwBx3Oa52U4mTslTS+GAExKpaFu39Y5xUEwfjg==}
+    dev: false
 
   /acorn-walk@8.2.0:
     resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
@@ -797,6 +890,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /classcat@5.0.4:
+    resolution: {integrity: sha512-sbpkOw6z413p+HDGcBENe498WM9woqWHiJxCq7nvmxe9WmrUmqfAcxpIwAiMtM5Q3AhYkzXcNQHqsWq0mND51g==}
+    dev: false
 
   /cli-cursor@4.0.0:
     resolution: {integrity: sha512-VGtlMu3x/4DOtIUwEkRezxUZ2lBacNJCHash0N0WeZDBS+7Ux1dm3XWAgWYxLJFMMdOeXMHXorshEFhbMSGelg==}
@@ -1189,6 +1286,10 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
+  /is-promise@4.0.0:
+    resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
+    dev: false
+
   /is-stream@2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
     engines: {node: '>=8'}
@@ -1278,6 +1379,28 @@ packages:
       wrap-ansi: 8.1.0
     dev: true
 
+  /lit-element@4.0.2:
+    resolution: {integrity: sha512-/W6WQZUa5VEXwC7H9tbtDMdSs9aWil3Ou8hU6z2cOKWbsm/tXPAcsoaHVEtrDo0zcOIE5GF6QgU55tlGL2Nihg==}
+    dependencies:
+      '@lit-labs/ssr-dom-shim': 1.1.2
+      '@lit/reactive-element': 2.0.2
+      lit-html: 3.1.0
+    dev: false
+
+  /lit-html@3.1.0:
+    resolution: {integrity: sha512-FwAjq3iNsaO6SOZXEIpeROlJLUlrbyMkn4iuv4f4u1H40Jw8wkeR/OUXZUHUoiYabGk8Y4Y0F/rgq+R4MrOLmA==}
+    dependencies:
+      '@types/trusted-types': 2.0.6
+    dev: false
+
+  /lit@3.1.0:
+    resolution: {integrity: sha512-rzo/hmUqX8zmOdamDAeydfjsGXbbdtAFqMhmocnh2j9aDYqbu0fjXygjCa0T99Od9VQ/2itwaGrjZz/ZELVl7w==}
+    dependencies:
+      '@lit/reactive-element': 2.0.2
+      lit-element: 4.0.2
+      lit-html: 3.1.0
+    dev: false
+
   /load-tsconfig@0.2.5:
     resolution: {integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -1333,6 +1456,21 @@ packages:
       mdui.jq: 2.0.1
       normalize.css: 8.0.1
       promise-polyfill: 8.3.0
+    dev: false
+
+  /mdui@2.0.2:
+    resolution: {integrity: sha512-n824kl2/kSO38j3jNQG62WXUYymgssMcOyeX/GkUjsPla7ohqX+rjPrg6pJfExAMZUjcMA3M5O0tDLQBm9nldA==}
+    dependencies:
+      '@lit-labs/motion': 1.0.6
+      '@material/material-color-utilities': 0.2.7
+      '@mdui/jq': 3.0.1
+      '@mdui/shared': 1.0.2
+      '@open-wc/dedupe-mixin': 1.4.0
+      classcat: 5.0.4
+      is-promise: 4.0.0
+      lit: 3.1.0
+      ssr-window: 4.0.2
+      tslib: 2.6.2
     dev: false
 
   /merge-stream@2.0.0:
@@ -1720,6 +1858,10 @@ packages:
     dependencies:
       whatwg-url: 7.1.0
     dev: true
+
+  /ssr-window@4.0.2:
+    resolution: {integrity: sha512-ISv/Ch+ig7SOtw7G2+qkwfVASzazUnvlDTwypdLoPoySv+6MqlOV10VwPSE6EWkGjhW50lUmghPmpYZXMu/+AQ==}
+    dev: false
 
   /string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
