@@ -58,13 +58,13 @@ app.use(MdUI2)(_ => {
     }),
   );
   _.embed(componentView, "Radio Group", _ => {
-    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"]);
+    _.mdRadioGroup(selected, options);
     _._br();
-    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"], [false, true], {
+    _.mdRadioGroup(selected, options, [false, true], {
       "Option 3": _ => _.mdAvatar("https://via.placeholder.com/80x80?text=3"),
     });
     _._br();
-    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"], true);
+    _.mdRadioGroup(selected, options, true);
   });
   _.embed(componentView, "Range Slider", _ => {
     _.mdRangeSlider([sliderValue1, sliderValue2]);

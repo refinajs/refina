@@ -2,8 +2,8 @@ import {
   ComponentContext,
   Content,
   D,
-  DArray,
   DPartialRecord,
+  DReadonlyArray,
   HTMLElementComponent,
   TriggerComponent,
   TriggerComponentFuncAssertThisType,
@@ -19,8 +19,8 @@ export class MdRadioGroup<Value extends string> extends TriggerComponent<Value> 
   main(
     _: ComponentContext,
     value: D<Value>,
-    options: DArray<Value>,
-    disabled: D<boolean> | DArray<boolean> = false,
+    options: DReadonlyArray<Value>,
+    disabled: D<boolean> | DReadonlyArray<boolean> = false,
     contentOverride: DPartialRecord<Value, Content> = {},
   ): void {
     const contentOverrideValue = getD(contentOverride);
@@ -58,8 +58,8 @@ declare module "refina" {
     mdRadioGroup: MdRadioGroup<any> extends C["enabled"]
       ? <Value extends string>(
           value: D<Value>,
-          options: DArray<Value>,
-          disabled?: D<boolean> | DArray<boolean>,
+          options: DReadonlyArray<Value>,
+          disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
         ) => //@ts-ignore
         this is TriggerComponentFuncAssertThisType<Value, MdRadioGroup<Value>>
