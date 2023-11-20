@@ -71,4 +71,11 @@ app.use(MdUI2)(_ => {
     _.mdRangeSlider([sliderValue1, sliderValue2], false, 10);
     _.mdRangeSlider([sliderValue1, sliderValue2], true);
   });
+  _.embed(componentView, "Select", _ => {
+    _.mdSelect(selected, options);
+    _.mdSelect(selected, options, [false, true], {
+      "Option 3": _ => _.mdAvatar("https://via.placeholder.com/80x80?text=3"),
+    });
+    _.mdSelect(selected, options, true);
+  });
 });
