@@ -11,7 +11,7 @@ export abstract class StatusComponent<
   Status,
   Props = {},
 > extends Component<Props> {
-  abstract $_status: Status;
+  protected $_status: Status;
   get $status() {
     return this.$_status;
   }
@@ -28,7 +28,7 @@ export abstract class ToggleComponent<Props = {}> extends StatusComponent<
   boolean,
   Props
 > {
-  $_status = false;
+  protected $_status = false;
 
   $on = () => {
     this.$status = true;
