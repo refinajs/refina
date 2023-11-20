@@ -182,8 +182,8 @@ declare module "refina" {
   }
 }
 
-@Basics.statusComponent("passwordInput")
-export class BasicPasswordInput extends ToggleComponent {
+@Basics.triggerComponent("passwordInput")
+export class BasicPasswordInput extends TriggerComponent<string> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext, value: D<string>) {
     _.$ref(this.inputRef) &&
@@ -191,15 +191,15 @@ export class BasicPasswordInput extends ToggleComponent {
         type: "password",
         value: getD(value),
         oninput: () => {
-          _.$setD(value, this.inputRef.current!.node.value);
+          const newValue = this.inputRef.current!.node.value;
+          _.$setD(value, newValue);
+          this.$fire(newValue);
         },
-        onfocus: this.$on,
-        onblur: this.$off,
       });
   }
 }
 declare module "refina" {
-  interface StatusComponents {
+  interface TriggerComponents {
     passwordInput: BasicPasswordInput;
   }
 }
@@ -218,8 +218,8 @@ declare module "refina" {
   }
 }
 
-@Basics.statusComponent("checkbox")
-export class BasicCheckbox extends ToggleComponent {
+@Basics.triggerComponent("checkbox")
+export class BasicCheckbox extends TriggerComponent<boolean> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(_: ComponentContext, label: D<string>, value: D<boolean> = this.inputRef.current?.node.checked ?? false) {
     _._label({}, _ => {
@@ -228,15 +228,16 @@ export class BasicCheckbox extends ToggleComponent {
         _._input({
           type: "checkbox",
           onchange: () => {
-            _.$setD(value, this.inputRef.current!.node.checked);
-            this.$status = this.inputRef.current!.node.checked;
+            const newValue = this.inputRef.current!.node.checked;
+            _.$setD(value, newValue);
+            this.$fire(newValue);
           },
         });
     });
   }
 }
 declare module "refina" {
-  interface StatusComponents {
+  interface TriggerComponents {
     checkbox: BasicCheckbox;
   }
 }
