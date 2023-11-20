@@ -11,12 +11,21 @@ const componentView = view((_, name: string, inner: Content) => {
   });
 });
 
+let count = 0;
+
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
+
+  _._p({}, `Count is ${count}`);
+
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
   _.embed(componentView, "Badge", _ => {
     _.mdBadge();
     _.t` `;
     _.mdBadge("99+");
+  });
+  _.embed(componentView, "Button", _ => {
+    _.mdButton("Button") && count++;
+    _.mdButton("Button", true) && count++;
   });
 });
