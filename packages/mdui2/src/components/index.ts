@@ -6,3 +6,4 @@ export * from "./circularProgress.r";
 export * from "./divider.r";
 export * from "./linearProgress.r";
 export * from "./list.r";
+export * from "./radioGroup.r";

@@ -13,12 +13,15 @@ const componentView = view((_, name: string, inner: Content) => {
 
 let count = 0;
 let status = d(false);
+const options = ["Option 1", "Option 2", "Option 3"] as const;
+let selected = d<(typeof options)[number]>(options[0]);
 
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
 
   _._p({}, `Count is ${count}`);
   _._p({}, `Status is ${status.value}`);
+  _._p({}, `Selected is ${selected.value}`);
 
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
   _.embed(componentView, "Badge", _ => {
@@ -52,4 +55,13 @@ app.use(MdUI2)(_ => {
       _.t(item);
     }),
   );
+  _.embed(componentView, "Radio Group", _ => {
+    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"]);
+    _._br();
+    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"], [false, true], {
+      "Option 3": _ => _.mdAvatar("https://via.placeholder.com/80x80?text=3"),
+    });
+    _._br();
+    _.mdRadioGroup(selected, ["Option 1", "Option 2", "Option 3"], true);
+  });
 });
