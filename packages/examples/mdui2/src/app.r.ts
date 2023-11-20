@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import MdUI2 from "@refina/mdui2";
 import "@refina/mdui2/styles.css";
-import { Content, app, d, view } from "refina";
+import { Content, app, bySelf, d, view } from "refina";
 
 const componentView = view((_, name: string, inner: Content) => {
   _._div({}, _ => {
@@ -47,4 +47,9 @@ app.use(MdUI2)(_ => {
     _.mdLinearProgress();
     _.mdLinearProgress(0.4);
   });
+  _.embed(componentView, "List", _ =>
+    _.mdList(["Item 1", "Item 2", "Item 3"], bySelf, item => {
+      _.t(item);
+    }),
+  );
 });
