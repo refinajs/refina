@@ -43,4 +43,8 @@ app.use(MdUI2)(_ => {
     _.$css`height: 40px; margin-left: 30px`;
     _._div({}, _ => _.mdVerticalDivider());
   });
+  _.embed(componentView, "Linear Progress", _ => {
+    _.mdLinearProgress();
+    _.mdLinearProgress(0.4);
+  });
 });
