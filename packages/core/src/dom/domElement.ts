@@ -15,6 +15,43 @@ type DOMElementType<E extends keyof DOMElementTagNameMap> =
     ? SVGElementTagNameMap[E]
     : never;
 
+export interface WebComponentsEventListeners {}
+
+export type NativeElementEventListeners<E> = {
+  [K in keyof HTMLElementEventMap]: (
+    this: E,
+    ev: HTMLElementEventMap[K],
+  ) => any;
+};
+
+type IsNativeElement<E extends keyof DOMElementTagNameMap> =
+  E extends `${string}-${string}` ? false : true;
+
+export type DOMElementEventListeners<E extends keyof DOMElementTagNameMap> =
+  IsNativeElement<E> extends true
+    ? NativeElementEventListeners<DOMElementType<E>>
+    : E extends keyof WebComponentsEventListeners
+    ? WebComponentsEventListeners[E]
+    : {};
+
+export type DOMElementEventListenerInfo<
+  E extends keyof DOMElementTagNameMap,
+  K extends keyof DOMElementEventListeners<E> = any,
+> =
+  | DOMElementEventListeners<E>[K]
+  | {
+      listener: DOMElementEventListeners<E>[K];
+      options?: boolean | AddEventListenerOptions;
+    };
+
+export type DOMElementEventListenersInfo<E extends keyof DOMElementTagNameMap> =
+  {
+    [K in keyof DOMElementEventListeners<E>]?: DOMElementEventListenerInfo<
+      E,
+      K
+    >;
+  };
+
 export class DOMElementComponent<
   E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
 > extends DOMNodeComponent<DOMElementType<E>> {
@@ -105,6 +142,50 @@ export class DOMElementComponent<
       this.currentStyle += style;
     }
   }
+
+  registeredEventListeners: Record<string, DOMElementEventListenerInfo<any>> =
+    {};
+  updateEventListeners(
+    listeners: Record<string, DOMElementEventListenerInfo<any>>,
+  ) {
+    const listenersToRemove = this.registeredEventListeners;
+    const newRegisteredEventListeners: Record<
+      string,
+      DOMElementEventListenerInfo<any>
+    > = {};
+    for (const event in listeners) {
+      const listener = listeners[event] as any;
+      if (listener) {
+        if (typeof listener === "function") {
+          this.node.addEventListener(event, listener);
+          newRegisteredEventListeners[event] = listener;
+        } else {
+          this.node.addEventListener(
+            event,
+            listener.listener,
+            listener.options,
+          );
+          newRegisteredEventListeners[event] = { ...listener };
+        }
+        listenersToRemove[event] = undefined;
+      }
+    }
+    for (const event in listenersToRemove) {
+      const listener = listenersToRemove[event] as any;
+      if (listener) {
+        if (typeof listener === "function") {
+          this.node.removeEventListener(event, listener);
+        } else {
+          this.node.removeEventListener(
+            event,
+            listener.listener,
+            listener.options,
+          );
+        }
+      }
+    }
+    this.registeredEventListeners = newRegisteredEventListeners;
+  }
 }
 
 export type HTMLElementComponent<
@@ -120,7 +201,11 @@ type ReplaceHyphenWithLowLine<S extends string> =
 
 export type HTMLElementFuncs<C extends ContextState> = {
   [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: DOMElementComponent<E> extends C["enabled"]
-    ? (data?: Partial<HTMLElementTagNameMap[E]>, inner?: D<Content>) => void
+    ? (
+        data?: Partial<HTMLElementTagNameMap[E]>,
+        inner?: D<Content>,
+        eventListeners?: DOMElementEventListenersInfo<E>,
+      ) => void
     : never;
 };
 
@@ -131,6 +216,10 @@ export type SVGElementFuncData = Record<
 
 export type SVGElementFuncs<C extends ContextState> = {
   [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C["enabled"]
-    ? (data?: SVGElementFuncData, inner?: D<Content>) => void
+    ? (
+        data?: SVGElementFuncData,
+        inner?: D<Content>,
+        eventListeners?: DOMElementEventListenersInfo<E>,
+      ) => void
     : never;
 };

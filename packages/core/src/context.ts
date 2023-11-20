@@ -5,6 +5,7 @@ import { D, Ref, getD, mergeRefs } from "./data";
 import {
   Content,
   DOMElementComponent,
+  DOMElementEventListenersInfo,
   DOMNodeComponent,
   SVGElementFuncData,
   TextNodeComponent,
@@ -250,7 +251,7 @@ export class IntrinsicContext<C extends ContextState> {
       // Now this is a SVG element
       const tagName = (funcName[4].toLowerCase() +
         funcName.slice(5)) as keyof SVGElementTagNameMap;
-      let [data, inner] = args;
+      let [data, inner, eventListeners] = args;
       this.$processSVGElement(
         ckey,
         tagName,
@@ -258,6 +259,7 @@ export class IntrinsicContext<C extends ContextState> {
         this.$cssToApply,
         data,
         inner,
+        eventListeners,
       );
       return;
     }
@@ -266,7 +268,7 @@ export class IntrinsicContext<C extends ContextState> {
       const rawTagName = funcName.slice(1);
       const tagName = (this.$app.htmlElementAlias[rawTagName] ??
         rawTagName) as keyof HTMLElementTagNameMap;
-      const [data, inner] = args;
+      const [data, inner, eventListeners] = args;
       this.$processHTMLElement(
         ckey,
         tagName,
@@ -274,6 +276,7 @@ export class IntrinsicContext<C extends ContextState> {
         this.$cssToApply,
         data,
         inner,
+        eventListeners,
       );
       return;
     }
@@ -362,6 +365,7 @@ export class IntrinsicContext<C extends ContextState> {
     style: string,
     data?: Partial<HTMLElementTagNameMap[E]>,
     inner?: D<Content>,
+    eventListeners: DOMElementEventListenersInfo<E> = {},
   ) {
     data ??= {};
     inner = this.$normalizeContent(inner);
@@ -428,6 +432,7 @@ export class IntrinsicContext<C extends ContextState> {
     style: string,
     data?: SVGElementFuncData,
     inner?: D<Content>,
+    eventListeners: DOMElementEventListenersInfo<E> = {},
   ) {
     data ??= {};
     inner = this.$normalizeContent(inner);
