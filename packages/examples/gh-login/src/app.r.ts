@@ -85,7 +85,7 @@ const $app = app.use(Basics)(_ => {
     _.$cls`p-4 text-center border border-[#30363d] rounded-[6px] mt-4 mb-[10px] `;
     _.p(_ => {
       _.t`New to GitHub? `;
-      _.$cls`text-[#2f81f7]` && _.a("Create an account", "/signup?source=login");
+      _.$cls`text-[#2f81f7]` && _.a("https://github.com/signup?source=login", "Create an account");
       _.t`.`;
     });
   });
