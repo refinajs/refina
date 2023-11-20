@@ -10,3 +10,4 @@ export * from "./radioGroup.r";
 export * from "./rangeSlider.r";
 export * from "./select.r";
 export * from "./slider.r";
+export * from "./switch.r";

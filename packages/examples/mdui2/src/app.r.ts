@@ -86,4 +86,8 @@ app.use(MdUI2)(_ => {
     _.mdSlider(sliderValue2, false, 10);
     _.mdSlider(sliderValue2, true);
   });
+  _.embed(componentView, "Switch", _ => {
+    _.mdSwitch(status);
+    _.mdSwitch(status, true);
+  });
 });
