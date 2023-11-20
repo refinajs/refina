@@ -34,4 +34,8 @@ app.use(MdUI2)(_ => {
     _.mdCheckbox(status, "Checkbox");
     _.mdCheckbox(status, "Checkbox", true);
   });
+  _.embed(componentView, "Circlular Progress", _ => {
+    _.mdCircularProgress();
+    _.mdCircularProgress(0.8);
+  });
 });
