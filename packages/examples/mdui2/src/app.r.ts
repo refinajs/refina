@@ -90,4 +90,14 @@ app.use(MdUI2)(_ => {
     _.mdSwitch(status);
     _.mdSwitch(status, true);
   });
+  _.embed(componentView, "Tabs", _ => {
+    _.mdTabs(
+      "Tab 1",
+      _ => _._p({}, "Content 1"),
+      "Tab 2",
+      _ => _._p({}, "Content 2"),
+      "Tab 3",
+      _ => _._p({}, "Content 3"),
+    );
+  });
 });
