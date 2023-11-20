@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "check": "tsc --noEmit"
   },
+  "exports": {
+    ".": "./src/app.r.ts"
+  },
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
     "autoprefixer": "^10.4.15",

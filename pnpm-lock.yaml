@@ -68,6 +68,46 @@ importers:
         specifier: workspace:^
         version: link:../../vite-plugin
 
+  packages/examples/gallery:
+    dependencies:
+      '@refina/basic-components':
+        specifier: workspace:^
+        version: link:../../basic-components
+      '@refina/example-fluentui':
+        specifier: workspace:^
+        version: link:../fluentui
+      '@refina/example-gh-login':
+        specifier: workspace:^
+        version: link:../gh-login
+      '@refina/example-mdui2':
+        specifier: workspace:^
+        version: link:../mdui2
+      refina:
+        specifier: workspace:^
+        version: link:../../core
+    devDependencies:
+      '@refina/tsconfig':
+        specifier: workspace:^
+        version: link:../../tsconfig
+      autoprefixer:
+        specifier: ^10.4.15
+        version: 10.4.16(postcss@8.4.30)
+      postcss:
+        specifier: ^8.4.27
+        version: 8.4.30
+      tailwindcss:
+        specifier: ^3.3.3
+        version: 3.3.3
+      typescript:
+        specifier: ^5.1.6
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.8
+        version: 4.4.9(@types/node@20.6.5)
+      vite-plugin-refina:
+        specifier: workspace:^
+        version: link:../../vite-plugin
+
   packages/examples/gh-login:
     dependencies:
       '@refina/basic-components':
@@ -144,7 +184,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9
+        version: 4.4.9(@types/node@20.6.5)
       vite-plugin-inspect:
         specifier: ^0.7.35
         version: 0.7.38(vite@4.4.9)
@@ -2115,45 +2155,10 @@ packages:
       open: 9.1.0
       picocolors: 1.0.0
       sirv: 2.0.3
-      vite: 4.4.9
+      vite: 4.4.9(@types/node@20.6.5)
     transitivePeerDependencies:
       - rollup
       - supports-color
-    dev: true
-
-  /vite@4.4.9:
-    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.18.20
-      postcss: 8.4.30
-      rollup: 3.29.3
-    optionalDependencies:
-      fsevents: 2.3.3
     dev: true
 
   /vite@4.4.9(@types/node@20.6.5):
