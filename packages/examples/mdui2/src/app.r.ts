@@ -14,4 +14,9 @@ const componentView = view((_, name: string, inner: Content) => {
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
+  _.embed(componentView, "Badge", _ => {
+    _.mdBadge();
+    _.t` `;
+    _.mdBadge("99+");
+  });
 });
