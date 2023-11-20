@@ -1,4 +1,6 @@
-import { View } from "../view";
+import type { Context } from "../context";
+import { getD, type D } from "../data";
+import type { View } from "../view";
 
 export type MaybeChildNode = ChildNode | null;
 
@@ -36,3 +38,14 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
 export type DOMElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;
 
 export type Content<Args extends any[] = []> = string | number | View<Args>;
+
+export function bindArgsToContent<Args extends any[]>(
+  content: D<Content<Args>>,
+  ...args: Args
+) {
+  const contentValue = getD(content);
+  if (typeof contentValue === "function") {
+    return (ctx: Context) => contentValue(ctx, ...args);
+  }
+  return contentValue;
+}
