@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import MdUI2 from "@refina/mdui2";
 import "@refina/mdui2/styles.css";
-import { Content, app, view } from "refina";
+import { Content, app, d, view } from "refina";
 
 const componentView = view((_, name: string, inner: Content) => {
   _._div({}, _ => {
@@ -12,11 +12,13 @@ const componentView = view((_, name: string, inner: Content) => {
 });
 
 let count = 0;
+let status = d(false);
 
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
 
   _._p({}, `Count is ${count}`);
+  _._p({}, `Status is ${status.value}`);
 
   _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
   _.embed(componentView, "Badge", _ => {
@@ -27,5 +29,9 @@ app.use(MdUI2)(_ => {
   _.embed(componentView, "Button", _ => {
     _.mdButton("Button") && count++;
     _.mdButton("Button", true) && count++;
+  });
+  _.embed(componentView, "Checkbox", _ => {
+    _.mdCheckbox(status, "Checkbox");
+    _.mdCheckbox(status, "Checkbox", true);
   });
 });
