@@ -67,8 +67,13 @@ export function createStatusComponentFunc<
 
 export interface StatusComponents {}
 
+export type StatusComponentStatusType<C extends ContextState> =
+  C extends StatusComponent<infer S> ? S : never;
+
 export type StatusComponentFuncs<C extends ContextState> = {
   [K in keyof StatusComponents]: StatusComponents[K] extends C["enabled"]
-    ? (...args: ComponentFuncArgs<StatusComponents[K]>) => boolean
+    ? (
+        ...args: ComponentFuncArgs<StatusComponents[K]>
+      ) => StatusComponentStatusType<StatusComponents[K]>
     : never;
 };
