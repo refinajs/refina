@@ -38,4 +38,9 @@ app.use(MdUI2)(_ => {
     _.mdCircularProgress();
     _.mdCircularProgress(0.8);
   });
+  _.embed(componentView, "Divider", _ => {
+    _.mdDivider();
+    _.$css`height: 40px; margin-left: 30px`;
+    _._div({}, _ => _.mdVerticalDivider());
+  });
 });
