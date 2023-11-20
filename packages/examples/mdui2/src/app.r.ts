@@ -22,7 +22,7 @@ let input = d("Hello");
 app.use(MdUI2)(_ => {
   _._h1({}, "MDUI2 Test");
 
-  _.$css`position:sticky;top:0;left:0;right:0;background-color:#AAA;z-index:100`;
+  _.$css`position:sticky;top:0;left:0;right:0;background-color:#AAA;z-index:10000`;
   _._div({}, _ => {
     _._p({}, `Count is ${count}`);
     _._p({}, `Status is ${status.value}`);
@@ -120,5 +120,42 @@ app.use(MdUI2)(_ => {
   });
   _.embed(componentView, "Tooltip", _ => {
     _.mdTooltip("Message", _ => _.mdButton("Hover me!")) && console.log(_.$ev);
+  });
+  _.embed(componentView, "Layouts", _ => {
+    const exampleWindowStyle = "height:400px;border:1px black solid;margin:20px;padding:10px;border-radius:5px;";
+    _.$css(exampleWindowStyle);
+    _.mdLayout(_ => {
+      _.mdTopAppBar("TOP APP BAR");
+      const currentPage = _.mdNavigationBar([
+        ["Home", "home"],
+        ["About", "info"],
+      ]);
+      _.mdLayoutMain(_ => {
+        _.forRange(50, index => _._p({}, `${currentPage} content ${index}`));
+      });
+    });
+    _.$css(exampleWindowStyle);
+    _.mdLayout(_ => {
+      _.mdBottomAppBar("BOTTOM APP BAR");
+      const currentPage = _.mdNavigationRail([
+        ["Home", "home"],
+        ["About", "info"],
+      ]);
+      _.mdLayoutMain(_ => {
+        _.forRange(50, index => _._p({}, `${currentPage} content ${index}`));
+      });
+    });
+    _.$css(exampleWindowStyle);
+    _.mdLayout(_ => {
+      _.mdLayoutMain(_ => {
+        _._h1({}, "Layout Main");
+        _.mdNavigationDrawer(
+          (_, open) => _.mdButton("open drawer") && open(),
+          (_, close) => _.mdButton("close drawer") && close(),
+          true,
+          true,
+        );
+      });
+    });
   });
 });
