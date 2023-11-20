@@ -30,7 +30,10 @@ app.use(MdUI2)(_ => {
     _._p({}, `Input is ${sliderValue1.value}`);
   });
 
-  _.embed(componentView, "Avatar", _ => _.mdAvatar("https://via.placeholder.com/80x80?text=A"));
+  _.embed(componentView, "Avatar", _ => {
+    _.mdAvatar("https://via.placeholder.com/80x80?text=A");
+    _.mdIconAvatar("person");
+  });
   _.embed(componentView, "Badge", _ => {
     _.mdBadge();
     _.t` `;
@@ -52,6 +55,10 @@ app.use(MdUI2)(_ => {
     _.mdDivider();
     _.$css`height: 40px; margin-left: 30px`;
     _._div({}, _ => _.mdVerticalDivider());
+  });
+  _.embed(componentView, "Icon", _ => {
+    _.mdIcon("search");
+    _.mdIcon("delete");
   });
   _.embed(componentView, "Linear Progress", _ => {
     _.mdLinearProgress();

@@ -33,7 +33,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@mdi/font": "^7.3.67",
     "mdui": "^2.0.2",
     "refina": "workspace:^"
   }
