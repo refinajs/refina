@@ -47,6 +47,8 @@ export class App {
     return this.contextFuncs[name];
   }
 
+  htmlElementAlias: Record<string, string> = {};
+
   root: DOMRootComponent;
   refMap: Map<string, any> = new Map();
   nodeMap: Map<Node, DOMNodeComponent> = new Map();

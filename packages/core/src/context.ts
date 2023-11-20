@@ -263,7 +263,9 @@ export class IntrinsicContext<C extends ContextState> {
     }
     if (funcName[0] === "_") {
       // Now this is a HTML element
-      const tagName = funcName.slice(1) as keyof HTMLElementTagNameMap;
+      const rawTagName = funcName.slice(1);
+      const tagName = (this.$app.htmlElementAlias[rawTagName] ??
+        rawTagName) as keyof HTMLElementTagNameMap;
       const [data, inner] = args;
       this.$processHTMLElement(
         ckey,

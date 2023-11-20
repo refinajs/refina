@@ -115,8 +115,11 @@ export type SVGElementComponent<
   E extends keyof SVGElementTagNameMap = keyof SVGElementTagNameMap,
 > = DOMElementComponent<E>;
 
+type ReplaceHyphenWithLowLine<S extends string> =
+  S extends `${infer A}-${infer B}` ? `${A}_${ReplaceHyphenWithLowLine<B>}` : S;
+
 export type HTMLElementFuncs<C extends ContextState> = {
-  [E in keyof HTMLElementTagNameMap as `_${E}`]: DOMElementComponent<E> extends C["enabled"]
+  [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: DOMElementComponent<E> extends C["enabled"]
     ? (data?: Partial<HTMLElementTagNameMap[E]>, inner?: D<Content>) => void
     : never;
 };
