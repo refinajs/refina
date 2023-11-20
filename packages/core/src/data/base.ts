@@ -40,8 +40,9 @@ export function getD<T>(d: D<T>): T {
 }
 
 export type DArray<T> = D<D<T>[]>;
+export type DReadonlyArray<T> = D<readonly D<T>[]>;
 
-export function getDArray<T>(d: DArray<T>): T[] {
+export function getDArray<T>(d: DReadonlyArray<T>): T[] {
   return getD(d).map(getD);
 }
 
