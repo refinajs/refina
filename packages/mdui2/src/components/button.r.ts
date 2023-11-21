@@ -18,8 +18,26 @@ export class MdButton extends TriggerComponent<void> {
   }
 }
 
+@MdUI2.triggerComponent("mdTonalButton")
+export class MdTonalButton extends MdButton {
+  varient: Button["variant"] = "tonal";
+}
+
+@MdUI2.triggerComponent("mdOutlinedButton")
+export class MdOutlinedButton extends MdButton {
+  varient: Button["variant"] = "outlined";
+}
+
+@MdUI2.triggerComponent("mdTextButton")
+export class MdTextButton extends MdButton {
+  varient: Button["variant"] = "text";
+}
+
 declare module "refina" {
   interface TriggerComponents {
     mdButton: MdButton;
+    mdTonalButton: MdTonalButton;
+    mdOutlinedButton: MdOutlinedButton;
+    mdTextButton: MdTextButton;
   }
 }

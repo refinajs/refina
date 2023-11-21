@@ -51,6 +51,9 @@ app.use(MdUI2)(_ => {
     _.embed(componentView, "Button", _ => {
       _.mdButton("Button") && count++;
       _.mdButton("Button", true) && count++;
+      _.mdTonalButton("Tonal") && count++;
+      _.mdOutlinedButton("Outlined") && count++;
+      _.mdTextButton("Text") && count++;
     });
     _.embed(componentView, "Button Icon", _ => {
       _.mdIconButton("add") && count++;
