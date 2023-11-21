@@ -16,8 +16,10 @@
     </style>
     <script type="module" src="/src/app.r.ts"></script>
   </head>
-  <body id="root">
-    <!--应用内容将输出在id为"root"的此处-->
+  <body>
+    <div id="root">
+      <!--应用内容将输出在id为"root"的此处-->
+    </div>
   </body>
 </html>
 ```
