@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import MdUI2 from "@refina/mdui2";
+import MdUI2, { CheckboxState } from "@refina/mdui2";
 import "@refina/mdui2/styles.css";
 import { Content, app, bySelf, d, view } from "refina";
 
@@ -14,6 +14,7 @@ const componentView = view((_, name: string, inner: Content) => {
 let darkMode = false;
 let count = 0;
 let status = d(false);
+let status2 = d<CheckboxState>(undefined);
 const options = ["Option 1", "Option 2", "Option 3"] as const;
 let selected = d<(typeof options)[number]>(options[0]);
 let sliderValue1 = d(40);
@@ -65,6 +66,7 @@ app.use(MdUI2)(_ => {
     _.embed(componentView, "Checkbox", _ => {
       _.mdCheckbox(status, "Checkbox");
       _.mdCheckbox(status, "Checkbox", true);
+      _.mdCheckbox(status2, "Checkbox");
     });
     _.embed(componentView, "Chip", _ => {
       _.mdChip("Student");
