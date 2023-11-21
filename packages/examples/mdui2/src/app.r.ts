@@ -95,6 +95,18 @@ app.use(MdUI2)(_ => {
         _.t(item);
       }),
     );
+    _.embed(componentView, "Prose", _ => {
+      _.$css`border:2px black solid;border-radius:5px;padding:10px;`;
+      _._div({}, _ =>
+        _.mdProse(_ => {
+          _._h1({}, "Title");
+          _._p({}, "Content");
+          _._p({}, "Content");
+          _._p({}, "Content");
+          _._p({}, "Content");
+        }),
+      );
+    });
     _.embed(componentView, "Radio Group", _ => {
       _.mdRadioGroup(selected, options);
       _._br();

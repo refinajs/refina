@@ -16,6 +16,7 @@ export * from "./list.r";
 export * from "./navigationBar.r";
 export * from "./navigationDrawer.r";
 export * from "./navigationRail.r";
+export * from "./prose.r";
 export * from "./radioGroup.r";
 export * from "./rangeSlider.r";
 export * from "./segmentedButton.r";
