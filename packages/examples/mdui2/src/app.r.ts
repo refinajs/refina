@@ -58,6 +58,9 @@ app.use(MdUI2)(_ => {
     _.embed(componentView, "Button Icon", _ => {
       _.mdIconButton("add") && count++;
       _.mdIconButton("add", true) && count++;
+      _.mdFilledIconButton("add") && count++;
+      _.mdOutlinedIconButton("add") && count++;
+      _.mdTonalIconButton("add") && count++;
     });
     _.embed(componentView, "Checkbox", _ => {
       _.mdCheckbox(status, "Checkbox");
