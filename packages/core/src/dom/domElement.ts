@@ -156,18 +156,26 @@ export class DOMElementComponent<
     for (const event in listeners) {
       const listener = listeners[event] as any;
       if (listener) {
-        if (typeof listener === "function") {
-          this.node.addEventListener(event, listener);
-          newRegisteredEventListeners[event] = listener;
+        if (listenersToRemove[event]) {
+          listenersToRemove[event] = undefined;
+          if (typeof listener === "function") {
+            newRegisteredEventListeners[event] = listener;
+          } else {
+            newRegisteredEventListeners[event] = { ...listener };
+          }
         } else {
-          this.node.addEventListener(
-            event,
-            listener.listener,
-            listener.options,
-          );
-          newRegisteredEventListeners[event] = { ...listener };
+          if (typeof listener === "function") {
+            this.node.addEventListener(event, listener);
+            newRegisteredEventListeners[event] = listener;
+          } else {
+            this.node.addEventListener(
+              event,
+              listener.listener,
+              listener.options,
+            );
+            newRegisteredEventListeners[event] = { ...listener };
+          }
         }
-        listenersToRemove[event] = undefined;
       }
     }
     for (const event in listenersToRemove) {

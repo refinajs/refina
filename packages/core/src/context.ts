@@ -363,11 +363,10 @@ export class IntrinsicContext<C extends ContextState> {
     tagName: E,
     classes: string[],
     style: string,
-    data?: Partial<HTMLElementTagNameMap[E]>,
+    data: Partial<HTMLElementTagNameMap[E]> = {},
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfo<E> = {},
   ) {
-    data ??= {};
     inner = this.$normalizeContent(inner);
 
     this.$app.callAndResetHook("afterThisComponent");
@@ -396,6 +395,7 @@ export class IntrinsicContext<C extends ContextState> {
       }
       ec.setClasses(classes);
       ec.setStyle(style);
+      ec.updateEventListeners(eventListeners);
     }
 
     this.$setRef(ec);
@@ -430,11 +430,10 @@ export class IntrinsicContext<C extends ContextState> {
     tagName: E,
     classes: string[],
     style: string,
-    data?: SVGElementFuncData,
+    data: SVGElementFuncData = {},
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfo<E> = {},
   ) {
-    data ??= {};
     inner = this.$normalizeContent(inner);
 
     this.$app.callAndResetHook("afterThisComponent");
@@ -464,6 +463,7 @@ export class IntrinsicContext<C extends ContextState> {
             ec.node.setAttribute(key, String(value));
           }
         }
+        ec.updateEventListeners(eventListeners);
       }
       ec.setClasses(classes);
       ec.setStyle(style);
