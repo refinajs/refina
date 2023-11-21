@@ -139,6 +139,18 @@ app.use(MdUI2)(_ => {
       _.mdSwitch(status);
       _.mdSwitch(status, true);
     });
+    _.embed(componentView, "Table", _ => {
+      const data = [
+        { name: "Alice", age: 20 },
+        { name: "Bob", age: 21 },
+        { name: "Carol", age: 22 },
+      ];
+      _.mdTable(data, [_ => _.mdIcon("person"), "Age", "Action"], "name", item => {
+        _.mdTableCell(item.name);
+        _.mdTableCell(item.age);
+        _.mdTableCell(_ => _.mdButton("Open") && alert(item.name));
+      });
+    });
     _.embed(componentView, "Tabs", _ => {
       _.mdTabs(
         "Tab 1",
