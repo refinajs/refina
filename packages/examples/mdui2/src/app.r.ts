@@ -158,6 +158,7 @@ app.use(MdUI2)(_ => {
         "Option 3": _ => _.mdAvatar("https://via.placeholder.com/80x80?text=3"),
       });
       _.mdSelect(selected, options, true);
+      _.mdOutlinedSelect(selected, options);
     });
     _.embed(componentView, "Slider", _ => {
       _.mdSlider(sliderValue2);
