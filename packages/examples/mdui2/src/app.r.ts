@@ -23,7 +23,7 @@ let input = d("Hello");
 app.use(MdUI2)(_ => {
   _.useMdTheme(darkMode ? "dark" : "light");
 
-  _.$css`z-index:100000`;
+  _.$css`z-index:1999`;
   _.mdTopAppBar(_ => {
     _.$css`font-size: 2em; margin-right: 24px`;
     _._span({}, "MDUI2 Test");
@@ -71,6 +71,17 @@ app.use(MdUI2)(_ => {
     _.embed(componentView, "Circlular Progress", _ => {
       _.mdCircularProgress();
       _.mdCircularProgress(0.8);
+    });
+    _.embed(componentView, "Dialog", _ => {
+      _.mdDialog(
+        (_, open) => _.mdButton("Open Dialog") && open(),
+        "Title",
+        "Content",
+        (_, close) => {
+          _.mdButton("YES") && close();
+          _.mdButton("NO") && close();
+        },
+      );
     });
     _.embed(componentView, "Divider", _ => {
       _.mdDivider();
@@ -182,7 +193,8 @@ app.use(MdUI2)(_ => {
       _.mdTooltip("Message", _ => _.mdButton("Hover me!")) && console.log(_.$ev);
     });
     _.embed(componentView, "Layouts", _ => {
-      const exampleWindowStyle = "height:400px;border:1px black solid;margin:20px;padding:10px;border-radius:5px;";
+      const exampleWindowStyle =
+        "z-index:0;height:400px;border:1px black solid;margin:20px;padding:10px;border-radius:5px;";
       _.$css(exampleWindowStyle);
       _.mdLayout(_ => {
         _.mdTopAppBar("TOP APP BAR");
