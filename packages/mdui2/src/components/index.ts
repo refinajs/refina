@@ -4,6 +4,7 @@ export * from "./bottomAppBar.r";
 export * from "./button.r";
 export * from "./buttonIcon.r";
 export * from "./checkbox.r";
+export * from "./chip.r";
 export * from "./circularProgress.r";
 export * from "./divider.r";
 export * from "./fab.r";

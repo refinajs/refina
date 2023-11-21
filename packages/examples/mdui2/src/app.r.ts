@@ -54,6 +54,14 @@ app.use(MdUI2)(_ => {
       _.mdCheckbox(status, "Checkbox");
       _.mdCheckbox(status, "Checkbox", true);
     });
+    _.embed(componentView, "Chip", _ => {
+      _.mdChip("Student");
+      _.mdChip("Student", true);
+      _.$prop("icon", "person") && _.$prop("endIcon", "arrow_forward") && _.mdChip("Student", true);
+      _.mdSelectableChip(status, "Student");
+      _.mdDeletableChip("Student") && alert("Deleted!");
+      _.$prop("deleteIcon", "backspace") && _.mdDeletableChip("Student", true) && alert("Deleted!");
+    });
     _.embed(componentView, "Circlular Progress", _ => {
       _.mdCircularProgress();
       _.mdCircularProgress(0.8);
