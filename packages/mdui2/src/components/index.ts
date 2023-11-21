@@ -18,7 +18,7 @@ export * from "./navigationDrawer.r";
 export * from "./navigationRail.r";
 export * from "./radioGroup.r";
 export * from "./rangeSlider.r";
-export * from "./segmentedButtonGroup.r";
+export * from "./segmentedButton.r";
 export * from "./select.r";
 export * from "./slider.r";
 export * from "./switch.r";

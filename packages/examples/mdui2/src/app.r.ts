@@ -109,18 +109,18 @@ app.use(MdUI2)(_ => {
       _.mdRangeSlider([sliderValue1, sliderValue2], false, 10);
       _.mdRangeSlider([sliderValue1, sliderValue2], true);
     });
-    _.embed(componentView, "Segmented Button Group", _ => {
-      _.mdSegmentedButtonGroup(["+1", "+2", "+3"]) && (count += _.$ev + 1);
+    _.embed(componentView, "Segmented Button", _ => {
+      _.mdSegmentedButton(["+1", "+2", "+3"]) && (count += _.$ev + 1);
       _._br();
-      _.mdSegmentedButtonGroup(["+1", "+2", "+3"], true) && (count += _.$ev + 1);
+      _.mdSegmentedButton(["+1", "+2", "+3"], true) && (count += _.$ev + 1);
       _._br();
-      _.mdSegmentedButtonGroup(["+1", "+2", "+3"], [true]) && (count += _.$ev + 1);
+      _.mdSegmentedButton(["+1", "+2", "+3"], [true]) && (count += _.$ev + 1);
       _._br();
       _.$props({
         icons: ["add", "add", "add"] as any, // TODO: fix type
         endIcons: ["star_border", , "star"],
       }) &&
-        _.mdSegmentedButtonGroup([1, 2, 3]) &&
+        _.mdSegmentedButton([1, 2, 3]) &&
         (count += _.$ev + 1);
     });
     _.embed(componentView, "Select", _ => {

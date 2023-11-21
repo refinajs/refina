@@ -1,8 +1,8 @@
 import { ComponentContext, Content, D, DReadonlyArray, TriggerComponent, byIndex, getD } from "refina";
 import MdUI2 from "../plugin";
 
-@MdUI2.triggerComponent("mdSegmentedButtonGroup")
-export class MdSegmentedButtonGroup extends TriggerComponent<
+@MdUI2.triggerComponent("mdSegmentedButton")
+export class MdSegmentedButton extends TriggerComponent<
   number,
   {
     icons: (string | undefined)[];
@@ -36,6 +36,6 @@ export class MdSegmentedButtonGroup extends TriggerComponent<
 
 declare module "refina" {
   interface TriggerComponents {
-    mdSegmentedButtonGroup: MdSegmentedButtonGroup;
+    mdSegmentedButton: MdSegmentedButton;
   }
 }
