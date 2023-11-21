@@ -105,9 +105,9 @@ app.use(MdUI2)(_ => {
       _.mdRadioGroup(selected, options, true);
     });
     _.embed(componentView, "Range Slider", _ => {
-      _.mdRangeSlider([sliderValue1, sliderValue2]);
-      _.mdRangeSlider([sliderValue1, sliderValue2], false, 10);
-      _.mdRangeSlider([sliderValue1, sliderValue2], true);
+      _.mdRangeSlider(sliderValue1, sliderValue2);
+      _.mdRangeSlider(sliderValue1, sliderValue2, false, 10);
+      _.mdRangeSlider(sliderValue1, sliderValue2, true);
     });
     _.embed(componentView, "Segmented Button", _ => {
       _.mdSegmentedButton(["+1", "+2", "+3"]) && (count += _.$ev + 1);

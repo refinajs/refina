@@ -6,7 +6,8 @@ export class MdRangeSlider extends TriggerComponent<[low: number, high: number]>
   sliderRef = ref<HTMLElementComponent<"mdui-range-slider">>();
   main(
     _: ComponentContext,
-    value: D<[low: D<number>, high: D<number>]>,
+    lowValue: D<number>,
+    highValue: D<number>,
     disabled: D<boolean> = false,
     step: D<number> = 1,
     min: D<number> = 0,
@@ -19,19 +20,16 @@ export class MdRangeSlider extends TriggerComponent<[low: number, high: number]>
         max: getD(max),
         step: getD(step),
         oninput: () => {
-          const newValue = this.sliderRef.current!.node.value as [number, number];
-          const valueValue = getD(value);
-          if (!_.$setD(valueValue[0], newValue[0]) && !_.$setD(valueValue[1], newValue[1])) {
-            valueValue[0] = newValue[0];
-            valueValue[1] = newValue[1];
-          }
-          this.$fire(newValue);
+          const [newLow, newHigh] = this.sliderRef.current!.node.value;
+          _.$setD(lowValue, newLow);
+          _.$setD(highValue, newHigh);
+          this.$fire([newLow, newHigh]);
         },
       });
 
     // TODO: remove this hack
     setTimeout(() => {
-      this.sliderRef.current!.node.value = getDArray(value);
+      this.sliderRef.current!.node.value = [getD(lowValue), getD(highValue)];
     });
   }
 }
