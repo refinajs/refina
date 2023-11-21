@@ -6,7 +6,7 @@ export type ButtonIconVariant = ButtonIcon["variant"];
 
 @MdUI2.triggerComponent("mdIconButton")
 export class MdIconButton extends TriggerComponent<void> {
-  varient: ButtonIconVariant;
+  varient: ButtonIconVariant = "standard";
 
   main(_: ComponentContext, icon: D<string>, disabled: D<boolean> = false): void {
     _._mdui_button_icon({
