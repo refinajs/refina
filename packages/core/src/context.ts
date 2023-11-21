@@ -193,7 +193,6 @@ export class IntrinsicContext<C extends ContextState> {
     this.$nextCls = [];
     return classes;
   }
-
   $css(style: string): true;
   $css(template: TemplateStringsArray, ...args: any[]): true;
   $css(...args: any[]): true {
@@ -224,11 +223,33 @@ export class IntrinsicContext<C extends ContextState> {
     );
     return true;
   }
-
   $rootCss(style: string): void;
   $rootCss(template: TemplateStringsArray, ...args: any[]): void;
   $rootCss(...args: any[]): void {
     this.$app.pendingRootCSS +=
+      ";" +
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]);
+  }
+
+  $bodyCls(cls: string): true;
+  $bodyCls(template: TemplateStringsArray, ...args: any[]): true;
+  $bodyCls(...args: any[]): true {
+    this.$app.pendingBodyCls = this.$app.pendingBodyCls.concat(
+      (Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0]
+      )
+        .split(/\s/)
+        .filter(Boolean),
+    );
+    return true;
+  }
+  $bodyCss(style: string): void;
+  $bodyCss(template: TemplateStringsArray, ...args: any[]): void;
+  $bodyCss(...args: any[]): void {
+    this.$app.pendingBodyCSS +=
       ";" +
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))

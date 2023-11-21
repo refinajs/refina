@@ -8,6 +8,8 @@ export class DOMRootComponent extends DOMElementComponent<
   portals = new Set<DOMPortalComponent>();
   protected createdPortals = new Set<DOMPortalComponent>();
 
+  bodyComponent = new DOMElementComponent("body", document.body);
+
   createDOM(): DOMNodeComponentActionResult {
     let lastEl = super.createDOM().lastEl;
     for (const portal of this.portals) {

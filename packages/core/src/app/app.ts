@@ -85,6 +85,8 @@ export class App {
 
   pendingRootCSS: string;
   pendingRootCls: string[];
+  pendingBodyCSS: string;
+  pendingBodyCls: string[];
 
   mounted = false;
   running = false;
@@ -209,9 +211,13 @@ export class App {
     this.eventData = undefined;
     this.pendingRootCSS = "";
     this.pendingRootCls = [];
+    this.pendingBodyCSS = "";
+    this.pendingBodyCls = [];
     this.execMain();
     this.root.setClasses(this.pendingRootCls);
     this.root.setStyle(this.pendingRootCSS);
+    this.root.bodyComponent.setClasses(this.pendingBodyCls);
+    this.root.bodyComponent.setStyle(this.pendingBodyCSS);
   }
 
   runtimeHooks: { [K in keyof AppRuntimeHookMap]?: AppRuntimeHookMap[K][] } =
