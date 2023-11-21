@@ -63,6 +63,11 @@ app.use(MdUI2)(_ => {
       _.$css`height: 40px; margin-left: 30px`;
       _._div({}, _ => _.mdVerticalDivider());
     });
+    _.embed(componentView, "Fab", _ => {
+      _.mdFab("add") && count++;
+      _.mdFab("add", true) && count++;
+      _.mdFab("add", false, "Plus 1") && count++;
+    });
     _.embed(componentView, "Icon", _ => {
       _.mdIcon("search");
       _.mdIcon("delete");

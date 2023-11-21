@@ -6,6 +6,7 @@ export * from "./buttonIcon.r";
 export * from "./checkbox.r";
 export * from "./circularProgress.r";
 export * from "./divider.r";
+export * from "./fab.r";
 export * from "./icon.r";
 export * from "./layout.r";
 export * from "./layoutMain.r";
