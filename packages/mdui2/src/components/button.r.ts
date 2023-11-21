@@ -2,9 +2,11 @@ import { Button } from "mdui";
 import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
 import MdUI2 from "../plugin";
 
+export type ButtonVariant = Button["variant"];
+
 @MdUI2.triggerComponent("mdButton")
 export class MdButton extends TriggerComponent<void> {
-  varient: Button["variant"];
+  varient: ButtonVariant;
 
   main(_: ComponentContext, inner: D<Content>, disabled: D<boolean> = false): void {
     _._mdui_button(
@@ -20,17 +22,17 @@ export class MdButton extends TriggerComponent<void> {
 
 @MdUI2.triggerComponent("mdTonalButton")
 export class MdTonalButton extends MdButton {
-  varient: Button["variant"] = "tonal";
+  varient: ButtonVariant = "tonal";
 }
 
 @MdUI2.triggerComponent("mdOutlinedButton")
 export class MdOutlinedButton extends MdButton {
-  varient: Button["variant"] = "outlined";
+  varient: ButtonVariant = "outlined";
 }
 
 @MdUI2.triggerComponent("mdTextButton")
 export class MdTextButton extends MdButton {
-  varient: Button["variant"] = "text";
+  varient: ButtonVariant = "text";
 }
 
 declare module "refina" {
