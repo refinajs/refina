@@ -35,7 +35,7 @@ app.use(MdUI2)(_ => {
     });
     _.$css`flex-grow:1`;
     _._div();
-    _.mdButtonIcon(darkMode ? "dark_mode" : "light_mode") && (darkMode = !darkMode);
+    _.mdIconButton(darkMode ? "dark_mode" : "light_mode") && (darkMode = !darkMode);
   });
 
   _.mdLayoutMain(_ => {
@@ -53,8 +53,8 @@ app.use(MdUI2)(_ => {
       _.mdButton("Button", true) && count++;
     });
     _.embed(componentView, "Button Icon", _ => {
-      _.mdButtonIcon("add") && count++;
-      _.mdButtonIcon("add", true) && count++;
+      _.mdIconButton("add") && count++;
+      _.mdIconButton("add", true) && count++;
     });
     _.embed(componentView, "Checkbox", _ => {
       _.mdCheckbox(status, "Checkbox");
