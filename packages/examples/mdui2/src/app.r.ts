@@ -11,6 +11,7 @@ const componentView = view((_, name: string, inner: Content) => {
   });
 });
 
+let darkMode = false;
 let count = 0;
 let status = d(false);
 const options = ["Option 1", "Option 2", "Option 3"] as const;
@@ -20,6 +21,8 @@ let sliderValue2 = d(60);
 let input = d("Hello");
 
 app.use(MdUI2)(_ => {
+  _.useMdTheme(darkMode ? "dark" : "light");
+
   _.$css`z-index:100000`;
   _.mdTopAppBar(_ => {
     _.$css`font-size: 2em; margin-right: 24px`;
@@ -30,6 +33,9 @@ app.use(MdUI2)(_ => {
       _.$css`font-family:Consolas`;
       _._div({}, `${count} ${status.value} ${selected.value} ${sliderValue1.value} ${sliderValue2.value}`);
     });
+    _.$css`flex-grow:1`;
+    _._div();
+    _.mdButtonIcon(darkMode ? "dark_mode" : "light_mode") && (darkMode = !darkMode);
   });
 
   _.mdLayoutMain(_ => {

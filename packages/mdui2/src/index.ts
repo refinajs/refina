@@ -5,3 +5,4 @@ import MdUI2 from "./plugin";
 export default MdUI2;
 
 export * from "./components";
+export * from "./theme";
