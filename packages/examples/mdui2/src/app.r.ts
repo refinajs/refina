@@ -200,6 +200,8 @@ app.use(MdUI2)(_ => {
       _.mdOutlinedTextField(input, "Message");
       _.mdPasswordInput(input, "Password");
       _.mdOutlinedPasswordInput(input, "Password");
+      _.mdTextarea(input, "Message (3 rows)");
+      _.$props({ rows: [2, 5] }) && _.mdTextarea(input, "Message (2-5 rows)");
     });
     _.embed(componentView, "Tooltip", _ => {
       _.mdTooltip("Message", _ => _.mdButton("Hover me!")) && console.log(_.$ev);
