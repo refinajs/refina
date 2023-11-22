@@ -50,17 +50,6 @@ type EnabledProps<C extends ContextState> = C["mode"] extends "build"
   ? T
   : {};
 
-type RequireProps<C extends ContextState, Props> = C["mode"] extends "build"
-  ? {
-      mode: "build";
-      enabled: {
-        $props: C["enabled"]["$props"] extends [never]
-          ? Partial<Props>
-          : C["enabled"]["$props"] & Partial<Props>;
-      };
-    }
-  : C;
-
 export type ToFullContext<I, C extends ContextState> = I & ContextFuncs<C>;
 
 export class IntrinsicContext<C extends ContextState> {
@@ -155,20 +144,11 @@ export class IntrinsicContext<C extends ContextState> {
   $prop<K extends keyof EnabledProps<C>, V extends EnabledProps<C>[K]>(
     key: K,
     value: V,
-  ): this is Context<
-    RequireProps<
-      C,
-      {
-        [P in K]: V;
-      }
-    >
-  > {
+  ): true {
     this.$nextProps[key] = value;
     return true;
   }
-  $props<Props extends EnabledProps<C>>(
-    props: Props,
-  ): this is Context<RequireProps<C, Props>> {
+  $props<Props extends EnabledProps<C>>(props: Props): true {
     Object.assign(this.$nextProps, props);
     return true;
   }

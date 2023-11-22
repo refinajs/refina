@@ -148,7 +148,7 @@ app.use(MdUI2)(_ => {
       _.mdSegmentedButton(["+1", "+2", "+3"], [true]) && (count += _.$ev + 1);
       _._br();
       _.$props({
-        icons: ["add", "add", "add"] as any, // TODO: fix type
+        icons: ["add", "add", "add"],
         endIcons: ["star_border", , "star"],
       }) &&
         _.mdSegmentedButton([1, 2, 3]) &&
