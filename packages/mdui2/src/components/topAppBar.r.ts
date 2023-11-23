@@ -8,8 +8,16 @@ export class MdTopAppBar extends OutputComponent {
   }
 }
 
+@MdUI2.outputComponent("mdTopAppBarTitle")
+export class MdTopAppBarTitle extends OutputComponent {
+  main(_: ComponentContext, inner: D<Content>): void {
+    _._mdui_top_app_bar_title({}, inner);
+  }
+}
+
 declare module "refina" {
   interface OutputComponents {
     mdTopAppBar: MdTopAppBar;
+    mdTopAppBarTitle: MdTopAppBarTitle;
   }
 }

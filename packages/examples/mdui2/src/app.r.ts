@@ -211,7 +211,10 @@ app.use(MdUI2)(_ => {
         "z-index:0;height:400px;border:1px black solid;margin:20px;padding:10px;border-radius:5px;";
       _.$css(exampleWindowStyle);
       _.mdLayout(_ => {
-        _.mdTopAppBar("TOP APP BAR");
+        _.mdTopAppBar(_ => {
+          _.mdIconButton("menu");
+          _.mdTopAppBarTitle("Title");
+        });
         const currentPage = _.mdNavigationBar([
           ["Home", "home"],
           ["About", "info"],
