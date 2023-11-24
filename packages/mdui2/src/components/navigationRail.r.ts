@@ -17,7 +17,7 @@ export class MdNavRail<Value extends string> extends StatusComponent<Value> {
   navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
   main(
     _: ComponentContext,
-    items: DArray<Value | [value: Value, iconName?: string]>,
+    items: DArray<[value: Value, iconName?: string]>,
     contentOverride: DPartialRecord<Value, Content> = {},
     bottomSlot?: D<Content>,
   ): void {
@@ -36,8 +36,7 @@ export class MdNavRail<Value extends string> extends StatusComponent<Value> {
         },
         _ => {
           _.for(items, bySelf, item => {
-            const itemValue = getD(item);
-            const [value, icon] = Array.isArray(itemValue) ? itemValue : [itemValue];
+            const [value, icon] = getD(item);
             _._mdui_navigation_rail_item(
               {
                 value,
@@ -59,7 +58,7 @@ declare module "refina" {
   interface ContextFuncs<C> {
     mdNavRail: MdNavRail<any> extends C["enabled"]
       ? <Value extends string>(
-          items: DArray<Value | [value: Value, iconName?: string]>,
+          items: DArray<[value: Value, iconName?: string]>,
           contentOverride?: DPartialRecord<Value, Content>,
           bottomSlot?: D<Content>,
         ) => Value
