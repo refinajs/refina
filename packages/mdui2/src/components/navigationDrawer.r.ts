@@ -10,8 +10,8 @@ import {
 } from "refina";
 import MdUI2 from "../plugin";
 
-@MdUI2.triggerComponent("mdNavigationDrawer")
-export class MdNavigationDrawer extends TriggerComponent<boolean> {
+@MdUI2.triggerComponent("mdNavDrawer")
+export class MdNavDrawer extends TriggerComponent<boolean> {
   navDrawerRef = ref<HTMLElementComponent<"mdui-navigation-drawer">>();
   main(
     _: ComponentContext,
@@ -41,6 +41,6 @@ export class MdNavigationDrawer extends TriggerComponent<boolean> {
 
 declare module "refina" {
   interface TriggerComponents {
-    mdNavigationDrawer: MdNavigationDrawer;
+    mdNavDrawer: MdNavDrawer;
   }
 }

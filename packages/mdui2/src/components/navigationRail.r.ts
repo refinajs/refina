@@ -11,8 +11,8 @@ import {
 } from "refina";
 import MdUI2 from "../plugin";
 
-@MdUI2.statusComponent("mdNavigationRail")
-export class MdNavigationRail<Value extends string> extends StatusComponent<Value> {
+@MdUI2.statusComponent("mdNavRail")
+export class MdNavRail<Value extends string> extends StatusComponent<Value> {
   navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
   main(
     _: ComponentContext,
@@ -50,7 +50,7 @@ export class MdNavigationRail<Value extends string> extends StatusComponent<Valu
 
 declare module "refina" {
   interface ContextFuncs<C> {
-    mdNavigationRail: MdNavigationRail<any> extends C["enabled"]
+    mdNavRail: MdNavRail<any> extends C["enabled"]
       ? <Value extends string>(
           options: DArray<Value | [value: Value, iconName?: string]>,
           contentOverride?: DPartialRecord<Value, Content>,

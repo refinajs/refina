@@ -215,7 +215,7 @@ app.use(MdUI2)(_ => {
           _.mdIconButton("menu");
           _.mdTopAppBarTitle("Title");
         });
-        const currentPage = _.mdNavigationBar([
+        const currentPage = _.mdNavBar([
           ["Home", "home"],
           ["About", "info"],
         ]);
@@ -226,7 +226,7 @@ app.use(MdUI2)(_ => {
       _.$css(exampleWindowStyle);
       _.mdLayout(_ => {
         _.mdBottomAppBar("BOTTOM APP BAR");
-        const currentPage = _.mdNavigationRail([
+        const currentPage = _.mdNavRail([
           ["Home", "home"],
           ["About", "info"],
         ]);
@@ -238,7 +238,7 @@ app.use(MdUI2)(_ => {
       _.mdLayout(_ => {
         _.mdLayoutMain(_ => {
           _._h1({}, "Layout Main");
-          _.mdNavigationDrawer(
+          _.mdNavDrawer(
             (_, open) => _.mdButton("open drawer") && open(),
             (_, close) => _.mdButton("close drawer") && close(),
             true,
