@@ -1,18 +1,23 @@
-import {
-  ComponentContext,
-  Content,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  bindArgsToContent,
-  getD,
-  ref,
-} from "refina";
+import { ComponentContext, Content, D, TriggerComponent, bindArgsToContent, getD } from "refina";
 import MdUI2 from "../plugin";
+
+@MdUI2.triggerComponent("mdControlledNavDrawer")
+export class MdControlledNavDrawer extends TriggerComponent<boolean> {
+  main(
+    _: ComponentContext,
+    open: D<boolean>,
+    inner: D<Content>,
+    modal: D<boolean> = false,
+    contained: D<boolean> = false,
+  ): void {
+    const modalOptions = getD(modal) ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true } : {};
+    _._mdui_navigation_drawer({ ...modalOptions, open: getD(open), contained: getD(contained) }, inner);
+  }
+}
 
 @MdUI2.triggerComponent("mdNavDrawer")
 export class MdNavDrawer extends TriggerComponent<boolean> {
-  navDrawerRef = ref<HTMLElementComponent<"mdui-navigation-drawer">>();
+  open = false;
   main(
     _: ComponentContext,
     trigger: D<Content<[open: (open?: boolean) => void]>>,
@@ -20,27 +25,27 @@ export class MdNavDrawer extends TriggerComponent<boolean> {
     modal: D<boolean> = false,
     contained: D<boolean> = false,
   ): void {
-    const modalOptions = getD(modal) ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true } : {};
-
     _.embed(
       bindArgsToContent(trigger, (open = true) => {
-        this.navDrawerRef.current!.node.open = open;
+        this.open = open;
         _.$update();
       }),
     );
-    _.$ref(this.navDrawerRef) &&
-      _._mdui_navigation_drawer(
-        { ...modalOptions, contained: getD(contained) },
-        bindArgsToContent(inner, (open = false) => {
-          this.navDrawerRef.current!.node.open = open;
-          _.$update();
-        }),
-      );
+    _.mdControlledNavDrawer(
+      this.open,
+      bindArgsToContent(inner, (open = false) => {
+        this.open = open;
+        _.$update();
+      }),
+      modal,
+      contained,
+    );
   }
 }
 
 declare module "refina" {
   interface TriggerComponents {
+    mdControlledNavDrawer: MdControlledNavDrawer;
     mdNavDrawer: MdNavDrawer;
   }
 }
