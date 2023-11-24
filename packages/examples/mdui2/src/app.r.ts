@@ -242,10 +242,10 @@ app.use(MdUI2)(_ => {
       _.mdLayout(_ => {
         _.mdLayoutMain(_ => {
           _._h1({}, "Layout Main");
+          _.$prop("contained", true);
           _.mdNavDrawer(
             (_, open) => _.mdButton("open drawer") && open(),
             (_, close) => _.mdButton("close drawer") && close(),
-            true,
             true,
           );
         });

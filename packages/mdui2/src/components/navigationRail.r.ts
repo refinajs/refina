@@ -13,7 +13,12 @@ import {
 import MdUI2 from "../plugin";
 
 @MdUI2.statusComponent("mdNavRail")
-export class MdNavRail<Value extends string> extends StatusComponent<Value> {
+export class MdNavRail<Value extends string> extends StatusComponent<
+  Value,
+  {
+    contained: boolean;
+  }
+> {
   navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
   main(
     _: ComponentContext,
@@ -30,6 +35,7 @@ export class MdNavRail<Value extends string> extends StatusComponent<Value> {
       _._mdui_navigation_rail(
         {
           value: this.$status,
+          contained: this.$props.contained,
           onchange: () => {
             this.$status = this.navRailRef.current!.node.value as Value;
           },
