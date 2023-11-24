@@ -226,10 +226,14 @@ app.use(MdUI2)(_ => {
       _.$css(exampleWindowStyle);
       _.mdLayout(_ => {
         _.mdBottomAppBar("BOTTOM APP BAR");
-        const currentPage = _.mdNavRail([
-          ["Home", "home"],
-          ["About", "info"],
-        ]);
+        const currentPage = _.mdNavRail(
+          [
+            ["Home", "home"],
+            ["About", "info"],
+          ],
+          {},
+          _ => _.mdFab("edit"),
+        );
         _.mdLayoutMain(_ => {
           _.forRange(50, index => _._p({}, `${currentPage} content ${index}`));
         });
