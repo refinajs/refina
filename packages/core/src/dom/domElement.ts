@@ -95,15 +95,11 @@ export class DOMElementComponent<
 
   protected currentClasses = "";
   addClasses(classes: string) {
-    if (classes === "r0") console.warn(this.node);
     this.currentClasses += classes;
   }
   protected appliedClasses = "";
   protected applyClasses() {
-    // if (this.currentClasses.includes("r54dvsu"))
-    //   console.log("applyClasses", this.currentClasses, this.appliedClasses);
     if (this.appliedClasses !== this.currentClasses) {
-      if (this.currentClasses.trim() === "") console.warn(this.node);
       if (this.currentClasses === "") {
         this.node.removeAttribute("class");
       } else {

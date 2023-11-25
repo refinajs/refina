@@ -162,10 +162,6 @@ export class IntrinsicContext<C extends ContextState> {
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]) + " ";
-    // const test = Array.isArray(args[0])
-    //   ? String.raw({ raw: args[0] }, ...args.slice(1))
-    //   : args[0];
-    // if (test === "r54dvsu") console.error(test);
     return true;
   }
   protected $nextCls: string = "";
