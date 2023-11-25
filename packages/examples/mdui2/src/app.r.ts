@@ -28,7 +28,6 @@ app.use(MdUI2)(_ => {
   _.mdTopAppBar(_ => {
     _.$css`font-size: 2em; margin-right: 24px`;
     _._span({}, "MDUI2 Test");
-    _.$cls`margin-top:10px`;
     _._div({}, _ => {
       _._span({}, "Status: ");
       _.$css`font-family:Consolas`;
