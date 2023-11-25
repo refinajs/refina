@@ -163,7 +163,12 @@ declare module "refina" {
 @Basics.outputComponent("textInput")
 export class BasicTextInput extends OutputComponent {
   inputRef = ref<DOMElementComponent<"input">>();
-  main(_: ComponentContext, value: D<string>, disabled?: D<boolean>, placeholder?: D<string>) {
+  main(
+    _: ComponentContext,
+    value: D<string>,
+    disabled?: D<boolean>,
+    placeholder?: D<string>,
+  ) {
     _.$ref(this.inputRef) &&
       _._input({
         type: "text",
@@ -221,7 +226,11 @@ declare module "refina" {
 @Basics.triggerComponent("checkbox")
 export class BasicCheckbox extends TriggerComponent<boolean> {
   inputRef = ref<DOMElementComponent<"input">>();
-  main(_: ComponentContext, label: D<string>, value: D<boolean> = this.inputRef.current?.node.checked ?? false) {
+  main(
+    _: ComponentContext,
+    label: D<string>,
+    value: D<boolean> = this.inputRef.current?.node.checked ?? false,
+  ) {
     _._label({}, _ => {
       _.t(label);
       _.$ref(this.inputRef) &&
@@ -244,7 +253,12 @@ declare module "refina" {
 
 @Basics.outputComponent("ul")
 export class BasicUl extends OutputComponent {
-  main<T>(_: ComponentContext, data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void): void {
+  main<T>(
+    _: ComponentContext,
+    data: D<Iterable<T>>,
+    key: KeyFunc<T>,
+    body: (item: T, index: number) => void,
+  ): void {
     _._ul({}, _ => {
       _.for(data, key, (item, index) => {
         _._li({}, _ => {
@@ -257,7 +271,11 @@ export class BasicUl extends OutputComponent {
 declare module "refina" {
   interface ContextFuncs<C> {
     ul: BasicUl extends C["enabled"]
-      ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
+      ? <T>(
+          data: D<Iterable<T>>,
+          key: KeyFunc<T>,
+          body: (item: T, index: number) => void,
+        ) => void
       : never;
   }
 }

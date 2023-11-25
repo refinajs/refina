@@ -12,7 +12,8 @@ export class FLabel extends OutputComponent {
   ): void {
     const requiredValue = getD(required),
       disabledValue = getD(disabled);
-    const requiredContent = typeof requiredValue === "boolean" ? "*" : requiredValue;
+    const requiredContent =
+      typeof requiredValue === "boolean" ? "*" : requiredValue;
     styles.root(disabledValue)(_);
     _._label({}, _ => {
       _._span({}, content);

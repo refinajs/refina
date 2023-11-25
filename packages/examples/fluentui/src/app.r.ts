@@ -1,4 +1,9 @@
-import FluentUI, { BrandVariants, Theme, createDarkTheme, createLightTheme } from "@refina/fluentui";
+import FluentUI, {
+  BrandVariants,
+  Theme,
+  createDarkTheme,
+  createLightTheme,
+} from "@refina/fluentui";
 import { app, byIndex, d, getD } from "refina";
 
 const myNewTheme: BrandVariants = {
@@ -50,10 +55,16 @@ app.use(
   _.fSwitch("Switch (Disabled)", switchTest, true);
 
   _.fDivider("checkbox");
-  _.for(checkboxSources, byIndex, (source, index) => _.fCheckbox(`Checkbox ${index}`, source));
+  _.for(checkboxSources, byIndex, (source, index) =>
+    _.fCheckbox(`Checkbox ${index}`, source),
+  );
   _._br();
   const sourcesSet = new Set(checkboxSources.map(getD));
-  const mixedState = sourcesSet.has(true) ? (sourcesSet.has(false) ? "mixed" : true) : false;
+  const mixedState = sourcesSet.has(true)
+    ? sourcesSet.has(false)
+      ? "mixed"
+      : true
+    : false;
   if (_.fCheckbox("Checkbox (Mixable)", mixedState)) {
     checkboxSources.forEach(source => (source.value = _.$ev));
   }
@@ -75,7 +86,12 @@ app.use(
   _.fDivider("dropdown");
   _.t(dropdownTest.value ?? "unselected");
   _._br();
-  _.fDropdown(dropdownTest, ["111", "222", "333", "444"], [false, true, false, false], "placeholder");
+  _.fDropdown(
+    dropdownTest,
+    ["111", "222", "333", "444"],
+    [false, true, false, false],
+    "placeholder",
+  );
 
   _.fDivider("input");
   _.fTextInput(textInputTest, false, "text input");
@@ -89,7 +105,16 @@ app.use(
   _.fUnderlineTextInput(textInputTest, false, "underline");
 
   _.fDivider("tabs");
-  _.fTabs("First Tab", "AAA", "Second Tab", "BBB", "Third Tab", "CCC", "Fourth Tab", "DDD");
+  _.fTabs(
+    "First Tab",
+    "AAA",
+    "Second Tab",
+    "BBB",
+    "Third Tab",
+    "CCC",
+    "Fourth Tab",
+    "DDD",
+  );
 
   _.fDivider("dialog");
   _.fDialog(

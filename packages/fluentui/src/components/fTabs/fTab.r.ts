@@ -1,4 +1,12 @@
-import { ComponentContext, Content, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTab.styles";
 

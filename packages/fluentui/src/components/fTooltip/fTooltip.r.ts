@@ -1,4 +1,11 @@
-import { ComponentContext, Content, D, Embed, OutputComponent, ref } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  Embed,
+  OutputComponent,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
 import "../fPortal";
@@ -17,7 +24,8 @@ export class FTooltip extends OutputComponent {
   main(_: ComponentContext, inner: D<Content>, content: D<Content>): void {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol];
-      const anotherTooltip = visibleTooltip && visibleTooltip.ikey !== this.$ikey;
+      const anotherTooltip =
+        visibleTooltip && visibleTooltip.ikey !== this.$ikey;
       const delay = anotherTooltip ? 0 : 250;
       if (anotherTooltip) {
         visibleTooltip.hide(this.$ikey);
@@ -54,15 +62,26 @@ export class FTooltip extends OutputComponent {
           cb1?.(ev);
           cb2(ev);
         };
-      triggerElement.onpointerenter = mergeCallbacks(triggerElement.onpointerenter, onTriggerEnter);
-      triggerElement.onpointerleave = mergeCallbacks(triggerElement.onpointerleave, onTriggerLeave);
-      triggerElement.onfocus = mergeCallbacks(triggerElement.onfocus, onTriggerEnter);
+      triggerElement.onpointerenter = mergeCallbacks(
+        triggerElement.onpointerenter,
+        onTriggerEnter,
+      );
+      triggerElement.onpointerleave = mergeCallbacks(
+        triggerElement.onpointerleave,
+        onTriggerLeave,
+      );
+      triggerElement.onfocus = mergeCallbacks(
+        triggerElement.onfocus,
+        onTriggerEnter,
+      );
       triggerElement.onblur = mergeCallbacks(triggerElement.onblur, () => {
         this.visible = false;
         _.$update();
       });
     } else {
-      throw new Error("Cannot find trigger element, did you forget to use the new context in the inner part?");
+      throw new Error(
+        "Cannot find trigger element, did you forget to use the new context in the inner part?",
+      );
     }
 
     if (this.visible) {
@@ -100,7 +119,10 @@ export class FTooltip extends OutputComponent {
         offset: 4,
         ...resolvePositioningShorthand("above"),
       };
-      const { containerRef } = _.usePositioning(positioningOptions, this.visible);
+      const { containerRef } = _.usePositioning(
+        positioningOptions,
+        this.visible,
+      );
 
       _.fPortal(_ => {
         styles.content(this.visible)(_);

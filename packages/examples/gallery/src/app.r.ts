@@ -10,7 +10,8 @@ const examples = [
   {
     id: "fluentui",
     name: "Fluent UI",
-    detail: "The impl in Refina for @fluentui/react. Package: @refina/fluentui.",
+    detail:
+      "The impl in Refina for @fluentui/react. Package: @refina/fluentui.",
   },
   {
     id: "mdui2",
@@ -20,7 +21,8 @@ const examples = [
   {
     id: "gh-login",
     name: "GitHub Login",
-    detail: "A fake GitHub login page using @refina/basic-components and TailwindCSS.",
+    detail:
+      "A fake GitHub login page using @refina/basic-components and TailwindCSS.",
   },
 ] as const;
 
@@ -62,7 +64,11 @@ if (isExample("fluentui")) {
           })
         ) {
           loading = true;
-          window.history.pushState(null, "", `${location.protocol}//${location.host}#${example.id}`);
+          window.history.pushState(
+            null,
+            "",
+            `${location.protocol}//${location.host}#${example.id}`,
+          );
           window.location.reload();
         }
       });

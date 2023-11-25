@@ -20,7 +20,9 @@ export class MdControlledDialog extends TriggerComponent<boolean> {
     actions: D<Content>,
     presistent: D<boolean> = false,
   ): void {
-    const presistentProps = getD(presistent) ? {} : { closeOnOverlayClick: true, closeOnEsc: true };
+    const presistentProps = getD(presistent)
+      ? {}
+      : { closeOnOverlayClick: true, closeOnEsc: true };
     _._mdui_dialog(
       {
         ...presistentProps,

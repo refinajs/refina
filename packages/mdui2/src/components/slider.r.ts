@@ -1,4 +1,11 @@
-import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdSlider")

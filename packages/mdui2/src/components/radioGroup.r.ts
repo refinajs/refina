@@ -14,7 +14,9 @@ import {
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdRadioGroup")
-export class MdRadioGroup<Value extends string> extends TriggerComponent<Value> {
+export class MdRadioGroup<
+  Value extends string,
+> extends TriggerComponent<Value> {
   radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
   main(
     _: ComponentContext,
@@ -26,7 +28,8 @@ export class MdRadioGroup<Value extends string> extends TriggerComponent<Value> 
     const contentOverrideValue = getD(contentOverride);
     const disabledValue = getD(disabled);
     const groupDisabled = disabledValue === true;
-    const optionsDisabled = typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
+    const optionsDisabled =
+      typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
 
     _.$ref(this.radioGroupRef) &&
       _._mdui_radio_group(

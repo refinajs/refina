@@ -3,7 +3,9 @@ import FluentUI from "../../plugin";
 import "./fTabList.r";
 import styles from "./fTabs.styles";
 
-type _R<T extends readonly any[], U extends readonly any[]> = readonly [] | readonly [...U, ...T];
+type _R<T extends readonly any[], U extends readonly any[]> =
+  | readonly []
+  | readonly [...U, ...T];
 
 // prettier-ignore
 type RepeatedTuple<T extends readonly any[]> =

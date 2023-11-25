@@ -16,8 +16,13 @@ export type EmbededContent<Args extends any[]> =
 export class Embed extends OutputComponent {
   $firstDOMNode: DOMNodeComponent | null = null;
   $firstHTMLELement: DOMElementComponent | null = null;
-  main<Args extends any[]>(_: Context, content: D<EmbededContent<Args>>, ...args: Args): void {
-    const contentValue: EmbededContent<Args> = contentCache.get(this.$ikey) ?? getD(content);
+  main<Args extends any[]>(
+    _: Context,
+    content: D<EmbededContent<Args>>,
+    ...args: Args
+  ): void {
+    const contentValue: EmbededContent<Args> =
+      contentCache.get(this.$ikey) ?? getD(content);
 
     const context = new IntrinsicContext(_.$app);
 
@@ -31,7 +36,8 @@ export class Embed extends OutputComponent {
         });
       } else {
         _.$firstDOMNode = this.$firstDOMNode = context.$firstDOMNode;
-        _.$firstHTMLELement = this.$firstHTMLELement = context.$firstHTMLELement;
+        _.$firstHTMLELement = this.$firstHTMLELement =
+          context.$firstHTMLELement;
       }
     } else {
       _.t(String(contentValue));
@@ -42,7 +48,10 @@ export class Embed extends OutputComponent {
 declare module "../context" {
   interface ContextFuncs<C> {
     embed: Embed extends C["enabled"]
-      ? <Args extends any[]>(content: D<EmbededContent<Args>>, ...args: Args) => void
+      ? <Args extends any[]>(
+          content: D<EmbededContent<Args>>,
+          ...args: Args
+        ) => void
       : never;
   }
 }

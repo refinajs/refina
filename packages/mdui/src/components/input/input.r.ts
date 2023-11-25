@@ -1,11 +1,23 @@
-import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import MdUI from "../../plugin";
 import { needUpdateTextFields } from "../../update";
 
 @MdUI.triggerComponent("mdInput")
 export class MdInput extends TriggerComponent<string> {
   inputRef = ref<HTMLElementComponent<"input">>();
-  main(_: ComponentContext, value: D<string>, label: D<string> = "", disabled: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    value: D<string>,
+    label: D<string> = "",
+    disabled: D<boolean> = false,
+  ): void {
     _.$cls`mdui-textfield` && _.$cls`mdui-textfield-floating-label`;
     _._div({}, _ => {
       _.$cls`mdui-textfield-label`;

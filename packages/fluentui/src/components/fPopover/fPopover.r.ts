@@ -36,7 +36,9 @@ export class FControlledPopover extends TriggerComponent<void> {
         "click",
         ev => {
           const target = ev.composedPath()[0] as HTMLElement;
-          const isOutside = [this.contentRef, targetRef].every(ref => !ref.current!.$mainEl!.contains(target));
+          const isOutside = [this.contentRef, targetRef].every(
+            ref => !ref.current!.$mainEl!.contains(target),
+          );
 
           if (isOutside) {
             close();
@@ -51,7 +53,13 @@ export class FControlledPopover extends TriggerComponent<void> {
         position: "above" as const,
         align: "center" as const,
         // arrowPadding: 2 * popoverSurfaceBorderRadius,
-        fallbackPositions: ["above", "after", "after-top", "before", "before-top"],
+        fallbackPositions: [
+          "above",
+          "after",
+          "after-top",
+          "before",
+          "before-top",
+        ],
       });
 
       _.fPortal(_ => {
@@ -60,7 +68,10 @@ export class FControlledPopover extends TriggerComponent<void> {
           _._div(
             {
               onkeydown: ev => {
-                if (ev.key === "Escape" && this.contentRef.current?.node.contains(ev.target as Node)) {
+                if (
+                  ev.key === "Escape" &&
+                  this.contentRef.current?.node.contains(ev.target as Node)
+                ) {
                   ev.preventDefault();
                   close();
                 }
@@ -71,7 +82,11 @@ export class FControlledPopover extends TriggerComponent<void> {
               //   surfaceStyles.arrow("medium")(_);
               //   _.$ref(this.arrowRef) && _._div();
               // }
-              _.embed(ctx => (typeof innerValue === "function" ? innerValue(ctx, close) : innerValue));
+              _.embed(ctx =>
+                typeof innerValue === "function"
+                  ? innerValue(ctx, close)
+                  : innerValue,
+              );
             },
           );
       });
@@ -85,7 +100,9 @@ export class FPopover extends TriggerComponent<boolean> {
   targetRef = ref<HTMLElementComponent>();
   main(
     _: ComponentContext,
-    trigger: D<View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>>,
+    trigger: D<
+      View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>
+    >,
     inner: D<Content<[close: () => void]>>,
     // withArrow: D<boolean> = false,
   ): void {
@@ -94,7 +111,9 @@ export class FPopover extends TriggerComponent<boolean> {
         this.open.value = getD(open) ?? !this.open.value;
       }),
     );
-    if (_.fControlledPopover(this.targetRef, this.open, inner /*, withArrow*/)) {
+    if (
+      _.fControlledPopover(this.targetRef, this.open, inner /*, withArrow*/)
+    ) {
       this.$fire(this.open.value);
     }
   }

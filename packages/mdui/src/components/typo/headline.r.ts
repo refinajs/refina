@@ -3,7 +3,11 @@ import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdHeadline")
 export class MdHeadline extends OutputComponent {
-  main(_: ComponentContext, inner: D<string>, opacity: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    inner: D<string>,
+    opacity: D<boolean> = false,
+  ): void {
     if (getD(opacity)) {
       _.$cls`mdui-typo-headline-opacity`;
     } else {

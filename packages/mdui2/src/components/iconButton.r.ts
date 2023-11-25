@@ -8,7 +8,11 @@ export type ButtonIconVariant = ButtonIcon["variant"];
 export class MdIconButton extends TriggerComponent<void> {
   varient: ButtonIconVariant = "standard";
 
-  main(_: ComponentContext, icon: D<string>, disabled: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    icon: D<string>,
+    disabled: D<boolean> = false,
+  ): void {
     _._mdui_button_icon({
       icon: getD(icon),
       disabled: getD(disabled),

@@ -8,7 +8,11 @@ export type ButtonVariant = Button["variant"];
 export class MdButton extends TriggerComponent<void> {
   varient: ButtonVariant = "filled";
 
-  main(_: ComponentContext, inner: D<Content>, disabled: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    inner: D<Content>,
+    disabled: D<boolean> = false,
+  ): void {
     _._mdui_button(
       {
         disabled: getD(disabled),

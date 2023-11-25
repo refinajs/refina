@@ -1,5 +1,12 @@
 import "@refina/fluentui-icons/dismiss.r.js";
-import { ComponentContext, Content, Context, D, TriggerComponent, getD } from "refina";
+import {
+  ComponentContext,
+  Content,
+  Context,
+  D,
+  TriggerComponent,
+  getD,
+} from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";
 import dialogBodyStyles from "./dialogBody.styles";
@@ -7,7 +14,11 @@ import dialogContentStyles from "./dialogContent.styles";
 import dialogTitleStyles from "./dialogTitle.styles";
 
 export const fromCloseButtonSym = Symbol("fDialogCloseEventFromCloseButton");
-export type FDialogBodyEventData = typeof fromCloseButtonSym | string | number | undefined;
+export type FDialogBodyEventData =
+  | typeof fromCloseButtonSym
+  | string
+  | number
+  | undefined;
 
 @FluentUI.triggerComponent("fDialogBody")
 export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
@@ -15,11 +26,15 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
     _: ComponentContext,
     title: D<Content>,
     content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
-    actions?: D<Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined>,
+    actions?: D<
+      Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined
+    >,
     actionsPosition: D<"start" | "end"> = "start",
     closeButton: D<boolean> = false,
   ): void {
-    const wrapper = (content: Content<[close: (ev?: FDialogBodyEventData) => void]>) => {
+    const wrapper = (
+      content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
+    ) => {
       if (typeof content === "function") {
         return (ctx: Context) => content(ctx, this.$fire);
       }

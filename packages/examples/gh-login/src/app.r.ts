@@ -35,7 +35,8 @@ const $app = app.use(Basics)(_ => {
   });
   _.$cls`w-[340px] m-auto px-4 pt-1`;
   _.div(_ => {
-    _.$cls`mb-4 text-center text-2xl font-light p-0 tracking-tight` && _.h1("Sign in to GitHub");
+    _.$cls`mb-4 text-center text-2xl font-light p-0 tracking-tight` &&
+      _.h1("Sign in to GitHub");
     if (msgType.length > 0) {
       _.$cls`p-4 m-auto mb-2 border rounded-[6px] ${
         {
@@ -85,7 +86,8 @@ const $app = app.use(Basics)(_ => {
     _.$cls`p-4 text-center border border-[#30363d] rounded-[6px] mt-4 mb-[10px] `;
     _.p(_ => {
       _.t`New to GitHub? `;
-      _.$cls`text-[#2f81f7]` && _.a("https://github.com/signup?source=login", "Create an account");
+      _.$cls`text-[#2f81f7]` &&
+        _.a("https://github.com/signup?source=login", "Create an account");
       _.t`.`;
     });
   });
@@ -93,10 +95,32 @@ const $app = app.use(Basics)(_ => {
   _.div(_ => {
     _.$cls`flex justify-center`;
     _._ul({}, _ => {
-      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("https://github.com/site/terms", "Terms"));
-      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("https://github.com/site/privacy", "Privacy"));
-      _.$cls`mr-4` && _._li({}, _ => _.$cls`text-[#2f81f7]` && _.a("https://docs.github.com/", "Docs"));
-      _._li({}, _ => _.$cls`text-[#7d8590]` && _.a("https://github.com/contact", "Contact GitHub Support"));
+      _.$cls`mr-4` &&
+        _._li(
+          {},
+          _ =>
+            _.$cls`text-[#2f81f7]` &&
+            _.a("https://github.com/site/terms", "Terms"),
+        );
+      _.$cls`mr-4` &&
+        _._li(
+          {},
+          _ =>
+            _.$cls`text-[#2f81f7]` &&
+            _.a("https://github.com/site/privacy", "Privacy"),
+        );
+      _.$cls`mr-4` &&
+        _._li(
+          {},
+          _ =>
+            _.$cls`text-[#2f81f7]` && _.a("https://docs.github.com/", "Docs"),
+        );
+      _._li(
+        {},
+        _ =>
+          _.$cls`text-[#7d8590]` &&
+          _.a("https://github.com/contact", "Contact GitHub Support"),
+      );
     });
   });
 });

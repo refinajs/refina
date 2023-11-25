@@ -1,7 +1,15 @@
 import "@refina/fluentui-icons/checkmarkCircle.r.ts";
 import "@refina/fluentui-icons/errorCircle.r.ts";
 import "@refina/fluentui-icons/warning.r.ts";
-import { ComponentContext, Content, Context, D, OutputComponent, View, getD } from "refina";
+import {
+  ComponentContext,
+  Content,
+  Context,
+  D,
+  OutputComponent,
+  View,
+  getD,
+} from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fField.styles";
@@ -34,7 +42,10 @@ export class FField extends OutputComponent {
       _.embed(inner);
 
       if (validationMessage) {
-        styles.validationMessage(stateValue === "error", stateValue !== "none")(_);
+        styles.validationMessage(
+          stateValue === "error",
+          stateValue !== "none",
+        )(_);
         _._div({}, _ => {
           styles.validationMessageIcon(stateValue)(_);
           _.embed(validationMessageIcons[stateValue]);

@@ -1,4 +1,11 @@
-import { ComponentContext, D, DOMElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  DOMElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
@@ -31,13 +38,23 @@ export class FSlider extends TriggerComponent<number> {
       ${sliderCSSVars.sliderDirectionVar}: 90deg;
       ${
         stepValue && stepValue > 0
-          ? `${sliderCSSVars.sliderStepsPercentVar}: ${(stepValue * 100) / (maxValue - minValue)}%;`
+          ? `${sliderCSSVars.sliderStepsPercentVar}: ${
+              (stepValue * 100) / (maxValue - minValue)
+            }%;`
           : ""
       }
-      ${sliderCSSVars.sliderProgressVar}: ${getPercent(valueValue, minValue, maxValue)}%;`;
+      ${sliderCSSVars.sliderProgressVar}: ${getPercent(
+        valueValue,
+        minValue,
+        maxValue,
+      )}%;`;
     _._div({}, _ => {
       const onChange = () => {
-        const newValue = clamp(Number(this.inputRef.current!.node.value), minValue, maxValue);
+        const newValue = clamp(
+          Number(this.inputRef.current!.node.value),
+          minValue,
+          maxValue,
+        );
         _.$setD(value, newValue);
         this.$fire(newValue);
       };

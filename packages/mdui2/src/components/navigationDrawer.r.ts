@@ -1,4 +1,11 @@
-import { ComponentContext, Content, D, TriggerComponent, bindArgsToContent, getD } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  TriggerComponent,
+  bindArgsToContent,
+  getD,
+} from "refina";
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdControlledNavDrawer")
@@ -8,9 +15,19 @@ export class MdControlledNavDrawer extends TriggerComponent<
     contained: boolean;
   }
 > {
-  main(_: ComponentContext, open: D<boolean>, inner: D<Content>, modal: D<boolean> = false): void {
-    const modalOptions = getD(modal) ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true } : {};
-    _._mdui_navigation_drawer({ ...modalOptions, open: getD(open), contained: this.$props.contained }, inner);
+  main(
+    _: ComponentContext,
+    open: D<boolean>,
+    inner: D<Content>,
+    modal: D<boolean> = false,
+  ): void {
+    const modalOptions = getD(modal)
+      ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true }
+      : {};
+    _._mdui_navigation_drawer(
+      { ...modalOptions, open: getD(open), contained: this.$props.contained },
+      inner,
+    );
   }
 }
 

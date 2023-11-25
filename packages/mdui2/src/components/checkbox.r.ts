@@ -1,4 +1,12 @@
-import { ComponentContext, Content, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import MdUI2 from "../plugin";
 
 export type CheckboxState = boolean | undefined;
@@ -6,7 +14,12 @@ export type CheckboxState = boolean | undefined;
 @MdUI2.triggerComponent("mdCheckbox")
 export class MdCheckbox extends TriggerComponent<CheckboxState> {
   checkboxRef = ref<HTMLElementComponent<"mdui-checkbox">>();
-  main(_: ComponentContext, state: D<CheckboxState>, label?: D<Content>, disabled: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    state: D<CheckboxState>,
+    label?: D<Content>,
+    disabled: D<boolean> = false,
+  ): void {
     const stateValue = getD(state);
     const checked = stateValue;
     const indeterminate = stateValue === undefined;

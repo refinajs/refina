@@ -1,4 +1,13 @@
-import { ComponentContext, Content, D, DArray, KeyFunc, OutputComponent, byIndex, getD } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  DArray,
+  KeyFunc,
+  OutputComponent,
+  byIndex,
+  getD,
+} from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdTable")

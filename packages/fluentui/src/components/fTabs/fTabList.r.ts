@@ -1,4 +1,14 @@
-import { ComponentContext, Content, D, DArray, Ref, TriggerComponent, byIndex, getD, ref } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  DArray,
+  Ref,
+  TriggerComponent,
+  byIndex,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./animatedIndicator.styles";
 import "./fTab.r";
@@ -41,8 +51,12 @@ export class FTabList extends TriggerComponent<number> {
   ): void {
     const selectedValue = getD(selected),
       disabledRawValue = getD(disabled);
-    const tabListDisabled = typeof disabledRawValue === "boolean" ? disabledRawValue : false;
-    const tabDisabled = typeof disabledRawValue === "boolean" ? [] : disabledRawValue.map(d => getD(d) ?? false);
+    const tabListDisabled =
+      typeof disabledRawValue === "boolean" ? disabledRawValue : false;
+    const tabDisabled =
+      typeof disabledRawValue === "boolean"
+        ? []
+        : disabledRawValue.map(d => getD(d) ?? false);
 
     styles.root(tabListDisabled)(_);
     _._div({}, _ =>
@@ -59,10 +73,19 @@ export class FTabList extends TriggerComponent<number> {
           const buttonEl = tabRef!.current!.buttonRef.current!.node;
           const animationOffset = selectedTabRect.x - thisTabRect.x;
           const animationScale = selectedTabRect.width / thisTabRect.width;
-          buttonEl.style.setProperty(tabIndicatorCssVars.offsetVar, `${animationOffset}px`);
-          buttonEl.style.setProperty(tabIndicatorCssVars.scaleVar, `${animationScale}`);
+          buttonEl.style.setProperty(
+            tabIndicatorCssVars.offsetVar,
+            `${animationOffset}px`,
+          );
+          buttonEl.style.setProperty(
+            tabIndicatorCssVars.scaleVar,
+            `${animationScale}`,
+          );
         });
-        if (_.$ref(tabRef) && _.fTab(tabSelected, content, tabDisabled[index], tabSelected)) {
+        if (
+          _.$ref(tabRef) &&
+          _.fTab(tabSelected, content, tabDisabled[index], tabSelected)
+        ) {
           _.$setD(selected, index);
           this.$fire(index);
         }

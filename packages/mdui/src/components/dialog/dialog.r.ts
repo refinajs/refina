@@ -1,6 +1,14 @@
 import mdui from "mdui";
 import { Dialog } from "mdui/es/components/dialog/class";
-import { ComponentContext, Content, Context, D, HTMLElementComponent, OutputComponent, getD } from "refina";
+import {
+  ComponentContext,
+  Content,
+  Context,
+  D,
+  HTMLElementComponent,
+  OutputComponent,
+  getD,
+} from "refina";
 import MdUI from "../../plugin";
 import { needUpdateDialogSize } from "../../update";
 
@@ -30,7 +38,10 @@ export class MdDialog extends OutputComponent {
     body: D<Content<[setClose: (open?: D<boolean>) => void]>>,
     actions: D<Content<[setClose: (open?: D<boolean>) => void]>>,
   ): void {
-    const toContent = (defaultOpen: boolean, inner: D<Content<[setClose: (open?: D<boolean>) => void]>>) => {
+    const toContent = (
+      defaultOpen: boolean,
+      inner: D<Content<[setClose: (open?: D<boolean>) => void]>>,
+    ) => {
       const innerValue = getD(inner);
       if (typeof innerValue === "function") {
         return (context: Context) => {

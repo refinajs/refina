@@ -33,14 +33,24 @@ export class MdIntrinsicButton extends TriggerComponent<void> {
 
 @MdUI.triggerComponent("mdButton")
 export class MdButton extends TriggerComponent<void> {
-  main(_: ComponentContext, inner: D<Content>, disabled: D<boolean> = false): void {
-    _.mdIntrinsicButton(inner, "primary", true, getD(disabled), true, false) && this.$fire();
+  main(
+    _: ComponentContext,
+    inner: D<Content>,
+    disabled: D<boolean> = false,
+  ): void {
+    _.mdIntrinsicButton(inner, "primary", true, getD(disabled), true, false) &&
+      this.$fire();
   }
 }
 
 @MdUI.triggerComponent("mdIconButton")
 export class MdIconButton extends TriggerComponent<void> {
-  main(_: ComponentContext, icon: IconName, raised: D<boolean> = true, disabled: D<boolean> = false): void {
+  main(
+    _: ComponentContext,
+    icon: IconName,
+    raised: D<boolean> = true,
+    disabled: D<boolean> = false,
+  ): void {
     _.mdIntrinsicButton(
       _ => {
         _.mdIcon(icon);

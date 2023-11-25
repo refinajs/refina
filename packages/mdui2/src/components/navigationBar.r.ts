@@ -35,7 +35,9 @@ export class MdNavBar<Value extends string> extends StatusComponent<Value> {
         _ =>
           _.for(options, bySelf, option => {
             const optionValue = getD(option);
-            const [value, icon] = Array.isArray(optionValue) ? optionValue : [optionValue];
+            const [value, icon] = Array.isArray(optionValue)
+              ? optionValue
+              : [optionValue];
             _._mdui_navigation_bar_item(
               {
                 value,

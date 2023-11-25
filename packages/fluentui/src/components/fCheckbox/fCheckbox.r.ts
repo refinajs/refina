@@ -1,6 +1,13 @@
 import "@refina/fluentui-icons/checkmark.r.ts";
 import "@refina/fluentui-icons/square.r.ts";
-import { ComponentContext, D, DOMElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  DOMElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fCheckbox.styles";

@@ -1,4 +1,11 @@
-import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import styles from "./input.styles";
 import { InputAppearance } from "./input.types";
@@ -10,7 +17,12 @@ export abstract class FInput<T> extends TriggerComponent<T> {
 
   appearance: InputAppearance = "outline";
   inputRef = ref<HTMLElementComponent<"input">>();
-  main(_: ComponentContext, value: D<T>, disabled: D<boolean> = false, placeholder: D<string> = ""): void {
+  main(
+    _: ComponentContext,
+    value: D<T>,
+    disabled: D<boolean> = false,
+    placeholder: D<string> = "",
+  ): void {
     const valueValue = getD(value),
       disabledValue = getD(disabled),
       placeholderValue = getD(placeholder);
@@ -31,7 +43,9 @@ export abstract class FInput<T> extends TriggerComponent<T> {
             disabled: disabledValue,
             placeholder: placeholderValue,
             oninput: () => {
-              const newValue = this.parseValue(this.inputRef.current!.node.value);
+              const newValue = this.parseValue(
+                this.inputRef.current!.node.value,
+              );
               _.$setD(value, newValue);
               this.$fire(newValue);
             },

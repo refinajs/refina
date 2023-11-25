@@ -1,7 +1,18 @@
-import { ComponentContext, Content, D, HTMLElementComponent, TriggerComponent, bySelf, getD, ref } from "refina";
+import {
+  ComponentContext,
+  Content,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  bySelf,
+  getD,
+  ref,
+} from "refina";
 import MdUI2 from "../plugin";
 
-type _R<T extends readonly any[], U extends readonly any[]> = readonly [] | readonly [...U, ...T];
+type _R<T extends readonly any[], U extends readonly any[]> =
+  | readonly []
+  | readonly [...U, ...T];
 
 // prettier-ignore
 type RepeatedTuple<T extends readonly any[]> =

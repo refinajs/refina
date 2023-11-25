@@ -31,7 +31,8 @@ export class MdSelect<Value extends string> extends TriggerComponent<Value> {
     const contentOverrideValue = getD(contentOverride);
     const disabledValue = getD(disabled);
     const groupDisabled = disabledValue === true;
-    const optionsDisabled = typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
+    const optionsDisabled =
+      typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
 
     _.$ref(this.selectRef) &&
       _._mdui_select(
@@ -82,7 +83,10 @@ declare module "refina" {
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
         ) => //@ts-ignore
-        this is TriggerComponentFuncAssertThisType<Value, MdOutlinedSelect<Value>>
+        this is TriggerComponentFuncAssertThisType<
+          Value,
+          MdOutlinedSelect<Value>
+        >
       : never;
   }
 }

@@ -3,7 +3,12 @@ import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdList")
 export class MdList extends OutputComponent {
-  main<T>(_: ComponentContext, data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void): void {
+  main<T>(
+    _: ComponentContext,
+    data: D<Iterable<T>>,
+    key: KeyFunc<T>,
+    body: (item: T, index: number) => void,
+  ): void {
     _.$cls`mdui-list`;
     _._div({}, _ => {
       _.for(data, key, (item, index) => {
@@ -19,7 +24,11 @@ export class MdList extends OutputComponent {
 declare module "refina" {
   interface ContextFuncs<C> {
     mdList: MdList extends C["enabled"]
-      ? <T>(data: D<Iterable<T>>, key: KeyFunc<T>, body: (item: T, index: number) => void) => void
+      ? <T>(
+          data: D<Iterable<T>>,
+          key: KeyFunc<T>,
+          body: (item: T, index: number) => void,
+        ) => void
       : never;
   }
 }

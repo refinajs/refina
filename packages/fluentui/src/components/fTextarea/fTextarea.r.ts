@@ -1,4 +1,11 @@
-import { ComponentContext, D, HTMLElementComponent, TriggerComponent, getD, ref } from "refina";
+import {
+  ComponentContext,
+  D,
+  HTMLElementComponent,
+  TriggerComponent,
+  getD,
+  ref,
+} from "refina";
 import FluentUI from "../../plugin";
 import { FTextareaAppearance, FTextareaResize } from ".";
 import styles from "./fTextarea.styles";
@@ -18,7 +25,12 @@ export class FTextarea extends TriggerComponent<string> {
     const disabledValue = getD(disabled),
       resizeValue = getD(resize);
 
-    styles.root(disabledValue, this.appearance.startsWith("filled"), false, this.appearance)(_);
+    styles.root(
+      disabledValue,
+      this.appearance.startsWith("filled"),
+      false,
+      this.appearance,
+    )(_);
     _._span({}, _ => {
       styles.textarea(disabledValue, resizeValue)(_);
       _.$ref(this.inputRef) &&

@@ -31,11 +31,15 @@ app.use(MdUI2)(_ => {
     _._div({}, _ => {
       _._span({}, "Status: ");
       _.$css`font-family:Consolas`;
-      _._div({}, `${count} ${status.value} ${selected.value} ${sliderValue1.value} ${sliderValue2.value}`);
+      _._div(
+        {},
+        `${count} ${status.value} ${selected.value} ${sliderValue1.value} ${sliderValue2.value}`,
+      );
     });
     _.$css`flex-grow:1`;
     _._div();
-    _.mdIconButton(darkMode ? "dark_mode" : "light_mode") && (darkMode = !darkMode);
+    _.mdIconButton(darkMode ? "dark_mode" : "light_mode") &&
+      (darkMode = !darkMode);
   });
 
   _.mdLayoutMain(_ => {
@@ -70,10 +74,14 @@ app.use(MdUI2)(_ => {
     _.embed(componentView, "Chip", _ => {
       _.mdChip("Student");
       _.mdChip("Student", true);
-      _.$prop("icon", "person") && _.$prop("endIcon", "arrow_forward") && _.mdChip("Student", true);
+      _.$prop("icon", "person") &&
+        _.$prop("endIcon", "arrow_forward") &&
+        _.mdChip("Student", true);
       _.mdSelectableChip(status, "Student");
       _.mdDeletableChip("Student") && alert("Deleted!");
-      _.$prop("deleteIcon", "backspace") && _.mdDeletableChip("Student", true) && alert("Deleted!");
+      _.$prop("deleteIcon", "backspace") &&
+        _.mdDeletableChip("Student", true) &&
+        alert("Deleted!");
     });
     _.embed(componentView, "Circlular Progress", _ => {
       _.mdCircularProgress();
@@ -176,11 +184,16 @@ app.use(MdUI2)(_ => {
         { name: "Bob", age: 21 },
         { name: "Carol", age: 22 },
       ];
-      _.mdTable(data, [_ => _.mdIcon("person"), "Age", "Action"], "name", item => {
-        _.mdTableCell(item.name);
-        _.mdTableCell(item.age);
-        _.mdTableCell(_ => _.mdButton("Open") && alert(item.name));
-      });
+      _.mdTable(
+        data,
+        [_ => _.mdIcon("person"), "Age", "Action"],
+        "name",
+        item => {
+          _.mdTableCell(item.name);
+          _.mdTableCell(item.age);
+          _.mdTableCell(_ => _.mdButton("Open") && alert(item.name));
+        },
+      );
     });
     _.embed(componentView, "Tabs", _ => {
       _.mdTabs(
@@ -203,7 +216,8 @@ app.use(MdUI2)(_ => {
       _.$props({ rows: [2, 5] }) && _.mdTextarea(input, "Message (2-5 rows)");
     });
     _.embed(componentView, "Tooltip", _ => {
-      _.mdTooltip("Message", _ => _.mdButton("Hover me!")) && console.log(_.$ev);
+      _.mdTooltip("Message", _ => _.mdButton("Hover me!")) &&
+        console.log(_.$ev);
     });
     _.embed(componentView, "Layouts", _ => {
       const exampleWindowStyle =

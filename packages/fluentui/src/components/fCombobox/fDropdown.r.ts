@@ -42,18 +42,32 @@ type DropdownActions =
 /**
  * Converts a keyboard interaction into a defined action
  */
-function getDropdownActionFromKey(e: KeyboardEvent, open: boolean = true): DropdownActions {
+function getDropdownActionFromKey(
+  e: KeyboardEvent,
+  open: boolean = true,
+): DropdownActions {
   const code = e.key;
   const { altKey, ctrlKey, key, metaKey } = e;
 
   // typing action occurs whether open or closed
-  if (key.length === 1 && code !== keys.Space && !altKey && !ctrlKey && !metaKey) {
+  if (
+    key.length === 1 &&
+    code !== keys.Space &&
+    !altKey &&
+    !ctrlKey &&
+    !metaKey
+  ) {
     return "Type";
   }
 
   // handle opening the dropdown if closed
   if (!open) {
-    if (code === keys.ArrowDown || code === keys.ArrowUp || code === keys.Enter || code === keys.Space) {
+    if (
+      code === keys.ArrowDown ||
+      code === keys.ArrowUp ||
+      code === keys.Enter ||
+      code === keys.Space
+    ) {
       return "Open";
     }
 
@@ -62,7 +76,11 @@ function getDropdownActionFromKey(e: KeyboardEvent, open: boolean = true): Dropd
   }
 
   // select or close actions
-  if ((code === keys.ArrowUp && altKey) || code === keys.Enter || code === keys.Space) {
+  if (
+    (code === keys.ArrowUp && altKey) ||
+    code === keys.Enter ||
+    code === keys.Space
+  ) {
     return "CloseSelect";
   }
   if (code === keys.Escape) {
@@ -99,7 +117,11 @@ function getDropdownActionFromKey(e: KeyboardEvent, open: boolean = true): Dropd
 /**
  * Returns the requested option index from an action
  */
-function getIndexFromAction(action: DropdownActions, currentIndex: number, maxIndex: number): number {
+function getIndexFromAction(
+  action: DropdownActions,
+  currentIndex: number,
+  maxIndex: number,
+): number {
   switch (action) {
     case "Next":
       return Math.min(maxIndex, currentIndex + 1);
@@ -119,7 +141,9 @@ function getIndexFromAction(action: DropdownActions, currentIndex: number, maxIn
 }
 
 @FluentUI.triggerComponent("fDropdown")
-export class FDropdown<OptionValue extends string> extends TriggerComponent<OptionValue> {
+export class FDropdown<
+  OptionValue extends string,
+> extends TriggerComponent<OptionValue> {
   appearance: DropdownAppearance = "outline";
 
   activeIndex = 0;
@@ -141,9 +165,12 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
       disabledValue = getD(disabled),
       placeholderValue = getD(placeholder);
 
-    const rootDisabled = typeof disabledValue === "boolean" ? disabledValue : false;
+    const rootDisabled =
+      typeof disabledValue === "boolean" ? disabledValue : false;
     const disabledOptions =
-      typeof disabledValue === "boolean" ? new Set<number>() : new Set(disabledValue.map((v, i) => (getD(v) ? i : -1)));
+      typeof disabledValue === "boolean"
+        ? new Set<number>()
+        : new Set(disabledValue.map((v, i) => (getD(v) ? i : -1)));
 
     const rootRef = ref<HTMLElementComponent<"div">>();
     const { targetRef, containerRef } = _.usePositioning(
@@ -151,14 +178,22 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
         position: "below" as const,
         align: "start" as const,
         offset: { crossAxis: 0, mainAxis: 2 },
-        fallbackPositions: ["above", "after", "after-top", "before", "before-top"],
+        fallbackPositions: [
+          "above",
+          "after",
+          "after-top",
+          "before",
+          "before-top",
+        ],
       },
       this.open,
     );
 
     if (this.open) {
       _.$app.pushHook("afterModifyDOM", () => {
-        containerRef.current!.$mainEl!.style.width = `${rootRef.current!.$mainEl.clientWidth}px`;
+        containerRef.current!.$mainEl!.style.width = `${
+          rootRef.current!.$mainEl.clientWidth
+        }px`;
       });
     }
 
@@ -174,7 +209,10 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
     dropdownStyles.root(this.appearance, rootDisabled, false)(_);
     _.$ref(rootRef) &&
       _._div({}, _ => {
-        dropdownStyles.button(selectedValue === "" && placeholder !== undefined, rootDisabled)(_);
+        dropdownStyles.button(
+          selectedValue === "" && placeholder !== undefined,
+          rootDisabled,
+        )(_);
         _.$ref(this.buttonEl, targetRef) &&
           _._button(
             {
@@ -222,7 +260,11 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     this.activeIndex !== -1 && selectOption(this.activeIndex);
                     break;
                   default:
-                    newIndex = getIndexFromAction(action, this.activeIndex, maxIndex);
+                    newIndex = getIndexFromAction(
+                      action,
+                      this.activeIndex,
+                      maxIndex,
+                    );
                 }
 
                 if (newIndex !== this.activeIndex) {
@@ -239,7 +281,9 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
               },
             },
             _ => {
-              _.t(selectedValue === "" ? placeholderValue ?? "" : selectedValue);
+              _.t(
+                selectedValue === "" ? placeholderValue ?? "" : selectedValue,
+              );
 
               dropdownStyles.expandIcon(rootDisabled)(_);
               _._span({}, _ => _.fiChevronDownRegular());
@@ -273,10 +317,15 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     switch (action) {
                       case "Select":
                       case "CloseSelect":
-                        this.activeIndex !== -1 && selectOption(this.activeIndex);
+                        this.activeIndex !== -1 &&
+                          selectOption(this.activeIndex);
                         break;
                       default:
-                        newIndex = getIndexFromAction(action, this.activeIndex, maxIndex);
+                        newIndex = getIndexFromAction(
+                          action,
+                          this.activeIndex,
+                          maxIndex,
+                        );
                     }
 
                     if (newIndex !== this.activeIndex) {
@@ -294,7 +343,12 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                     const active = index === this.activeIndex;
                     const selected = optionValue === selectedValue;
                     const optionDisabled = disabledOptions.has(index);
-                    optionStyles.root(active, this.focusVisible, optionDisabled, selected)(_);
+                    optionStyles.root(
+                      active,
+                      this.focusVisible,
+                      optionDisabled,
+                      selected,
+                    )(_);
                     _._div(
                       {
                         onclick: ev => {
@@ -309,7 +363,11 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
                         },
                       },
                       _ => {
-                        optionStyles.checkIcon(optionDisabled, selected, false)(_);
+                        optionStyles.checkIcon(
+                          optionDisabled,
+                          selected,
+                          false,
+                        )(_);
                         _.fiCheckmarkFilled();
                         _.t(optionValue);
                       },
@@ -323,7 +381,9 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent<Opti
 }
 
 @FluentUI.triggerComponent("fUnderlineDropdown")
-export class FUnderlineDropdown<OptionValue extends string> extends FDropdown<OptionValue> {
+export class FUnderlineDropdown<
+  OptionValue extends string,
+> extends FDropdown<OptionValue> {
   appearance: DropdownAppearance = "underline";
 }
 
