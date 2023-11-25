@@ -84,9 +84,9 @@ export class App {
   state: AppState;
 
   pendingRootCSS: string;
-  pendingRootCls: string[];
+  pendingRootCls: string;
   pendingBodyCSS: string;
-  pendingBodyCls: string[];
+  pendingBodyCls: string;
 
   mounted = false;
   running = false;
@@ -210,13 +210,13 @@ export class App {
     this.eventRecevier = null;
     this.eventData = undefined;
     this.pendingRootCSS = "";
-    this.pendingRootCls = [];
+    this.pendingRootCls = "";
     this.pendingBodyCSS = "";
-    this.pendingBodyCls = [];
+    this.pendingBodyCls = "";
     this.execMain();
-    this.root.setClasses(this.pendingRootCls);
+    this.root.addClasses(this.pendingRootCls);
     this.root.setStyle(this.pendingRootCSS);
-    this.root.bodyComponent.setClasses(this.pendingBodyCls);
+    this.root.bodyComponent.addClasses(this.pendingBodyCls);
     this.root.bodyComponent.setStyle(this.pendingBodyCSS);
   }
 

@@ -68,7 +68,7 @@ export class DOMPortalComponent extends DOMElementComponent {
     }
   }
 
-  setClasses(_classes: string[]) {
+  addClasses(_classes: string): void {
     throw new Error("Cannot reset classes on portal");
   }
   setStyle(_style: string) {

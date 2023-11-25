@@ -63,6 +63,7 @@ export class DOMElementComponent<
   protected createdChildren = new Set<DOMNodeComponent>();
 
   updateDOMTree(): DOMNodeComponentActionResult {
+    this.applyClasses();
     let createdUnused = new Set<DOMNodeComponent>(this.createdChildren);
     let lastEl: MaybeChildNode = null;
     for (const child of this.children) {
@@ -92,27 +93,25 @@ export class DOMElementComponent<
     };
   }
 
-  currentClasses = new Set<string>();
-  setClasses(classes: string[]) {
-    for (const cls of classes) {
-      if (!this.currentClasses.has(cls)) {
-        this.node.classList.add(cls);
-      } else {
-        this.currentClasses.delete(cls);
-      }
-    }
-    for (const cls of this.currentClasses) {
-      this.node.classList.remove(cls);
-    }
-    this.currentClasses = new Set(classes);
+  protected currentClasses = "";
+  addClasses(classes: string) {
+    if (classes === "r0") console.warn(this.node);
+    this.currentClasses += classes;
   }
-  addClasses(classes: string[]) {
-    if (classes.length > 0) {
-      this.node.classList.add(...classes);
-      for (const cls of classes) {
-        this.currentClasses.add(cls);
+  protected appliedClasses = "";
+  protected applyClasses() {
+    // if (this.currentClasses.includes("r54dvsu"))
+    //   console.log("applyClasses", this.currentClasses, this.appliedClasses);
+    if (this.appliedClasses !== this.currentClasses) {
+      if (this.currentClasses.trim() === "") console.warn(this.node);
+      if (this.currentClasses === "") {
+        this.node.removeAttribute("class");
+      } else {
+        this.node.setAttribute("class", this.currentClasses);
       }
+      this.appliedClasses = this.currentClasses;
     }
+    this.currentClasses = "";
   }
 
   currentStyle: string = "";

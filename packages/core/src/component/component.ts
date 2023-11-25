@@ -45,7 +45,7 @@ export class IntrinsicComponentContext<
     $caller.$nextNoPreserve = false;
   }
 
-  $classesArg: string[];
+  $classesArg: string;
   $styleArg: string;
 
   $setFirstDOMNode(node: DOMNodeComponent) {

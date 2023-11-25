@@ -158,20 +158,20 @@ export class IntrinsicContext<C extends ContextState> {
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
     if (this.$receiving) return true;
-    this.$nextCls = this.$nextCls.concat(
+    this.$nextCls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]
-      )
-        .split(/\s/)
-        .filter(Boolean),
-    );
+        : args[0]) + " ";
+    // const test = Array.isArray(args[0])
+    //   ? String.raw({ raw: args[0] }, ...args.slice(1))
+    //   : args[0];
+    // if (test === "r54dvsu") console.error(test);
     return true;
   }
-  protected $nextCls: string[] = [];
+  protected $nextCls: string = "";
   get $clsToApply() {
     const classes = this.$nextCls;
-    this.$nextCls = [];
+    this.$nextCls = "";
     return classes;
   }
   $css(style: string): true;
@@ -196,14 +196,10 @@ export class IntrinsicContext<C extends ContextState> {
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
   $rootCls(...args: any[]): true {
     if (this.$receiving) return true;
-    this.$app.pendingRootCls = this.$app.pendingRootCls.concat(
+    this.$app.pendingRootCls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]
-      )
-        .split(/\s/)
-        .filter(Boolean),
-    );
+        : args[0]) + " ";
     return true;
   }
   $rootCss(style: string): true;
@@ -222,14 +218,10 @@ export class IntrinsicContext<C extends ContextState> {
   $bodyCls(template: TemplateStringsArray, ...args: any[]): true;
   $bodyCls(...args: any[]): true {
     if (this.$receiving) return true;
-    this.$app.pendingBodyCls = this.$app.pendingBodyCls.concat(
+    this.$app.pendingBodyCls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0]
-      )
-        .split(/\s/)
-        .filter(Boolean),
-    );
+        : args[0]) + " ";
     return true;
   }
   $bodyCss(style: string): true;
@@ -370,7 +362,7 @@ export class IntrinsicContext<C extends ContextState> {
   protected $processHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
-    classes: string[],
+    classes: string,
     style: string,
     data: Partial<HTMLElementTagNameMap[E]> = {},
     inner?: D<Content>,
@@ -402,7 +394,7 @@ export class IntrinsicContext<C extends ContextState> {
           ec.node[key] = data[key];
         }
       }
-      ec.setClasses(classes);
+      ec.addClasses(classes);
       ec.setStyle(style);
       ec.updateEventListeners(eventListeners);
     }
@@ -437,7 +429,7 @@ export class IntrinsicContext<C extends ContextState> {
   protected $processSVGElement<E extends keyof SVGElementTagNameMap>(
     ckey: string,
     tagName: E,
-    classes: string[],
+    classes: string,
     style: string,
     data: SVGElementFuncData = {},
     inner?: D<Content>,
@@ -474,7 +466,7 @@ export class IntrinsicContext<C extends ContextState> {
         }
         ec.updateEventListeners(eventListeners);
       }
-      ec.setClasses(classes);
+      ec.addClasses(classes);
       ec.setStyle(style);
     }
 
