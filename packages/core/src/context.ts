@@ -157,6 +157,7 @@ export class IntrinsicContext<C extends ContextState> {
   $cls(cls: string): true;
   $cls(template: TemplateStringsArray, ...args: any[]): true;
   $cls(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$nextCls = this.$nextCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
@@ -176,6 +177,7 @@ export class IntrinsicContext<C extends ContextState> {
   $css(style: string): true;
   $css(template: TemplateStringsArray, ...args: any[]): true;
   $css(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$nextCSS +=
       ";" +
       (Array.isArray(args[0])
@@ -193,6 +195,7 @@ export class IntrinsicContext<C extends ContextState> {
   $rootCls(cls: string): true;
   $rootCls(template: TemplateStringsArray, ...args: any[]): true;
   $rootCls(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$app.pendingRootCls = this.$app.pendingRootCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
@@ -203,19 +206,22 @@ export class IntrinsicContext<C extends ContextState> {
     );
     return true;
   }
-  $rootCss(style: string): void;
-  $rootCss(template: TemplateStringsArray, ...args: any[]): void;
-  $rootCss(...args: any[]): void {
+  $rootCss(style: string): true;
+  $rootCss(template: TemplateStringsArray, ...args: any[]): true;
+  $rootCss(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$app.pendingRootCSS +=
       ";" +
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]);
+    return true;
   }
 
   $bodyCls(cls: string): true;
   $bodyCls(template: TemplateStringsArray, ...args: any[]): true;
   $bodyCls(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$app.pendingBodyCls = this.$app.pendingBodyCls.concat(
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
@@ -226,14 +232,16 @@ export class IntrinsicContext<C extends ContextState> {
     );
     return true;
   }
-  $bodyCss(style: string): void;
-  $bodyCss(template: TemplateStringsArray, ...args: any[]): void;
-  $bodyCss(...args: any[]): void {
+  $bodyCss(style: string): true;
+  $bodyCss(template: TemplateStringsArray, ...args: any[]): true;
+  $bodyCss(...args: any[]): true {
+    if (this.$receiving) return true;
     this.$app.pendingBodyCSS +=
       ";" +
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]);
+    return true;
   }
 
   get $permanentData() {
