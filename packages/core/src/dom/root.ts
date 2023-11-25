@@ -10,20 +10,8 @@ export class DOMRootComponent extends DOMElementComponent<
 
   bodyComponent = new DOMElementComponent("body", document.body);
 
-  createDOM(): DOMNodeComponentActionResult {
-    let lastEl = super.createDOM().lastEl;
-    for (const portal of this.portals) {
-      lastEl = portal.mount(lastEl) ?? lastEl;
-      this.createdPortals.add(portal);
-    }
-    return {
-      lastEl,
-      thisEl: this.node,
-    };
-  }
-
-  updateDOM(): DOMNodeComponentActionResult {
-    let lastEl = super.updateDOM().lastEl;
+  updateDOMTree(): DOMNodeComponentActionResult {
+    let lastEl = super.updateDOMTree().lastEl;
     const createdUnusedPortals = new Set(this.createdPortals);
     for (const portal of this.portals) {
       if (this.createdPortals.has(portal)) {

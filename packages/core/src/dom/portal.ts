@@ -11,26 +11,15 @@ import { DOMElementComponent } from "./domElement";
 export class DOMPortalComponent extends DOMElementComponent {
   protected childrenToRemove: Set<DOMNodeComponent>;
 
-  createDOM(): DOMNodeComponentActionResult {
-    let lastEl: MaybeChildNode = null;
-    for (const child of this.children) {
-      lastEl = child.createDOM().thisEl ?? lastEl;
-      this.createdChildren.add(child);
-    }
-    return {
-      lastEl,
-      thisEl: null,
-    };
-  }
-  updateDOM(): DOMNodeComponentActionResult {
+  updateDOMTree(): DOMNodeComponentActionResult {
     let lastEl: MaybeChildNode = null;
     this.childrenToRemove = new Set<DOMNodeComponent>(this.createdChildren);
     for (const child of this.children) {
       if (this.createdChildren.has(child)) {
-        lastEl = child.updateDOM().thisEl ?? lastEl;
+        lastEl = child.updateDOMTree().thisEl ?? lastEl;
         this.childrenToRemove.delete(child);
       } else {
-        lastEl = child.createDOM().thisEl ?? lastEl;
+        lastEl = child.updateDOMTree().thisEl ?? lastEl;
       }
     }
     this.createdChildren = new Set(this.children);

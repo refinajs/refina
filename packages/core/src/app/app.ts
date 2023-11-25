@@ -111,7 +111,7 @@ export class App {
     setTimeout(() => {
       this.execUpdate();
       this.callAndResetHook("beforeModifyDOM");
-      this.root.createDOM();
+      this.root.updateDOMTree();
       this.callAndResetHook("afterModifyDOM");
       this.runtimeData = undefined;
       this.mounted = true;
@@ -142,7 +142,7 @@ export class App {
         const startTime = window.performance.now();
         this.execUpdate();
         this.callAndResetHook("beforeModifyDOM");
-        this.root.updateDOM();
+        this.root.updateDOMTree();
         this.callAndResetHook("afterModifyDOM");
         this.runtimeData = undefined;
         console.debug(

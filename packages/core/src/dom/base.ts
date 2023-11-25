@@ -15,8 +15,7 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
     public node: N,
   ) {}
 
-  abstract createDOM(): DOMNodeComponentActionResult;
-  abstract updateDOM(): DOMNodeComponentActionResult;
+  abstract updateDOMTree(): DOMNodeComponentActionResult;
 
   appendTo(parent: Element) {
     parent.appendChild(this.node);

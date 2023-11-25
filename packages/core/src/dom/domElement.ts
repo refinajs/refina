@@ -62,28 +62,15 @@ export class DOMElementComponent<
   children: DOMNodeComponent[] = [];
   protected createdChildren = new Set<DOMNodeComponent>();
 
-  createDOM(): DOMNodeComponentActionResult {
-    let lastEl: MaybeChildNode = null;
-    for (const child of this.children) {
-      child.createDOM();
-      lastEl = child.appendTo(this.node) ?? lastEl;
-      this.createdChildren.add(child);
-    }
-    return {
-      lastEl,
-      thisEl: this.node,
-    };
-  }
-
-  updateDOM(): DOMNodeComponentActionResult {
+  updateDOMTree(): DOMNodeComponentActionResult {
     let createdUnused = new Set<DOMNodeComponent>(this.createdChildren);
     let lastEl: MaybeChildNode = null;
     for (const child of this.children) {
       if (this.createdChildren.has(child)) {
-        lastEl = child.updateDOM().thisEl ?? lastEl;
+        lastEl = child.updateDOMTree().thisEl ?? lastEl;
         createdUnused.delete(child);
       } else {
-        child.createDOM();
+        child.updateDOMTree();
         if (lastEl) {
           lastEl = child.insertAfter(lastEl) ?? lastEl;
         } else {
@@ -93,7 +80,6 @@ export class DOMElementComponent<
             lastEl = child.appendTo(this.node) ?? lastEl;
           }
         }
-        child.updateDOM();
       }
     }
     for (const unusedChild of createdUnused) {
