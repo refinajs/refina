@@ -36,7 +36,7 @@ export class App {
     if (!rootElement) {
       throw new Error(`Root element ${rootElementId} not found`);
     }
-    this.root = new DOMRootComponent("_", rootElement);
+    this.root = new DOMRootComponent("", rootElement);
     this.resetState();
   }
 
@@ -101,7 +101,7 @@ export class App {
     this.root.portals = new Set();
     this.currentDOMParent = this.root;
     this.eventRecevier = null;
-    this.idPrefix = ["root"];
+    this.idPrefix = [];
   }
 
   mount() {
