@@ -1,4 +1,4 @@
-import { PD, PDSymbol } from "./base";
+import { PD, PDSymbol } from "./data";
 
 type ValueSatisfiedKeys<O, T> = {
   [K in keyof O]: O[K] extends T ? K : never;
