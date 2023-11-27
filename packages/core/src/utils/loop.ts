@@ -3,7 +3,7 @@ import { Context } from "../context";
 import { D, getD } from "../data";
 
 type KeyHelper<T> = {
-  [K in keyof T]: T[K] extends string | number | bigint ? K : never;
+  [K in keyof T]: T[K] extends string | number ? K : never;
 }[keyof T];
 
 export type KeyFunc<T> =
