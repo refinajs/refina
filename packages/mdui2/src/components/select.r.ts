@@ -74,7 +74,7 @@ declare module "refina" {
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
         ) => // @ts-ignore
-        this is TriggerComponentFuncAssertThisType<Value, MdSelect<Value>>
+        this is TriggerComponentFuncAssertThisType<Value>
       : never;
     mdOutlinedSelect: MdOutlinedSelect<any> extends C["enabled"]
       ? <Value extends string>(
@@ -83,10 +83,7 @@ declare module "refina" {
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
         ) => // @ts-ignore
-        this is TriggerComponentFuncAssertThisType<
-          Value,
-          MdOutlinedSelect<Value>
-        >
+        this is TriggerComponentFuncAssertThisType<Value>
       : never;
   }
 }

@@ -65,7 +65,7 @@ declare module "refina" {
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
         ) => // @ts-ignore
-        this is TriggerComponentFuncAssertThisType<Value, MdRadioGroup<Value>>
+        this is TriggerComponentFuncAssertThisType<Value>
       : never;
   }
 }

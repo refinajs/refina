@@ -96,9 +96,12 @@ export interface TriggerComponents {}
  * Use `this is TriggerComponentFuncAssertThisType` as the return type of the component function,
  * to let TypeScript know that the context properties are available.
  */
-export type TriggerComponentFuncAssertThisType<Ev, C> = {
+export type TriggerComponentFuncAssertThisType<Ev> = {
   readonly $ev: Ev extends Event
     ? Ev & {
+        /**
+         * Whether `ev.target` is the same as `ev.currentTarget`.
+         */
         readonly $isCurrent: boolean;
       }
     : Ev;
@@ -111,8 +114,7 @@ export type TriggerComponentFuncs<C extends ContextState> = {
   [K in keyof TriggerComponents]: TriggerComponents[K] extends C["enabled"]
     ? (...args: ComponentFuncArgs<TriggerComponents[K]>) => // @ts-ignore
       this is TriggerComponentFuncAssertThisType<
-        TriggerComponentEventData<TriggerComponents[K]>,
-        TriggerComponents[K]
+        TriggerComponentEventData<TriggerComponents[K]>
       >
     : never;
 };
