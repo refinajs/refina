@@ -230,6 +230,7 @@ export class DOMElementComponent<
    * @param css The css to add.
    */
   addCss(css: string) {
+    if (css === "") return;
     this.pendingCss += css + ";";
   }
 

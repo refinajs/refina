@@ -434,6 +434,8 @@ export class IntrinsicContext<CS extends ContextState> {
   /**
    * Add styles to the next component.
    *
+   * **Note**: It is not required to add a semicolon (`;`) at the end of the style.
+   *
    * @example
    * ```ts
    * _.$css("color: red");
@@ -444,6 +446,8 @@ export class IntrinsicContext<CS extends ContextState> {
   $css(css: string): true;
   /**
    * Add styles to the next component using template literals.
+   *
+   * **Note**: It is not required to add a semicolon (`;`) at the end of the style.
    *
    * @example
    * ```ts
@@ -456,10 +460,9 @@ export class IntrinsicContext<CS extends ContextState> {
   $css(template: TemplateStringsArray, ...args: any[]): true;
   $css(...args: any[]): true {
     if (this.$updateState) {
-      this.$$nextCss +=
-        (Array.isArray(args[0])
-          ? String.raw({ raw: args[0] }, ...args.slice(1))
-          : args[0]) + ";";
+      this.$$nextCss += Array.isArray(args[0])
+        ? String.raw({ raw: args[0] }, ...args.slice(1))
+        : args[0];
     }
     return true;
   }
