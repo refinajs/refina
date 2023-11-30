@@ -305,6 +305,9 @@ export class DOMElementComponent<
             options?: boolean | AddEventListenerOptions;
           };
 
+      // Initialize the pending event listeners.
+      this.pendingEventListeners[type] ??= [];
+
       // Normalize the listener to the form of [listener, options]
       if (typeof listener === "function") {
         this.pendingEventListeners[type].push([listener]);
