@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -13,7 +13,7 @@ import MdUI2 from "../plugin";
 export class MdCollapse extends TriggerComponent<boolean> {
   collapseRef = ref<HTMLElementComponent<"mdui-collapse">>();
   main(
-    _: ComponentContext,
+    _: Context,
     checked: D<boolean>,
     label?: D<Content>,
     disabled: D<boolean> = false,

@@ -1,15 +1,7 @@
 import "@refina/fluentui-icons/checkmarkCircle.r.ts";
 import "@refina/fluentui-icons/errorCircle.r.ts";
 import "@refina/fluentui-icons/warning.r.ts";
-import {
-  ComponentContext,
-  Content,
-  Context,
-  D,
-  OutputComponent,
-  View,
-  getD,
-} from "refina";
+import { Content, Context, D, OutputComponent, View, getD } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fField.styles";
@@ -25,7 +17,7 @@ const validationMessageIcons = {
 @FluentUI.outputComponent("fField")
 export class FField extends OutputComponent {
   main(
-    _: ComponentContext,
+    _: Context,
     inner: D<Content>,
     label: D<Content>,
     required?: D<boolean | Content>,

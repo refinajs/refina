@@ -1,4 +1,4 @@
-import { Content, D, TriggerComponent, ComponentContext, getD } from "refina";
+import { Content, Context, D, TriggerComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fButton.styles";
 import { FButtonApperance, FButtonShape } from "./types";
@@ -6,11 +6,7 @@ import { FButtonApperance, FButtonShape } from "./types";
 export abstract class FIntrinsicButton extends TriggerComponent<void> {
   abstract shape: FButtonShape;
   abstract appearance: FButtonApperance;
-  main(
-    _: ComponentContext,
-    inner: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
     const disabledValue = getD(disabled);
     styles.root(this.shape, this.appearance, false, disabledValue, false)(_);
     _._button(

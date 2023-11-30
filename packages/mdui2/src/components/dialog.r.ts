@@ -1,19 +1,17 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
-  HTMLElementComponent,
   TriggerComponent,
   bindArgsToContent,
   getD,
-  ref,
 } from "refina";
 import MdUI from "../plugin";
 
 @MdUI.outputComponent("mdControlledDialog")
 export class MdControlledDialog extends TriggerComponent<boolean> {
   main(
-    _: ComponentContext,
+    _: Context,
     open: D<boolean>,
     title: D<Content>,
     body: D<Content>,
@@ -56,7 +54,7 @@ export class MdControlledDialog extends TriggerComponent<boolean> {
 export class MdDialog extends TriggerComponent<boolean> {
   open = false;
   main(
-    _: ComponentContext,
+    _: Context,
     trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
     title: D<Content<[close: (open?: D<boolean>) => void]>>,
     body: D<Content<[close: (open?: D<boolean>) => void]>>,

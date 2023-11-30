@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DPartialRecord,
   DReadonlyArray,
@@ -19,7 +19,7 @@ export class MdRadioGroup<
 > extends TriggerComponent<Value> {
   radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<Value>,
     options: DReadonlyArray<Value>,
     disabled: D<boolean> | DReadonlyArray<boolean> = false,
@@ -64,7 +64,7 @@ declare module "refina" {
           options: DReadonlyArray<Value>,
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
-        ) => //@ts-ignore
+        ) => // @ts-ignore
         this is TriggerComponentFuncAssertThisType<Value, MdRadioGroup<Value>>
       : never;
   }

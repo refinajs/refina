@@ -1,138 +1,140 @@
-import { ComponentContext, IntrinsicComponentContext } from "../component";
 import { Prelude } from "../constants";
-import { D, getD } from "../data";
-import {
-  DOMNodeComponent,
-  DOMNodeComponentActionResult,
-  MaybeChildNode,
-} from "./base";
-import { DOMElementComponent } from "./domElement";
+import { Context, IntrinsicContext } from "../context";
+import { D } from "../data";
+import { Content } from "./content";
+import { DOMElementComponent } from "./element";
+import { DOMNodeComponent, MaybeChildNode } from "./node";
 
 export class DOMPortalComponent extends DOMElementComponent {
+  /**
+   * Children to be removed when update mount.
+   */
   protected childrenToRemove: Set<DOMNodeComponent>;
 
-  updateDOMTree(): DOMNodeComponentActionResult {
-    let lastEl: MaybeChildNode = null;
-    this.childrenToRemove = new Set<DOMNodeComponent>(this.createdChildren);
-    for (const child of this.children) {
-      if (this.createdChildren.has(child)) {
-        lastEl = child.updateDOMTree().thisEl ?? lastEl;
-        this.childrenToRemove.delete(child);
-      } else {
-        lastEl = child.updateDOMTree().thisEl ?? lastEl;
-      }
+  updateDOM(): null {
+    this.childrenToRemove = new Set<DOMNodeComponent>(this.mountedChildren);
+    for (const child of this.pendingChildren) {
+      // Update the child node.
+      child.updateDOM();
+      // Do not remove this child node.
+      this.childrenToRemove.delete(child);
     }
-    this.createdChildren = new Set(this.children);
-    return {
-      lastEl,
-      thisEl: null,
-    };
+
+    // Do not update the mounted child nodes, which will be updated in `updateMount`.
+
+    // The last updated child node of portal is useless.
+    return null;
   }
 
-  mount(lastEl: MaybeChildNode) {
-    for (const child of this.children) {
-      if (lastEl === null) {
-        if (this.node.firstChild) {
-          lastEl = child.prependTo(this.node) ?? lastEl;
+  /**
+   * Update the DOM tree of the portal.
+   * @param lastNode The last updated node.
+   * @returns the new last updated node.
+   */
+  updateMount(lastNode: MaybeChildNode) {
+    for (const child of this.pendingChildren) {
+      if (!this.mountedChildren.has(child)) {
+        // This child node is not mounted yet.
+        if (lastNode) {
+          // There is a last updated child node.
+          // Insert this child node after the last updated child node.
+          child.insertAfter(lastNode);
         } else {
-          lastEl = child.appendTo(this.node) ?? lastEl;
-        }
-      } else {
-        lastEl = child.insertAfter(lastEl) ?? lastEl;
-      }
-    }
-    return lastEl;
-  }
-  updateMount(lastEl: MaybeChildNode) {
-    for (const child of this.children) {
-      if (!this.createdChildren.has(child)) {
-        if (lastEl) {
-          lastEl = child.insertAfter(lastEl) ?? lastEl;
-        } else {
-          if (this.node.firstChild) {
-            lastEl = child.prependTo(this.node) ?? lastEl;
-          } else {
-            lastEl = child.appendTo(this.node) ?? lastEl;
-          }
+          // There is no last updated child node.
+          // We should insert this child node as the first child node.
+          child.prependTo(this.node);
         }
       }
+      // Update the last updated child node.
+      lastNode = child.asChildNode ?? lastNode;
     }
+
+    // Remove mounted child nodes that are no longer used.
     for (const child of this.childrenToRemove) {
       child.removeFrom(this.node);
     }
-    return lastEl;
+
+    // Update the mounted child nodes.
+    this.mountedChildren = new Set(this.pendingChildren);
+    this.pendingChildren = [];
+
+    return lastNode;
   }
+
+  /**
+   * Remove the portal from the DOM tree.
+   */
   unmount() {
-    for (const child of this.createdChildren) {
+    for (const child of this.mountedChildren) {
       child.removeFrom(this.node);
     }
+
+    // Clear the mounted children.
+    this.mountedChildren = new Set();
+    this.pendingChildren = [];
   }
 
-  addClasses(_classes: string): void {
-    throw new Error("Cannot reset classes on portal");
-  }
-  setStyle(_style: string) {
-    throw new Error("Cannot reset style on portal");
+  addEventListener(_event: any, _listener: any, _options: any): never {
+    throw new Error("Cannot add event listener to portal.");
   }
 
-  appendTo(_parent: Element) {
+  addEventListeners(_listeners: any): never {
+    throw new Error("Cannot add event listeners to portal.");
+  }
+
+  addCls(_classes: string): void {
+    throw new Error("Cannot add classes to portal.");
+  }
+
+  addCss(_style: string) {
+    throw new Error("Cannot add styles to portal.");
+  }
+
+  get asChildNode(): null {
     return null;
   }
-  prependTo(_parent: Element) {
-    return null;
-  }
-  insertAfter(_element: ChildNode) {
-    return null;
-  }
-  removeFrom(_parent: Element) {}
+
+  insertAfter(_node: ChildNode): void {}
+
+  prependTo(_parent: Element): void {}
+
+  removeFrom(_parent: Element): void {}
 }
 
-export type PortalView = (context: ComponentContext) => void;
-
-Prelude.registerFunc("portal", function (ckey: string, inner: D<PortalView>) {
-  this.$app.callAndResetHook("afterThisComponent");
-
-  const ikey = this.$app.pushKey(ckey);
-  this.$app.markComponentProcessed(ikey);
-
-  const oldParent = this.$app.currentDOMParent;
-
-  let portal = this.$app.refMap.get(ikey) as DOMPortalComponent;
-
+Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
+  const ikey: string = this.$app.pushKey(ckey);
+  const context = new IntrinsicContext(this.$app) as unknown as Context;
+  let portal = this.$app.refMap.get(ikey) as DOMPortalComponent | undefined;
   if (!portal) {
     portal = new DOMPortalComponent(ikey, this.$app.root.node);
     this.$app.refMap.set(ikey, portal);
   }
-  oldParent.children.push(portal);
-  this.$app.root.portals.add(portal);
-  portal.children = [];
 
-  const context = new IntrinsicComponentContext(this);
+  const updateState = this.$updateState;
+  if (updateState) {
+    this.$$fulfillRef(portal);
 
-  this.$setRef(portal);
+    this.$app.root.pendingPortals.push(portal);
 
-  if (this.$isNoPreserve) {
-    if (this.$nextNoPreserve === "deep") context.$allNoPreserve = true;
-    else throw new Error(`Portal cannot be no-preserve.`);
+    context.$$updateDOMContent(updateState, portal, inner);
+  } else {
+    context.$$recvDOMContent(inner);
   }
 
-  this.$app.currentDOMParent = portal!;
-
-  getD(inner)(context as unknown as ComponentContext);
-
-  this.$app.callAndResetHook("afterThisComponent");
-
-  this.$app.currentDOMParent = oldParent;
-
-  this.$app.popKey(ckey);
-
-  return portal!;
+  this.$app.popKey(ikey);
+  return portal;
 });
 
 declare module "../context" {
   interface ContextFuncs<C extends ContextState> {
+    /**
+     * Render content to the end of the root element.
+     *
+     * This is usefull when you want to render a dialog or a tooltip
+     *  that should not be affected by the parent element's styles.
+     */
     portal: DOMPortalComponent extends C["enabled"]
-      ? (inner: D<PortalView>) => void
+      ? (inner: D<Content>) => void
       : never;
   }
 }

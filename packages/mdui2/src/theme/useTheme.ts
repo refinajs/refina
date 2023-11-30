@@ -3,7 +3,7 @@ import MdUI2 from "../plugin";
 export type MdUITheme = "light" | "dark" | "auto";
 
 MdUI2.registerFunc("useMdTheme", function (_ckey, theme: MdUITheme = "auto") {
-  this.$bodyCls(`mdui-theme-${theme}`);
+  this.$body.addCls(`mdui-theme-${theme}`);
 });
 
 declare module "refina" {

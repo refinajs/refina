@@ -1,12 +1,12 @@
-import { ComponentContext, D, KeyFunc, OutputComponent } from "refina";
+import { Context, D, LoopKey, OutputComponent } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdList")
 export class MdList extends OutputComponent {
   main<T>(
-    _: ComponentContext,
+    _: Context,
     data: D<Iterable<T>>,
-    key: KeyFunc<T>,
+    key: LoopKey<T>,
     body: (item: T, index: number) => void,
   ): void {
     _.$cls`mdui-list`;
@@ -26,7 +26,7 @@ declare module "refina" {
     mdList: MdList extends C["enabled"]
       ? <T>(
           data: D<Iterable<T>>,
-          key: KeyFunc<T>,
+          key: LoopKey<T>,
           body: (item: T, index: number) => void,
         ) => void
       : never;

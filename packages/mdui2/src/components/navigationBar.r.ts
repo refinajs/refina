@@ -1,11 +1,10 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   DArray,
   DPartialRecord,
   HTMLElementComponent,
   StatusComponent,
-  bySelf,
   getD,
   ref,
 } from "refina";
@@ -15,7 +14,7 @@ import MdUI2 from "../plugin";
 export class MdNavBar<Value extends string> extends StatusComponent<Value> {
   navBarRef = ref<HTMLElementComponent<"mdui-navigation-bar">>();
   main(
-    _: ComponentContext,
+    _: Context,
     options: DArray<Value | [value: Value, iconName?: string]>,
     contentOverride: DPartialRecord<Value, Content> = {},
   ): void {
@@ -33,19 +32,23 @@ export class MdNavBar<Value extends string> extends StatusComponent<Value> {
           },
         },
         _ =>
-          _.for(options, bySelf, option => {
-            const optionValue = getD(option);
-            const [value, icon] = Array.isArray(optionValue)
-              ? optionValue
-              : [optionValue];
-            _._mdui_navigation_bar_item(
-              {
-                value,
-                icon,
-              },
-              contentOverrideValue[value] ?? value,
-            );
-          }),
+          _.for(
+            options,
+            item => getD(item)[0],
+            option => {
+              const optionValue = getD(option);
+              const [value, icon] = Array.isArray(optionValue)
+                ? optionValue
+                : [optionValue];
+              _._mdui_navigation_bar_item(
+                {
+                  value,
+                  icon,
+                },
+                contentOverrideValue[value] ?? value,
+              );
+            },
+          ),
       );
   }
 }

@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -28,7 +28,7 @@ type RepeatedTuple<T extends readonly any[]> =
 export class MdTabs extends TriggerComponent<string> {
   tabsRef = ref<HTMLElementComponent<"mdui-tabs">>();
   activeTab: string;
-  main(_: ComponentContext, ...nameAndContents: (D<string> | D<Content>)[]) {
+  main(_: Context, ...nameAndContents: (D<string> | D<Content>)[]) {
     const names: string[] = [],
       contents: D<Content>[] = [];
     for (let i = 0; i < nameAndContents.length; i += 2) {

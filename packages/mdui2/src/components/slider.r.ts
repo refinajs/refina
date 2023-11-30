@@ -1,5 +1,5 @@
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -12,7 +12,7 @@ import MdUI2 from "../plugin";
 export class MdSlider extends TriggerComponent<number> {
   sliderRef = ref<HTMLElementComponent<"mdui-slider">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<number>,
     disabled: D<boolean> = false,
     step: D<number> = 1,

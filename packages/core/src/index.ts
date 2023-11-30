@@ -1,11 +1,8 @@
-/*
- * WARNING: Do not change the order of the exports below without testing.
- */
+export * from "./app";
 export * from "./component";
+export * from "./constants";
 export * from "./context";
 export * from "./data";
-export * from "./utils";
 export * from "./dom";
-export * from "./app";
+export * from "./utils";
 export * from "./view";
-export * from "./constants";

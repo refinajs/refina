@@ -46,13 +46,13 @@ RouterPlugin.registerFunc("route", function (ckey: string, path: string) {
 
   if (matchResult === false) return false;
 
-  //@ts-ignore
+  // @ts-ignore
   this.$route = matchResult;
 
-  //@ts-ignore
+  // @ts-ignore
   this.$route.$number = new Proxy(matchResult, {
     get: (target, key) => {
-      //@ts-ignore
+      // @ts-ignore
       return +target[key];
     },
   });

@@ -1,10 +1,10 @@
 import { Avatar } from "mdui";
-import { ComponentContext, D, OutputComponent, getD } from "refina";
+import { Context, D, OutputComponent, getD } from "refina";
 import MdUI2 from "../plugin";
 
 @MdUI2.outputComponent("mdAvatar")
 export class MdAvatar extends OutputComponent {
-  main(_: ComponentContext, src: D<string>, fit?: D<Avatar["fit"]>): void {
+  main(_: Context, src: D<string>, fit?: D<Avatar["fit"]>): void {
     _._mdui_avatar({
       src: getD(src),
       fit: getD(fit),
@@ -14,7 +14,7 @@ export class MdAvatar extends OutputComponent {
 
 @MdUI2.outputComponent("mdIconAvatar")
 export class MdIconAvatar extends OutputComponent {
-  main(_: ComponentContext, iconName: D<string>): void {
+  main(_: Context, iconName: D<string>): void {
     _._mdui_avatar({
       icon: getD(iconName),
     });

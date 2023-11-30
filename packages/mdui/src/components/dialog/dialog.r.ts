@@ -1,7 +1,6 @@
 import mdui from "mdui";
 import { Dialog } from "mdui/es/components/dialog/class";
 import {
-  ComponentContext,
   Content,
   Context,
   D,
@@ -32,7 +31,7 @@ export class MdDialog extends OutputComponent {
     },
   };
   main(
-    _: ComponentContext,
+    _: Context,
     trigger: Content<[setOpen: (open?: D<boolean>) => void]>,
     title: D<Content<[setClose: (open?: D<boolean>) => void]>>,
     body: D<Content<[setClose: (open?: D<boolean>) => void]>>,

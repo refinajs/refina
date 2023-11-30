@@ -46,7 +46,7 @@ if (isExample("fluentui")) {
   import("@refina/example-gh-login");
 } else {
   app.use(Basics)(_ => {
-    _.$rootCls`p-4`;
+    _.$root.addCls("p-4");
 
     if (loading) return;
 

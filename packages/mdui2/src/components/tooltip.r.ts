@@ -1,9 +1,9 @@
-import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
+import { Content, Context, D, TriggerComponent, getD } from "refina";
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdTooltip")
 export class MdTooltip extends TriggerComponent<boolean> {
-  main(_: ComponentContext, text: D<string>, inner: D<Content>): void {
+  main(_: Context, text: D<string>, inner: D<Content>): void {
     _._mdui_tooltip(
       {
         content: getD(text),

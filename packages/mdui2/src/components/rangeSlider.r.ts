@@ -1,10 +1,9 @@
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
   getD,
-  getDArray,
   ref,
 } from "refina";
 import MdUI2 from "../plugin";
@@ -15,7 +14,7 @@ export class MdRangeSlider extends TriggerComponent<
 > {
   sliderRef = ref<HTMLElementComponent<"mdui-range-slider">>();
   main(
-    _: ComponentContext,
+    _: Context,
     lowValue: D<number>,
     highValue: D<number>,
     disabled: D<boolean> = false,

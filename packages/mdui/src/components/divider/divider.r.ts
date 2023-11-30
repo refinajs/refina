@@ -1,9 +1,9 @@
-import { OutputComponent, ComponentContext } from "refina";
+import { Context, OutputComponent } from "refina";
 import MdUI from "../../plugin";
 
 @MdUI.outputComponent("mdDivider")
 export class MdDivider extends OutputComponent {
-  main(_: ComponentContext): void {
+  main(_: Context): void {
     _.$cls`mdui-divider`;
     _._div();
   }

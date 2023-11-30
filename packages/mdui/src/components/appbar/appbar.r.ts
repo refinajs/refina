@@ -1,11 +1,11 @@
-import { ComponentContext, Content, D, OutputComponent, getD } from "refina";
+import { Content, Context, D, OutputComponent, getD } from "refina";
 import MdUI from "../../plugin";
-import { appbarClassNameMap, AppbarType } from "./appbar.const";
+import { AppbarType, appbarClassNameMap } from "./appbar.const";
 
 @MdUI.outputComponent("mdAppbar")
 export class MdAppbar extends OutputComponent {
-  main(_: ComponentContext, type: D<AppbarType>, inner: D<Content>): void {
-    _.$rootCls(appbarClassNameMap[getD(type)]);
+  main(_: Context, type: D<AppbarType>, inner: D<Content>): void {
+    _.$root.addCls(appbarClassNameMap[getD(type)]);
 
     _.$cls`mdui-appbar mdui-appbar-fixed`;
     _._div({}, inner);

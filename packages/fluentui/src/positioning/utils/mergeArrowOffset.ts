@@ -22,7 +22,7 @@ export function mergeArrowOffset(
   }
 
   if (typeof userOffset === "function") {
-    return (offsetParams) => {
+    return offsetParams => {
       const offset = userOffset(offsetParams);
       return addArrowOffset(offset, arrowHeight);
     };

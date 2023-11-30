@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DReadonlyArray,
   TriggerComponent,
@@ -18,7 +18,7 @@ export class MdSegmentedButton extends TriggerComponent<
   }
 > {
   main(
-    _: ComponentContext,
+    _: Context,
     contents: D<Content>[],
     disabled: DReadonlyArray<boolean> | D<boolean> = false,
   ): void {

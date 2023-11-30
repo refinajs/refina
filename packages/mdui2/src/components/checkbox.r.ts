@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -15,7 +15,7 @@ export type CheckboxState = boolean | undefined;
 export class MdCheckbox extends TriggerComponent<CheckboxState> {
   checkboxRef = ref<HTMLElementComponent<"mdui-checkbox">>();
   main(
-    _: ComponentContext,
+    _: Context,
     state: D<CheckboxState>,
     label?: D<Content>,
     disabled: D<boolean> = false,

@@ -1,273 +1,479 @@
-import { AppState } from "../constants";
+import { Component } from "../component";
+import { AppStateType } from "../constants";
 import { Context, IntrinsicContext, RealContextFuncs } from "../context";
 import { D, dangerously_setD } from "../data";
 import {
+  DOMBodyComponent,
   DOMElementComponent,
   DOMNodeComponent,
   DOMRootComponent,
 } from "../dom";
+import { DOMWindowComponent } from "../dom/window";
+import type { View } from "../view";
 
-export interface AppRuntimeHookMap {
-  afterThisComponent: () => void;
+/**
+ * The map of app hooks.
+ *
+ * There are two types of hooks:
+ * - **Onetime hooks**: removed after one call.
+ * - **Permanent hooks**: not removed after calls.
+ *
+ * Add hook functions to the hook map by calling `app.pushOnetimeHook` or `app.pushPermanentHook`.
+ */
+export interface AppHookMap {
+  /**
+   * Before the main function is executed, whether in `UPDATE` or `RECV` state.
+   *
+   * `app.runtimeData` is available in this hook.
+   */
+  beforeMain: () => void;
+
+  /**
+   * After the main function is executed, whether in `UPDATE` or `RECV` state.
+   *
+   * `app.runtimeData` is available in this hook.
+   */
+  afterMain: () => void;
+
+  /**
+   * Called after the main function is executed in `UPDATE` state,
+   *  but before the DOM tree is modified and classes and styles are applied.
+   *
+   * `app.runtimeData` is available in this hook.
+   */
   beforeModifyDOM: () => void;
+
+  /**
+   * Called after the main function is executed in `UPDATE` state,
+   *  and the DOM tree is modified and classes and styles are applied.
+   *
+   * `app.runtimeData` is available in this hook.
+   */
   afterModifyDOM: () => void;
 }
 
-export interface AppPermanentHookMap extends AppRuntimeHookMap {
-  beforeMain: () => void;
-  afterMain: () => void;
-  initializeContext: (context: Context) => void;
+export interface AppIdleState {
+  type: AppStateType.IDLE;
 }
 
-declare global {
-  interface Window {
-    __MAIN_EXECUTED_TIMES__: number;
-  }
+export interface AppRunningState {
+  type: AppStateType.UPDATE | AppStateType.RECV;
+
+  /**
+   * The stack of Ikeys.
+   *
+   * For better performance, the stack stores the full Ikey of each component instead of the relative Ikey.
+   *
+   * @example ["0-0", "0-0.1-0", "0-0.1-0.1-1"]
+   */
+  ikeyStack: string[];
+
+  /**
+   * Lifetime: one `UPDATE` or `RECV` call.
+   *
+   * Can be accessed in hooks like `beforeMain` and `afterModifyDOM`.
+   */
+  runtimeData: Record<symbol, any>;
+
+  /**
+   * Usage:
+   * 1. To check if a component is processed for multiple times;
+   * 2. To decide whether to dispose a component.
+   */
+  processedComponents: Set<string>;
 }
 
-export type AppView = (_: Context) => void;
+export interface AppUpdateState extends AppRunningState {
+  type: AppStateType.UPDATE;
+
+  /**
+   * The current parent DOM element.
+   */
+  currentDOMParent: DOMElementComponent;
+
+  /**
+   * Components waiting for a `$mainEl`.
+   *
+   * If the value is `true`, the component is waiting for the first DOM element to be its default `$mainEl`.
+   */
+  pendingMainElOwner: (DOMElementComponent | Component)[];
+}
+
+export interface AppRecvState extends AppRunningState {
+  type: AppStateType.RECV;
+
+  /**
+   * The receiver of the event.
+   *
+   * - If it is of type `string`, it is the Ikey of the receiver.
+   *
+   * - If it is of type `symbol`, it is a user-defined event receiver.
+   */
+  receiver: string | symbol;
+
+  /**
+   * The event data.
+   */
+  event: any;
+}
+
+/**
+ * The state of the app.
+ */
+export type AppState = AppIdleState | AppUpdateState | AppRecvState;
+
+/**
+ * `App` in `UPDATE` or `RECV` state.
+ */
+export type RunningApp = App & { state: AppRunningState };
+
+const idleState = { type: AppStateType.IDLE } satisfies AppIdleState;
 
 export class App {
+  /**
+   * @param main The main function of the app
+   * @param rootElementId The id of the root element to mount the app. Usually it is `"root"`.
+   */
   constructor(
-    public main: AppView,
+    public main: View,
     public rootElementId: string,
   ) {
     const rootElement = document.getElementById(rootElementId);
     if (!rootElement) {
       throw new Error(`Root element ${rootElementId} not found`);
     }
-    this.root = new DOMRootComponent("", rootElement);
-    this.resetState();
+    this.root = new DOMRootComponent("~", rootElement);
   }
 
+  /**
+   * The map of context functions that are transformed, excluding HTML/SVG/Text element funcs.
+   *
+   * Context functions provided by plugins should be merged into this object.
+   */
   contextFuncs = {} as RealContextFuncs;
-  getCustomContextFunc<N extends keyof RealContextFuncs>(
-    name: N,
-  ): RealContextFuncs[N] {
-    return this.contextFuncs[name];
-  }
 
+  /**
+   * The map of HTML element aliases.
+   *
+   * Most frequently used to process Web Components with slashes in their names.
+   *
+   * Plugins can add aliases to this map.
+   */
   htmlElementAlias: Record<string, string> = {};
 
+  /**
+   * The root element component of the app.
+   *
+   * Initialized in the constructor depending on `rootElementId`.
+   *
+   * Call `app.root.addCls` or `app.root.addCss` to add classes or styles to the root element.
+   */
   root: DOMRootComponent;
-  refMap: Map<string, any> = new Map();
+
+  /**
+   * The DOM element component of the document body.
+   *
+   * Call `app.body.addCls` or `app.body.addCss` to add classes or styles to the document body.
+   */
+  body = new DOMBodyComponent("body", document.body);
+
+  /**
+   * The DOM element component of the window.
+   *
+   * Call `app.window.addEventListener` to add event listeners to window.
+   */
+  window = new DOMWindowComponent("window", window);
+
+  /**
+   * The map from Ikey to component instance.
+   *
+   * **Warning**: By default, component instances not currently rendered won't be removed from this map.
+   */
+  refMap: Map<string | symbol, any> = new Map();
+
+  /**
+   * The map from DOM node to DOM component instance.
+   *
+   * **Warning**: By default, DOM component instances not currently rendered won't be removed from this map.
+   */
   nodeMap: Map<Node, DOMNodeComponent> = new Map();
-  _: Context | undefined;
+
+  /**
+   * Lifetime: from the construction of the app to the window is closed.
+   */
   permanentData: Record<symbol, any> = {};
-  runtimeData: Record<symbol, any> | undefined;
-  noPreserveComponents = new Set<string>();
-  protected processedComponents = new Set<string>();
 
-  markComponentProcessed(ikey: string) {
-    if (this.processedComponents.has(ikey)) {
-      throw new Error(`Component ${ikey} has already been processed`);
-    }
-    this.processedComponents.add(ikey);
-  }
+  /**
+   * The current state of the app.
+   */
+  state: AppState = idleState;
 
-  currentDOMParent: DOMElementComponent;
+  /**
+   * Each event in this queue requires a later `RECV` call.
+   *
+   * Can be pushed during `RECV` calls, which means a new event can be triggered by another event.
+   */
+  eventQueue: { receiver: string | symbol; data: any }[] = [];
 
-  eventRecevier: string | symbol | null;
-  get eventRecevierRef() {
-    if (typeof this.eventRecevier === "symbol")
-      throw new Error(
-        `Cannot get ref of eventRecevier of type symbol: ${String(
-          this.eventRecevier,
-        )}`,
-      );
-    return this.refMap.get(this.eventRecevier!);
-  }
-  eventData: any;
+  /**
+   * Whether an `UPDATE` call is required after the recv queue becomes empty.
+   */
+  requireUpdate = false;
 
-  protected idPrefix: string[];
-
-  state: AppState;
-
-  pendingRootCSS: string;
-  pendingRootCls: string;
-  pendingBodyCSS: string;
-  pendingBodyCls: string;
-
-  mounted = false;
-  running = false;
-  recvQueue: { receiver: string | symbol; data: any }[] = [];
-  needUpdate = false;
-  protected get needNextTickRun() {
-    return this.recvQueue.length > 0 || this.needUpdate;
-  }
-
-  protected resetState() {
-    this.root.children = [];
-    this.root.portals = new Set();
-    this.currentDOMParent = this.root;
-    this.eventRecevier = null;
-    this.idPrefix = [];
-  }
-
+  /**
+   * Mount the app to the root element.
+   */
   mount() {
-    if (this.mounted) {
-      throw new Error("App already mounted");
-    }
+    // Wait until all components registered.
+    // Because the execution order of top-level code in different modules is not guaranteed,
     setTimeout(() => {
       this.execUpdate();
-      this.callAndResetHook("beforeModifyDOM");
-      this.root.updateDOMTree();
-      this.callAndResetHook("afterModifyDOM");
-      this.runtimeData = undefined;
-      this.mounted = true;
-    }, 0);
+    });
   }
-  nextTick() {
-    setTimeout(() => {
-      console.debug(`[!] next tick`);
-      if (this.recvQueue.length > 0) {
-        const { receiver, data } = this.recvQueue.shift()!;
-        console.debug(
-          `[+] recv executing start with id ${String(receiver)}, remaining ${
-            this.recvQueue.length
-          }`,
-        );
-        const startTime = window.performance.now();
-        this.execRecv(receiver, data);
-        this.runtimeData = undefined;
-        console.debug(
-          `[-] recv executed with id ${String(receiver)} in ${
-            window.performance.now() - startTime
-          }ms`,
-        );
-        this.nextTick();
-      } else if (this.needUpdate) {
-        this.needUpdate = false;
-        console.debug(`[+] update executing start`);
-        const startTime = window.performance.now();
-        this.execUpdate();
-        this.callAndResetHook("beforeModifyDOM");
-        this.root.updateDOMTree();
-        this.callAndResetHook("afterModifyDOM");
-        this.runtimeData = undefined;
-        console.debug(
-          `[-] update executed in ${window.performance.now() - startTime}ms`,
-        );
-      }
-    }, 0);
-  }
+
+  /**
+   * Trigger an `UPDATE` call.
+   */
   update = () => {
-    console.debug(`[*] update queued`);
-    this.needUpdate = true;
-    if (!this.running) this.nextTick();
+    if (import.meta.env.DEV)
+      console.debug(`[*] update triggered${new Error().stack?.slice(5)}`);
+    this.requireUpdate = true;
+
+    // If the app is not running, start it in the next tick.
+    if (this.state.type === AppStateType.IDLE) this.nextTick();
   };
+
+  /**
+   * Trigger a `RECV` call.
+   *
+   * @param receiver The receiver of the event.
+   * @param data The event data.
+   */
   recv = (receiver: string | symbol, data: any) => {
-    console.debug(`[*] recv queued with receiver ${String(receiver)}`);
-    this.recvQueue.push({ receiver, data });
-    this.needUpdate = true;
-    if (!this.running) this.nextTick();
+    if (import.meta.env.DEV)
+      console.debug(
+        `[*] recv triggered with receiver ${String(
+          receiver,
+        )}${new Error().stack?.slice(5)}`,
+      );
+    this.eventQueue.push({ receiver, data });
+
+    // An `UPDATE` call is always required after a `RECV` call.
+    this.requireUpdate = true;
+
+    // If the app is not running, start it in the next tick.
+    if (this.state.type === AppStateType.IDLE) this.nextTick();
   };
-  protected execMain() {
-    const initialKey = this.ikey;
-    try {
-      this.running = true;
-      this._ = new IntrinsicContext(this) as any;
-      this.clearEventListeners();
-      this.runtimeData = {};
-      this.processedComponents.clear();
-      this.callPermanentHook("beforeMain");
-      this.main(this._ as Context);
-      this.callPermanentHook("afterMain");
-      this._ = undefined;
 
-      if (initialKey !== this.ikey) {
-        throw new Error(
-          `Key mismatch: ${initialKey} !== ${this.ikey}. You may have forgotten to call app.popKey()`,
-        );
-      }
+  /**
+   * In the next tick, if the event queue non-empty, make a `RECV` call for the first event in the queue.
+   * Otherwise, if the app needs to update, make an `UPDATE` call.
+   */
+  nextTick() {
+    setTimeout(
+      import.meta.env.DEV
+        ? () => {
+            // In development mode, print the debug information.
 
-      if (this.state === AppState.update) {
-        for (const ikey of this.noPreserveComponents) {
-          if (!this.processedComponents.has(ikey)) {
-            this.refMap.delete(ikey);
+            console.debug(`[!] next tick`);
+            if (this.eventQueue.length > 0) {
+              // Dequeue the first event and execute it.
+              const { receiver, data } = this.eventQueue.shift()!;
+
+              console.debug(
+                `[+] recv executing start with id ${String(
+                  receiver,
+                )}, remaining ${this.eventQueue.length}`,
+              );
+
+              const startTime = window.performance.now();
+
+              this.execRecv(receiver, data);
+
+              console.debug(
+                `[-] recv executed with id ${String(receiver)} in ${
+                  window.performance.now() - startTime
+                }ms`,
+              );
+
+              // There must be at least one `UPDATE` call.
+              this.nextTick();
+            } else if (this.requireUpdate) {
+              // Clear the flag.
+              this.requireUpdate = false;
+
+              console.debug(`[+] update executing start`);
+
+              const startTime = window.performance.now();
+
+              this.execUpdate();
+
+              console.debug(
+                `[-] update executed in ${
+                  window.performance.now() - startTime
+                }ms`,
+              );
+            }
           }
+        : () => {
+            if (this.eventQueue.length > 0) {
+              // Dequeue the first event and execute it.
+              const { receiver, data } = this.eventQueue.shift()!;
+
+              this.execRecv(receiver, data);
+
+              // There must be at least one `UPDATE` call.
+              this.nextTick();
+            } else if (this.requireUpdate) {
+              // Clear the flag.
+              this.requireUpdate = false;
+
+              this.execUpdate();
+            }
+          },
+    );
+  }
+
+  /**
+   * Execute the main function of the app in current state.
+   */
+  protected execMain() {
+    try {
+      const initialKey = this.currentIkey;
+
+      const context = new IntrinsicContext(
+        this as RunningApp,
+      ) as unknown as Context;
+
+      this.callHook("beforeMain");
+      this.main(context);
+      this.callHook("afterMain");
+
+      // Assert that the Ikey stack is balanced.
+      if (import.meta.env.DEV) {
+        if (initialKey !== this.currentIkey) {
+          throw new Error(
+            `Key mismatch: ${initialKey} !== ${this.currentIkey}. You may have forgotten to call app.popKey()`,
+          );
         }
       }
-
-      window.__MAIN_EXECUTED_TIMES__ ??= 1;
-      console.debug(`main executed ${window.__MAIN_EXECUTED_TIMES__++} times`);
     } catch (e) {
+      // Report the error to the console instead of throwing it to make sure the cleanup code is executed.
       console.error("Error when executing main:", e, "\nstate:", this.state);
-    } finally {
-      this.running = false;
     }
-  }
-  protected execRecv(receiver: string | symbol, data: any = null) {
-    this.resetState();
-    this.state = AppState.recv;
-    this.eventRecevier = receiver;
-    this.eventData = data;
-    this.execMain();
-  }
-  protected execUpdate() {
-    this.resetState();
-    this.state = AppState.update;
-    this.eventRecevier = null;
-    this.eventData = undefined;
-    this.pendingRootCSS = "";
-    this.pendingRootCls = "";
-    this.pendingBodyCSS = "";
-    this.pendingBodyCls = "";
-    this.execMain();
-    this.root.addClasses(this.pendingRootCls);
-    this.root.setStyle(this.pendingRootCSS);
-    this.root.bodyComponent.addClasses(this.pendingBodyCls);
-    this.root.bodyComponent.setStyle(this.pendingBodyCSS);
   }
 
-  runtimeHooks: { [K in keyof AppRuntimeHookMap]?: AppRuntimeHookMap[K][] } =
-    {};
+  protected execUpdate() {
+    // Set the `UPDATE` state.
+    this.state = {
+      type: AppStateType.UPDATE,
+      ikeyStack: ["~"],
+      runtimeData: {},
+      processedComponents: new Set(),
+      currentDOMParent: this.root,
+      pendingMainElOwner: [],
+    } satisfies AppUpdateState;
+
+    // Execute the main function to update components.
+    this.execMain();
+
+    // Apply changes to DOM.
+    this.callHook("beforeModifyDOM");
+    this.window.updateDOM();
+    this.body.updateDOM();
+    this.root.updateDOM();
+    this.callHook("afterModifyDOM");
+
+    // Clear the `UPDATE` state.
+    this.state = idleState;
+  }
+
+  protected execRecv(receiver: string | symbol, event: any = null) {
+    // Set the `RECV` state.
+    this.state = {
+      type: AppStateType.RECV,
+      ikeyStack: ["~"],
+      runtimeData: {},
+      processedComponents: new Set(),
+      receiver,
+      event,
+    } satisfies AppRecvState;
+
+    // Execute the main function to receive the event.
+    this.execMain();
+
+    // Clear the `RECV` state.
+    this.state = idleState;
+  }
+
+  /**
+   * Lifecycle: removed after one call.
+   */
+  onetimeHooks: { [K in keyof AppHookMap]?: AppHookMap[K][] } = {};
+
+  /**
+   * Lifecycle: not removed after calls.
+   */
   permanentHooks: {
-    [K in keyof AppPermanentHookMap]?: AppPermanentHookMap[K][];
+    [K in keyof AppHookMap]?: AppHookMap[K][];
   } = {};
-  callAndResetHook<K extends keyof AppRuntimeHookMap>(
+
+  /**
+   * Call onetime hooks and reset them, then call permanent hooks.
+   * @param hookName the name of the hooks to call
+   * @param args the arguments to pass to each hook
+   */
+  callHook<K extends keyof AppHookMap>(
     hookName: K,
-    ...args: Parameters<AppRuntimeHookMap[K]>
-  ): ReturnType<AppRuntimeHookMap[K]>[] | null {
-    const runtimeHooks = this.runtimeHooks[hookName];
-    if (runtimeHooks) {
-      this.runtimeHooks[hookName] = undefined;
-      //@ts-ignore
-      return runtimeHooks.map((hook) => hook(...args));
-    }
-    const permanentHooks = this.permanentHooks[hookName];
-    if (permanentHooks) {
-      //@ts-ignore
-      return permanentHooks.map((hook) => hook(...args));
-    }
-    return null;
-  }
-  callPermanentHook<K extends keyof AppPermanentHookMap>(
-    hookName: K,
-    ...args: Parameters<AppPermanentHookMap[K]>
-  ): ReturnType<AppPermanentHookMap[K]>[] | null {
-    const permanentHooks = this.permanentHooks[hookName];
-    if (permanentHooks) {
-      //@ts-ignore
-      return permanentHooks.map((hook) => hook(...args));
-    }
-    return null;
-  }
-  pushHook<K extends keyof AppRuntimeHookMap>(
-    hookName: K,
-    ...hooks: AppRuntimeHookMap[K][]
+    ...args: Parameters<AppHookMap[K]>
   ): void {
-    this.runtimeHooks[hookName] ??= [];
-    this.runtimeHooks[hookName]!.push(...hooks);
+    const onetimeHooks = this.onetimeHooks[hookName];
+    if (onetimeHooks) {
+      // Reset the runtime hooks.
+      this.onetimeHooks[hookName] = undefined;
+      // @ts-ignore
+      onetimeHooks.forEach(hook => hook(...args));
+    }
+
+    const permanentHooks = this.permanentHooks[hookName];
+    if (permanentHooks) {
+      // @ts-ignore
+      permanentHooks.forEach(hook => hook(...args));
+    }
   }
-  addPermanentHook<K extends keyof AppPermanentHookMap>(
+
+  /**
+   * Add a onetime hook to the end of the hook queue.
+   * @param hookName The name of the hook to push
+   * @param hooks The hook to push
+   */
+  pushOnetimeHook<K extends keyof AppHookMap>(
     hookName: K,
-    ...hooks: AppPermanentHookMap[K][]
+    hook: AppHookMap[K],
+  ): void {
+    this.onetimeHooks[hookName] ??= [];
+    this.onetimeHooks[hookName]!.push(hook);
+  }
+
+  /**
+   * Add a permanent hook to the end of the hook queue.
+   * @param hookName
+   * @param hooks
+   */
+  pushPermanentHook<K extends keyof AppHookMap>(
+    hookName: K,
+    ...hooks: AppHookMap[K][]
   ): void {
     this.permanentHooks[hookName] ??= [];
     this.permanentHooks[hookName]!.push(...hooks);
   }
 
+  /**
+   * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
+   * @param d The `D` to set
+   * @param v The value to set
+   * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
+   */
   setD = <T>(d: D<T>, v: T): boolean => {
     if (dangerously_setD(d, v)) {
       this.update();
@@ -276,99 +482,48 @@ export class App {
     return false;
   };
 
+  /**
+   * Push a Ckey to the Ikey stack.
+   * @param ckey The Ckey to push to the Ikey stack.
+   * @returns The current Ikey.
+   */
   pushKey(ckey: string) {
-    this.idPrefix.push(ckey);
-    return this.ikey;
-  }
-  popKey(ckey: string, msg?: string) {
-    const last = this.idPrefix.pop();
-    if (ckey !== last) {
-      throw new Error(
-        `idPrefix tag mismatch: want to pop "${ckey}", but the last is "${last}".\n
-current: ${this.ikey}
-message: ${msg}`,
-      );
-    }
-  }
-  get ikey() {
-    return this.idPrefix.join(".");
-  }
-  get isReceiver() {
-    return this.eventRecevier === this.ikey;
+    const currentIkey = this.currentIkey + "." + ckey;
+    (this.state as AppRunningState).ikeyStack.push(currentIkey);
+    return currentIkey;
   }
 
-  protected registeredWindowEventListeners: {
-    [K in keyof WindowEventMap]?: [
-      listener: (this: Window, ev: WindowEventMap[K]) => any,
-      capture: boolean | undefined,
-    ][];
-  } = {};
-  protected registeredDocumentEventListeners: {
-    [K in keyof DocumentEventMap]?: [
-      listener: (this: Document, ev: DocumentEventMap[K]) => any,
-      capture: boolean | undefined,
-    ][];
-  } = {};
-  protected registeredRootEventListeners: {
-    [K in keyof HTMLElementEventMap]?: [
-      listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
-      capture: boolean | undefined,
-    ][];
-  } = {};
-  clearEventListeners() {
-    Object.entries(this.registeredWindowEventListeners).forEach(
-      ([type, listeners]) =>
-        listeners?.forEach(([listener, capture]) =>
-          window.removeEventListener(type, listener as any, capture),
-        ),
-    );
-    Object.entries(this.registeredDocumentEventListeners).forEach(
-      ([type, listeners]) =>
-        listeners?.forEach(([listener, capture]) =>
-          document.removeEventListener(type, listener as any, capture),
-        ),
-    );
-    Object.entries(this.registeredRootEventListeners).forEach(
-      ([type, listeners]) =>
-        listeners?.forEach(([listener, capture]) =>
-          this.root.node.removeEventListener(type, listener as any, capture),
-        ),
-    );
+  /**
+   * Pop a Ikey from the Ikey stack.
+   * @param ikey The Ikey to pop from the Ikey stack. Used to check if the stack is balanced in development mode.
+   * @param msg The error message to show when the stack is not balanced.
+   */
+  popKey(ikey: string, msg?: string) {
+    const last = (this.state as AppRunningState).ikeyStack.pop();
+    if (import.meta.env.DEV) {
+      if (ikey !== last) {
+        throw new Error(
+          `idPrefix tag mismatch: want to pop "${ikey}", but the last is "${last}".\n
+current: ${this.currentIkey}
+message: ${msg}`,
+        );
+      }
+    }
   }
-  registerWindowEventListener<K extends keyof WindowEventMap>(
-    type: K,
-    listener: (this: Window, ev: WindowEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions,
-  ) {
-    this.registeredWindowEventListeners[type] ??= [];
-    this.registeredWindowEventListeners[type]!.push([
-      listener,
-      typeof options === "boolean" ? options : options?.capture,
-    ]);
-    window.addEventListener(type, listener, options);
+
+  /**
+   * The current Ikey.
+   */
+  get currentIkey() {
+    return (this.state as AppRunningState).ikeyStack.at(-1)!;
   }
-  registerDocumentEventListener<K extends keyof DocumentEventMap>(
-    type: K,
-    listener: (this: Document, ev: DocumentEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions,
-  ) {
-    this.registeredDocumentEventListeners[type] ??= [];
-    this.registeredDocumentEventListeners[type]!.push([
-      listener,
-      typeof options === "boolean" ? options : options?.capture,
-    ]);
-    document.addEventListener(type, listener, options);
-  }
-  registerRootEventListener<K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions,
-  ) {
-    this.registeredRootEventListeners[type] ??= [];
-    this.registeredRootEventListeners[type]!.push([
-      listener,
-      typeof options === "boolean" ? options : options?.capture,
-    ]);
-    this.root.node.addEventListener(type, listener as any, options);
+
+  /**
+   * `true` if the app is under `RECV` state and the receiver is `key`.
+   * @param key The key to test.
+   * @returns `true` if the app is under `RECV` state and the receiver is `key`.
+   */
+  isEventReceiver(key: string | symbol): this is { state: AppRecvState } {
+    return this.state.type === AppStateType.RECV && this.state.receiver === key;
   }
 }

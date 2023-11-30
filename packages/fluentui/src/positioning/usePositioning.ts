@@ -1,5 +1,5 @@
 import { computePosition } from "@floating-ui/dom";
-import { AppState, ref } from "refina";
+import { AppStateType, ref } from "refina";
 import FluentUI from "../plugin";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, UsePositioninggResult } from "./types";
@@ -25,8 +25,8 @@ FluentUI.registerFunc(
           "targetRef or containerRef of useFloating is not set or has no $mainEl",
         );
       }
-      const targetNode = targetRef.current.$mainEl,
-        containerNode = containerRef.current.$mainEl;
+      const targetNode = targetRef.current.$mainEl.node,
+        containerNode = containerRef.current.$mainEl.node as HTMLElement;
 
       const placement = toFloatingUIPlacement(align, position, false);
 
@@ -47,8 +47,8 @@ FluentUI.registerFunc(
     };
 
     if (options.immediate !== false) {
-      this.$app.pushHook("afterModifyDOM", () => {
-        if (this.$app.state === AppState.update) {
+      this.$app.pushOnetimeHook("afterModifyDOM", () => {
+        if (this.$app.state.type === AppStateType.UPDATE) {
           // call twice to ensure the correct position as a workaround
           setTimeout(updatePosition);
           setTimeout(updatePosition);
@@ -56,7 +56,9 @@ FluentUI.registerFunc(
       });
     }
 
-    this.$app.registerWindowEventListener("resize", updatePosition);
+    if (this.$updateState) {
+      this.$window.addEventListener("resize", updatePosition);
+    }
 
     return { targetRef, containerRef, updatePosition };
   },

@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   TriggerComponent,
   bindArgsToContent,
@@ -16,7 +16,7 @@ export class MdControlledNavDrawer extends TriggerComponent<
   }
 > {
   main(
-    _: ComponentContext,
+    _: Context,
     open: D<boolean>,
     inner: D<Content>,
     modal: D<boolean> = false,
@@ -40,7 +40,7 @@ export class MdNavDrawer extends TriggerComponent<
 > {
   open = false;
   main(
-    _: ComponentContext,
+    _: Context,
     trigger: D<Content<[open: (open?: boolean) => void]>>,
     inner: D<Content<[close: (open?: boolean) => void]>>,
     modal: D<boolean> = false,

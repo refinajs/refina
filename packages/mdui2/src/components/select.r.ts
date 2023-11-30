@@ -1,6 +1,7 @@
+import { Select } from "mdui";
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DPartialRecord,
   DReadonlyArray,
@@ -12,7 +13,6 @@ import {
   ref,
 } from "refina";
 import MdUI2 from "../plugin";
-import { Select } from "mdui";
 
 export type SelectVariant = Select["variant"];
 
@@ -22,7 +22,7 @@ export class MdSelect<Value extends string> extends TriggerComponent<Value> {
 
   selectRef = ref<HTMLElementComponent<"mdui-select">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<Value>,
     options: DReadonlyArray<Value>,
     disabled: D<boolean> | DReadonlyArray<boolean> = false,
@@ -73,7 +73,7 @@ declare module "refina" {
           options: DReadonlyArray<Value>,
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
-        ) => //@ts-ignore
+        ) => // @ts-ignore
         this is TriggerComponentFuncAssertThisType<Value, MdSelect<Value>>
       : never;
     mdOutlinedSelect: MdOutlinedSelect<any> extends C["enabled"]
@@ -82,7 +82,7 @@ declare module "refina" {
           options: DReadonlyArray<Value>,
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
-        ) => //@ts-ignore
+        ) => // @ts-ignore
         this is TriggerComponentFuncAssertThisType<
           Value,
           MdOutlinedSelect<Value>

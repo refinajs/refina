@@ -1,11 +1,10 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DOMElementComponent,
-  KeyFunc,
+  LoopKey,
   OutputComponent,
-  StatusComponent,
   ToggleComponent,
   TriggerComponent,
   getD,
@@ -15,7 +14,7 @@ import Basics from "./plugin";
 
 @Basics.outputComponent("div")
 export class BasicDiv extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._div({}, inner);
   }
 }
@@ -27,7 +26,7 @@ declare module "refina" {
 
 @Basics.outputComponent("span")
 export class BasicSpan extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._span({}, inner);
   }
 }
@@ -39,7 +38,7 @@ declare module "refina" {
 
 @Basics.outputComponent("br")
 export class BasicBr extends OutputComponent {
-  main(_: ComponentContext) {
+  main(_: Context) {
     _._br();
   }
 }
@@ -51,7 +50,7 @@ declare module "refina" {
 
 @Basics.outputComponent("h1")
 export class BasicH1 extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._h1({}, inner);
   }
 }
@@ -63,7 +62,7 @@ declare module "refina" {
 
 @Basics.outputComponent("h3")
 export class BasicH3 extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._h3({}, inner);
   }
 }
@@ -75,7 +74,7 @@ declare module "refina" {
 
 @Basics.outputComponent("h4")
 export class BasicH4 extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._h4({}, inner);
   }
 }
@@ -87,7 +86,7 @@ declare module "refina" {
 
 @Basics.outputComponent("h5")
 export class BasicH5 extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._h5({}, inner);
   }
 }
@@ -99,7 +98,7 @@ declare module "refina" {
 
 @Basics.outputComponent("h6")
 export class BasicH6 extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._h6({}, inner);
   }
 }
@@ -111,7 +110,7 @@ declare module "refina" {
 
 @Basics.outputComponent("p")
 export class BasicP extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     _._p({}, inner);
   }
 }
@@ -124,7 +123,7 @@ declare module "refina" {
 
 @Basics.outputComponent("a")
 export class BaiscA extends OutputComponent {
-  main(_: ComponentContext, href: D<string>, inner: D<Content>) {
+  main(_: Context, href: D<string>, inner: D<Content>) {
     _._a(
       {
         href: getD(href),
@@ -141,7 +140,7 @@ declare module "refina" {
 
 @Basics.triggerComponent("button")
 export class BasicButton extends TriggerComponent<MouseEvent> {
-  main(_: ComponentContext, inner: D<Content>, disabled: D<boolean> = false) {
+  main(_: Context, inner: D<Content>, disabled: D<boolean> = false) {
     _._button(
       {
         onclick: ev => {
@@ -164,7 +163,7 @@ declare module "refina" {
 export class BasicTextInput extends OutputComponent {
   inputRef = ref<DOMElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     disabled?: D<boolean>,
     placeholder?: D<string>,
@@ -190,7 +189,7 @@ declare module "refina" {
 @Basics.triggerComponent("passwordInput")
 export class BasicPasswordInput extends TriggerComponent<string> {
   inputRef = ref<DOMElementComponent<"input">>();
-  main(_: ComponentContext, value: D<string>) {
+  main(_: Context, value: D<string>) {
     _.$ref(this.inputRef) &&
       _._input({
         type: "password",
@@ -211,7 +210,7 @@ declare module "refina" {
 
 @Basics.statusComponent("toggleButton")
 export class BasicToggleButton extends ToggleComponent {
-  main(_: ComponentContext, inner: D<Content>) {
+  main(_: Context, inner: D<Content>) {
     if (_.button(inner)) {
       this.$toggle();
     }
@@ -227,7 +226,7 @@ declare module "refina" {
 export class BasicCheckbox extends TriggerComponent<boolean> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     label: D<string>,
     value: D<boolean> = this.inputRef.current?.node.checked ?? false,
   ) {
@@ -254,9 +253,9 @@ declare module "refina" {
 @Basics.outputComponent("ul")
 export class BasicUl extends OutputComponent {
   main<T>(
-    _: ComponentContext,
+    _: Context,
     data: D<Iterable<T>>,
-    key: KeyFunc<T>,
+    key: LoopKey<T>,
     body: (item: T, index: number) => void,
   ): void {
     _._ul({}, _ => {
@@ -273,7 +272,7 @@ declare module "refina" {
     ul: BasicUl extends C["enabled"]
       ? <T>(
           data: D<Iterable<T>>,
-          key: KeyFunc<T>,
+          key: LoopKey<T>,
           body: (item: T, index: number) => void,
         ) => void
       : never;
@@ -282,7 +281,7 @@ declare module "refina" {
 
 @Basics.outputComponent("img")
 export class BasicImg extends OutputComponent {
-  main(_: ComponentContext, src: D<string>, alt: D<string> = ""): void {
+  main(_: Context, src: D<string>, alt: D<string> = ""): void {
     _._img({
       src: getD(src),
       alt: getD(alt),

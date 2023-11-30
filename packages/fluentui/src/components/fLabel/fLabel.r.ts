@@ -1,11 +1,11 @@
-import { ComponentContext, Content, D, OutputComponent, getD } from "refina";
+import { Content, Context, D, OutputComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fLable.styles";
 
 @FluentUI.outputComponent("fLabel")
 export class FLabel extends OutputComponent {
   main(
-    _: ComponentContext,
+    _: Context,
     content: D<Content>,
     required: D<Content | boolean> = false,
     disabled: D<boolean> = false,

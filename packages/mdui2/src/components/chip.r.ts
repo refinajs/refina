@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   OutputComponent,
@@ -15,11 +15,7 @@ export class MdChip extends OutputComponent<{
   icon: string;
   endIcon: string;
 }> {
-  main(
-    _: ComponentContext,
-    inner: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
     _._mdui_chip(
       {
         disabled: getD(disabled),
@@ -40,7 +36,7 @@ export class MdSelectableChip extends TriggerComponent<
 > {
   chipRef = ref<HTMLElementComponent<"mdui-chip">>();
   main(
-    _: ComponentContext,
+    _: Context,
     selected: D<boolean>,
     inner: D<Content>,
     disabled: D<boolean> = false,
@@ -71,11 +67,7 @@ export class MdDeletableChip extends TriggerComponent<
   }
 > {
   chipRef = ref<HTMLElementComponent<"mdui-chip">>();
-  main(
-    _: ComponentContext,
-    inner: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
     _._mdui_chip(
       {
         deletable: true,

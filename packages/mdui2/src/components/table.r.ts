@@ -1,9 +1,9 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DArray,
-  KeyFunc,
+  LoopKey,
   OutputComponent,
   byIndex,
   getD,
@@ -13,10 +13,10 @@ import MdUI from "../plugin";
 @MdUI.outputComponent("mdTable")
 export class MdTable extends OutputComponent {
   main<T>(
-    _: ComponentContext,
+    _: Context,
     data: D<Iterable<T>>,
     head: DArray<Content> | D<Content>,
-    key: KeyFunc<T>,
+    key: LoopKey<T>,
     row: (item: T, index: number) => void,
   ): void {
     _.$cls`mdui-table`;
@@ -46,14 +46,14 @@ export class MdTable extends OutputComponent {
 
 @MdUI.outputComponent("mdTableHeader")
 export class MdTableHeader extends OutputComponent {
-  main(_: ComponentContext, content: D<Content>): void {
+  main(_: Context, content: D<Content>): void {
     _._th({}, content);
   }
 }
 
 @MdUI.outputComponent("mdTableCell")
 export class MdTableCell extends OutputComponent {
-  main(_: ComponentContext, content: D<Content>): void {
+  main(_: Context, content: D<Content>): void {
     _._td({}, content);
   }
 }
@@ -64,7 +64,7 @@ declare module "refina" {
       ? <T>(
           data: D<Iterable<T>>,
           head: DArray<Content> | D<Content>,
-          key: KeyFunc<T>,
+          key: LoopKey<T>,
           row: (item: T, index: number) => void,
         ) => void
       : never;

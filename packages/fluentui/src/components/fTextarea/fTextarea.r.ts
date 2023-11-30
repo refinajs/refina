@@ -1,13 +1,13 @@
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
   getD,
   ref,
 } from "refina";
-import FluentUI from "../../plugin";
 import { FTextareaAppearance, FTextareaResize } from ".";
+import FluentUI from "../../plugin";
 import styles from "./fTextarea.styles";
 
 @FluentUI.triggerComponent("fTextarea")
@@ -16,7 +16,7 @@ export class FTextarea extends TriggerComponent<string> {
   inputRef = ref<HTMLElementComponent<"textarea">>();
 
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     disabled: D<boolean> = false,
     placeholder: D<string> = "",

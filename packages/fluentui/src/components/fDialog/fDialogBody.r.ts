@@ -1,12 +1,5 @@
 import "@refina/fluentui-icons/dismiss.r.js";
-import {
-  ComponentContext,
-  Content,
-  Context,
-  D,
-  TriggerComponent,
-  getD,
-} from "refina";
+import { Content, Context, D, TriggerComponent, getD } from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";
 import dialogBodyStyles from "./dialogBody.styles";
@@ -23,7 +16,7 @@ export type FDialogBodyEventData =
 @FluentUI.triggerComponent("fDialogBody")
 export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
   main(
-    _: ComponentContext,
+    _: Context,
     title: D<Content>,
     content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
     actions?: D<

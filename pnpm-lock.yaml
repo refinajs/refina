@@ -60,10 +60,10 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.5.0
       vite-plugin-inspect:
         specifier: ^0.7.35
-        version: 0.7.38(vite@4.4.9)
+        version: 0.7.38(vite@4.5.0)
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -103,7 +103,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.5.0
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -134,10 +134,10 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.5.0
       vite-plugin-inspect:
         specifier: ^0.7.35
-        version: 0.7.38(vite@4.4.9)
+        version: 0.7.38(vite@4.5.0)
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -159,10 +159,10 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.5.0
       vite-plugin-inspect:
         specifier: ^0.7.35
-        version: 0.7.38(vite@4.4.9)
+        version: 0.7.38(vite@4.5.0)
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -184,10 +184,10 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.8
-        version: 4.4.9(@types/node@20.6.5)
+        version: 4.5.0
       vite-plugin-inspect:
         specifier: ^0.7.35
-        version: 0.7.38(vite@4.4.9)
+        version: 0.7.38(vite@4.5.0)
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -1561,6 +1561,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  /nanoid@3.3.7:
+    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: true
+
   /node-releases@2.0.13:
     resolution: {integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==}
     dev: true
@@ -1750,6 +1756,15 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
+  /postcss@8.4.31:
+    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
+
   /prettier@3.0.0:
     resolution: {integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==}
     engines: {node: '>=14'}
@@ -1823,6 +1838,14 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.3
+
+  /rollup@3.29.4:
+    resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /rtl-css-js@1.16.1:
     resolution: {integrity: sha512-lRQgou1mu19e+Ya0LsTvKrVJ5TYUbqCVPAiImX3UfLTenarvPUl1QFdvu5Z3PYmHT9RCcwIfbjRQBntExyj3Zg==}
@@ -2137,7 +2160,7 @@ packages:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
     dev: true
 
-  /vite-plugin-inspect@0.7.38(vite@4.4.9):
+  /vite-plugin-inspect@0.7.38(vite@4.5.0):
     resolution: {integrity: sha512-+p6pJVtBOLGv+RBrcKAFUdx+euizg0bjL35HhPyM0MjtKlqoC5V9xkCmO9Ctc8JrTyXqODbHqiLWJKumu5zJ7g==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -2155,7 +2178,7 @@ packages:
       open: 9.1.0
       picocolors: 1.0.0
       sirv: 2.0.3
-      vite: 4.4.9(@types/node@20.6.5)
+      vite: 4.5.0
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -2195,6 +2218,42 @@ packages:
       rollup: 3.29.3
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
+
+  /vite@4.5.0:
+    resolution: {integrity: sha512-ulr8rNLA6rkyFAlVWw2q5YJ91v098AFQ2R0PRFwPzREXOUJQPtFUG0t+/ZikhaOCDqFoDhN6/v8Sq0o4araFAw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.31
+      rollup: 3.29.4
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}

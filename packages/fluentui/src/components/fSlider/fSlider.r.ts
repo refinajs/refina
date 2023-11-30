@@ -1,5 +1,5 @@
 import {
-  ComponentContext,
+  Context,
   D,
   DOMElementComponent,
   TriggerComponent,
@@ -21,7 +21,7 @@ function clamp(value: number, min: number, max: number) {
 export class FSlider extends TriggerComponent<number> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<number>,
     disabled: D<boolean> = false,
     min: D<number> = 0,

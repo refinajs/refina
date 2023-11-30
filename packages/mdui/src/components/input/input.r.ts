@@ -1,5 +1,5 @@
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -13,7 +13,7 @@ import { needUpdateTextFields } from "../../update";
 export class MdInput extends TriggerComponent<string> {
   inputRef = ref<HTMLElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     label: D<string> = "",
     disabled: D<boolean> = false,

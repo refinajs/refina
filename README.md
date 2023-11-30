@@ -14,7 +14,7 @@ Works best with [tailwindcss](https://tailwindcss.com/).
 import { d, app } from "refina";
 const name = d("");
 let times = 0; // needn't be warped in d()
-app((_) => {
+app(_ => {
   _.t`Enter your name:`;
   if (_.textInput(name)) {
     // returns true if the input is focused

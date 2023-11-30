@@ -1,24 +1,28 @@
 import { Prelude } from "../constants";
-import { D } from "../data";
 
-const asyncRecordsSymbol = Symbol("async record");
+/**
+ * The key of await states in `permanentData`
+ */
+const awaitStatesSymbol = Symbol("await states");
 
-type AsyncRecord =
+/**
+ * The state of an await call.
+ */
+type AwaitState =
   | {
-      state: true;
-      awaitedValue: any;
+      type: "pending";
     }
   | {
-      state: false;
-      awaitedValue: undefined;
+      type: "fulfilled";
+      value: any;
     }
   | {
-      state: "error";
-      awaitedValue: any;
+      type: "error";
+      reason: any;
     };
 
 Prelude.registerFunc(
-  "async",
+  "await",
   function (
     ckey: string,
     executor: () => Promise<any>,
@@ -26,122 +30,91 @@ Prelude.registerFunc(
   ): boolean {
     const ikey = this.$app.pushKey(ckey);
 
-    this.$permanentData[asyncRecordsSymbol] ??= {};
+    // Initialize the record of await states.
+    this.$permanentData[awaitStatesSymbol] ??= {};
 
-    const asyncRecords = this.$permanentData[asyncRecordsSymbol] as Record<
+    // Get the record of await state
+    // The key of the record is the Ikey of the await call.
+    const awaitStates = this.$permanentData[awaitStatesSymbol] as Record<
       string,
-      AsyncRecord
+      AwaitState
     >;
-    let record = asyncRecords[ikey];
 
-    if (!record) {
-      record = asyncRecords[ikey] = {
-        state: false,
-        awaitedValue: undefined,
-      } as AsyncRecord;
+    if (!awaitStates[ikey]) {
+      // The await call is not started.
+      awaitStates[ikey] = {
+        type: "pending",
+      };
       executor()
-        .then((value) => {
-          record.state = true;
-          record.awaitedValue = value;
+        .then(value => {
+          awaitStates[ikey] = {
+            type: "fulfilled",
+            value,
+          };
           this.$update();
         })
-        .catch((reason) => {
-          record.state = "error";
-          record.awaitedValue = reason;
+        .catch(reason => {
+          awaitStates[ikey] = {
+            type: "error",
+            reason,
+          };
           this.$update();
         });
     }
-    this.$app.popKey(ckey);
 
-    const { state, awaitedValue } = record;
-    if (state) {
-      if (state === "error") {
-        throw awaitedValue;
-      }
-      //@ts-ignore
-      this[`$awaited${id}`] = awaitedValue;
+    this.$app.popKey(ikey);
+
+    const state = awaitStates[ikey];
+    if (state.type === "pending") {
+      return false;
+    } else if (state.type === "fulfilled") {
+      // @ts-ignore
+      this[`$awaited${id}`] = state.value;
       return true;
     } else {
-      return false;
+      throw state.reason;
     }
   },
 );
-
-const awaitRecordsSymbol = Symbol("await record");
-
-Prelude.registerFunc(
-  "awaits",
-  function (
-    ckey: string,
-    id: string | number,
-    executor: () => Promise<any>,
-    overlay: D<boolean> = false,
-  ) {
-    this.$permanentData[awaitRecordsSymbol] ??= {};
-    const awaitRecords = this.$permanentData[awaitRecordsSymbol] as Record<
-      string,
-      AsyncRecord
-    >;
-    if (!overlay && awaitRecords[id]) {
-      return;
-    }
-    awaitRecords[id] = {
-      state: false,
-      awaitedValue: undefined,
-    };
-    const record = awaitRecords[id];
-    executor()
-      .then((value) => {
-        record.state = true;
-        record.awaitedValue = value;
-        this.$update();
-      })
-      .catch((reason) => {
-        record.state = "error";
-        record.awaitedValue = reason;
-        this.$update();
-      });
-  },
-);
-
-Prelude.registerFunc("awaited", function (ckey: string, id: string | number) {
-  const record = this.$permanentData[awaitRecordsSymbol]?.[id] as AsyncRecord;
-  if (record?.state) {
-    const { state, awaitedValue } = record;
-    if (state === "error") {
-      throw awaitedValue;
-    }
-    //@ts-ignore
-    this[`$awaited${id}`] = awaitedValue;
-    return true;
-  } else {
-    return false;
-  }
-});
 
 declare module "../context" {
   interface ContextFuncs<C> {
-    async: (<T, N extends string | number = "">(
+    /**
+     * Use data from an async call when rendering.
+     *
+     * **Warning**: **DO NOT** change the Ikey of the await call,
+     *  or the data will be lost, and a new async call will be made.
+     *
+     * **Note**: Use `try`/`catch` to handle errors.
+     *
+     * @example
+     * ```ts
+     * if (_.await(() => fetch("https://example.com"))) {
+     *   // When the promise is fulfilled, _.await returns true.
+     *
+     *   _.p(_.$awaited.statusText);
+     *
+     *   // You can also use a custom id for a nesting await call.
+     *   _.await(() => _.$awaited.text(), "Text") && _.p(_.$awaitedText);
+     * } else {
+     *   // When the promise is pending, _.await returns false.
+     *
+     *   _.p("Loading...");
+     * }
+     * ```
+     *
+     * @param executor The async function to execute. This function is called only once for each different Ikey.
+     * @param id The id of the await call. If not provided, the id is an empty string. Access the awaited data with `_.$awaited<id>`.
+     * @throws The error thrown by the async function.
+     */
+    await: (<T, N extends string | number>(
       executor: () => Promise<T>,
-      id?: N,
-    ) => //@ts-ignore
-    this is {
-      [K in N as `$awaited${K}`]: T;
-    }) &
-      (<T>(executor: () => Promise<T>) => //@ts-ignore
+      id: N,
+    ) => // @ts-ignore
+    this is Record<`$awaited${K}`, T>) &
+      (<T>(executor: () => Promise<T>) => // @ts-ignore
       this is {
         $awaited: T;
       });
-    awaits: <T, N extends string | number>(
-      id: N,
-      executor: () => Promise<T>,
-      overlay?: D<boolean>,
-    ) => void;
-    awaited: <T, N extends string | number>(
-      id: N,
-    ) => //@ts-ignore
-    this is {
-      [K in N as `$awaited${K}`]: T;
-    };
   }
 }

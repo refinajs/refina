@@ -1,12 +1,4 @@
-import {
-  ComponentContext,
-  Content,
-  D,
-  TriggerComponent,
-  View,
-  d,
-  getD,
-} from "refina";
+import { Content, Context, D, TriggerComponent, View, d, getD } from "refina";
 import FluentUI from "../../plugin";
 import "./fDialogBody.r";
 import "./fDialogSurface.r";
@@ -14,7 +6,7 @@ import "./fDialogSurface.r";
 @FluentUI.triggerComponent("fControlledDialog")
 export class fControlledDialog extends TriggerComponent<void> {
   main(
-    _: ComponentContext,
+    _: Context,
     open: D<boolean>,
     title: D<Content>,
     content: D<Content<[close: () => void]>>,
@@ -47,7 +39,7 @@ export class fControlledDialog extends TriggerComponent<void> {
 export class FDialog extends TriggerComponent<boolean> {
   open = d(false);
   main(
-    _: ComponentContext,
+    _: Context,
     trigger: D<View<[open: (open?: boolean) => void]>>,
     title: D<Content>,
     content: D<Content<[close: () => void]>>,
@@ -61,7 +53,7 @@ export class FDialog extends TriggerComponent<boolean> {
         this.$fire(open);
       }),
     );
-    _.$main();
+    this.$main();
     if (
       _.fControlledDialog(
         this.open,

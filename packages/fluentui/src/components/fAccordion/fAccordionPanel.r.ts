@@ -1,10 +1,10 @@
-import { ComponentContext, Content, D, OutputComponent } from "refina";
+import { Content, Context, D, OutputComponent } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./panel.styles";
 
 @FluentUI.outputComponent("fAccordionPanel")
 export class FAccordionPanel extends OutputComponent {
-  main(_: ComponentContext, inner: D<Content>): void {
+  main(_: Context, inner: D<Content>): void {
     styles.root(_);
     _._div({}, inner);
   }

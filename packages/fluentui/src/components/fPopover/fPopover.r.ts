@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   MainElRef,
@@ -19,7 +19,7 @@ export class FControlledPopover extends TriggerComponent<void> {
   arrowRef = ref<HTMLElementComponent<"div">>();
   contentRef = ref<HTMLElementComponent<"div">>();
   main(
-    _: ComponentContext,
+    _: Context,
     targetRef: MainElRef,
     open: D<boolean>,
     inner: D<Content<[close: () => void]>>,
@@ -32,20 +32,22 @@ export class FControlledPopover extends TriggerComponent<void> {
     };
 
     if (getD(open)) {
-      _.$app.registerRootEventListener(
-        "click",
-        ev => {
-          const target = ev.composedPath()[0] as HTMLElement;
-          const isOutside = [this.contentRef, targetRef].every(
-            ref => !ref.current!.$mainEl!.contains(target),
-          );
+      if (_.$updateState) {
+        _.$root.addEventListener(
+          "click",
+          ev => {
+            const target = ev.composedPath()[0] as HTMLElement;
+            const isOutside = [this.contentRef, targetRef].every(
+              ref => !ref.current!.$mainEl!.node.contains(target),
+            );
 
-          if (isOutside) {
-            close();
-          }
-        },
-        true,
-      );
+            if (isOutside) {
+              close();
+            }
+          },
+          true,
+        );
+      }
 
       const {} = _.usePositioning({
         targetRef,
@@ -99,7 +101,7 @@ export class FPopover extends TriggerComponent<boolean> {
   open = d(false);
   targetRef = ref<HTMLElementComponent>();
   main(
-    _: ComponentContext,
+    _: Context,
     trigger: D<
       View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>
     >,

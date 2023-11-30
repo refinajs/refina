@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -14,7 +14,7 @@ import styles from "./fTab.styles";
 export class FTab extends TriggerComponent<void> {
   buttonRef = ref<HTMLElementComponent<"button">>();
   main(
-    _: ComponentContext,
+    _: Context,
     selected: D<boolean>,
     content: D<Content>,
     disabled: D<boolean> = false,

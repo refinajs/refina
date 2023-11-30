@@ -25,7 +25,7 @@ export function applyFocusWithinPolyfill(
   const keyborg = createKeyborg(win);
 
   // When navigation mode changes to mouse, remove the focus-within selector
-  keyborg.subscribe((isNavigatingWithKeyboard) => {
+  keyborg.subscribe(isNavigatingWithKeyboard => {
     if (!isNavigatingWithKeyboard) {
       removeFocusWithinClass(element);
     }

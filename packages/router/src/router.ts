@@ -13,15 +13,15 @@ export class Router {
     this.updateCurrentPath();
 
     this.setPendingRoute(
-      (path) => {
+      path => {
         history.replaceState({}, "", path);
       },
       this.currentPath,
       null,
     );
 
-    window.addEventListener("popstate", (ev) => {
-      this.setPendingRoute((path) => {
+    window.addEventListener("popstate", ev => {
+      this.setPendingRoute(path => {
         history.replaceState({}, "", path);
       }, window.location.pathname);
     });
@@ -44,7 +44,7 @@ export class Router {
     });
   }
   push(path: string) {
-    this.setPendingRoute((path) => {
+    this.setPendingRoute(path => {
       history.pushState({}, "", path);
     }, path);
   }
@@ -52,7 +52,7 @@ export class Router {
     return this.push.bind(this);
   }
   replace(path: string) {
-    this.setPendingRoute((path) => {
+    this.setPendingRoute(path => {
       history.replaceState({}, "", path);
     }, path);
   }

@@ -1,12 +1,11 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DArray,
   DPartialRecord,
   HTMLElementComponent,
   StatusComponent,
-  bySelf,
   getD,
   ref,
 } from "refina";
@@ -21,7 +20,7 @@ export class MdNavRail<Value extends string> extends StatusComponent<
 > {
   navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
   main(
-    _: ComponentContext,
+    _: Context,
     items: DArray<[value: Value, iconName?: string]>,
     contentOverride: DPartialRecord<Value, Content> = {},
     bottomSlot?: D<Content>,
@@ -41,16 +40,20 @@ export class MdNavRail<Value extends string> extends StatusComponent<
           },
         },
         _ => {
-          _.for(items, bySelf, item => {
-            const [value, icon] = getD(item);
-            _._mdui_navigation_rail_item(
-              {
-                value,
-                icon,
-              },
-              contentOverrideValue[value] ?? value,
-            );
-          });
+          _.for(
+            items,
+            item => getD(item)[0],
+            item => {
+              const [value, icon] = getD(item);
+              _._mdui_navigation_rail_item(
+                {
+                  value,
+                  icon,
+                },
+                contentOverrideValue[value] ?? value,
+              );
+            },
+          );
 
           if (bottomSlot) {
             _._div({ slot: "bottom" }, bottomSlot);

@@ -1,5 +1,5 @@
 import { Button } from "mdui";
-import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
+import { Content, Context, D, TriggerComponent, getD } from "refina";
 import MdUI2 from "../plugin";
 
 export type ButtonVariant = Button["variant"];
@@ -8,11 +8,7 @@ export type ButtonVariant = Button["variant"];
 export class MdButton extends TriggerComponent<void> {
   varient: ButtonVariant = "filled";
 
-  main(
-    _: ComponentContext,
-    inner: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
+  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
     _._mdui_button(
       {
         disabled: getD(disabled),

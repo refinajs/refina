@@ -1,5 +1,5 @@
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -18,7 +18,7 @@ export abstract class FInput<T> extends TriggerComponent<T> {
   appearance: InputAppearance = "outline";
   inputRef = ref<HTMLElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<T>,
     disabled: D<boolean> = false,
     placeholder: D<string> = "",

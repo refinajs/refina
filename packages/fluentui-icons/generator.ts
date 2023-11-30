@@ -12,7 +12,7 @@ function generateComponent(
 ) {
   const svgContent = [...iconContent.matchAll(/(?<= d=)".+?"/g)]
     .map(
-      (v) => `_._svgPath({
+      v => `_._svgPath({
         d: ${v},
         fill: "currentColor",
       })`,
@@ -20,7 +20,7 @@ function generateComponent(
     .join(";\n      ");
   return `@FIcons.outputComponent("${componentFuncName}")
 export class ${componentClassName} extends OutputComponent {
-  main(_: ComponentContext): void {
+  main(_: Context): void {
     _._svgSvg(
       {
         width: "${width}",
@@ -30,7 +30,7 @@ export class ${componentClassName} extends OutputComponent {
         xmlns: "http://www.w3.org/2000/svg",
       } as any,
       () => {
-        //@ts-ignore
+        // @ts-ignore
         ${svgContent};
       },
     );
@@ -68,7 +68,7 @@ if (
 }
 
 const contents = fs.readdirSync(iconsDir);
-const contentPaths = contents.map((v) => join(iconsDir, v));
+const contentPaths = contents.map(v => join(iconsDir, v));
 const fileNames: string[] = [];
 const filePaths = contentPaths.filter((v, i) => {
   if (fs.lstatSync(v).isFile() && contents[i].endsWith(".svg")) {
@@ -138,7 +138,7 @@ fileNames.forEach((fileName, index) => {
 const componentsEntries = Object.entries(components);
 componentsEntries.forEach(([lowerCamelIconName, codes], index) => {
   const code =
-    `import { OutputComponent, ComponentContext } from "refina";
+    `import { Context, OutputComponent } from "refina";
 import FIcons from "../plugin";\n\n` + codes.join("\n");
   const outputFileName = `${lowerCamelIconName}.r.ts`;
   const outputFilePath = join(distDir, outputFileName);

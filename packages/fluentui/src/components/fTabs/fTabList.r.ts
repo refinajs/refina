@@ -1,6 +1,6 @@
 import {
-  ComponentContext,
   Content,
+  Context,
   D,
   DArray,
   Ref,
@@ -44,7 +44,7 @@ function getTabRect(tabRef: Ref<FTab>): Rect {
 export class FTabList extends TriggerComponent<number> {
   tabRefs = new Map<number, Ref<FTab>>();
   main(
-    _: ComponentContext,
+    _: Context,
     selected: D<number>,
     contents: DArray<Content>,
     disabled: DArray<boolean | undefined> | D<boolean> = false,
@@ -67,7 +67,7 @@ export class FTabList extends TriggerComponent<number> {
           this.tabRefs.set(index, tabRef);
         }
         const tabSelected = selectedValue === index;
-        _.$app.pushHook("afterModifyDOM", () => {
+        _.$app.pushOnetimeHook("afterModifyDOM", () => {
           const selectedTabRect = getTabRect(this.tabRefs.get(selectedValue)!);
           const thisTabRect = getTabRect(tabRef!);
           const buttonEl = tabRef!.current!.buttonRef.current!.node;

@@ -30,7 +30,7 @@
 
 ```typescript
 import { app } from "refina";
-app((_) => {
+app(_ => {
   _.t`Hello, world!`;
 });
 ```
@@ -47,7 +47,7 @@ app((_) => {
 ```typescript
 import { app } from "refina";
 let count = 0;
-app((_) => {
+app(_ => {
   if (_.button("Click me!")) {
     count++;
   }
@@ -56,7 +56,7 @@ app((_) => {
 ```
 
 - 首先，我们用一个普通的变量`count`来存储计数器的值
-  > 与 vue 不同的是，`count`不需要被包裹在`ref()`中
+  > 与 vue 不同的是，`count`不需要被包裹在`ref_`中
 - `_.button`用于创建一个按钮。它接受两个参数：
   - 第一个参数为按钮的内容
   - 第二个参数为按钮是否被禁用。默认为`false`
@@ -69,7 +69,7 @@ app((_) => {
 ```typescript
 import { app, d } from "refina";
 const name = d("");
-app((_) => {
+app(_ => {
   _.textInput(name);
   _.p(`Hello ${name}!`);
   if (name.value === "refina") {
@@ -89,13 +89,13 @@ app((_) => {
 ```typescript
 import { app, d } from "refina";
 const text = d("Hello");
-app((_) => {
-  _.div(() => {
-    _.p((_) => {
+app(_ => {
+  _.div(_ => {
+    _.p(_ => {
       _.p(text);
       _.t`world`;
     });
-    _.p(() => _.t`!`);
+    _.p(_ => _.t`!`);
   });
 });
 ```
@@ -108,7 +108,7 @@ app((_) => {
 ```typescript
 import { app, d } from "refina";
 const list = [1, 2, 4, 8, 16];
-app((_) => {
+app(_ => {
   _.for(
     list,
     (_item, index) => index,

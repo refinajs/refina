@@ -1,11 +1,4 @@
-import {
-  ComponentContext,
-  Content,
-  D,
-  Embed,
-  OutputComponent,
-  ref,
-} from "refina";
+import { Content, Context, D, Embed, OutputComponent, ref } from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
 import "../fPortal";
@@ -21,7 +14,7 @@ export class FTooltip extends OutputComponent {
     if (!Number.isNaN(this.timeout)) clearTimeout(this.timeout);
   };
 
-  main(_: ComponentContext, inner: D<Content>, content: D<Content>): void {
+  main(_: Context, inner: D<Content>, content: D<Content>): void {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol];
       const anotherTooltip =
@@ -44,7 +37,7 @@ export class FTooltip extends OutputComponent {
       }, 250);
     };
 
-    let triggerElement = this.embedRef.current?.$firstHTMLELement?.node;
+    let triggerElement = this.embedRef.current?.$mainEl?.node;
     if (triggerElement) {
       triggerElement.onpointerenter = null;
       triggerElement.onpointerleave = null;
@@ -54,7 +47,7 @@ export class FTooltip extends OutputComponent {
 
     _.$ref(this.embedRef) && _.embed(inner);
 
-    triggerElement = this.embedRef.current?.$firstHTMLELement?.node;
+    triggerElement = this.embedRef.current?.$mainEl?.node;
     if (triggerElement) {
       const mergeCallbacks =
         <E>(cb1: ((ev: E) => void) | null, cb2: (ev: E) => void) =>
@@ -95,20 +88,22 @@ export class FTooltip extends OutputComponent {
         },
       };
 
-      _.$app.registerDocumentEventListener(
-        "keydown",
-        ev => {
-          if (ev.key === "Escape") {
-            if (this.visible) {
-              this.visible = false;
-              _.$update();
+      if (_.$updateState) {
+        _.$window.addEventListener(
+          "keydown",
+          ev => {
+            if (ev.key === "Escape") {
+              if (this.visible) {
+                this.visible = false;
+                _.$update();
+              }
             }
-          }
-        },
-        {
-          capture: true,
-        },
-      );
+          },
+          {
+            capture: true,
+          },
+        );
+      }
 
       const positioningOptions = {
         targetRef: this.embedRef,

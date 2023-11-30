@@ -2,7 +2,7 @@ import { OutputComponent } from "../component";
 import { Prelude } from "../constants";
 import { Context } from "../context";
 import { D } from "../data";
-import { EmbededContent } from "./embed.r";
+import { Content } from "../dom";
 
 @Prelude.outputComponent("provide")
 export class Provide extends OutputComponent {
@@ -10,20 +10,20 @@ export class Provide extends OutputComponent {
     _: Context,
     key: symbol,
     value: any,
-    content: D<EmbededContent<Args>>,
+    content: D<Content<Args>>,
     ...args: Args
   ): void;
   main<Args extends any[]>(
     _: Context,
     obj: Record<symbol, any>,
-    content: D<EmbededContent<Args>>,
+    content: D<Content<Args>>,
     ...args: Args
   ): void;
   main<Args extends any[]>(
     _: Context,
     keyOrObj: symbol | Record<symbol, any>,
     contentOrValue: any,
-    content: D<EmbededContent<Args>>,
+    content: D<Content<Args>>,
     ...args: Args
   ): void {
     if (typeof keyOrObj === "symbol") {
@@ -51,16 +51,38 @@ export class Provide extends OutputComponent {
 
 declare module "../context" {
   interface ContextFuncs<C> {
+    /**
+     * Provide a value or a object of values to `_.$runtimeData`
+     *  for the duration of the inner content.
+     *
+     * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
+     *  which is not scoped to the inner content.
+     *
+     * ---
+     *
+     * *Overload 1*:
+     * @param key The key of the value to provide.
+     * @param value The value to provide.
+     * @param content The content to render. In this content, `_.$runtimeData[key]` will be set to `value`.
+     * @param args The arguments to pass to the content.
+     *
+     * ---
+     *
+     * *Overload 2*:
+     * @param obj The object of values to provide.
+     * @param content The content to render. In this content, the values in obj is available in `_.$runtimeData`.
+     * @param args The arguments to pass to the content.
+     */
     provide: Provide extends C["enabled"]
       ? (<Args extends any[]>(
           key: symbol,
           value: any,
-          content: D<EmbededContent<Args>>,
+          content: D<Content<Args>>,
           ...args: Args
         ) => void) &
           (<Args extends any[]>(
             obj: Record<symbol, any>,
-            content: D<EmbededContent<Args>>,
+            content: D<Content<Args>>,
             ...args: Args
           ) => void)
       : never;

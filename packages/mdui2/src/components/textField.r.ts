@@ -1,5 +1,6 @@
+import { TextField } from "mdui";
 import {
-  ComponentContext,
+  Context,
   D,
   HTMLElementComponent,
   TriggerComponent,
@@ -7,7 +8,6 @@ import {
   ref,
 } from "refina";
 import MdUI2 from "../plugin";
-import { TextField } from "mdui";
 
 export type TextFieldVariant = TextField["variant"];
 
@@ -17,7 +17,7 @@ export class MdTextField extends TriggerComponent<string> {
 
   inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     label?: D<string>,
     disabled: D<boolean> = false,
@@ -48,7 +48,7 @@ export class MdPasswordInput extends TriggerComponent<string> {
 
   inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     label?: D<string>,
     disabled: D<boolean> = false,
@@ -86,7 +86,7 @@ export class MdTextarea extends TriggerComponent<
 
   inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
   main(
-    _: ComponentContext,
+    _: Context,
     value: D<string>,
     label?: D<string>,
     disabled: D<boolean> = false,

@@ -2,7 +2,7 @@ import * as keys from "@fluentui/keyboard-keys";
 import "@refina/fluentui-icons/checkmark.r.ts";
 import "@refina/fluentui-icons/chevronDown.r.ts";
 import {
-  ComponentContext,
+  Context,
   D,
   DArray,
   DOMElementComponent,
@@ -16,9 +16,9 @@ import FluentUI from "../../plugin";
 import "../../positioning";
 import "../fPortal";
 import dropdownStyles from "./fDropdown.styles";
+import { DropdownAppearance } from "./fDropdown.types";
 import listboxStyles from "./listbox.styles";
 import optionStyles from "./option.styles";
-import { DropdownAppearance } from "./fDropdown.types";
 
 /**
  * enum of actions available in any type of managed dropdown control
@@ -154,7 +154,7 @@ export class FDropdown<
   buttonEl = ref<DOMElementComponent<"button">>();
 
   main(
-    _: ComponentContext,
+    _: Context,
     selected: D<OptionValue | "">,
     options: DArray<OptionValue>,
     disabled: D<boolean | D<boolean>[]> = false,
@@ -190,9 +190,9 @@ export class FDropdown<
     );
 
     if (this.open) {
-      _.$app.pushHook("afterModifyDOM", () => {
-        containerRef.current!.$mainEl!.style.width = `${
-          rootRef.current!.$mainEl.clientWidth
+      _.$app.pushOnetimeHook("afterModifyDOM", () => {
+        containerRef.current!.$mainEl!.node.style.width = `${
+          rootRef.current!.$mainEl!.node.clientWidth
         }px`;
       });
     }

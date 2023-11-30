@@ -1,5 +1,5 @@
 import { Fab } from "mdui";
-import { ComponentContext, Content, D, TriggerComponent, getD } from "refina";
+import { Content, Context, D, TriggerComponent, getD } from "refina";
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdFab")
@@ -7,7 +7,7 @@ export class MdFab extends TriggerComponent<void> {
   varient: Fab["variant"];
 
   main(
-    _: ComponentContext,
+    _: Context,
     icon: D<string>,
     disabled: D<boolean> = false,
     extendedContent: D<Content | undefined> = undefined,

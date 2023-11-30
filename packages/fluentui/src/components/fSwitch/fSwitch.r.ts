@@ -1,6 +1,6 @@
 import "@refina/fluentui-icons/circle.r.ts";
 import {
-  ComponentContext,
+  Context,
   D,
   DOMElementComponent,
   TriggerComponent,
@@ -14,7 +14,7 @@ import styles from "./fSwitch.styles";
 export class FSwitch extends TriggerComponent<boolean> {
   inputRef = ref<DOMElementComponent<"input">>();
   main(
-    _: ComponentContext,
+    _: Context,
     label: D<string>,
     state: D<boolean>,
     disabled: D<boolean> = false,

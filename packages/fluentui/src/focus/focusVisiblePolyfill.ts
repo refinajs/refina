@@ -47,7 +47,7 @@ export function applyFocusVisiblePolyfill(
   const keyborg = createKeyborg(targetWindow);
 
   // When navigation mode changes remove the focus-visible selector
-  keyborg.subscribe((isNavigatingWithKeyboard) => {
+  keyborg.subscribe(isNavigatingWithKeyboard => {
     if (!isNavigatingWithKeyboard && state.current) {
       removeFocusVisibleClass(state.current);
       state.current = undefined;
