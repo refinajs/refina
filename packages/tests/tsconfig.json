@@ -1,0 +1,11 @@
+{
+  "extends": "@refina/tsconfig",
+  "compilerOptions": {
+    "composite": true,
+    "lib": ["ESNext", "DOM"],
+    "types": ["vitest/globals"],
+    "paths": {
+      "refina": ["./packages/core/src"]
+    }
+  }
+}

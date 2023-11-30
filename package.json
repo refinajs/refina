@@ -14,6 +14,8 @@
     "dev:mdui": "pnpm -r --parallel --filter \"@refina/example-mdui...\" run dev",
     "dev:mdui2": "pnpm -r --parallel --filter \"@refina/example-mdui2...\" run dev",
     "dev:gh-login": "pnpm -r --parallel --filter \"@refina/example-gh-login...\" run dev",
+    "test": "pnpm --filter \"@refina/tests\" run test",
+    "coverage": "pnpm --filter \"@refina/tests\" run coverage",
     "build": "pnpm -r run build",
     "check": "pnpm -r --parallel run check",
     "prettier": "prettier --write .",
