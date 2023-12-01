@@ -17,7 +17,7 @@ export class RefinaTransformer {
   }
 
   shouldTransform(fileName: string) {
-    return fileName.endsWith(".r.ts") || fileName.endsWith(".r.js");
+    return /\.r(\.(test|spec))?\.[tj]s$/i.test(fileName);
   }
 
   transformWithSourceMap(
