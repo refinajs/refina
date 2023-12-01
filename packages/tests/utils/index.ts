@@ -1,3 +1,3 @@
-export async function initDOM() {
+export function initRootElement() {
   document.body.innerHTML = `<div id="root"></div>`;
 }
