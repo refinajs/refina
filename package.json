@@ -22,7 +22,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^0.34.6",
+    "@vitest/coverage-istanbul": "^0.34.6",
     "husky": "^8.0.3",
     "jsdom": "^23.0.1",
     "lint-staged": "^14.0.0",

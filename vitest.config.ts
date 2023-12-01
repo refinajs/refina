@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     coverage: {
+      provider: "istanbul",
       reporter: ["text", "html", "lcov"],
     },
   },
