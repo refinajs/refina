@@ -83,7 +83,7 @@ const $app = app.use(Basics)(_ => {
           login();
         }
         _.$cls`float-right text-xs absolute top-0 right-0 text-[#2f81f7]`;
-        _.a("/password_reset", "Forgot password?");
+        _.a("https://github.com/password_reset", "Forgot password?");
       });
     });
     _.$cls`p-4 text-center border border-[#30363d] rounded-[6px] mt-4 mb-[10px] `;
