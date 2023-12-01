@@ -419,6 +419,34 @@ export class App {
   } = {};
 
   /**
+   * Promises that resolve after the corresponding hooks are called.
+   */
+  readonly promises = {
+    /**
+     * Store the app instance, because `this` is lost in the getters.
+     */
+    app: this,
+
+    /**
+     * This promise resolves after the `beforeMain` hook is called.
+     */
+    get mainExecuted(): Promise<void> {
+      return new Promise(resolve => {
+        this.app.pushOnetimeHook("afterMain", resolve);
+      });
+    },
+
+    /**
+     * This promise resolves after the `beforeModifyDOM` hook is called.
+     */
+    get DOMUpdated(): Promise<void> {
+      return new Promise(resolve => {
+        this.app.pushOnetimeHook("afterModifyDOM", resolve);
+      });
+    },
+  };
+
+  /**
    * Call onetime hooks and reset them, then call permanent hooks.
    * @param hookName the name of the hooks to call
    * @param args the arguments to pass to each hook
