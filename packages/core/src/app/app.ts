@@ -140,7 +140,7 @@ export class App {
   ) {
     const rootElement = document.getElementById(rootElementId);
     if (!rootElement) {
-      throw new Error(`Root element ${rootElementId} not found`);
+      throw new Error(`Root element ${rootElementId} not found.`);
     }
     this.root = new DOMRootComponent("~", rootElement);
   }
@@ -353,7 +353,7 @@ export class App {
       if (import.meta.env.DEV) {
         if (initialKey !== this.currentIkey) {
           throw new Error(
-            `Key mismatch: ${initialKey} !== ${this.currentIkey}. You may have forgotten to call app.popKey()`,
+            `Key mismatch: ${initialKey} !== ${this.currentIkey}. You may have forgotten to call app.popKey().`,
           );
         }
       }
@@ -524,16 +524,13 @@ export class App {
   /**
    * Pop a Ikey from the Ikey stack.
    * @param ikey The Ikey to pop from the Ikey stack. Used to check if the stack is balanced in development mode.
-   * @param msg The error message to show when the stack is not balanced.
    */
-  popKey(ikey: string, msg?: string) {
+  popKey(ikey: string) {
     const last = (this.state as AppRunningState).ikeyStack.pop();
     if (import.meta.env.DEV) {
       if (ikey !== last) {
         throw new Error(
-          `idPrefix tag mismatch: want to pop "${ikey}", but the last is "${last}".\n
-current: ${this.currentIkey}
-message: ${msg}`,
+          `Ikey stack is unbalanced: want to pop "${ikey}", but the last Ikey is "${last}".`,
         );
       }
     }

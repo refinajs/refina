@@ -246,7 +246,7 @@ export class IntrinsicContext<CS extends ContextState> {
     if (this.$app.state.type === AppStateType.RECV) {
       return this.$app.state.event;
     } else {
-      throw new Error(`Cannot access _.$ev when not receiving event`);
+      throw new Error(`Cannot access _.$ev when not receiving event.`);
     }
   }
 
@@ -575,7 +575,7 @@ export class IntrinsicContext<CS extends ContextState> {
     const func = this.$app.contextFuncs[funcName as keyof RealContextFuncs];
     if (import.meta.env.DEV) {
       if (!func) {
-        throw new Error(`Unknown element ${funcName}`);
+        throw new Error(`Unknown element ${funcName}.`);
       }
     }
     // Return the return value of the context function.
