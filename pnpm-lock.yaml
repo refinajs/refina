@@ -8,15 +8,24 @@ importers:
 
   .:
     devDependencies:
+      '@vitest/coverage-v8':
+        specifier: ^0.34.6
+        version: 0.34.6(vitest@0.34.6)
       husky:
         specifier: ^8.0.3
         version: 8.0.3
+      jsdom:
+        specifier: ^23.0.1
+        version: 23.0.1
       lint-staged:
         specifier: ^14.0.0
         version: 14.0.1
       prettier:
         specifier: 3.0.0
         version: 3.0.0
+      vitest:
+        specifier: ^0.34.6
+        version: 0.34.6(jsdom@23.0.1)
 
   packages/basic-components:
     dependencies:
@@ -324,24 +333,9 @@ importers:
       '@refina/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig
-      '@vitest/coverage-v8':
-        specifier: ^0.34.6
-        version: 0.34.6(vitest@0.34.6)
-      jsdom:
-        specifier: ^23.0.1
-        version: 23.0.1
       typescript:
         specifier: ^5.1.6
         version: 5.2.2
-      vite:
-        specifier: ^4.4.8
-        version: 4.5.0(@types/node@20.6.5)
-      vite-plugin-refina:
-        specifier: workspace:^
-        version: link:../vite-plugin
-      vitest:
-        specifier: ^0.34.6
-        version: 0.34.6(jsdom@23.0.1)
 
   packages/transformer:
     dependencies:

@@ -14,17 +14,20 @@
     "dev:mdui": "pnpm -r --parallel --filter \"@refina/example-mdui...\" run dev",
     "dev:mdui2": "pnpm -r --parallel --filter \"@refina/example-mdui2...\" run dev",
     "dev:gh-login": "pnpm -r --parallel --filter \"@refina/example-gh-login...\" run dev",
-    "test": "pnpm --filter \"@refina/tests\" run test",
-    "coverage": "pnpm --filter \"@refina/tests\" run coverage",
+    "test": "vitest --coverage",
+    "coverage": "vitest run --coverage",
     "build": "pnpm -r run build",
     "check": "pnpm -r --parallel run check",
     "prettier": "prettier --write .",
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^0.34.6",
     "husky": "^8.0.3",
+    "jsdom": "^23.0.1",
     "lint-staged": "^14.0.0",
-    "prettier": "3.0.0"
+    "prettier": "3.0.0",
+    "vitest": "^0.34.6"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

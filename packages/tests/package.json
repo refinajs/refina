@@ -4,18 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "check": "tsc --noEmit",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "check": "tsc --noEmit"
   },
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "@vitest/coverage-v8": "^0.34.6",
-    "jsdom": "^23.0.1",
-    "typescript": "^5.1.6",
-    "vite": "^4.4.8",
-    "vite-plugin-refina": "workspace:^",
-    "vitest": "^0.34.6"
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "refina": "workspace:^"

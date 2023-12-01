@@ -16,5 +16,6 @@
   "[*.r.js][*.r.ts]": {
     "editor.guides.bracketPairs": "active"
   },
-  "editor.guides.bracketPairs": "active"
+  "editor.guides.bracketPairs": "active",
+  "vitest.commandLine": "pnpm exec vitest --coverage"
 }
