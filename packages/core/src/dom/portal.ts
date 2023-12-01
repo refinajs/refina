@@ -28,6 +28,7 @@ export class DOMPortalComponent extends DOMElementComponent {
 
   /**
    * Update the DOM tree of the portal.
+   *
    * @param lastNode The last updated node.
    * @returns the new last updated node.
    */

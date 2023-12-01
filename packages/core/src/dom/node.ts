@@ -42,6 +42,7 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
 
   /**
    * Insert the DOM node after the given element.
+   *
    * @param node The element to insert after.
    */
   insertAfter(node: ChildNode): void {
@@ -50,6 +51,7 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
 
   /**
    * Prepend the DOM node to the parent DOM element.
+   *
    * @param parent The parent DOM element to prepend to.
    */
   prependTo(parent: Element): void {
@@ -58,6 +60,7 @@ export abstract class DOMNodeComponent<N extends Node = Node> {
 
   /**
    * Remove the DOM node from its parent.
+   *
    * @param parent The parent DOM element to remove from.
    */
   removeFrom(parent: Element): void {

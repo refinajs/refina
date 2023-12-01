@@ -183,6 +183,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
+   *
    * @param d The `D` to set
    * @param v The value to set
    * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
@@ -293,7 +294,6 @@ export class IntrinsicContext<CS extends ContextState> {
    * _.$ref(componentRef) && _._myComponent();
    * _.$ref(divRef) && _._div();
    * ```
-   *
    * @param ref The `Ref` object.
    * @param refs The rest `Ref` objects to merge.
    * @returns always `true`.
@@ -423,6 +423,7 @@ export class IntrinsicContext<CS extends ContextState> {
   /**
    * Get the classes that will be added to the next component,
    *  and clear `this.$$nextCls`.
+   *
    * @returns The classes.
    */
   protected $$consumeCls() {
@@ -475,6 +476,7 @@ export class IntrinsicContext<CS extends ContextState> {
   /**
    * Get the styles that will be added to the next component,
    *  and clear `this.$$nextCss`.
+   *
    * @returns The styles.
    */
   protected $$consumeCss() {
@@ -635,6 +637,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Process a component.
+   *
    * @param ckey The Ckey of the component.
    * @param ctor The constructor of the component class.
    * @param args The parameters to pass to the main function of the component.
@@ -702,6 +705,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Process the content of a DOM element component in `UPDATE` state.
+   *
    * @param appState The `UPDATE` state of the app.
    * @param el The DOM element component.
    * @param content The content of the DOM element component.
@@ -734,6 +738,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Process the content of a DOM element component in `RECV` state.
+   *
    * @param content The content of the DOM element component.
    */
   $$recvDOMContent(content?: D<Content>) {
@@ -747,6 +752,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Process a HTML element.
+   *
    * @param ckey The Ckey of the element.
    * @param tagName The tag name of the element.
    * @param cls The classes of the element.
@@ -811,6 +817,7 @@ export class IntrinsicContext<CS extends ContextState> {
 
   /**
    * Process a SVG element.
+   *
    * @param ckey The Ckey of the element.
    * @param tagName The tag name of the element.
    * @param cls The classes of the element.

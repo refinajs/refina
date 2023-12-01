@@ -464,7 +464,6 @@ export type SVGElementFuncs<C extends ContextState> = {
    *   }
    * );
    * ```
-   *
    * @param data An object that contains the attributes of the element.
    * @param inner The inner content of the element. It can be a string, a number, or a view function.
    * @param eventListeners The event listeners of the element.

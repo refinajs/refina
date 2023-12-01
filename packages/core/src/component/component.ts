@@ -52,6 +52,7 @@ export abstract class Component<Props = {}> {
   /**
    * The main function of the component.
    * In this function, the component should render its content and receive event under `RECV` state.
+   *
    * @param _ The context of the main function.
    * @param args The arguments of the component function. The type of the arguments should be specified.
    */

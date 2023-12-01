@@ -34,6 +34,7 @@ export class Plugin<Args extends any[] = []> {
 
   /**
    * Install the plugin on an app.
+   *
    * @param app The app to install the plugin on.
    * @param args Arguments to pass to the plugin.
    */
@@ -58,6 +59,7 @@ export class Plugin<Args extends any[] = []> {
 
   /**
    * Register a **transformed** context function.
+   *
    * @param name The name of the context function.
    * @param func The context function, with the first argument being the Ikey and this type being the context.
    */
@@ -71,6 +73,7 @@ export class Plugin<Args extends any[] = []> {
 
   /**
    * Register an output component.
+   *
    * @param name The name of the component.
    * @returns A decorator that registers the component.
    */
@@ -86,6 +89,7 @@ export class Plugin<Args extends any[] = []> {
 
   /**
    * Register a status component.
+   *
    * @param name The name of the component.
    * @returns A decorator that registers the component.
    */
@@ -101,6 +105,7 @@ export class Plugin<Args extends any[] = []> {
 
   /**
    * Register a trigger component.
+   *
    * @param name The name of the component.
    * @returns A decorator that registers the component.
    */

@@ -19,6 +19,7 @@ export abstract class TriggerComponent<
 > extends Component<Props> {
   /**
    * Fire an event with data.
+   *
    * @param data The data of the event.
    */
   protected $fire = (data: Ev) => {
@@ -35,6 +36,7 @@ export abstract class TriggerComponent<
 
   /**
    * Create a function that fires an event with data.
+   *
    * @param data The data of the event.
    * @returns A function that fires the event.
    */

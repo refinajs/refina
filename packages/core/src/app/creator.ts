@@ -19,6 +19,7 @@ interface AppFactory {
 
   /**
    * Create an app.
+   *
    * @returns The created app instance.
    */
   (main: View, rootElementId?: string): App;

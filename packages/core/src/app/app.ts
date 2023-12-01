@@ -448,6 +448,7 @@ export class App {
 
   /**
    * Call onetime hooks and reset them, then call permanent hooks.
+   *
    * @param hookName the name of the hooks to call
    * @param args the arguments to pass to each hook
    */
@@ -472,6 +473,7 @@ export class App {
 
   /**
    * Add a onetime hook to the end of the hook queue.
+   *
    * @param hookName The name of the hook to push
    * @param hooks The hook to push
    */
@@ -485,6 +487,7 @@ export class App {
 
   /**
    * Add a permanent hook to the end of the hook queue.
+   *
    * @param hookName
    * @param hooks
    */
@@ -498,6 +501,7 @@ export class App {
 
   /**
    * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
+   *
    * @param d The `D` to set
    * @param v The value to set
    * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
@@ -512,6 +516,7 @@ export class App {
 
   /**
    * Push a Ckey to the Ikey stack.
+   *
    * @param ckey The Ckey to push to the Ikey stack.
    * @returns The current Ikey.
    */
@@ -523,6 +528,7 @@ export class App {
 
   /**
    * Pop a Ikey from the Ikey stack.
+   *
    * @param ikey The Ikey to pop from the Ikey stack. Used to check if the stack is balanced in development mode.
    */
   popKey(ikey: string) {
@@ -545,6 +551,7 @@ export class App {
 
   /**
    * `true` if the app is under `RECV` state and the receiver is `key`.
+   *
    * @param key The key to test.
    * @returns `true` if the app is under `RECV` state and the receiver is `key`.
    */
