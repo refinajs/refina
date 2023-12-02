@@ -1,5 +1,7 @@
 # refina
 
+[Documentation](https://refina.vercel.app/) | [Examples](https://gallery.refina.vercel.app/)
+
 ### 🆕 An extremely **refined** web framework. 🆕
 
 ⚡ Line of code reduced to about `60%~70%` of traditional frameworks. _(Approximately, based on real projects)_
