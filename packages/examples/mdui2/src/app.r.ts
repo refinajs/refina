@@ -233,7 +233,7 @@ app.use(MdUI2)(_ => {
           ["About", "info"],
         ]);
         _.mdLayoutMain(_ => {
-          _.forRange(50, index => _._p({}, `${currentPage} content ${index}`));
+          _.forTimes(50, index => _._p({}, `${currentPage} content ${index}`));
         });
       });
       _.$css(exampleWindowStyle);
@@ -248,7 +248,7 @@ app.use(MdUI2)(_ => {
           _ => _.mdFab("edit"),
         );
         _.mdLayoutMain(_ => {
-          _.forRange(50, index => _._p({}, `${currentPage} content ${index}`));
+          _.forTimes(50, index => _._p({}, `${currentPage} content ${index}`));
         });
       });
       _.$css(exampleWindowStyle);

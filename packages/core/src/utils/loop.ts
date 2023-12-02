@@ -47,7 +47,7 @@ Prelude.registerFunc("for", function <
 });
 
 Prelude.registerFunc(
-  "forRange",
+  "forTimes",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
     const ikey = this.$app.pushKey(ckey);
 
@@ -72,7 +72,7 @@ declare module "../context" {
      * **Warning**: **DO NOT** use `for` or `while` statement in Refina,
      *  which does not update the Ikey stack,
      *  and will cause unexpected behavior.
-     *  Use this function or `_.forRange` instead.
+     *  Use this function or `_.forTimes` instead.
      *
      * @param iterable The iterable to loop over.
      * @param key The key generator that generates a key for each item.
@@ -101,7 +101,7 @@ declare module "../context" {
      * @param times The number of times to loop.
      * @param body The body of the loop.
      */
-    forRange: never extends C["enabled"]
+    forTimes: never extends C["enabled"]
       ? (times: D<number>, body: (index: number) => void) => void
       : never;
   }
