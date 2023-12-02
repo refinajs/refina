@@ -3,7 +3,7 @@ import Basics from "../plugin";
 
 @Basics.outputComponent("div")
 export class BasicDiv extends OutputComponent {
-  main(_: Context, inner: D<Content>) {
+  main(_: Context, inner?: D<Content>) {
     _._div({}, inner);
   }
 }

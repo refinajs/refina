@@ -3,7 +3,7 @@ import Basics from "../plugin";
 
 @Basics.outputComponent("span")
 export class BasicSpan extends OutputComponent {
-  main(_: Context, inner: D<Content>) {
+  main(_: Context, inner?: D<Content>) {
     _._span({}, inner);
   }
 }
