@@ -19,7 +19,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/introduction" },
-      { text: "Examples", link: "/markdown-examples" },
+      { text: "Examples", link: "https://gallery.refina.vercel.app" },
     ],
 
     sidebar: [
