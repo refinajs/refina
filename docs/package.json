@@ -1,0 +1,34 @@
+{
+  "name": "@refina/docs",
+  "version": "0.0.0",
+  "description": "The documentation site for Refina.",
+  "keywords": [
+    "refina",
+    "docs"
+  ],
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@refina/tsconfig": "workspace:^",
+    "vite-plugin-refina": "workspace:^",
+    "vitepress": "1.0.0-rc.31"
+  },
+  "dependencies": {
+    "@refina/basic-components": "workspace:^",
+    "refina": "workspace:^",
+    "vue": "^3.3.9"
+  }
+}

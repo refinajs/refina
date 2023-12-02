@@ -1,5 +1,6 @@
 .swc
 .VSCodeCounter
+**/.vitepress/cache
 
 # Logs
 logs
