@@ -18,6 +18,7 @@
     "test": "vitest --coverage",
     "coverage": "vitest run --coverage",
     "build": "pnpm -r run build",
+    "build:docs": "pnpm -r --filter \"@refina/docs...\" run build",
     "check": "pnpm -r --parallel run check",
     "prettier": "prettier --write .",
     "prepare": "husky install"
