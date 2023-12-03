@@ -13,7 +13,7 @@ onMounted(() => {
 
   app.use(Basics)(_ => {
     _.label("Username");
-    _.textInput(username);
+    _.textInput(username, false, "edit me");
     username.value.length && _.button("Clear") && (username.value = "");
     _.p(`Your username is: ${username.value}`);
   }, "basic-input-root");

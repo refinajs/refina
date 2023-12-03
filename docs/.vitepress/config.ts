@@ -38,6 +38,10 @@ export default defineConfig({
             text: "Create an Application",
             link: "/guide/essentials/application",
           },
+          {
+            text: "The App State",
+            link: "/guide/essentials/app-state",
+          },
           { text: "The Context Object", link: "/guide/essentials/context" },
           {
             text: "Rendering Basics",
@@ -53,6 +57,13 @@ export default defineConfig({
           { text: "Lowlevel Rendering", link: "/guide/essentials/lowlevel" },
           { text: "Views", link: "/guide/essentials/view" },
           { text: "Components", link: "/guide/essentials/component" },
+        ],
+      },
+      {
+        text: "APIs",
+        items: [
+          { text: "Directives", link: "/api/directives" },
+          { text: "Utility Functions", link: "/api/util-funcs" },
         ],
       },
     ],

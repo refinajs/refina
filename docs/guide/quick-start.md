@@ -72,7 +72,7 @@ Finally, run the following command in your command line:
 > npx vite
 ```
 
-## Use Prettier for code formatting {#use-prettier}
+## Use Prettier for Code Formatting {#use-prettier}
 
 To use [Prettier](https://prettier.io/) for code formatting, run the following command in your command line:
 

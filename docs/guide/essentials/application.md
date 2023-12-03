@@ -1,6 +1,6 @@
 # Creating a Refina Application
 
-## The app creator
+## The app Creator
 
 Every Refina application starts by creating an `app` instance:
 
@@ -13,7 +13,7 @@ app(_ => {
 });
 ```
 
-## Using plugins
+## Using Plugins
 
 Calling `app.use` will install the plugin to the app.
 
@@ -37,13 +37,13 @@ app.use(Plugin1).use(Plugin2).use(Plugin3)(_ => {
 });
 ```
 
-In fact, some utility functions in Refina itself are provided via the plugin `Prelude`, which is automatically installed when you create an app.
+In fact, utility functions in Refina itself are provided via the plugin `Prelude`, which is automatically installed when you create an app.
 
 :::warn
 Because the limitations of TypeScript, the component functions provided by plugins that are imported but not used are still visible in the context object in the editor. But a runtime error will occur if you use them.
 :::
 
-## The main function
+## The Main Function
 
 The main function is where you construct the page and handle events.
 
@@ -57,7 +57,7 @@ You can only name the context parameter `_`.
 Otherwise, the transformation will not work, and errors will occur at runtime.
 :::
 
-## The root element
+## The Root Element
 
 The root element is the element that the app will be mounted to.
 
@@ -71,7 +71,7 @@ app(_ => {
 }, "my-root");
 ```
 
-## Multiple application instances
+## Multiple Application Instances
 
 It is allowed to have multiple Refina applications on the same page.
 

@@ -25,13 +25,13 @@ app.use(Basics)(_ => {
 
 Now let's explain the code above.
 
-### Simple components
+### Simple Components
 
 Some simple components like `h1` and `img` can be rendered by calling the corresponding component function.
 
 Parameters of the component functions are passed in the positional way, so you needn't to specify the name of the parameters.
 
-### Nested components
+### Nested Components
 
 Most components have a content, which is usually corresponding to the content of the HTML element.
 
@@ -69,11 +69,11 @@ _.div(_ => {
 
 :::
 
-### Add styles
+### Add Classes and Styles {#add-classes-and-styles}
 
-You can use the `_.$css` directive to add styles to the next component, and `_.$cls` to add classes.
+You can use the `_.$cls` directive to add classes to the next component, and `_.$css` to add styles.
 
-The styles and classes will be applied to the "main element" of the following component.
+The styles and classes will be applied to the [main element](./component.md#main-element) of the following component.
 
 :::tip
 `_.$css` and `_.$cls` can be called multiple times in a row, and the styles and classes will be merged.

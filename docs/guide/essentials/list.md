@@ -23,7 +23,7 @@ app.use(Basics)(_ => {
 
 <ListRenderingVue />
 
-### The key generator
+## The Key Generator
 
 The second parameter of `_.for` is a key generator, which is used to generate keys for the items.
 
@@ -34,7 +34,7 @@ There are also some built-in key generators:
 - `bySelf`: use the item itself as the key.
 - `byIndex`: use the index of the item as the key.
 
-### Render for given times
+## Render for Given Times {#for-times}
 
 You can use `_.forTimes` to render for given times.
 
