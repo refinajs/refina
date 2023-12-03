@@ -41,6 +41,7 @@ declare module "../context" {
      * Get the current time in milliseconds.
      *
      * For every `precisionMs`, an `UPDATE` call will be scheduled to refresh the time.
+     *
      * @param precisionMs The precision of the time in milliseconds.
      */
     now: never extends C["enabled"] ? (precisionMs?: number) => number : never;

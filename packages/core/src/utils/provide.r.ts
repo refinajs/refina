@@ -61,6 +61,7 @@ declare module "../context" {
      * ---
      *
      * *Overload 1*:
+     *
      * @param key The key of the value to provide.
      * @param value The value to provide.
      * @param content The content to render. In this content, `_.$runtimeData[key]` will be set to `value`.
@@ -69,6 +70,7 @@ declare module "../context" {
      * ---
      *
      * *Overload 2*:
+     *
      * @param obj The object of values to provide.
      * @param content The content to render. In this content, the values in obj is available in `_.$runtimeData`.
      * @param args The arguments to pass to the content.
