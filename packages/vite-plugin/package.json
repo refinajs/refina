@@ -8,7 +8,8 @@
   ],
   "files": [
     "dist",
-    "plugin.ts"
+    "plugin.ts",
+    "README.md"
   ],
   "type": "module",
   "main": "./dist/plugin.js",
