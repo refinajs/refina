@@ -2,7 +2,7 @@
 
 A view is a function that renders a part of the page.
 
-It can be seen as a simplified version of a component, which has no context function and event handler.
+View can be seen as a simplified version of a component, which we will introduce [later](#view-vs-component).
 
 It is mostly used to render a part of the page for one or few times, or as the content of a page for multi-page applications.
 
@@ -44,7 +44,7 @@ The `view` API provided by Refina is a helper which should provide intellisense 
 
 It is recommended to define a view in a separate file, and export it as a default export.
 
-## Embedding views
+## Embedding Views {#embedding-views}
 
 If a view has no parameters, you can use it directly as the content of a component.
 
@@ -63,7 +63,7 @@ _.div(_ => {
 However, this is not recommended for consistency.
 :::
 
-## Passing parameters
+## Passing Parameters {#passing-parameters}
 
 A view function can have parameters. You can decalre the parameters in the simple way:
 
@@ -83,7 +83,7 @@ _.embed(myView, "John", 123);
 _.embed(myView, "Mary");
 ```
 
-## View with states
+## View with States
 
 A view can have states, but the states is shared between all the instances of the view.
 
@@ -99,3 +99,23 @@ export default view(_ => {
 :::warning
 Since the states is shared between all the instances of the view, you SHOULD be careful when using states in a view.
 :::
+
+## Difference between View and Component {#view-vs-component}
+
+View can be regarded as a simplified version of a component.
+
+The main differences are:
+
+- Components are registered as context functions, while views are just normal functions.
+- Each component instance has its own states, while all the instances of a view share the same states.
+- A component has a `$mainEl` property, and classes and styles can be added to it, while a view has no such property.
+- A component can be refed by the `_.$ref` directive, while a view can't, because a view has no instance.
+- A component has extra props, while a view only has parameters.
+
+### How to Choose
+
+If you want to reuse a **fragment** of the page, you should use a _view_.
+
+If you want to reuse a **part of code** with its own states, you should use a _component_.
+
+If you are a **UI library** author, you should always provide _components_.
