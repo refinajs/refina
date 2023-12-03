@@ -18,7 +18,7 @@ const username = d("");
 
 app.use(Basics)(_ => {
   _.label("Username");
-  _.textInput(username);
+  _.textInput(username, false, "edit me");
   username.value.length && _.button("Clear") && (username.value = "");
   _.p(`Your username is: ${username.value}`);
 });
@@ -28,9 +28,9 @@ app.use(Basics)(_ => {
 
 <BasicInputVue />
 
-## The data wrapper
+## The Data Wrapper
 
-### The `d` function
+### The `d` Function
 
 The `d` function creates an object which has a `value` property to wrap the value.
 
@@ -38,7 +38,7 @@ Because there is no way to pass an intrinsic value by reference in JavaScript, w
 
 The object created by `d` function is of **type `PD`**.
 
-### Use a property of an object as `PD`
+### Use a Property of an Object as `PD`
 
 Sometimes you may want the input component to read and write a property of an object.
 
@@ -53,7 +53,7 @@ app.use(Basics)(_ => {
 });
 ```
 
-### The `D` type
+### The `D` Type
 
 The declaration of `D` type is:
 
@@ -65,7 +65,7 @@ As you can see, most of the params of Refina components are of type `D<...>`.
 
 That means you can pass a value or a `PD` object to the param, or just pass the intrinsic value.
 
-### The `getD` function
+### The `getD` Function
 
 This function can extract the value from a `D` object.
 
@@ -83,13 +83,13 @@ If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you 
 You can access `wrappedValue.value` directly.
 :::
 
-### The `_.$setD` function
+### The `_.$setD` Function
 
 Corresponding to `getD` function, this function can set the value of a `D` object.
 
 It is only used when developing Refina components, which is out of the scope of this section.
 
-## Another way to get input value
+## Another Way to Get Input Value
 
 Sometimes you may want to get the input value and do something with it, but you don't want to store the value in a variable.
 
