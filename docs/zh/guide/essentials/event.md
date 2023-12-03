@@ -27,7 +27,7 @@ app.use(Basics)(_ => {
 
 Now let's explain the code above.
 
-### Declare a state
+### Declare a State
 
 In the above example, we declare a state `count` to store the count.
 
@@ -41,7 +41,7 @@ You SHOULD declare the states in the outer scope of the main function.
 Otherwise, the state will be reset every time the main function is called.
 :::
 
-### Handle events
+### Handle Events
 
 Because most of the components/elements has none or only **one** event that is frequently used, Refina use the return value of the component function to indicate whether that event is triggered.
 
@@ -57,7 +57,7 @@ Other components may values of other meanings.
 As you can seen, the way how Refina handles events is very similar to [Dear ImGui](https://github.com/ocornut/imgui).
 :::
 
-### Get the event data
+### Get the Event Data
 
 The event data is stored in the context object, and you can get it by accessing `_.$ev`.
 
