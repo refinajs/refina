@@ -5,6 +5,7 @@ export * from "./button.r";
 export * from "./checkbox.r";
 export * from "./chip.r";
 export * from "./circularProgress.r";
+export * from "./collapse.r";
 export * from "./dialog.r";
 export * from "./divider.r";
 export * from "./fab.r";

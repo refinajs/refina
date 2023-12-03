@@ -10,26 +10,49 @@ import {
 import MdUI2 from "../plugin";
 
 @MdUI2.triggerComponent("mdCollapse")
-export class MdCollapse extends TriggerComponent<boolean> {
+export class MdCollapse extends TriggerComponent<
+  boolean,
+  {
+    icon: string;
+  }
+> {
   collapseRef = ref<HTMLElementComponent<"mdui-collapse">>();
   main(
     _: Context,
-    checked: D<boolean>,
-    label?: D<Content>,
+    header: D<Content>,
+    body: D<Content>,
     disabled: D<boolean> = false,
   ): void {
     _.$ref(this.collapseRef) &&
       _._mdui_collapse(
         {
-          checked: getD(checked),
           disabled: getD(disabled),
+          accordion: true,
           onchange: () => {
-            const newState = this.collapseRef.current!.node.checked;
-            _.$setD(checked, newState);
-            this.$fire(newState);
+            this.$fire(
+              (this.collapseRef.current!.node.value as string[]).length > 0,
+            );
           },
         },
-        label,
+        _ =>
+          _._mdui_collapse_item(
+            {
+              value: "item",
+            },
+            () => {
+              _._mdui_list_item(
+                {
+                  slot: "header",
+                  icon: this.$props.icon,
+                },
+                header,
+              );
+              if (this.$props.icon) {
+                _.$css`margin-left: 2.5rem`;
+              }
+              _._div({}, _ => _._mdui_list_item({}, body));
+            },
+          ),
       );
   }
 }

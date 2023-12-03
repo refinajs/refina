@@ -87,6 +87,12 @@ app.use(MdUI2)(_ => {
       _.mdCircularProgress();
       _.mdCircularProgress(0.8);
     });
+    _.embed(componentView, "Collapse", _ => {
+      _.mdCollapse("Header", "Content");
+      _.$prop("icon", "near_me");
+      _.mdCollapse("Header", "Content");
+      _.mdCollapse("Header (disabled)", "Content", true);
+    });
     _.embed(componentView, "Dialog", _ => {
       _.mdDialog(
         (_, open) => _.mdButton("Open Dialog") && open(),
