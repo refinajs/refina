@@ -16,12 +16,13 @@ export class DOMWindowComponent extends DOMElementComponent<any> {
     return null;
   }
 
+  // @ts-ignore Window is not a DOM element in fact.
   addEventListener<K extends keyof WindowEventMap>(
     event: K,
     listener: (this: Window, ev: WindowEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
   ): void {
-    // @ts-ignore Window is not a DOM element in fact.
+    // @ts-ignore
     super.addEventListener(event, listener, options);
   }
 
