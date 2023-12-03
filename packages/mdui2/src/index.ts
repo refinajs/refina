@@ -6,3 +6,4 @@ export default MdUI2;
 
 export * from "./components";
 export * from "./theme";
+export * from "./types";
