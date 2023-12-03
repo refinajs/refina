@@ -33,7 +33,10 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "mdui": "^2.0.2",
+    "@mdui/jq": "^3.0.1",
+    "@mdui/shared": "^1.0.3",
+    "lit": "^3.1.0",
+    "mdui": "^2.0.3",
     "refina": "workspace:^"
   }
 }

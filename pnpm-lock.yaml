@@ -319,9 +319,18 @@ importers:
 
   packages/mdui2:
     dependencies:
+      '@mdui/jq':
+        specifier: ^3.0.1
+        version: 3.0.1
+      '@mdui/shared':
+        specifier: ^1.0.3
+        version: 1.0.3
+      lit:
+        specifier: ^3.1.0
+        version: 3.1.0
       mdui:
-        specifier: ^2.0.2
-        version: 2.0.2
+        specifier: ^2.0.3
+        version: 2.0.3
       refina:
         specifier: workspace:^
         version: link:../core
@@ -1186,6 +1195,10 @@ packages:
     resolution: {integrity: sha512-qprfWkn82Iw821mcKofJ5Pk9wgioHicxcQMxx+5zt5GSKoqdWvgG5AxVmpmUUjzTLPVSH5auBrhI93Deayn/DA==}
     dev: false
 
+  /@floating-ui/utils@0.1.6:
+    resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
+    dev: false
+
   /@fluentui/keyboard-keys@9.0.6:
     resolution: {integrity: sha512-WvJrCKvt8Om04S+IwypeJ3FG2tP2TSNFMSMYouDdeKspKD1EmQyQybs7YA9+Fh98X5ERF14zBCurgtNjpDH6gQ==}
     dependencies:
@@ -1294,8 +1307,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@mdui/shared@1.0.2:
-    resolution: {integrity: sha512-7GEsfXcOR8zTA7n9/olDRBy1kL40Xv/haT9CqCQRMV1pY5+sirbUOyzx7Xb0oqKz+SJMj0aL2ZnwIhZhTpTwyQ==}
+  /@mdui/shared@1.0.3:
+    resolution: {integrity: sha512-0pooQH3tFxG3Y5yo4WznpDOIMtLjxeDz7kxH8DI9M3cGabziEWN4kMZ6bO47pRF/Hh522U6QIL1CrSbFtQcrIw==}
     dependencies:
       '@mdui/jq': 3.0.1
       '@open-wc/dedupe-mixin': 1.4.0
@@ -3004,13 +3017,14 @@ packages:
       promise-polyfill: 8.3.0
     dev: false
 
-  /mdui@2.0.2:
-    resolution: {integrity: sha512-n824kl2/kSO38j3jNQG62WXUYymgssMcOyeX/GkUjsPla7ohqX+rjPrg6pJfExAMZUjcMA3M5O0tDLQBm9nldA==}
+  /mdui@2.0.3:
+    resolution: {integrity: sha512-fQVPovZ/vHOePRz0XgMl6g3yMXJSnvvl5fzWdnFlbWpuFbFAEDk7zluQZO+2Ul4k8u/+6CaV6IxkyBojHtWGyQ==}
     dependencies:
+      '@floating-ui/utils': 0.1.6
       '@lit-labs/motion': 1.0.6
       '@material/material-color-utilities': 0.2.7
       '@mdui/jq': 3.0.1
-      '@mdui/shared': 1.0.2
+      '@mdui/shared': 1.0.3
       '@open-wc/dedupe-mixin': 1.4.0
       classcat: 5.0.4
       is-promise: 4.0.0
