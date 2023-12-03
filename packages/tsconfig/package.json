@@ -14,10 +14,7 @@
   "main": "./tsconfig.json",
   "types": "./tsconfig.json",
   "exports": {
-    "import": {
-      "types": "./tsconfig.json",
-      "default": "./tsconfig.json"
-    }
+    ".": "./tsconfig.json"
   },
   "scripts": {},
   "author": "_Kerman",
