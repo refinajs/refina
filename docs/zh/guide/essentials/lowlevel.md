@@ -56,7 +56,7 @@ app(_ => {
 
 <LowlevelVue />
 
-## The function name
+## The Function Name
 
 - For HTML elements, the function name is the tag name of the element with a `_` prefix:
 
@@ -70,7 +70,7 @@ app(_ => {
 
   `_._myCustomElement` for `<my-custom-element>`.
 
-## The signature
+## The Signature
 
 - Parameters: (all optional)
   - `data`: a object which will be assigned to the element.
@@ -78,7 +78,7 @@ app(_ => {
   - `eventListeners`: the event listeners of the element.
 - Return value: `void`
 
-## The `data` parameter
+## The `data` Parameter
 
 **Type**: `Partial<TheElement>`
 
@@ -121,7 +121,7 @@ for (const key in data) {
 }
 ```
 
-## The `inner` parameter
+## The `inner` Parameter
 
 **Type**: `D<Content>`
 
@@ -131,7 +131,7 @@ The content of the element. It can be:
 - A view function, which will be rendered as the content of the element.
 - A `PD` object of the above two types.
 
-## The `eventListeners` parameter
+## The `eventListeners` Parameter
 
 **Type**: `{ [K in TheEventMap]: ((ev: TheEventMap[K]) => void) | { listener: (ev: TheEventMap[K]) => void), options?:  boolean | AddEventListenerOptions } }`
 
@@ -168,7 +168,7 @@ divElement.addEventListener(
 );
 ```
 
-## Event handling
+## Event Handling
 
 As you can see above, there are two ways to handle events:
 
@@ -206,9 +206,9 @@ In the following situations, passing the event listener to the `data` parameter 
 You should call `_.$update()` manually to update the app if you want to apply the changes of the states to the app.
 :::
 
-## Ref the element
+## Ref a Element {#ref-element}
 
-You can use the `_.$ref` directive to ref the element.
+You can use [the `_.$ref` directive](../../api/directives.md#ref) to ref the element.
 
 ```ts
 import { ref, DOMElementComponent } from "refina";
