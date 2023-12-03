@@ -1,6 +1,6 @@
 {
   "name": "@refina/tsconfig",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Default tsconfig for Refina framework.",
   "keywords": [
     "refina",
@@ -14,15 +14,9 @@
   "main": "./tsconfig.json",
   "types": "./tsconfig.json",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./tsconfig.json",
-        "default": "./tsconfig.json"
-      },
-      "require": {
-        "types": "./tsconfig.json",
-        "default": "./tsconfig.json"
-      }
+    "import": {
+      "types": "./tsconfig.json",
+      "default": "./tsconfig.json"
     }
   },
   "scripts": {},
