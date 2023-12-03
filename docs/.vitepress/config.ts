@@ -16,7 +16,7 @@ export default defineConfig({
     plugins: [Refina(new CustomTransformer()) as any],
   },
   themeConfig: {
-    logo: "/media/logo.svg",
+    logo: "/logo.svg",
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [

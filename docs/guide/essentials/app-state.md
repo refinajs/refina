@@ -6,7 +6,7 @@ There are three kinds of states of an App:
 - `UPDATE`: Render the page.
 - `RECV`: Receive an event.
 
-![App States Graph](../../media/app-states.png)
+![App States Graph](/media/app-states.png)
 
 ## The `IDLE` State
 
