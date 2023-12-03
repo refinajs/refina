@@ -11,10 +11,13 @@ class CustomTransformer extends RefinaTransformer {
 export default defineConfig({
   title: "Refina",
   description: "An extremely refined web framework",
+  head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   vite: {
     plugins: [Refina(new CustomTransformer()) as any],
   },
   themeConfig: {
+    logo: "/media/logo.svg",
+
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
@@ -69,7 +72,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      { icon: "github", link: "https://github.com/refinajs/refina" },
     ],
   },
 });
