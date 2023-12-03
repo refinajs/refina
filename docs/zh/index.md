@@ -6,6 +6,9 @@ hero:
   name: Refina
   text: An extremely refined web framework
   tagline: Finish your work with much less code.
+  image:
+    src: /media/logo.svg
+    alt: Refina Logo
   actions:
     - theme: brand
       text: Get Started
