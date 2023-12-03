@@ -54,6 +54,7 @@ export interface WebComponentsEventListeners {}
  * The map of native event listeners of DOM elements.
  */
 type NativeElementEventListeners<E> = {
+  // HTMLElementEventMap is the same as SVGElementEventMap.
   [K in keyof HTMLElementEventMap]: (
     this: E,
     ev: HTMLElementEventMap[K],
@@ -77,8 +78,9 @@ export type DOMElementEventListeners<E extends keyof DOMElementTagNameMap> =
   IsNativeElement<E> extends true
     ? NativeElementEventListeners<TagNameToDOMElement<E>>
     : E extends keyof WebComponentsEventListeners
-    ? WebComponentsEventListeners[E]
-    : {};
+    ? WebComponentsEventListeners[E] &
+        NativeElementEventListeners<HTMLElementTagNameMap[E]>
+    : Record<string, unknown>;
 
 /**
  * The event listeners info type of a DOM element.
