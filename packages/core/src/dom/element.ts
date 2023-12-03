@@ -80,7 +80,7 @@ export type DOMElementEventListeners<E extends keyof DOMElementTagNameMap> =
     : E extends keyof WebComponentsEventListeners
     ? WebComponentsEventListeners[E] &
         NativeElementEventListeners<HTMLElementTagNameMap[E]>
-    : Record<string, unknown>;
+    : {};
 
 /**
  * The event listeners info type of a DOM element.
