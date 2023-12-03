@@ -16,7 +16,7 @@ If you want to use non-directive properties and methods, you must name the conte
 Otherwise, the transformation will not work, and errors will occur at runtime.
 :::
 
-## Component functions
+## Component Functions
 
 The only way to render components is to call the corresponding component function.
 
@@ -26,7 +26,7 @@ There are three types of component functions:
 2. **Intrinsic components**: `_._div`, `_._svgPath`, whose names are prefixed with `_`.
 3. **Component functions** provided by plugins: `_.button` provided by `Basics`, `_.mdButton` provided by `mdui`, etc. Whose names don't have the `_` prefix.
 
-## Utility functions
+## Utility Functions
 
 These functions are used to do some useful things, like controlling the rendering process, etc.
 
