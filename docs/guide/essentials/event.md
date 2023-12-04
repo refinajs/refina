@@ -67,7 +67,7 @@ Refina has type definitions for the event data, so you when you hover on `_.$ev`
 And if you access `_.$ev` out of the event handler (i.e. out of the `if` statement or the `&&` operator), the type of `_.$ev` will be `never`.
 :::
 
-:::warn
+:::warning
 You can't render a component in the event handler.
 
 The reason is that the event handler is executed in the `RECV` state, but the rendering process is executed in the `UPDATE` state.

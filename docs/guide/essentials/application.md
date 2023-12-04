@@ -39,7 +39,7 @@ app.use(Plugin1).use(Plugin2).use(Plugin3)(_ => {
 
 In fact, utility functions in Refina itself are provided via the plugin `Prelude`, which is automatically installed when you create an app.
 
-:::warn
+:::warning
 Because the limitations of TypeScript, the component functions provided by plugins that are imported but not used are still visible in the context object in the editor. But a runtime error will occur if you use them.
 :::
 
