@@ -1,6 +1,8 @@
 # refina
 
-[Documentation](https://refina.vercel.app/) | [Examples](https://gallery.refina.vercel.app/)
+![npm](https://img.shields.io/npm/v/refina?label=core&color=green)
+
+[**Documentation**](https://refina.vercel.app/) | [**Examples**](https://gallery.refina.vercel.app/)
 
 ### 🆕 An extremely **refined** web framework. 🆕
 
@@ -32,11 +34,12 @@
 
 ```typescript
 import { app, d } from "refina";
+import Basics from "@refina/basic-components";
 
 const name = d(""); // just the same as { value: "" }
 let count = 0; // needn't to be warped in d()
 
-app(_ => {
+app.use(Basics)(_ => {
   _.t`Enter your name:`;
 
   if (_.textInput(name)) {
@@ -61,8 +64,6 @@ app(_ => {
 ## refina 简介
 
 > 注：以下是一些早期的设计理念，部分内容已过时。
->
-> 完整的文档正在积极编写中...
 
 ### 有许多成熟的前端框架，还需要一个新的吗？
 
