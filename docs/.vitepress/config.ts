@@ -23,6 +23,7 @@ export default defineConfig({
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/introduction" },
       { text: "Examples", link: "https://gallery.refina.vercel.app" },
+      { text: "Contact Us", link: "/misc/contact" },
     ],
 
     sidebar: [
