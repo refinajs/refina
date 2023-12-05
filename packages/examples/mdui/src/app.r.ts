@@ -25,22 +25,23 @@ app.use(MdUI)(_ => {
   _.useMdTheme(darkMode ? "dark" : "light");
 
   _.$css`z-index:1999`;
-  _.mdTopAppBar(_ => {
-    _.$css`font-size: 2em; margin-right: 24px`;
-    _._span({}, "MDUI Test");
-    _._div({}, _ => {
-      _._span({}, "Status: ");
-      _.$css`font-family:Consolas`;
-      _._div(
-        {},
-        `${count} ${status.value} ${selected.value} ${sliderValue1.value} ${sliderValue2.value}`,
-      );
-    });
-    _.$css`flex-grow:1`;
-    _._div();
-    _.mdIconButton(darkMode ? "dark_mode" : "light_mode") &&
-      (darkMode = !darkMode);
-  });
+  _.mdTopAppBar(
+    _ => {
+      _.$css`font-size: 2em; margin-right: 24px`;
+      _._span({}, "MDUI Test");
+      _._div({}, _ => {
+        _._span({}, "Status: ");
+        _.$css`font-family:Consolas`;
+        _._div(
+          {},
+          `${count} ${status.value} ${selected.value} ${sliderValue1.value} ${sliderValue2.value}`,
+        );
+      });
+    },
+    _ =>
+      _.mdIconButton(darkMode ? "dark_mode" : "light_mode") &&
+      (darkMode = !darkMode),
+  );
 
   _.mdLayoutMain(_ => {
     _.embed(componentView, "Avatar", _ => {
