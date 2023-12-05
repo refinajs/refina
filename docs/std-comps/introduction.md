@@ -23,3 +23,11 @@ Some components that are too simple and obvious are not included in the standard
 
 Some components that are too specific are also not included in the standard components. For example, `_.mdAppBarTitle`.
 :::
+
+## Available Component Libraries
+
+The following component libraries are currently available:
+
+[![`@refina/basic-components`](https://img.shields.io/npm/v/%40refina%2Fbasic-components?label=%40refina%2Fbasic-components&color=green)](https://www.npmjs.com/package/@refina/basic-components)
+
+[![`@refina/mdui`](https://img.shields.io/npm/v/%40refina%2Fmdui?label=%40refina%2Fmdui&color=green)](https://www.npmjs.com/package/@refina/mdui)
