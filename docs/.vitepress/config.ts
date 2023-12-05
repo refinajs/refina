@@ -77,5 +77,9 @@ export default defineConfig({
     socialLinks: [
       { icon: "github", link: "https://github.com/refinajs/refina" },
     ],
+
+    search: {
+      provider: "local",
+    },
   },
 });
