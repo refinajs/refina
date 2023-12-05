@@ -26,51 +26,53 @@ export default defineConfig({
       { text: "Contact Us", link: "/misc/contact" },
     ],
 
-    sidebar: [
-      {
-        text: "Getting Started",
-        items: [
-          { text: "Why Refina", link: "/guide/why" },
-          { text: "Introduction", link: "/guide/introduction" },
-          { text: "Quick Start", link: "/guide/quick-start" },
-        ],
-      },
-      {
-        text: "Essentials",
-        items: [
-          {
-            text: "Create an Application",
-            link: "/guide/essentials/application",
-          },
-          {
-            text: "The App State",
-            link: "/guide/essentials/app-state",
-          },
-          { text: "The Context Object", link: "/guide/essentials/context" },
-          {
-            text: "Rendering Basics",
-            link: "/guide/essentials/rendering-basics",
-          },
-          {
-            text: "Conditional Rendering",
-            link: "/guide/essentials/conditional",
-          },
-          { text: "List Rendering", link: "/guide/essentials/list" },
-          { text: "Handle Events", link: "/guide/essentials/event" },
-          { text: "Get the Input Value", link: "/guide/essentials/input" },
-          { text: "Lowlevel Rendering", link: "/guide/essentials/lowlevel" },
-          { text: "Views", link: "/guide/essentials/view" },
-          { text: "Components", link: "/guide/essentials/component" },
-        ],
-      },
-      {
-        text: "APIs",
-        items: [
-          { text: "Directives", link: "/api/directives" },
-          { text: "Utility Functions", link: "/api/util-funcs" },
-        ],
-      },
-    ],
+    sidebar: {
+      "/guide/": [
+        {
+          text: "Getting Started",
+          items: [
+            { text: "Why Refina", link: "/guide/why" },
+            { text: "Introduction", link: "/guide/introduction" },
+            { text: "Quick Start", link: "/guide/quick-start" },
+          ],
+        },
+        {
+          text: "Essentials",
+          items: [
+            {
+              text: "Create an Application",
+              link: "/guide/essentials/application",
+            },
+            {
+              text: "The App State",
+              link: "/guide/essentials/app-state",
+            },
+            { text: "The Context Object", link: "/guide/essentials/context" },
+            {
+              text: "Rendering Basics",
+              link: "/guide/essentials/rendering-basics",
+            },
+            {
+              text: "Conditional Rendering",
+              link: "/guide/essentials/conditional",
+            },
+            { text: "List Rendering", link: "/guide/essentials/list" },
+            { text: "Handle Events", link: "/guide/essentials/event" },
+            { text: "Get the Input Value", link: "/guide/essentials/input" },
+            { text: "Lowlevel Rendering", link: "/guide/essentials/lowlevel" },
+            { text: "Views", link: "/guide/essentials/view" },
+            { text: "Components", link: "/guide/essentials/component" },
+          ],
+        },
+        {
+          text: "APIs",
+          items: [
+            { text: "Directives", link: "/guide/apis/directives" },
+            { text: "Utility Functions", link: "/guide/apis/util-funcs" },
+          ],
+        },
+      ],
+    },
 
     socialLinks: [
       { icon: "github", link: "https://github.com/refinajs/refina" },
