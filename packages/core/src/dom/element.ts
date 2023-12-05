@@ -233,7 +233,7 @@ export class DOMElementComponent<
    */
   addCss(css: string) {
     if (css === "") return;
-    this.pendingCss += css + ";";
+    this.pendingCss += css;
   }
 
   /**

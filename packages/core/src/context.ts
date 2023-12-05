@@ -461,9 +461,10 @@ export class IntrinsicContext<CS extends ContextState> {
   $css(template: TemplateStringsArray, ...args: any[]): true;
   $css(...args: any[]): true {
     if (this.$updateState) {
-      this.$$nextCss += Array.isArray(args[0])
-        ? String.raw({ raw: args[0] }, ...args.slice(1))
-        : args[0];
+      this.$$nextCss +=
+        (Array.isArray(args[0])
+          ? String.raw({ raw: args[0] }, ...args.slice(1))
+          : args[0]) + ";";
     }
     return true;
   }
