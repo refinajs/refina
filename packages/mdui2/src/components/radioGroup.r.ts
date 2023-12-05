@@ -20,7 +20,7 @@ export class MdRadioGroup<
   radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
   main(
     _: Context,
-    value: D<Value>,
+    selected: D<Value>,
     options: DReadonlyArray<Value>,
     disabled: D<boolean> | DReadonlyArray<boolean> = false,
     contentOverride: DPartialRecord<Value, Content> = {},
@@ -34,12 +34,12 @@ export class MdRadioGroup<
     _.$ref(this.radioGroupRef) &&
       _._mdui_radio_group(
         {
-          value: getD(value),
+          value: getD(selected),
           disabled: groupDisabled,
           onchange: () => {
-            const newValue = this.radioGroupRef.current!.node.value as Value;
-            _.$setD(value, newValue);
-            this.$fire(newValue);
+            const newSelected = this.radioGroupRef.current!.node.value as Value;
+            _.$setD(selected, newSelected);
+            this.$fire(newSelected);
           },
         },
         _ =>
@@ -60,7 +60,7 @@ declare module "refina" {
   interface ContextFuncs<C> {
     mdRadioGroup: MdRadioGroup<any> extends C["enabled"]
       ? <Value extends string>(
-          value: D<Value>,
+          selected: D<Value>,
           options: DReadonlyArray<Value>,
           disabled?: D<boolean> | DReadonlyArray<boolean>,
           contentOverride?: DPartialRecord<Value, Content>,
