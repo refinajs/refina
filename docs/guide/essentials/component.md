@@ -18,7 +18,7 @@ The low-level implementation of components is just a context function. So it is 
 
 ## Ref on Component {#ref-component}
 
-You may want to call some methods or access some properties of a component instance. So you can use [the `_.$ref` directive](../../api/directives.md#ref) to get the component instance.
+You may want to call some methods or access some properties of a component instance. So you can use [the `_.$ref` directive](../apis/directives.md#ref) to get the component instance.
 
 ```ts
 import { ref } from "refina";
@@ -44,7 +44,7 @@ Because the `_.$ref` directive always returns `true`, so the component function 
 
 ## Extra Props {#extra-props}
 
-Sometimes there are many optional props for a component, and it is not convenient to write them all in the positional parameters. So we can use [the `_.$props` directive](../../api/directives.md#props) to add props to the next component as named parameters.
+Sometimes there are many optional props for a component, and it is not convenient to write them all in the positional parameters. So we can use [the `_.$props` directive](../apis/directives.md#props) to add props to the next component as named parameters.
 
 ```ts
 app.use(MdUI2)(_ => {

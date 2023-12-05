@@ -23,7 +23,7 @@ app.use(Basics)(_ => {
 
 <ListRenderingVue />
 
-## The Key Generator
+## The Key Generator {#key-generator}
 
 The second parameter of `_.for` is a key generator, which is used to generate keys for the items.
 

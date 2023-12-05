@@ -22,6 +22,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/introduction" },
+      { text: "Components", link: "/std-comps/introduction" },
       { text: "Examples", link: "https://gallery.refina.vercel.app" },
       { text: "Contact Us", link: "/misc/contact" },
     ],
@@ -70,6 +71,50 @@ export default defineConfig({
             { text: "Directives", link: "/guide/apis/directives" },
             { text: "Utility Functions", link: "/guide/apis/util-funcs" },
           ],
+        },
+      ],
+      "/std-comps/": [
+        {
+          text: "Introduction",
+          link: "/std-comps/introduction",
+        },
+        {
+          text: "Button",
+          link: "/std-comps/button",
+        },
+        {
+          text: "Text Field",
+          link: "/std-comps/text-field",
+        },
+        { text: "Dialog", link: "/std-comps/dialog" },
+
+        {
+          text: "Checkbox",
+          link: "/std-comps/checkbox",
+        },
+        {
+          text: "List",
+          link: "/std-comps/list",
+        },
+        {
+          text: "Table",
+          link: "/std-comps/table",
+        },
+        {
+          text: "Radio Group",
+          link: "/std-comps/radio-group",
+        },
+        {
+          text: "Tabs",
+          link: "/std-comps/tabs",
+        },
+        {
+          text: "Slider",
+          link: "/std-comps/slider",
+        },
+        {
+          text: "Nav Rail",
+          link: "/std-comps/nav-rail",
         },
       ],
     },

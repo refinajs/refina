@@ -80,27 +80,27 @@ You can use this component to add event listeners to window.
 
 ## `_.$ref` {#ref}
 
-See [Ref a Component](../guide/essentials/component#ref-component).
+See [Ref a Component](../essentials/component#ref-component).
 
-and [Ref a Element](../guide/essentials/lowlevel#ref-element).
+and [Ref a Element](../essentials/lowlevel#ref-element).
 
 ## `_.$props` {#props}
 
 Add extra props to the next component.
 
-See [Extra Props](../guide/essentials/component#extra-props).
+See [Extra Props](../essentials/component#extra-props).
 
 ## `_.$cls` {#cls}
 
 Add classes to the next component or element.
 
-See [Add Classes and Styles](../guide/essentials/rendering-basics#add-classes-and-styles).
+See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$css` {#css}
 
 Add styles to the next component or element.
 
-See [Add Classes and Styles](../guide/essentials/rendering-basics#add-classes-and-styles).
+See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$permanentData`
 

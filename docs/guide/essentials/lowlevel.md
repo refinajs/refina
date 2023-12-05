@@ -209,7 +209,7 @@ You should call `_.$update()` manually to update the app if you want to apply th
 
 ## Ref a Element {#ref-element}
 
-You can use [the `_.$ref` directive](../../api/directives.md#ref) to ref the element.
+You can use [the `_.$ref` directive](../apis/directives.md#ref) to ref the element.
 
 ```ts
 import { ref, DOMElementComponent } from "refina";

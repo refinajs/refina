@@ -92,9 +92,9 @@ app.use(Basics)(_ => {
 
 Embed a view function into the current view function.
 
-See [Embedding Views](../guide/essentials/view.md#embedding-views).
+See [Embedding Views](../essentials/view.md#embedding-views).
 
-and [Passing Parameters](../guide/essentials/view.md#passing-parameters).
+and [Passing Parameters](../essentials/view.md#passing-parameters).
 
 ## `_.asyncEmbed`
 
@@ -160,8 +160,8 @@ The interval will be automatically cleared when it is no longer rendered.
 
 ## `_.for`
 
-See [List rendering](../guide/essentials/list).
+See [List rendering](../essentials/list).
 
 ## `_.forTimes`
 
-See [Render for Given Times](../guide/essentials/list#for-times).
+See [Render for Given Times](../essentials/list#for-times).
