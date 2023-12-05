@@ -24,7 +24,7 @@ app.use(Basics)(_ => {
 **Result**
 
 <script setup>
-import CounterVue from '../components/counter.r.vue'
+import CounterVue from '../snippets/counter.r.vue'
 </script>
 <CounterVue />
 

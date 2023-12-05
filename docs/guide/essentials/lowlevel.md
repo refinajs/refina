@@ -1,5 +1,5 @@
 <script setup>   
-import LowlevelVue from "../../components/lowlevel.r.vue";
+import LowlevelVue from "../../snippets/lowlevel.r.vue";
 </script>
 
 # Low-level Rendering

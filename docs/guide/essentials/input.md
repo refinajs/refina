@@ -1,6 +1,6 @@
 <script setup>
-import BasicInputVue from "../../components/basic-input.r.vue";
-import InputEventVue from "../../components/input-event.r.vue";
+import BasicInputVue from "../../snippets/basic-input.r.vue";
+import InputEventVue from "../../snippets/input-event.r.vue";
 </script>
 
 # Get the Input Value

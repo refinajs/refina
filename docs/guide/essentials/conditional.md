@@ -1,5 +1,5 @@
 <script setup>
-import ConditionalRenderingVue from "../../components/conditional-rendering.r.vue";
+import ConditionalRenderingVue from "../../snippets/conditional-rendering.r.vue";
 </script>
 
 # Conditional Rendering
