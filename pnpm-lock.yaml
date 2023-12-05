@@ -173,31 +173,6 @@ importers:
         specifier: workspace:^
         version: link:../../vite-plugin
 
-  packages/examples/mdui:
-    dependencies:
-      '@refina/mdui':
-        specifier: workspace:^
-        version: link:../../mdui
-      refina:
-        specifier: workspace:^
-        version: link:../../core
-    devDependencies:
-      '@refina/tsconfig':
-        specifier: workspace:^
-        version: link:../../tsconfig
-      typescript:
-        specifier: ^5.1.6
-        version: 5.2.2
-      vite:
-        specifier: ^4.4.8
-        version: 4.5.0(@types/node@20.6.5)
-      vite-plugin-inspect:
-        specifier: ^0.7.35
-        version: 0.7.38(vite@4.5.0)
-      vite-plugin-refina:
-        specifier: workspace:^
-        version: link:../../vite-plugin
-
   packages/examples/mdui2:
     dependencies:
       '@refina/mdui2':
@@ -290,22 +265,6 @@ importers:
       '@griffel/core':
         specifier: ^1.14.2
         version: 1.14.2
-      refina:
-        specifier: workspace:^
-        version: link:../core
-    devDependencies:
-      '@refina/tsconfig':
-        specifier: workspace:^
-        version: link:../tsconfig
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-
-  packages/mdui:
-    dependencies:
-      mdui:
-        specifier: ^1.0.2
-        version: 1.0.2
       refina:
         specifier: workspace:^
         version: link:../core
@@ -2995,28 +2954,6 @@ packages:
       unist-util-visit: 5.0.0
     dev: true
 
-  /mdn-polyfills@5.20.0:
-    resolution: {integrity: sha512-AbTv1ytcoOUAkxw6u5oo2QPf27kEZgxBAQr49jFb4i2VnTnFGfJbcIQ9UDBOdfNECeXsgkYFwB2BkdeTfOzztw==}
-    dev: false
-
-  /mdui.jq@2.0.1:
-    resolution: {integrity: sha512-BNT4q/4gAqDYVNUVHmYoJoIu04Rmz0Ow0j38VwZgIahWphpyDdOxReQZzMUGDizXZUJ0+r+JpdKVxKMVP27VAg==}
-    engines: {node: '>=14'}
-    dependencies:
-      mdn-polyfills: 5.20.0
-      promise-polyfill: 8.3.0
-    dev: false
-
-  /mdui@1.0.2:
-    resolution: {integrity: sha512-LIaDjVjzyPY8PUjlhCXiE4mOXinh+jv38H/zsrR00/Y9OWzdncPlvir3mzZGuxT4sh9rHOrh06zfsOPoBjIhzA==}
-    engines: {node: '>=14'}
-    dependencies:
-      mdn-polyfills: 5.20.0
-      mdui.jq: 2.0.1
-      normalize.css: 8.0.1
-      promise-polyfill: 8.3.0
-    dev: false
-
   /mdui@2.0.3:
     resolution: {integrity: sha512-fQVPovZ/vHOePRz0XgMl6g3yMXJSnvvl5fzWdnFlbWpuFbFAEDk7zluQZO+2Ul4k8u/+6CaV6IxkyBojHtWGyQ==}
     dependencies:
@@ -3158,10 +3095,6 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
     dev: true
-
-  /normalize.css@8.0.1:
-    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
-    dev: false
 
   /npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -3393,10 +3326,6 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
-
-  /promise-polyfill@8.3.0:
-    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
-    dev: false
 
   /property-information@6.4.0:
     resolution: {integrity: sha512-9t5qARVofg2xQqKtytzt+lZ4d1Qvj8t5B8fEwXK6qOfgRLgH/b13QlgEyDh033NOS31nXeFbYv7CLUDG1CeifQ==}
