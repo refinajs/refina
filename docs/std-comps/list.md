@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "./helpers/Kind.vue";
-import Optional from "./helpers/Optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `List` Component
