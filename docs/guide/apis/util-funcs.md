@@ -15,7 +15,7 @@ Render content to the end of the root element.
 
 This is usefull when you want to render a dialog or a tooltip that should not be affected by the parent element's styles.
 
-**example**
+**Example**
 
 ```ts {4}
 app.use(Basics)(_ => {
@@ -27,7 +27,7 @@ app.use(Basics)(_ => {
 });
 ```
 
-**result**
+**Result**
 
 ```html {6}
 <div id="root">
@@ -51,7 +51,7 @@ Use data from an async call when rendering.
 Use `try`/`catch` to handle errors.
 :::
 
-**example**
+**Example**
 
 ```ts {1,7}
 if (_.await(() => fetch("https://example.com"))) {
@@ -68,7 +68,7 @@ if (_.await(() => fetch("https://example.com"))) {
 }
 ```
 
-**result**
+**Result**
 
 <AsyncFetchVue/>
 
@@ -76,7 +76,7 @@ if (_.await(() => fetch("https://example.com"))) {
 
 Set the document title.
 
-**example**
+**Example**
 
 ```ts {6}
 import { d } from "refina";
@@ -100,7 +100,7 @@ and [Passing Parameters](../guide/essentials/view.md#passing-parameters).
 
 Embed a view that is asynchronously loaded.
 
-**example**
+**Example**
 
 ```ts
 _.asyncEmbed(() => import("./myView.r.ts"));
@@ -116,7 +116,7 @@ The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
 
 Provide a value or a object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
 
-**example**
+**Example**
 
 ```ts
 _.provide({ username: "John" }, myView, ...viewParams);
@@ -138,7 +138,7 @@ You need to specify the `precisionMs` parameter, which means for how many millis
 If not specified, it is `1000`, which means the time will be updated every second.
 :::
 
-**example**
+**Example**
 
 ```ts
 app.use(Basics)(_ => {
@@ -146,7 +146,7 @@ app.use(Basics)(_ => {
 });
 ```
 
-**result**
+**Result**
 
 <NowVue/>
 
