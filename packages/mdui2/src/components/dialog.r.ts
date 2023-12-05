@@ -15,7 +15,7 @@ export class MdControlledDialog extends TriggerComponent<boolean> {
     open: D<boolean>,
     title: D<Content>,
     body: D<Content>,
-    actions: D<Content>,
+    actions?: D<Content>,
     presistent: D<boolean> = false,
   ): void {
     const presistentProps = getD(presistent)
@@ -39,12 +39,13 @@ export class MdControlledDialog extends TriggerComponent<boolean> {
           },
           body,
         );
-        _._div(
-          {
-            slot: "action",
-          },
-          actions,
-        );
+        actions &&
+          _._div(
+            {
+              slot: "action",
+            },
+            actions,
+          );
       },
     );
   }
@@ -58,7 +59,7 @@ export class MdDialog extends TriggerComponent<boolean> {
     trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
     title: D<Content<[close: (open?: D<boolean>) => void]>>,
     body: D<Content<[close: (open?: D<boolean>) => void]>>,
-    actions: D<Content<[close: (open?: D<boolean>) => void]>>,
+    actions?: D<Content<[close: (open?: D<boolean>) => void]>>,
     presistent: D<boolean> = false,
   ): void {
     const open = (open: D<boolean> = true) => {
@@ -77,7 +78,7 @@ export class MdDialog extends TriggerComponent<boolean> {
       this.open,
       bindArgsToContent(title, close),
       bindArgsToContent(body, close),
-      bindArgsToContent(actions, close),
+      actions && bindArgsToContent(actions, close),
       presistent,
     );
   }
