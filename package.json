@@ -12,7 +12,6 @@
     "dev:gallery": "pnpm -r --parallel --filter \"@refina/gallery\" run dev",
     "dev:fluentui": "pnpm -r --parallel --filter \"@refina/example-fluentui...\" run dev",
     "dev:mdui": "pnpm -r --parallel --filter \"@refina/example-mdui...\" run dev",
-    "dev:mdui2": "pnpm -r --parallel --filter \"@refina/example-mdui2...\" run dev",
     "dev:gh-login": "pnpm -r --parallel --filter \"@refina/example-gh-login...\" run dev",
     "dev:docs": "pnpm -r --parallel --filter \"@refina/docs...\" run dev",
     "test": "vitest --coverage",

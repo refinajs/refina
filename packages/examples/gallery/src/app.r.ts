@@ -14,9 +14,9 @@ const examples = [
       "The impl in Refina for @fluentui/react. Package: @refina/fluentui.",
   },
   {
-    id: "mdui2",
+    id: "mdui",
     name: "MdUI v2",
-    detail: "The adaptation of MdUI to Refina. Package: @refina/mdui2.",
+    detail: "The adaptation of MdUI to Refina. Package: @refina/mdui.",
   },
   {
     id: "gh-login",
@@ -39,9 +39,9 @@ function removeTailwind() {
 if (isExample("fluentui")) {
   removeTailwind();
   import("@refina/example-fluentui");
-} else if (isExample("mdui2")) {
+} else if (isExample("mdui")) {
   removeTailwind();
-  import("@refina/example-mdui2");
+  import("@refina/example-mdui");
 } else if (isExample("gh-login")) {
   import("@refina/example-gh-login");
 } else {

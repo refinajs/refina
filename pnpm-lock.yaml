@@ -110,9 +110,9 @@ importers:
       '@refina/example-gh-login':
         specifier: workspace:^
         version: link:../gh-login
-      '@refina/example-mdui2':
+      '@refina/example-mdui':
         specifier: workspace:^
-        version: link:../mdui2
+        version: link:../mdui
       refina:
         specifier: workspace:^
         version: link:../../core
@@ -173,11 +173,11 @@ importers:
         specifier: workspace:^
         version: link:../../vite-plugin
 
-  packages/examples/mdui2:
+  packages/examples/mdui:
     dependencies:
-      '@refina/mdui2':
+      '@refina/mdui':
         specifier: workspace:^
-        version: link:../../mdui2
+        version: link:../../mdui
       refina:
         specifier: workspace:^
         version: link:../../core
@@ -276,7 +276,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  packages/mdui2:
+  packages/mdui:
     dependencies:
       '@mdui/jq':
         specifier: ^3.0.1
