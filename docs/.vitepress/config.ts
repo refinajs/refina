@@ -70,6 +70,7 @@ export default defineConfig({
           items: [
             { text: "Directives", link: "/guide/apis/directives" },
             { text: "Utility Functions", link: "/guide/apis/util-funcs" },
+            { text: "App Hooks", link: "/guide/apis/app-hooks" },
           ],
         },
       ],
