@@ -17,7 +17,10 @@ export class RefinaTransformer {
   }
 
   shouldTransform(fileName: string) {
-    return /\.r(\.(test|spec))?\.[tj]s$/i.test(fileName);
+    return (
+      /\.r(\.(test|spec))?\.[tj]s$/i.test(fileName) ||
+      fileName.includes("/.vite/deps/") // The dependencies pre-bundled by Vite
+    );
   }
 
   transformWithSourceMap(
