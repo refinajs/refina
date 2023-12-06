@@ -44,7 +44,7 @@ jobs:
       - name: Build dependencies
         run: pnpm build:docs
       - name: Build docs
-        run: pnpm build -- --base /refina/
+        run: pnpm build --base /refina/
         working-directory: ./docs
       - name: Setup Pages
         uses: actions/configure-pages@v4
