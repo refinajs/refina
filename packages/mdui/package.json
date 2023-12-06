@@ -10,6 +10,7 @@
   ],
   "files": [
     "src",
+    "styles.css",
     "README.md"
   ],
   "type": "module",
