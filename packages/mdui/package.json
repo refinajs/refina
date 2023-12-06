@@ -17,7 +17,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./node_modules/mdui/mdui.css"
+    "./*": "./*"
   },
   "scripts": {
     "check": "tsc --noEmit"
