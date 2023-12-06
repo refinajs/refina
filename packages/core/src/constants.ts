@@ -20,7 +20,12 @@ export enum AppStateType {
 /**
  * The plugin that is always installed on the app.
  */
-export const Prelude = new Plugin("prelude");
+export const Prelude = new Plugin("prelude", app => {
+  // Print error to console.
+  app.pushPermanentHook("onError", e => {
+    console.error(e);
+  });
+});
 
 // Add the `DEV` property to `import.meta.env`.
 // This property is used to check if the app is running in development mode.

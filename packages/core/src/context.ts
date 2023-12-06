@@ -675,7 +675,11 @@ export class IntrinsicContext<CS extends ContextState> {
       component.$props = this.$$nextProps;
       this.$$nextProps = {};
 
-      component.main(context, ...args);
+      try {
+        component.main(context, ...args);
+      } catch (e) {
+        this.$app.callHook("onError", e);
+      }
 
       if (component.$mainEl) {
         // There is a $mainEl in the component.
@@ -726,7 +730,12 @@ export class IntrinsicContext<CS extends ContextState> {
       const contentValue = getD(content);
       if (typeof contentValue === "function") {
         // The content is a view function.
-        contentValue(this as unknown as Context);
+
+        try {
+          contentValue(this as unknown as Context);
+        } catch (e) {
+          this.$app.callHook("onError", e);
+        }
       } else {
         // The content is a text node.
         this.$$t("_t", contentValue);
@@ -746,7 +755,12 @@ export class IntrinsicContext<CS extends ContextState> {
     const contentValue = getD(content);
     if (typeof contentValue === "function") {
       // The content is a view function.
-      contentValue(this as unknown as Context);
+
+      try {
+        contentValue(this as unknown as Context);
+      } catch (e) {
+        this.$app.callHook("onError", e);
+      }
     }
     // Text node is ignored in `RECV` state.
   }

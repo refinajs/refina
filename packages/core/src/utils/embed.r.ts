@@ -14,7 +14,11 @@ export class Embed extends OutputComponent {
     const contentValue = getD(content);
     const context = new IntrinsicContext(_.$app);
     if (typeof contentValue === "function") {
-      contentValue(context as unknown as Context, ...args);
+      try {
+        contentValue(context as unknown as Context, ...args);
+      } catch (e) {
+        this.$app.callHook("onError", e);
+      }
     } else {
       _.$$t("_t", contentValue);
     }

@@ -50,6 +50,11 @@ export interface AppHookMap {
    * `app.runtimeData` is available in this hook.
    */
   afterModifyDOM: () => void;
+
+  /**
+   * Called when an error is thrown in the main function.
+   */
+  onError: (error: unknown) => void;
 }
 
 export interface AppIdleState {
