@@ -33,53 +33,63 @@ async function main() {
   const defaultProjectName = !targetDir ? "refina-project" : targetDir;
   const getRoot = () => path.join(cwd, targetDir);
 
-  const input = await prompts([
+  const input = await prompts(
+    [
+      {
+        name: "projectName",
+        type: targetDir ? null : "text",
+        message: "Project name:",
+        initial: defaultProjectName,
+        onState: state =>
+          (targetDir = String(state.value).trim() || defaultProjectName),
+        validate: () =>
+          !fs.existsSync(getRoot()) ||
+          "Target directory already exists, please choose another name",
+      },
+      {
+        name: "packageName",
+        type: () => (isValidPackageName(targetDir) ? null : "text"),
+        message: "Package name:",
+        initial: () => toValidPackageName(targetDir),
+        validate: dir => isValidPackageName(dir) || "Invalid package.json name",
+      },
+      {
+        name: "components",
+        type: "multiselect",
+        message: "Component libraries to install:",
+        choices: [
+          { title: "@refina/basic-components", selected: true },
+          { title: "@refina/mdui", selected: true },
+        ],
+        instructions: false,
+        hint: "- Space to select. Return to submit",
+      },
+      {
+        name: "useTailwind",
+        type: "toggle",
+        message: "Add TailwindCSS for styling?",
+        initial: true,
+        active: "Yes",
+        inactive: "No",
+      },
+      {
+        name: "usePrettier",
+        type: "toggle",
+        message: "Add Prettier for code formatting?",
+        initial: true,
+        active: "Yes",
+        inactive: "No",
+      },
+    ],
     {
-      name: "projectName",
-      type: targetDir ? null : "text",
-      message: "Project name:",
-      initial: defaultProjectName,
-      onState: state =>
-        (targetDir = String(state.value).trim() || defaultProjectName),
-      validate: () =>
-        !fs.existsSync(getRoot()) ||
-        "Target directory already exists, please choose another name",
+      onCancel: () => {
+        console.log();
+        console.log(chalk.red("×") + ` Aborted.`);
+        console.log();
+        process.exit(1);
+      },
     },
-    {
-      name: "packageName",
-      type: () => (isValidPackageName(targetDir) ? null : "text"),
-      message: "Package name:",
-      initial: () => toValidPackageName(targetDir),
-      validate: dir => isValidPackageName(dir) || "Invalid package.json name",
-    },
-    {
-      name: "components",
-      type: "multiselect",
-      message: "Component libraries to install:",
-      choices: [
-        { title: "@refina/basic-components", selected: true },
-        { title: "@refina/mdui", selected: true },
-      ],
-      instructions: false,
-      hint: "- Space to select. Return to submit",
-    },
-    {
-      name: "useTailwind",
-      type: "toggle",
-      message: "Add TailwindCSS for styling?",
-      initial: true,
-      active: "Yes",
-      inactive: "No",
-    },
-    {
-      name: "usePrettier",
-      type: "toggle",
-      message: "Add Prettier for code formatting?",
-      initial: true,
-      active: "Yes",
-      inactive: "No",
-    },
-  ]);
+  );
 
   const root = getRoot();
 
