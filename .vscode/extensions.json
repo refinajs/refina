@@ -1,6 +1,8 @@
 {
   "recommendations": [
     "zixuanchen.vitest-explorer",
-    "ryanluker.vscode-coverage-gutters"
+    "ryanluker.vscode-coverage-gutters",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
   ]
 }
