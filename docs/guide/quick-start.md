@@ -11,9 +11,12 @@ In this section we will introduce how to scaffold a Refina app on your local mac
 Make sure you have an up-to-date version of [Node.js](https://nodejs.org/) installed and your current working directory is the one where you intend to create a project. Run the following command in your command line (without the `>` sign):
 
 ```sh
-> npm init
-> npm install -D typescript vite vite-plugin-refina refina @refina/basic-components
+> pnpm create refina   # or npm create refina
 ```
+
+This command will install and execute [create-refina](https://github.com/refinajs/refina/tree/main/packages/creator), the official Refina project scaffolding tool. You will be presented with prompts for several optional features such as TailwindCSS support:
+
+![Create Refina](/media/create-refina.png)
 
 :::details The packages we installed
 
@@ -24,66 +27,20 @@ Make sure you have an up-to-date version of [Node.js](https://nodejs.org/) insta
 - `@refina/basic-components` The basic components of Refina, which isn't required by all projects.
   :::
 
-Then, create a `vite.config.ts` file in the root directory of your project with the following content:
+Once the project is created, follow the instructions to install dependencies and start the dev server:
 
-```ts
-import { defineConfig } from "vite";
-import Refina from "vite-plugin-refina";
-
-export default defineConfig({
-  plugins: [Refina()], // Use the Refina plugin
-});
+```sh
+> cd refina-project
+> npm install
+> npm run dev
 ```
 
-Now, create a `index.html` file in the root directory of your project with the following content:
+You should now have your first Refina project running!
 
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Refina App</title>
-    <script type="module" src="/src/app.r.ts"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
-```
-
-Then, create a `src/app.r.ts` file in the root directory of your project with the following content:
-
-```ts
-import { app } from "refina";
-import Basics from "@refina/basic-components";
-
-app.use(Basics)(_ => {
-  _.h1("Hello, Refina!");
-});
-```
+Then, open the `src/app.r.ts` file, you can see the code of the app. You can edit it and see the changes in the browser.
 
 :::warning
-You must use the `.r.ts` extension for source files with Refina main functions.
+You must use the `.r.ts` pr `.r.js` extension for source files with Refina main functions.
+
+You can configure the extension in the `vite.config.ts` file.
 :::
-
-Finally, run the following command in your command line:
-
-```sh
-> npx vite
-```
-
-## Use Prettier for Code Formatting {#use-prettier}
-
-To use [Prettier](https://prettier.io/) for code formatting, run the following command in your command line:
-
-```sh
-> npm install -D prettier
-```
-
-Then, create a `.prettierrc` file in the root directory of your project with the following content:
-
-```json
-{
-  "arrowParens": "avoid"
-}
-```
