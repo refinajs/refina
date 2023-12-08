@@ -2,7 +2,10 @@
 
 ![npm](https://img.shields.io/npm/v/refina?label=core&color=green)
 
-[**Documentation**](https://refina.vercel.app/) | [**Examples**](https://gallery.refina.vercel.app/)
+[**Documentation**](https://refina.vercel.app/) |
+[**Examples**](https://gallery.refina.vercel.app/) |
+[**Get Started**](https://refina.vercel.app/guide/introduction.html) |
+[**Why Refina**](https://refina.vercel.app/guide/why.html)
 
 ### 🆕 An extremely **refined** web framework. 🆕
 
@@ -30,7 +33,7 @@
 
 🛠️ Work well with [Vite](https://vitejs.dev/).
 
-## The simplest example
+## Example
 
 ```typescript
 import { app, d } from "refina";
@@ -42,10 +45,7 @@ let count = 0; // needn't to be warped in d()
 app.use(Basics)(_ => {
   _.t`Enter your name:`;
 
-  if (_.textInput(name)) {
-    // returns true if the value is changed
-    localStorage.setItem("name", name);
-  }
+  _.textInput(name);
 
   if (_.button("Click me!", name.length === 0)) {
     // returns true if the button is clicked
@@ -60,6 +60,8 @@ app.use(Basics)(_ => {
   }
 });
 ```
+
+> There are more examples in the [documentation](https://refina.vercel.app/).
 
 ## refina 简介
 
