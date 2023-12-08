@@ -1,6 +1,6 @@
 import { OutputComponent } from "../component";
 import { Prelude } from "../constants";
-import { Context, IntrinsicContext } from "../context";
+import { Context } from "../context";
 import { D, getD } from "../data";
 import { Content } from "../dom";
 
@@ -12,10 +12,12 @@ export class Embed extends OutputComponent {
     ...args: Args
   ): void {
     const contentValue = getD(content);
-    const context = new IntrinsicContext(_.$app);
     if (typeof contentValue === "function") {
       try {
-        contentValue(context as unknown as Context, ...args);
+        contentValue(_, ...args);
+        if (import.meta.env.DEV) {
+          _.$$assertEmpty();
+        }
       } catch (e) {
         this.$app.callHook("onError", e);
       }

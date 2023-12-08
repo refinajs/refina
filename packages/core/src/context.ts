@@ -175,6 +175,13 @@ export class IntrinsicContext<CS extends ContextState> {
   declare $tsContextState: CS;
 
   /**
+   * Get the context itself with empty ContextState.
+   */
+  get _() {
+    return this as unknown as Context;
+  }
+
+  /**
    * Trigger an `UPDATE` call.
    */
   get $update() {
@@ -305,7 +312,9 @@ export class IntrinsicContext<CS extends ContextState> {
     mode: "fill";
     enabled: C2;
   }> {
-    this.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
+    if (this.$updateState) {
+      this.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
+    }
     return true;
   }
 
@@ -356,7 +365,9 @@ export class IntrinsicContext<CS extends ContextState> {
     key: K,
     value: V,
   ): true {
-    this.$$nextProps[key] = value;
+    if (this.$updateState) {
+      this.$$nextProps[key] = value;
+    }
     return true;
   }
 
@@ -371,7 +382,9 @@ export class IntrinsicContext<CS extends ContextState> {
    * @returns always `true`.
    */
   $props<Props extends EnabledProps<CS>>(props: Props): true {
-    Object.assign(this.$$nextProps, props);
+    if (this.$updateState) {
+      Object.assign(this.$$nextProps, props);
+    }
     return true;
   }
 
@@ -508,13 +521,24 @@ export class IntrinsicContext<CS extends ContextState> {
     return this.$app.state.runtimeData;
   }
 
-  /**
-   * Lifetime: this context.
-   *
-   * **Warning**: User may copy the context object and use it in somewhere unexpected.
-   *  Only use this data to store data for debugging.
-   */
-  readonly $contextData: Record<symbol, any> = {};
+  $$assertEmpty() {
+    if (this.$$nextRef) {
+      console.warn("Ref", this.$$nextRef, "is not fulfilled.");
+      this.$$nextRef = null;
+    }
+    if (Object.keys(this.$$nextProps).length > 0) {
+      console.warn("Props", this.$$nextProps, "is not fulfilled.");
+      this.$$nextProps = {};
+    }
+    if (this.$$nextCls.length > 0) {
+      console.warn("Classes", this.$$nextCls, "is not fulfilled.");
+      this.$$nextCls = "";
+    }
+    if (this.$$nextCss.length > 0) {
+      console.warn("Styles", this.$$nextCss, "is not fulfilled.");
+      this.$$nextCss = "";
+    }
+  }
 
   /**
    * The transformed context function calls (excluding `_.t` calls).
@@ -582,7 +606,7 @@ export class IntrinsicContext<CS extends ContextState> {
       }
     }
     // Return the return value of the context function.
-    return func.call(this as unknown as Context, ckey, ...args);
+    return func.call(this._, ckey, ...args);
   }
 
   /**
@@ -650,7 +674,6 @@ export class IntrinsicContext<CS extends ContextState> {
     args: any[],
   ) {
     const ikey = this.$app.pushKey(ckey);
-    const context = new IntrinsicContext(this.$app) as unknown as Context;
     let component = this.$app.refMap.get(ikey) as T | undefined;
     if (!component) {
       component = new ctor(ikey, this.$app);
@@ -676,7 +699,10 @@ export class IntrinsicContext<CS extends ContextState> {
       this.$$nextProps = {};
 
       try {
-        component.main(context, ...args);
+        component.main(this._, ...args);
+        if (import.meta.env.DEV) {
+          this.$$assertEmpty();
+        }
       } catch (e) {
         this.$app.callHook("onError", e);
       }
@@ -700,7 +726,10 @@ export class IntrinsicContext<CS extends ContextState> {
         updateState.pendingMainElOwner = pendingMainElOwners;
       }
     } else {
-      component.main(context, ...args);
+      component.main(this._, ...args);
+      if (import.meta.env.DEV) {
+        this.$$assertEmpty();
+      }
     }
 
     this.$app.popKey(ikey);
@@ -732,7 +761,10 @@ export class IntrinsicContext<CS extends ContextState> {
         // The content is a view function.
 
         try {
-          contentValue(this as unknown as Context);
+          contentValue(this._);
+          if (import.meta.env.DEV) {
+            this.$$assertEmpty();
+          }
         } catch (e) {
           this.$app.callHook("onError", e);
         }
@@ -757,7 +789,10 @@ export class IntrinsicContext<CS extends ContextState> {
       // The content is a view function.
 
       try {
-        contentValue(this as unknown as Context);
+        contentValue(this._);
+        if (import.meta.env.DEV) {
+          this.$$assertEmpty();
+        }
       } catch (e) {
         this.$app.callHook("onError", e);
       }
@@ -798,15 +833,12 @@ export class IntrinsicContext<CS extends ContextState> {
       this.$app.nodeMap.set(el.node, el);
     }
 
-    // Create a context for the inner content.
-    const context = new IntrinsicContext(this.$app);
-
     const updateState = this.$updateState;
     if (updateState) {
       this.$$fulfillRef(el);
       this.$$fulfillMainEl(el);
 
-      context.$$updateDOMContent(updateState, el, inner);
+      this.$$updateDOMContent(updateState, el, inner);
 
       for (const key in data) {
         if (data[key] === undefined) {
@@ -824,7 +856,7 @@ export class IntrinsicContext<CS extends ContextState> {
       el.addCss(css);
       el.addEventListeners(eventListeners);
     } else {
-      context.$$recvDOMContent(inner);
+      this.$$recvDOMContent(inner);
     }
 
     this.$app.popKey(ikey);
@@ -863,15 +895,12 @@ export class IntrinsicContext<CS extends ContextState> {
       this.$app.nodeMap.set(el.node, el);
     }
 
-    // Create a context for the inner content.
-    const context = new IntrinsicContext(this.$app);
-
     const updateState = this.$updateState;
     if (updateState) {
       this.$$fulfillRef(el);
       this.$$fulfillMainEl(el);
 
-      context.$$updateDOMContent(updateState, el, inner);
+      this.$$updateDOMContent(updateState, el, inner);
 
       for (const key in data) {
         const value = data[key];
@@ -892,7 +921,7 @@ export class IntrinsicContext<CS extends ContextState> {
       el.addCss(css);
       el.addEventListeners(eventListeners);
     } else {
-      context.$$recvDOMContent(inner);
+      this.$$recvDOMContent(inner);
     }
 
     this.$app.popKey(ikey);

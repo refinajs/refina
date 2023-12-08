@@ -352,6 +352,9 @@ export class App {
 
       this.callHook("beforeMain");
       this.main(context);
+      if (import.meta.env.DEV) {
+        context.$$assertEmpty();
+      }
       this.callHook("afterMain");
 
       // Assert that the Ikey stack is balanced.

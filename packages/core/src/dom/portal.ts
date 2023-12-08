@@ -104,7 +104,6 @@ export class DOMPortalComponent extends DOMElementComponent {
 
 Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
   const ikey: string = this.$app.pushKey(ckey);
-  const context = new IntrinsicContext(this.$app) as unknown as Context;
   let portal = this.$app.refMap.get(ikey) as DOMPortalComponent | undefined;
   if (!portal) {
     portal = new DOMPortalComponent(ikey, this.$app.root.node);
@@ -117,9 +116,9 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
 
     this.$app.root.pendingPortals.push(portal);
 
-    context.$$updateDOMContent(updateState, portal, inner);
+    this.$$updateDOMContent(updateState, portal, inner);
   } else {
-    context.$$recvDOMContent(inner);
+    this.$$recvDOMContent(inner);
   }
 
   this.$app.popKey(ikey);

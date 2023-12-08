@@ -37,7 +37,12 @@ Prelude.registerFunc("for", function <
   for (const item of getD(iterable)) {
     const key = keyFunc(item, i);
     const innerIkey = this.$app.pushKey(key.toString());
+
     body(item, i);
+    if (import.meta.env.DEV) {
+      this.$$assertEmpty();
+    }
+
     this.$app.popKey(innerIkey);
     i++;
   }
@@ -55,7 +60,12 @@ Prelude.registerFunc(
     for (let i = 0; i < times; i++) {
       const key = i.toString();
       const innerIkey = this.$app.pushKey(key);
+
       body(i);
+      if (import.meta.env.DEV) {
+        this.$$assertEmpty();
+      }
+
       this.$app.popKey(innerIkey);
     }
 

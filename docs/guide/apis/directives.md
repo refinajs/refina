@@ -119,13 +119,3 @@ It is usually a bad idea to write to `_.$runtimeData` directly,
 which is not scoped to the inner content,
 use `_.provide` to provide values to `_.$runtimeData` instead.
 :::
-
-## `_.$contextData`
-
-**Lifetime**: this context.
-
-:::warning
-User may copy the context object and use it in somewhere unexpected.
-
-Only use this data to store data for debugging.
-:::
