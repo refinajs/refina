@@ -129,7 +129,7 @@ async function main() {
 
   const packageJsonRaw = JSON.stringify(
     {
-      name: input.packageName,
+      name: input.packageName ?? targetDir,
       version: "0.0.0",
       private: true,
       type: "module",
