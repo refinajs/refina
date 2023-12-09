@@ -27,9 +27,10 @@ let loading = false,
 
 const $app = app.use(Basics)(_ => {
   if (_.$updateState) {
-    _.$root
-      .addCls(`font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-    m-auto bg-[#0d1117] text-[#e6edf3] text-sm h-[100vh]`);
+    _.$root.addCss(
+      `font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"`,
+    );
+    _.$root.addCls(`m-auto bg-[#0d1117] text-[#e6edf3] text-sm h-[100vh]`);
   }
   _.$cls`pb-6 pt-8 w-full text-center`;
   _.div(_ => {
