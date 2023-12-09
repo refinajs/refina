@@ -11,9 +11,9 @@ It is mostly used to render a part of the page for one or few times, or as the c
 **myView.r.ts**
 
 ```ts
-import { view } from "refina";
+import { defineView } from "refina";
 
-export default view(_ => {
+export default defineView(_ => {
   _.span("my view");
 });
 ```
@@ -68,7 +68,7 @@ However, this is not recommended for consistency.
 A view function can have parameters. You can decalre the parameters in the simple way:
 
 ```ts
-export default view((_, name: string, id?: number) => {
+export default defineView((_, name: string, id?: number) => {
   _.p(_ => {
     _.t`My name is ${name}. `;
     id !== undefined && _.t(`My ID is ${id}.`);
@@ -90,7 +90,7 @@ A view can have states, but the states is shared between all the instances of th
 ```ts
 let count = 0;
 
-export default view(_ => {
+export default defineView(_ => {
   _.p(`Count is: ${count}`);
   _.button(`Add`) && count++;
 });

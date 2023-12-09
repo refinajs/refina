@@ -15,11 +15,11 @@ export type View<Args extends any[] = []> = (
 ) => void;
 
 /**
- * Create a view function with type checking.
+ * Define a view function with type checking.
  *
  * @example
  * ```ts
- * export default view(_ => {
+ * export default defineView(_ => {
  *  // ...
  * });
  * ```
@@ -27,6 +27,8 @@ export type View<Args extends any[] = []> = (
  * @param view The view function.
  * @returns The view function itself.
  */
-export function view<Args extends any[] = []>(view: View<Args>): View<Args> {
+export function defineView<Args extends any[] = []>(
+  view: View<Args>,
+): View<Args> {
   return view;
 }

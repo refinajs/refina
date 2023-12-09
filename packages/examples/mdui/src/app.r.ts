@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
 import MdUI, { CheckboxState } from "@refina/mdui";
 import "@refina/mdui/styles.css";
-import { Content, app, bySelf, d, view } from "refina";
+import { Content, app, bySelf, d, defineView } from "refina";
 
-const componentView = view((_, name: string, inner: Content) => {
+const componentView = defineView((_, name: string, inner: Content) => {
   _._div({}, _ => {
     _.$css`margin-bottom:8px`;
     _._h3({}, name);
