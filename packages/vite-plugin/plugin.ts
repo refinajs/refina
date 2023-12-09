@@ -17,9 +17,11 @@ export default function refina(
       }
       const { code, map, fileKey } = transformer.transformFile(id, raw);
 
-      config.logger.info(
-        `"${fileKey}"${" ".repeat(3 - fileKey.length)}--> "${id}"`,
-      );
+      if (config.mode === "development") {
+        config.logger.info(
+          `"${fileKey}"${" ".repeat(3 - fileKey.length)}--> "${id}"`,
+        );
+      }
 
       return {
         code,
