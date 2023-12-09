@@ -33,8 +33,8 @@ RouterPlugin.registerFunc("route", function (ckey: string, path: string) {
   }
 
   if (
-    Boolean(this.$contextData[routeMatchedSymbol]) &&
-    this.$contextData[routeMatchedSymbol] !== path
+    Boolean(this.$runtimeData[routeMatchedSymbol]) &&
+    this.$runtimeData[routeMatchedSymbol] !== path
   ) {
     // Make sure that the route is matched only once for one context.
     return false;
@@ -57,12 +57,12 @@ RouterPlugin.registerFunc("route", function (ckey: string, path: string) {
     },
   });
 
-  this.$contextData[routeMatchedSymbol] = true;
+  this.$runtimeData[routeMatchedSymbol] = true;
   return true;
 });
 
 RouterPlugin.registerFunc("routeNotFound", function (ckey: string) {
-  return !this.$contextData[routeMatchedSymbol];
+  return !this.$runtimeData[routeMatchedSymbol];
 });
 
 declare module "refina" {
