@@ -3,7 +3,7 @@ import Basics from "../plugin";
 
 @Basics.outputComponent("a")
 export class BaiscA extends OutputComponent {
-  main(_: Context, href: D<string>, inner: D<Content>) {
+  main(_: Context, inner: D<Content>, href: D<string>) {
     _._a(
       {
         href: getD(href),

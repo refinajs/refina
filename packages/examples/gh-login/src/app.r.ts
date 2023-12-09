@@ -83,14 +83,14 @@ const $app = app.use(Basics)(_ => {
           login();
         }
         _.$cls`float-right text-xs absolute top-0 right-0 text-[#2f81f7]`;
-        _.a("https://github.com/password_reset", "Forgot password?");
+        _.a("Forgot password?", "https://github.com/password_reset");
       });
     });
     _.$cls`p-4 text-center border border-[#30363d] rounded-[6px] mt-4 mb-[10px] `;
     _.p(_ => {
       _.t`New to GitHub? `;
       _.$cls`text-[#2f81f7]` &&
-        _.a("https://github.com/signup?source=login", "Create an account");
+        _.a("Create an account", "https://github.com/signup?source=login");
       _.t`.`;
     });
   });
@@ -103,26 +103,26 @@ const $app = app.use(Basics)(_ => {
           {},
           _ =>
             _.$cls`text-[#2f81f7]` &&
-            _.a("https://github.com/site/terms", "Terms"),
+            _.a("Terms", "https://github.com/site/terms"),
         );
       _.$cls`mr-4` &&
         _._li(
           {},
           _ =>
             _.$cls`text-[#2f81f7]` &&
-            _.a("https://github.com/site/privacy", "Privacy"),
+            _.a("Privacy", "https://github.com/site/privacy"),
         );
       _.$cls`mr-4` &&
         _._li(
           {},
           _ =>
-            _.$cls`text-[#2f81f7]` && _.a("https://docs.github.com/", "Docs"),
+            _.$cls`text-[#2f81f7]` && _.a("Docs", "https://docs.github.com/"),
         );
       _._li(
         {},
         _ =>
           _.$cls`text-[#7d8590]` &&
-          _.a("https://github.com/contact", "Contact GitHub Support"),
+          _.a("Contact GitHub Support", "https://github.com/contact"),
       );
     });
   });
