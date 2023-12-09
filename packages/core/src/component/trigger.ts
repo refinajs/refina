@@ -66,7 +66,7 @@ export function createTriggerComponentFunc<
     const component = this.$$processComponent(ckey, ctor, args);
 
     // If the component is the current event receiver, return `true`.
-    return Boolean(component && this.$app.isEventReceiver(component.$ikey));
+    return this.$app.isEventReceiver(component.$ikey);
   };
 }
 
