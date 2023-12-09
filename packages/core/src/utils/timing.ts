@@ -35,7 +35,7 @@ Prelude.registerFunc(
   },
 );
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Get the current time in milliseconds.

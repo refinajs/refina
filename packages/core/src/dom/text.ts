@@ -11,7 +11,7 @@ export class TextNodeComponent extends DOMNodeComponent<Text> {
 }
 
 // Add text node function to context.
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Render a text node.

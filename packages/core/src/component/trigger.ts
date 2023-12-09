@@ -66,7 +66,7 @@ export function createTriggerComponentFunc<
     const component = this.$$processComponent(ckey, ctor, args);
 
     // If the component is the current event receiver, return `true`.
-    return this.$app.isEventReceiver(component.$ikey);
+    return Boolean(component && this.$app.isEventReceiver(component.$ikey));
   };
 }
 
@@ -99,6 +99,9 @@ export interface TriggerComponents {}
  * to let TypeScript know that the context properties are available.
  */
 export type TriggerComponentFuncAssertThisType<Ev> = {
+  /**
+   * The event that the app is receiving.
+   */
   readonly $ev: Ev extends Event
     ? Ev & {
         /**
@@ -122,6 +125,6 @@ export type TriggerComponentFuncs<C extends ContextState> = {
 };
 
 // Add trigger component functions to the context.
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> extends TriggerComponentFuncs<C> {}
 }

@@ -144,6 +144,6 @@ export type StatusComponentFuncs<C extends ContextState> = {
 };
 
 // Add output component functions to the context.
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> extends StatusComponentFuncs<C> {}
 }

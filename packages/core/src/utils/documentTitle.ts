@@ -11,7 +11,7 @@ Prelude.registerFunc(
   },
 );
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Set the document title.

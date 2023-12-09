@@ -480,7 +480,7 @@ export type SVGElementFuncs<C extends ContextState> = {
 };
 
 // Add HTML and SVG element functions to context.
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> extends HTMLElementFuncs<C> {}
   interface ContextFuncs<C> extends SVGElementFuncs<C> {}
 }

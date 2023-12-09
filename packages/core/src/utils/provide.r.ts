@@ -49,7 +49,7 @@ export class Provide extends OutputComponent {
   }
 }
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Provide a value or a object of values to `_.$runtimeData`

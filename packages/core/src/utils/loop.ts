@@ -74,7 +74,7 @@ Prelude.registerFunc(
   },
 );
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Loop over an iterable.

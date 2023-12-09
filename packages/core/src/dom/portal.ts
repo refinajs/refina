@@ -1,5 +1,5 @@
 import { Prelude } from "../constants";
-import { Context, IntrinsicContext } from "../context";
+import { RecvContext, UpdateContext } from "../context";
 import { D } from "../data";
 import { Content } from "./content";
 import { DOMElementComponent } from "./element";
@@ -112,20 +112,26 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
 
   const updateState = this.$updateState;
   if (updateState) {
-    this.$$fulfillRef(portal);
+    const context = this as UpdateContext;
 
-    this.$app.root.pendingPortals.push(portal);
+    context.$$fulfillRef(portal);
 
-    this.$$updateDOMContent(updateState, portal, inner);
+    context.$app.root.pendingPortals.push(portal);
+
+    const innerIkey: string = this.$app.pushKey("_");
+    context.$$updateDOMContent(updateState, portal, inner);
+    this.$app.popKey(innerIkey);
   } else {
-    this.$$recvDOMContent(inner);
+    const context = this as RecvContext;
+
+    context.$$processDOMElement("_", inner);
   }
 
   this.$app.popKey(ikey);
   return portal;
 });
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C extends ContextState> {
     /**
      * Render content to the end of the root element.

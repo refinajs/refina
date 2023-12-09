@@ -58,7 +58,7 @@ export class EmbedAsync<Args extends any[] = any[]> extends OutputComponent {
   }
 }
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Embed a content into the current output component.

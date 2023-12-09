@@ -77,7 +77,7 @@ Prelude.registerFunc(
   },
 );
 
-declare module "../context" {
+declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Use data from an async call when rendering.

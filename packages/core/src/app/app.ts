@@ -1,6 +1,13 @@
 import { Component } from "../component";
 import { AppStateType } from "../constants";
-import { Context, IntrinsicContext, RealContextFuncs } from "../context";
+import {
+  Context,
+  IntrinsicRecvContext,
+  IntrinsicUpdateContext,
+  RealContextFuncs,
+  RecvContext,
+  UpdateContext,
+} from "../context";
 import { D, dangerously_setD } from "../data";
 import {
   DOMBodyComponent,
@@ -342,13 +349,9 @@ export class App {
   /**
    * Execute the main function of the app in current state.
    */
-  protected execMain() {
+  protected execMain(context: Context) {
     try {
       const initialKey = this.currentIkey;
-
-      const context = new IntrinsicContext(
-        this as RunningApp,
-      ) as unknown as Context;
 
       this.callHook("beforeMain");
       this.main(context);
@@ -382,8 +385,12 @@ export class App {
       pendingMainElOwner: [],
     } satisfies AppUpdateState;
 
+    const context = new IntrinsicUpdateContext(
+      this as RunningApp,
+    ) as unknown as UpdateContext;
+
     // Execute the main function to update components.
-    this.execMain();
+    this.execMain(context);
 
     // Apply changes to DOM.
     this.callHook("beforeModifyDOM");
@@ -407,8 +414,12 @@ export class App {
       event,
     } satisfies AppRecvState;
 
+    const context = new IntrinsicRecvContext(
+      this as RunningApp,
+    ) as unknown as RecvContext;
+
     // Execute the main function to receive the event.
-    this.execMain();
+    this.execMain(context);
 
     // Clear the `RECV` state.
     this.state = idleState;
