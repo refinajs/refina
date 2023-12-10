@@ -231,12 +231,12 @@ export class IntrinsicUpdateContext<
 
     const text = String(getD(content));
 
-    const ikey = this.$app.pushKey(ckey);
-    let textNode = this.$app.refMap.get(ikey) as DOMNodeComponent | undefined;
+    let textNode = this.$state.currentRefTreeNode[ckey] as
+      | DOMNodeComponent
+      | undefined;
     if (!textNode) {
-      textNode = new TextNodeComponent(ikey, document.createTextNode(text));
-      this.$app.refMap.set(ikey, textNode);
-      this.$app.nodeMap.set(textNode.node, textNode);
+      textNode = new TextNodeComponent(document.createTextNode(text));
+      this.$state.currentRefTreeNode[ckey] = textNode;
     } else if (textNode.node.textContent !== text) {
       textNode.node.textContent = text;
     }
@@ -244,8 +244,6 @@ export class IntrinsicUpdateContext<
     this.$$fulfillRef(textNode);
 
     this.$state.currentDOMParent.pendingChildren.push(textNode);
-
-    this.$app.popKey(ikey);
   }
 
   $$processComponent<T extends Component>(
@@ -253,11 +251,10 @@ export class IntrinsicUpdateContext<
     ctor: ComponentConstructor<T>,
     args: any[],
   ): T {
-    const ikey = this.$app.pushKey(ckey);
-    let component = this.$app.refMap.get(ikey) as T | undefined;
+    let component = this.$state.currentRefTreeNode[ckey] as T | undefined;
     if (!component) {
-      component = new ctor(ikey, this.$app);
-      this.$app.refMap.set(ikey, component);
+      component = new ctor(this.$app);
+      this.$state.currentRefTreeNode[ckey] = component;
     }
 
     this.$$fulfillRef(component);
@@ -276,6 +273,9 @@ export class IntrinsicUpdateContext<
     component.$props = this.$$nextProps;
     this.$$nextProps = {};
 
+    const parentRefTreeNode = this.$state.currentRefTreeNode;
+    this.$state.currentRefTreeNode = component.$refTreeNode;
+
     try {
       component.main(this._, ...args);
       if (import.meta.env.DEV) {
@@ -284,6 +284,8 @@ export class IntrinsicUpdateContext<
     } catch (e) {
       this.$app.callHook("onError", e);
     }
+
+    this.$state.currentRefTreeNode = parentRefTreeNode;
 
     if (component.$mainEl) {
       // There is a $mainEl in the component.
@@ -304,8 +306,6 @@ export class IntrinsicUpdateContext<
       this.$state.pendingMainElOwner = pendingMainElOwners;
     }
 
-    this.$app.popKey(ikey);
-
     return component;
   }
 
@@ -322,11 +322,13 @@ export class IntrinsicUpdateContext<
     content?: D<Content>,
   ) {
     const parent = appState.currentDOMParent;
+    const refTreeNode = appState.currentRefTreeNode;
     parent.pendingChildren.push(el);
 
     if (content !== undefined) {
       // Set the current DOM parent to this DOM element component.
       appState.currentDOMParent = el;
+      appState.currentRefTreeNode = el.$refTreeNode;
 
       const contentValue = getD(content);
       if (typeof contentValue === "function") {
@@ -347,6 +349,7 @@ export class IntrinsicUpdateContext<
 
       // Restore the DOM parent.
       appState.currentDOMParent = parent;
+      appState.currentRefTreeNode = refTreeNode;
     }
   }
 
@@ -370,17 +373,15 @@ export class IntrinsicUpdateContext<
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfoRaw<E> = {},
   ) {
-    const ikey = this.$app.pushKey(ckey);
-
-    let el = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
+    let el = this.$state.currentRefTreeNode[ckey] as
+      | DOMElementComponent
+      | undefined;
     if (!el) {
       // Create a new element if not exist.
       el = new DOMElementComponent<keyof HTMLElementTagNameMap>(
-        ikey,
         document.createElement(tagName),
       );
-      this.$app.refMap.set(ikey, el);
-      this.$app.nodeMap.set(el.node, el);
+      this.$state.currentRefTreeNode[ckey] = el;
     }
 
     this.$$fulfillRef(el);
@@ -403,8 +404,6 @@ export class IntrinsicUpdateContext<
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);
-
-    this.$app.popKey(ikey);
   }
 
   /**
@@ -427,17 +426,15 @@ export class IntrinsicUpdateContext<
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfoRaw<E> = {},
   ) {
-    const ikey = this.$app.pushKey(ckey);
-
-    let el = this.$app.refMap.get(ikey) as DOMElementComponent | undefined;
+    let el = this.$state.currentRefTreeNode[ckey] as
+      | DOMElementComponent
+      | undefined;
     if (!el) {
       // Create a new element if not exist.
       el = new DOMElementComponent<keyof SVGElementTagNameMap>(
-        ikey,
         document.createElementNS("http://www.w3.org/2000/svg", tagName),
       );
-      this.$app.refMap.set(ikey, el);
-      this.$app.nodeMap.set(el.node, el);
+      this.$state.currentRefTreeNode[ckey] = el;
     }
 
     this.$$fulfillRef(el);
@@ -463,8 +460,6 @@ export class IntrinsicUpdateContext<
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);
-
-    this.$app.popKey(ikey);
   }
 }
 

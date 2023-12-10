@@ -12,11 +12,12 @@ import { D, dangerously_setD } from "../data";
 import {
   DOMBodyComponent,
   DOMElementComponent,
-  DOMNodeComponent,
   DOMRootComponent,
 } from "../dom";
 import { DOMWindowComponent } from "../dom/window";
 import type { View } from "../view";
+
+export type RefTreeNode = Record<string, unknown>;
 
 /**
  * The map of app hooks.
@@ -72,13 +73,11 @@ export interface AppRunningState {
   type: AppStateType.UPDATE | AppStateType.RECV;
 
   /**
-   * The stack of Ikeys.
+   * The current ref tree node.
    *
-   * For better performance, the stack stores the full Ikey of each component instead of the relative Ikey.
-   *
-   * @example ["0-0", "0-0.1-0", "0-0.1-0.1-1"]
+   * Used to get the instance by whether the context function is called.
    */
-  ikeyStack: string[];
+  currentRefTreeNode: RefTreeNode;
 
   /**
    * Lifetime: one `UPDATE` or `RECV` call.
@@ -116,12 +115,8 @@ export interface AppRecvState extends AppRunningState {
 
   /**
    * The receiver of the event.
-   *
-   * - If it is of type `string`, it is the Ikey of the receiver.
-   *
-   * - If it is of type `symbol`, it is a user-defined event receiver.
    */
-  receiver: string | symbol;
+  receiver: any;
 
   /**
    * The event data.
@@ -154,7 +149,7 @@ export class App {
     if (!rootElement) {
       throw new Error(`Root element ${rootElementId} not found.`);
     }
-    this.root = new DOMRootComponent("~", rootElement);
+    this.root = new DOMRootComponent(rootElement);
   }
 
   /**
@@ -187,28 +182,14 @@ export class App {
    *
    * Call `app.body.addCls` or `app.body.addCss` to add classes or styles to the document body.
    */
-  body = new DOMBodyComponent("body", document.body);
+  body = new DOMBodyComponent(document.body);
 
   /**
    * The DOM element component of the window.
    *
    * Call `app.window.addEventListener` to add event listeners to window.
    */
-  window = new DOMWindowComponent("window", window);
-
-  /**
-   * The map from Ikey to component instance.
-   *
-   * **Warning**: By default, component instances not currently rendered won't be removed from this map.
-   */
-  refMap: Map<string | symbol, any> = new Map();
-
-  /**
-   * The map from DOM node to DOM component instance.
-   *
-   * **Warning**: By default, DOM component instances not currently rendered won't be removed from this map.
-   */
-  nodeMap: Map<Node, DOMNodeComponent> = new Map();
+  window = new DOMWindowComponent(window);
 
   /**
    * Lifetime: from the construction of the app to the window is closed.
@@ -261,7 +242,7 @@ export class App {
    * @param receiver The receiver of the event.
    * @param data The event data.
    */
-  recv = (receiver: string | symbol, data: any) => {
+  recv = (receiver: any, data: any) => {
     if (import.meta.env.DEV)
       console.debug(
         `[*] recv triggered with receiver ${String(
@@ -351,23 +332,12 @@ export class App {
    */
   protected execMain(context: Context) {
     try {
-      const initialKey = this.currentIkey;
-
       this.callHook("beforeMain");
       this.main(context);
       if (import.meta.env.DEV) {
         context.$$assertEmpty();
       }
       this.callHook("afterMain");
-
-      // Assert that the Ikey stack is balanced.
-      if (import.meta.env.DEV) {
-        if (initialKey !== this.currentIkey) {
-          throw new Error(
-            `Key mismatch: ${initialKey} !== ${this.currentIkey}. You may have forgotten to call app.popKey().`,
-          );
-        }
-      }
     } catch (e) {
       // Report the error to the console instead of throwing it to make sure the cleanup code is executed.
       console.error("Error when executing main:", e, "\nstate:", this.state);
@@ -378,7 +348,7 @@ export class App {
     // Set the `UPDATE` state.
     this.state = {
       type: AppStateType.UPDATE,
-      ikeyStack: ["~"],
+      currentRefTreeNode: this.root.$refTreeNode,
       runtimeData: {},
       processedComponents: new Set(),
       currentDOMParent: this.root,
@@ -407,7 +377,7 @@ export class App {
     // Set the `RECV` state.
     this.state = {
       type: AppStateType.RECV,
-      ikeyStack: ["~"],
+      currentRefTreeNode: this.root.$refTreeNode,
       runtimeData: {},
       processedComponents: new Set(),
       receiver,
@@ -534,47 +504,14 @@ export class App {
   };
 
   /**
-   * Push a Ckey to the Ikey stack.
-   *
-   * @param ckey The Ckey to push to the Ikey stack.
-   * @returns The current Ikey.
-   */
-  pushKey(ckey: string) {
-    const currentIkey = this.currentIkey + "." + ckey;
-    (this.state as AppRunningState).ikeyStack.push(currentIkey);
-    return currentIkey;
-  }
-
-  /**
-   * Pop a Ikey from the Ikey stack.
-   *
-   * @param ikey The Ikey to pop from the Ikey stack. Used to check if the stack is balanced in development mode.
-   */
-  popKey(ikey: string) {
-    const last = (this.state as AppRunningState).ikeyStack.pop();
-    if (import.meta.env.DEV) {
-      if (ikey !== last) {
-        throw new Error(
-          `Ikey stack is unbalanced: want to pop "${ikey}", but the last Ikey is "${last}".`,
-        );
-      }
-    }
-  }
-
-  /**
-   * The current Ikey.
-   */
-  get currentIkey() {
-    return (this.state as AppRunningState).ikeyStack.at(-1)!;
-  }
-
-  /**
    * `true` if the app is under `RECV` state and the receiver is `key`.
    *
-   * @param key The key to test.
+   * @param receiver The receiver to test.
    * @returns `true` if the app is under `RECV` state and the receiver is `key`.
    */
-  isEventReceiver(key: string | symbol): this is { state: AppRecvState } {
-    return this.state.type === AppStateType.RECV && this.state.receiver === key;
+  isEventReceiver(receiver: any): this is { state: AppRecvState } {
+    return (
+      this.state.type === AppStateType.RECV && this.state.receiver === receiver
+    );
   }
 }

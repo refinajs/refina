@@ -1,11 +1,6 @@
 import { Prelude } from "../constants";
 
 /**
- * The key of await states in `permanentData`
- */
-const awaitStatesSymbol = Symbol("await states");
-
-/**
  * The state of an await call.
  */
 type AwaitState =
@@ -28,43 +23,31 @@ Prelude.registerFunc(
     executor: () => Promise<any>,
     id: string | number = "",
   ): boolean {
-    const ikey = this.$app.pushKey(ckey);
+    const refTreeNode = this.$state.currentRefTreeNode;
 
-    // Initialize the record of await states.
-    this.$permanentData[awaitStatesSymbol] ??= {};
-
-    // Get the record of await state
-    // The key of the record is the Ikey of the await call.
-    const awaitStates = this.$permanentData[awaitStatesSymbol] as Record<
-      string,
-      AwaitState
-    >;
-
-    if (!awaitStates[ikey]) {
+    if (!refTreeNode[ckey]) {
       // The await call is not started.
-      awaitStates[ikey] = {
+      refTreeNode[ckey] = {
         type: "pending",
-      };
+      } as AwaitState;
       executor()
         .then(value => {
-          awaitStates[ikey] = {
+          refTreeNode[ckey] = {
             type: "fulfilled",
             value,
-          };
+          } as AwaitState;
           this.$update();
         })
         .catch(reason => {
-          awaitStates[ikey] = {
+          refTreeNode[ckey] = {
             type: "error",
             reason,
-          };
+          } as AwaitState;
           this.$update();
         });
     }
 
-    this.$app.popKey(ikey);
-
-    const state = awaitStates[ikey];
+    const state = refTreeNode[ckey] as AwaitState;
     if (state.type === "pending") {
       return false;
     } else if (state.type === "fulfilled") {
@@ -81,9 +64,6 @@ declare module "../context/base" {
   interface ContextFuncs<C> {
     /**
      * Use data from an async call when rendering.
-     *
-     * **Warning**: **DO NOT** change the Ikey of the await call,
-     *  or the data will be lost, and a new async call will be made.
      *
      * **Note**: Use `try`/`catch` to handle errors.
      *
@@ -103,7 +83,7 @@ declare module "../context/base" {
      * }
      * ```
      *
-     * @param executor The async function to execute. This function is called only once for each different Ikey.
+     * @param executor The async function to execute. This function is called only for once.
      * @param id The id of the await call. If not provided, the id is an empty string. Access the awaited data with `_.$awaited<id>`.
      * @throws The error thrown by the async function.
      */

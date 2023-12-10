@@ -56,10 +56,6 @@ Called after the main function is executed in `UPDATE` state, and the DOM tree i
 
 Called when an error is thrown in the main function.
 
-:::tip
-You can get where the error is thrown via `_.$app.currentIkey`.
-:::
-
 :::info
 A hook outputting the error to the console is added by the `Prelude` plugin.
 :::

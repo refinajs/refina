@@ -12,13 +12,9 @@ export type MaybeChildNode = ChildNode | null;
  */
 export abstract class DOMNodeComponent<N extends Node = Node> {
   /**
-   * @param ikey The component's Ikey
    * @param node The DOM node of this component.
    */
-  constructor(
-    public ikey: string,
-    public node: N,
-  ) {}
+  constructor(public node: N) {}
 
   /**
    * In this method, the component should update the DOM node to reflect the current state.

@@ -31,7 +31,7 @@ export abstract class TriggerComponent<
     ) {
       (data as any).$isCurrent = data.target === data.currentTarget;
     }
-    this.$app.recv(this.$ikey, data);
+    this.$app.recv(this, data);
   };
 
   /**
@@ -66,7 +66,7 @@ export function createTriggerComponentFunc<
     const component = this.$$processComponent(ckey, ctor, args);
 
     // If the component is the current event receiver, return `true`.
-    return this.$app.isEventReceiver(component.$ikey);
+    return this.$app.isEventReceiver(component);
   };
 }
 

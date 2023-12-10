@@ -1,7 +1,7 @@
 import type { AppRecvState, RunningApp } from "../app";
 import { Component, ComponentConstructor } from "../component";
 import { D, Ref, getD } from "../data";
-import { Content } from "../dom";
+import { Content, DOMElementComponent } from "../dom";
 import {
   Context,
   ContextFuncs,
@@ -95,17 +95,20 @@ export class IntrinsicRecvContext<
     ctor: ComponentConstructor<T>,
     args: any[],
   ): T {
-    const ikey = this.$app.pushKey(ckey);
-    let component = this.$app.refMap.get(ikey) as T | undefined;
+    let component = this.$state.currentRefTreeNode[ckey] as T | undefined;
+
     if (!component) {
-      component = new ctor(ikey, this.$app);
-      this.$app.refMap.set(ikey, component);
+      component = new ctor(this.$app);
+      this.$state.currentRefTreeNode[ckey] = component;
     } else {
+      const parentRefTreeNode = this.$state.currentRefTreeNode;
+      this.$state.currentRefTreeNode = component.$refTreeNode;
+
       // New created component has nothing to receive.
       component.main(this._, ...args);
-    }
 
-    this.$app.popKey(ikey);
+      this.$state.currentRefTreeNode = parentRefTreeNode;
+    }
 
     return component;
   }
@@ -121,15 +124,22 @@ export class IntrinsicRecvContext<
     if (typeof contentValue === "function") {
       // The content is a view function.
 
-      const ikey = this.$app.pushKey(ckey);
+      const el = this.$state.currentRefTreeNode[ckey] as
+        | DOMElementComponent
+        | undefined;
 
-      try {
-        contentValue(this._);
-      } catch (e) {
-        this.$app.callHook("onError", e);
+      if (el) {
+        const parentRefTreeNode = this.$state.currentRefTreeNode;
+        this.$state.currentRefTreeNode = el.$refTreeNode;
+
+        try {
+          contentValue(this._);
+        } catch (e) {
+          this.$app.callHook("onError", e);
+        }
+
+        this.$state.currentRefTreeNode = parentRefTreeNode;
       }
-
-      this.$app.popKey(ikey);
     }
     // Text node is ignored in `RECV` state.
   }

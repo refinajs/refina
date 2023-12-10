@@ -1,3 +1,4 @@
+import { RefTreeNode } from "../app";
 import { ContextState } from "../context";
 import { D } from "../data";
 import { Content } from "./content";
@@ -116,6 +117,11 @@ type EventListenerParams = [
 export class DOMElementComponent<
   E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
 > extends DOMNodeComponent<TagNameToDOMElement<E>> {
+  /**
+   * The ref tree node of this element.
+   */
+  $refTreeNode: RefTreeNode = {};
+
   /**
    * The main element of the component.
    *

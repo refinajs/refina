@@ -1,37 +1,29 @@
 import { Prelude } from "../constants";
 
-const registeredCallbacks = new Set<string>();
-
 Prelude.registerFunc("now", function (ckey: string, precisionMs = 1000) {
-  const ikey = this.$app.pushKey(ckey);
-
-  if (this.$updateState && !registeredCallbacks.has(ikey)) {
-    registeredCallbacks.add(ikey);
+  const refTreeNode = this.$state.currentRefTreeNode;
+  if (this.$updateState && !refTreeNode[ckey]) {
+    refTreeNode[ckey] = true;
     setTimeout(() => {
-      registeredCallbacks.delete(ikey);
+      delete refTreeNode[ckey];
       this.$app.update();
     }, precisionMs);
   }
-
-  this.$app.popKey(ikey);
   return Date.now();
 });
 
 Prelude.registerFunc(
   "setInterval",
   function (ckey: string, callback: () => void, interval: number) {
-    const ikey = this.$app.pushKey(ckey);
-
-    if (this.$updateState && !registeredCallbacks.has(ikey)) {
-      registeredCallbacks.add(ikey);
+    const refTreeNode = this.$state.currentRefTreeNode;
+    if (this.$updateState && !refTreeNode[ckey]) {
+      refTreeNode[ckey] = true;
       setTimeout(() => {
-        registeredCallbacks.delete(ikey);
+        delete refTreeNode[ckey];
         callback();
         this.$app.update();
       }, interval);
     }
-
-    this.$app.popKey(ikey);
   },
 );
 

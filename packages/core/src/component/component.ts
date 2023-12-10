@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App, RefTreeNode } from "../app";
 import { AppStateType } from "../constants";
 import { Context } from "../context";
 import { DOMElementComponent } from "../dom";
@@ -12,13 +12,14 @@ import { DOMElementComponent } from "../dom";
  */
 export abstract class Component<Props = {}> {
   /**
-   * @param $ikey The component's Ikey
    * @param $app The app that the component is installed on.
    */
-  constructor(
-    public readonly $ikey: string,
-    public readonly $app: App,
-  ) {}
+  constructor(public readonly $app: App) {}
+
+  /**
+   * The ref tree node of the component.
+   */
+  $refTreeNode: RefTreeNode = {};
 
   /**
    * The props of the component set by component function caller using `_.$prop()` or `_.$props()`.
@@ -63,7 +64,6 @@ export abstract class Component<Props = {}> {
  * The constructor type of **any** component class.
  */
 export type ComponentConstructor<S extends Component = Component> = new (
-  ikey: string,
   app: App,
 ) => S;
 

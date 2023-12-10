@@ -43,10 +43,6 @@ app.use(Basics)(_ => {
 
 Use data from an async call when rendering.
 
-:::warning
-**DO NOT** change the Ikey of the await call, or the data will be lost, and a new async call will be made.
-:::
-
 :::tip
 Use `try`/`catch` to handle errors.
 :::

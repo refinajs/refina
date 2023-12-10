@@ -61,7 +61,7 @@ export class Plugin<Args extends any[] = []> {
    * Register a **transformed** context function.
    *
    * @param name The name of the context function.
-   * @param func The context function, with the first argument being the Ikey and this type being the context.
+   * @param func The context function, with the first argument being the Ckey and this type being the context.
    */
   registerFunc<N extends keyof ContextFuncs<any>>(
     name: N,

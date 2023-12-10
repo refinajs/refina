@@ -1,3 +1,4 @@
+import { RefTreeNode } from "..";
 import { Prelude } from "../constants";
 import { Context } from "../context";
 import { D, getD } from "../data";
@@ -27,49 +28,62 @@ function normalizeKey<T>(key: LoopKey<T>) {
   return typeof key === "function" ? key : (obj: T) => `${obj[key]}`;
 }
 
+type LoopRefTreeNodeMap = Record<string, RefTreeNode>;
+
 Prelude.registerFunc("for", function <
   T,
 >(this: Context, ckey: string, iterable: D<Iterable<T>>, key: LoopKey<T>, body: (item: T, index: number) => void) {
-  const ikey = this.$app.pushKey(ckey);
+  this.$state.currentRefTreeNode[ckey] ??= {};
+  const refTreeNodes = this.$state.currentRefTreeNode[
+    ckey
+  ] as LoopRefTreeNodeMap;
+  const parentRefTreeNode = this.$state.currentRefTreeNode;
 
   const keyFunc = normalizeKey(key);
   let i = 0;
   for (const item of getD(iterable)) {
-    const key = keyFunc(item, i);
-    const innerIkey = this.$app.pushKey(key.toString());
+    const key = keyFunc(item, i).toString();
+
+    refTreeNodes[key] ??= {};
+    this.$state.currentRefTreeNode = refTreeNodes[key];
 
     body(item, i);
     if (import.meta.env.DEV) {
       this.$$assertEmpty();
     }
 
-    this.$app.popKey(innerIkey);
     i++;
   }
 
-  this.$app.popKey(ikey);
+  this.$state.currentRefTreeNode = parentRefTreeNode;
+
   return false;
 });
 
 Prelude.registerFunc(
   "forTimes",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
-    const ikey = this.$app.pushKey(ckey);
+    this.$state.currentRefTreeNode[ckey] ??= {};
+    const refTreeNodes = this.$state.currentRefTreeNode[
+      ckey
+    ] as LoopRefTreeNodeMap;
+    const parentRefTreeNode = this.$state.currentRefTreeNode;
 
     times = getD(times);
     for (let i = 0; i < times; i++) {
       const key = i.toString();
-      const innerIkey = this.$app.pushKey(key);
+
+      refTreeNodes[key] ??= {};
+      this.$state.currentRefTreeNode = refTreeNodes[key];
 
       body(i);
       if (import.meta.env.DEV) {
         this.$$assertEmpty();
       }
-
-      this.$app.popKey(innerIkey);
     }
 
-    this.$app.popKey(ikey);
+    this.$state.currentRefTreeNode = parentRefTreeNode;
+
     return false;
   },
 );
@@ -80,7 +94,7 @@ declare module "../context/base" {
      * Loop over an iterable.
      *
      * **Warning**: **DO NOT** use `for` or `while` statement in Refina,
-     *  which does not update the Ikey stack,
+     *  which does not update $state.currentRefTreeNode,
      *  and will cause unexpected behavior.
      *  Use this function or `_.forTimes` instead.
      *
@@ -100,7 +114,7 @@ declare module "../context/base" {
      * Loop over a range of numbers. Similar to `for (let i = 0; i < times; i++)`.
      *
      * **Warning**: **DO NOT** use `for` or `while` statement in Refina,
-     *  which does not update the Ikey stack,
+     *  which does not update the $state.currentRefTreeNode,
      *  and will cause unexpected behavior.
      *  Use this function or `_.for` instead.
      *

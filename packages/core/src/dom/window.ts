@@ -7,10 +7,6 @@ import { DOMElementComponent } from "./element";
  *  but we just treat it as a DOM element to reuse the code to manage event listeners.
  */
 export class DOMWindowComponent extends DOMElementComponent<any> {
-  constructor(ikey: string, window: Window) {
-    super(ikey, window);
-  }
-
   updateDOM(): null {
     this.applyEventListeners();
     return null;
