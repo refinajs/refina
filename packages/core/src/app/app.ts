@@ -84,7 +84,7 @@ export interface AppRunningState {
    *
    * Can be accessed in hooks like `beforeMain` and `afterModifyDOM`.
    */
-  runtimeData: Record<symbol, any>;
+  runtimeData: Record<symbol, unknown>;
 
   /**
    * Usage:
@@ -116,12 +116,12 @@ export interface AppRecvState extends AppRunningState {
   /**
    * The receiver of the event.
    */
-  receiver: any;
+  receiver: unknown;
 
   /**
    * The event data.
    */
-  event: any;
+  event: unknown;
 
   /**
    * Is the event received by the receiver?
@@ -199,7 +199,7 @@ export class App {
   /**
    * Lifetime: from the construction of the app to the window is closed.
    */
-  permanentData: Record<symbol, any> = {};
+  permanentData: Record<symbol, unknown> = {};
 
   /**
    * The current state of the app.
@@ -211,7 +211,7 @@ export class App {
    *
    * Can be pushed during `RECV` calls, which means a new event can be triggered by another event.
    */
-  eventQueue: { receiver: string | symbol; data: any }[] = [];
+  eventQueue: { receiver: unknown; data: unknown }[] = [];
 
   /**
    * Whether an `UPDATE` call is required after the recv queue becomes empty.
@@ -247,7 +247,7 @@ export class App {
    * @param receiver The receiver of the event.
    * @param data The event data.
    */
-  recv = (receiver: any, data: any) => {
+  recv = (receiver: unknown, data: unknown) => {
     if (import.meta.env.DEV)
       console.debug(
         `[*] recv triggered with receiver ${String(
@@ -378,7 +378,7 @@ export class App {
     this.state = idleState;
   }
 
-  protected execRecv(receiver: string | symbol, event: any = null) {
+  protected execRecv(receiver: unknown, event: unknown = null) {
     // Set the `RECV` state.
     this.state = {
       type: AppStateType.RECV,
@@ -515,7 +515,7 @@ export class App {
    * @param receiver The receiver to test.
    * @returns `true` if the app is under `RECV` state and the receiver is `key`.
    */
-  isEventReceiver(receiver: any): this is { state: AppRecvState } {
+  isEventReceiver(receiver: unknown): this is { state: AppRecvState } {
     if (
       this.state.type === AppStateType.RECV &&
       this.state.receiver === receiver

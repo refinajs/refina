@@ -57,7 +57,7 @@ export abstract class Component<Props = {}> {
    * @param _ The context of the main function.
    * @param args The arguments of the component function. The type of the arguments should be specified.
    */
-  abstract main(_: Context, ...args: any[]): void;
+  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
@@ -71,7 +71,7 @@ export type ComponentConstructor<S extends Component = Component> = new (
  * Extract the arguments type of a component function.
  */
 export type ComponentFuncArgs<S extends Component> = S extends {
-  main(_: any, ...args: infer A): void;
+  main(_: unknown, ...args: infer A): void;
 }
   ? A
   : never;

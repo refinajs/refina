@@ -121,7 +121,7 @@ export type ToRealContextFunc<
  */
 export type RealContextFuncs<Ctx = Context> = Record<
   string,
-  (this: Ctx, ckey: string, ...args: any[]) => any
+  (this: Ctx, ckey: string, ...args: unknown[]) => unknown
 >;
 
 /**
@@ -363,7 +363,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param args The arguments to pass to the template literals.
    * @returns always `true`.
    */
-  abstract $cls(template: TemplateStringsArray, ...args: any[]): true;
+  abstract $cls(template: TemplateStringsArray, ...args: unknown[]): true;
 
   /**
    * Add styles to the next component.
@@ -391,7 +391,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param template The template literals.
    * @param args The arguments to pass to the template literals.
    */
-  abstract $css(template: TemplateStringsArray, ...args: any[]): true;
+  abstract $css(template: TemplateStringsArray, ...args: unknown[]): true;
 
   /**
    * The shortcut of `app.permanentData`.
@@ -439,7 +439,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param args The arguments of the context function.
    * @returns The return value of the context function.
    */
-  abstract $$(funcName: string, ckey: string, ...args: any[]): any;
+  abstract $$(funcName: string, ckey: string, ...args: unknown[]): unknown;
 
   /**
    * The transformed `_.t` calls.
@@ -473,7 +473,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
   abstract $$processComponent<T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    args: any[],
+    args: unknown[],
   ): T;
 }
 

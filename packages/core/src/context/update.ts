@@ -54,7 +54,7 @@ export class IntrinsicUpdateContext<
   /**
    * The `Ref` object of the next component.
    */
-  protected $$nextRef: Ref<any> | null = null;
+  protected $$nextRef: Ref<unknown> | null = null;
 
   /**
    * Fulfill `this.$$nextRef` with the given value,
@@ -62,7 +62,7 @@ export class IntrinsicUpdateContext<
    *
    * @param current The value to fulfill.
    */
-  $$fulfillRef(current: any) {
+  $$fulfillRef(current: unknown) {
     if (this.$$nextRef !== null) {
       this.$$nextRef.current = current;
       this.$$nextRef = null;
@@ -98,9 +98,9 @@ export class IntrinsicUpdateContext<
   /**
    * The properties that will be set to the next component.
    */
-  protected $$nextProps: Record<string | number | symbol, any> = {};
+  protected $$nextProps: Record<string | number | symbol, unknown> = {};
 
-  $cls(...args: any[]): true {
+  $cls(...args: unknown[]): true {
     this.$$nextCls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
@@ -125,7 +125,7 @@ export class IntrinsicUpdateContext<
     return cls;
   }
 
-  $css(...args: any[]): true {
+  $css(...args: unknown[]): true {
     this.$$nextCss +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
@@ -169,7 +169,7 @@ export class IntrinsicUpdateContext<
     }
   }
 
-  $$(funcName: string, ckey: string, ...args: any[]): any {
+  $$(funcName: string, ckey: string, ...args: unknown[]): unknown {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
       const [data, inner, eventListeners] = args;
@@ -186,9 +186,11 @@ export class IntrinsicUpdateContext<
           tagName,
           this.$$consumeCls(),
           this.$$consumeCss(),
-          data,
-          inner,
-          eventListeners,
+          data as SVGElementFuncData | undefined,
+          inner as D<Content> | undefined,
+          eventListeners as
+            | DOMElementEventListenersInfoRaw<keyof SVGElementTagNameMap>
+            | undefined,
         );
       } else {
         // The context function is for a HTML element.
@@ -200,9 +202,13 @@ export class IntrinsicUpdateContext<
           tagName,
           this.$$consumeCls(),
           this.$$consumeCss(),
-          data,
-          inner,
-          eventListeners,
+          data as
+            | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
+            | undefined,
+          inner as D<Content> | undefined,
+          eventListeners as
+            | DOMElementEventListenersInfoRaw<keyof HTMLElementTagNameMap>
+            | undefined,
         );
       }
       // HTML and SVG element functions do not have a return value.
@@ -249,7 +255,7 @@ export class IntrinsicUpdateContext<
   $$processComponent<T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    args: any[],
+    args: unknown[],
   ): T {
     let component = this.$state.currentRefTreeNode[ckey] as T | undefined;
     if (!component) {

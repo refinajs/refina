@@ -5,6 +5,11 @@ import "../fPortal";
 import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
 import styles from "./fTooltip.styles";
 
+interface VisibleTooltip {
+  component: FTooltip;
+  hide: (by: FTooltip) => void;
+}
+
 @FluentUI.outputComponent("fTooltip")
 export class FTooltip extends OutputComponent {
   visible = false;
@@ -16,8 +21,11 @@ export class FTooltip extends OutputComponent {
 
   main(_: Context, inner: D<Content>, content: D<Content>): void {
     const onTriggerEnter = () => {
-      const visibleTooltip = _.$permanentData[visibleTooltipSymbol];
-      const anotherTooltip = visibleTooltip && visibleTooltip !== this;
+      const visibleTooltip = _.$permanentData[visibleTooltipSymbol] as
+        | VisibleTooltip
+        | undefined;
+      const anotherTooltip =
+        visibleTooltip && visibleTooltip.component !== this;
       const delay = anotherTooltip ? 0 : 250;
       if (anotherTooltip) {
         visibleTooltip.hide(this);
@@ -77,7 +85,9 @@ export class FTooltip extends OutputComponent {
     }
 
     if (this.visible) {
-      _.$permanentData[visibleTooltipSymbol]?.hide(this);
+      (
+        _.$permanentData[visibleTooltipSymbol] as VisibleTooltip | undefined
+      )?.hide(this);
       _.$permanentData[visibleTooltipSymbol] = {
         component: this,
         hide: (by: FTooltip) => {
@@ -85,7 +95,7 @@ export class FTooltip extends OutputComponent {
           this.clearTimeout();
           this.visible = false;
         },
-      };
+      } satisfies VisibleTooltip;
 
       if (_.$updateState) {
         _.$window.addEventListener(

@@ -44,13 +44,13 @@ export abstract class TriggerComponent<
     this.$fire(data);
   };
 
-  abstract main(_: Context, ...args: any[]): void;
+  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
  * Extract the event data type of a trigger component.
  */
-export type TriggerComponentEventData<S extends TriggerComponent<any>> =
+export type TriggerComponentEventData<S extends TriggerComponent<unknown>> =
   S extends TriggerComponent<infer Ev> ? Ev : never;
 
 /**
@@ -60,9 +60,9 @@ export type TriggerComponentEventData<S extends TriggerComponent<any>> =
  * @returns The context function.
  */
 export function createTriggerComponentFunc<
-  T extends ComponentConstructor<TriggerComponent<any>>,
+  T extends ComponentConstructor<TriggerComponent<unknown>>,
 >(ctor: T) {
-  return function (this: Context, ckey: any, ...args: any[]): boolean {
+  return function (this: Context, ckey: string, ...args: unknown[]): boolean {
     const component = this.$$processComponent(ckey, ctor, args);
 
     // If the component is the current event receiver, return `true`.

@@ -43,7 +43,7 @@ export type TagNameToEventMap<E extends keyof DOMElementTagNameMap> =
  * declare module "refina" {
  *   interface WebComponentsEventListeners {
  *     "web-component-tag-name": {
- *        "custom-event-name": (this: CustomElement, ev: CustomEvent) => any;
+ *        "custom-event-name": (this: CustomElement, ev: CustomEvent) => void;
  *     };
  *   }
  * }
@@ -59,7 +59,7 @@ type NativeElementEventListeners<E> = {
   [K in keyof HTMLElementEventMap]: (
     this: E,
     ev: HTMLElementEventMap[K],
-  ) => any;
+  ) => void;
 };
 
 /**
@@ -289,7 +289,7 @@ export class DOMElementComponent<
   addEventListener<K extends keyof DOMElementEventListeners<E>>(
     type: K & string,
     listener: IsNativeElement<E> extends true
-      ? (this: HTMLAnchorElement, ev: TagNameToEventMap<E>) => any
+      ? (this: HTMLAnchorElement, ev: TagNameToEventMap<E>) => void
       : DOMElementEventListeners<E>[K],
     options?: boolean | AddEventListenerOptions,
   ) {

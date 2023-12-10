@@ -14,7 +14,7 @@ import {
  * Register the component class using `@Plugin.outputComponent(name)` to make it available.
  */
 export abstract class OutputComponent<Props = {}> extends Component<Props> {
-  abstract main(_: Context, ...args: any[]): void;
+  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
@@ -26,7 +26,7 @@ export abstract class OutputComponent<Props = {}> extends Component<Props> {
 export function createOutputComponentFunc<
   T extends ComponentConstructor<OutputComponent>,
 >(ctor: T) {
-  return function (this: Context, ckey: string, ...args: any[]): void {
+  return function (this: Context, ckey: string, ...args: unknown[]): void {
     this.$$processComponent(ckey, ctor, args);
     return;
   };

@@ -42,7 +42,7 @@ export abstract class StatusComponent<
     this.$update();
   }
 
-  abstract main(_: Context, ...args: any[]): void;
+  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
@@ -96,7 +96,7 @@ export abstract class ToggleComponent<Props = {}> extends StatusComponent<
 export function createStatusComponentFunc<
   T extends ComponentConstructor<StatusComponent<any>>,
 >(ctor: T) {
-  return function (this: Context, ckey: string, ...args: any[]): any {
+  return function (this: Context, ckey: string, ...args: unknown[]): unknown {
     const component = this.$$processComponent(ckey, ctor, args);
 
     // The return value of the context function is the status of the component.

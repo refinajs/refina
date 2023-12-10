@@ -23,7 +23,7 @@ declare module "../context/base" {
      * ```
      */
     t: TextNodeComponent extends C["enabled"]
-      ? ((template: TemplateStringsArray, ...args: any[]) => void) &
+      ? ((template: TemplateStringsArray, ...args: unknown[]) => void) &
           ((text: D<string>) => void)
       : never;
   }

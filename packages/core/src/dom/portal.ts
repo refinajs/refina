@@ -75,11 +75,15 @@ export class DOMPortalComponent extends DOMElementComponent {
     this.pendingChildren = [];
   }
 
-  addEventListener(_event: any, _listener: any, _options: any): never {
+  addEventListener(
+    _event: unknown,
+    _listener: unknown,
+    _options: unknown,
+  ): never {
     throw new Error("Cannot add event listener to portal.");
   }
 
-  addEventListeners(_listeners: any): never {
+  addEventListeners(_listeners: unknown): never {
     throw new Error("Cannot add event listeners to portal.");
   }
 

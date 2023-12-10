@@ -55,17 +55,17 @@ export class IntrinsicRecvContext<
     return true;
   }
 
-  $cls(...args: any[]): true {
+  $cls(...args: unknown[]): true {
     return true;
   }
 
-  $css(...args: any[]): true {
+  $css(...args: unknown[]): true {
     return true;
   }
 
   $$assertEmpty() {}
 
-  $$(funcName: string, ckey: string, ...args: any[]): any {
+  $$(funcName: string, ckey: string, ...args: unknown[]): unknown {
     if (this.$state.received) {
       return;
     }
@@ -73,7 +73,7 @@ export class IntrinsicRecvContext<
       // The context function is for a HTML or SVG element.
       const [_data, inner, _eventListeners] = args;
 
-      this.$$processDOMElement(ckey, inner);
+      this.$$processDOMElement(ckey, inner as D<Content> | undefined);
 
       // HTML and SVG element functions do not have a return value.
       return;
@@ -96,7 +96,7 @@ export class IntrinsicRecvContext<
   $$processComponent<T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    args: any[],
+    args: unknown[],
   ): T {
     let component = this.$state.currentRefTreeNode[ckey] as T | undefined;
 

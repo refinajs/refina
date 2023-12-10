@@ -143,7 +143,7 @@ declare module "../context/base" {
  * });
  * ```
  */
-export const byIndex = (_item: any, index: number) => index;
+export const byIndex = (_item: unknown, index: number) => index;
 
 /**
  * The key generator that use the item itself as the key.

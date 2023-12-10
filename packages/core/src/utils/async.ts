@@ -9,18 +9,18 @@ type AwaitState =
     }
   | {
       type: "fulfilled";
-      value: any;
+      value: unknown;
     }
   | {
       type: "error";
-      reason: any;
+      reason: unknown;
     };
 
 Prelude.registerFunc(
   "await",
   function (
     ckey: string,
-    executor: () => Promise<any>,
+    executor: () => Promise<unknown>,
     id: string | number = "",
   ): boolean {
     const refTreeNode = this.$state.currentRefTreeNode;

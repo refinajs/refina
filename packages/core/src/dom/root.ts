@@ -25,7 +25,7 @@ export class DOMRootComponent extends DOMElementComponent<
 
   addEventListener<K extends keyof HTMLElementEventMap>(
     type: K & string,
-    listener: (this: HTMLAnchorElement, ev: HTMLElementEventMap[K]) => any,
+    listener: (this: HTMLAnchorElement, ev: HTMLElementEventMap[K]) => void,
     options?: boolean | AddEventListenerOptions,
   ) {
     // @ts-ignore
