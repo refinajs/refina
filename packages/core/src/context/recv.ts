@@ -66,6 +66,9 @@ export class IntrinsicRecvContext<
   $$assertEmpty() {}
 
   $$(funcName: string, ckey: string, ...args: any[]): any {
+    if (this.$state.received) {
+      return;
+    }
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
       const [_data, inner, _eventListeners] = args;

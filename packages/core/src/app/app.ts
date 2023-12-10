@@ -122,6 +122,11 @@ export interface AppRecvState extends AppRunningState {
    * The event data.
    */
   event: any;
+
+  /**
+   * Is the event received by the receiver?
+   */
+  received: boolean;
 }
 
 /**
@@ -382,6 +387,7 @@ export class App {
       processedComponents: new Set(),
       receiver,
       event,
+      received: false,
     } satisfies AppRecvState;
 
     const context = new IntrinsicRecvContext(
@@ -510,8 +516,14 @@ export class App {
    * @returns `true` if the app is under `RECV` state and the receiver is `key`.
    */
   isEventReceiver(receiver: any): this is { state: AppRecvState } {
-    return (
-      this.state.type === AppStateType.RECV && this.state.receiver === receiver
-    );
+    if (
+      this.state.type === AppStateType.RECV &&
+      this.state.receiver === receiver
+    ) {
+      this.state.received = true;
+      return true;
+    } else {
+      return false;
+    }
   }
 }
