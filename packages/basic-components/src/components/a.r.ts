@@ -1,20 +1,19 @@
-import { OutputComponent, Context, D, Content, getD } from "refina";
+import { Content, D, getD } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("a")
-export class BaiscA extends OutputComponent {
-  main(_: Context, inner: D<Content>, href: D<string>) {
+declare module "refina" {
+  interface Components {
+    a(inner: D<Content>, href: D<string>): void;
+  }
+}
+
+Basics.outputComponents.a = function (_) {
+  return (inner, href) => {
     _._a(
       {
         href: getD(href),
       },
       inner,
     );
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    a: BaiscA;
-  }
-}
+  };
+};

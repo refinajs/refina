@@ -1,65 +1,81 @@
-import {
-  Context,
-  D,
-  DOMElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { D, DOMElementComponent, getD, ref } from "refina";
 import Basics from "../plugin";
 
-@Basics.triggerComponent("textInput")
-export class BasicTextInput extends TriggerComponent<string> {
-  type = "text";
+declare module "refina" {
+  interface Components {
+    input(
+      type: D<string>,
+      value: D<string>,
+      disabled?: D<boolean>,
+      placeholder?: D<string>,
+    ): this is {
+      $ev: string;
+    };
 
-  inputRef = ref<DOMElementComponent<"input">>();
-  main(
-    _: Context,
-    value: D<string>,
-    disabled?: D<boolean>,
-    placeholder?: D<string>,
-  ) {
-    _.$ref(this.inputRef) &&
+    textInput(
+      value: D<string>,
+      disabled?: D<boolean>,
+      placeholder?: D<string>,
+    ): this is {
+      $ev: string;
+    };
+
+    passwordInput(
+      value: D<string>,
+      disabled?: D<boolean>,
+      placeholder?: D<string>,
+    ): this is {
+      $ev: string;
+    };
+
+    checkbox(checked: D<boolean>): this is {
+      $ev: boolean;
+    };
+  }
+}
+
+Basics.triggerComponents.input = function (_) {
+  let inputRef = ref<DOMElementComponent<"input">>();
+  return (type, value, disabled, placeholder) => {
+    _.$ref(inputRef) &&
       _._input({
-        type: this.type,
+        type: getD(type),
         disabled: getD(disabled),
         placeholder: getD(placeholder),
         value: getD(value),
         oninput: () => {
-          const newValue = this.inputRef.current!.node.value;
+          const newValue = inputRef.current!.node.value;
           _.$setD(value, newValue);
           this.$fire(newValue);
         },
       });
-  }
-}
+  };
+};
 
-@Basics.triggerComponent("passwordInput")
-export class BasicPasswordInput extends BasicTextInput {
-  type = "password";
-}
+Basics.triggerComponents.textInput = function (_) {
+  return (value, disabled, placeholder) => {
+    _.input("text", value, disabled, placeholder);
+  };
+};
 
-@Basics.triggerComponent("checkbox")
-export class BasicCheckbox extends TriggerComponent<boolean> {
-  inputRef = ref<DOMElementComponent<"input">>();
-  main(_: Context, checked: D<boolean>) {
-    _.$ref(this.inputRef) &&
+Basics.triggerComponents.passwordInput = function (_) {
+  return (value, disabled, placeholder) => {
+    _.input("password", value, disabled, placeholder);
+  };
+};
+
+Basics.triggerComponents.checkbox = function (_) {
+  let inputRef = ref<DOMElementComponent<"input">>();
+  return checked => {
+    _.$ref(inputRef) &&
       _._input({
         type: "checkbox",
         checked: getD(checked),
         onchange: () => {
-          const newChecked = this.inputRef.current!.node.checked;
+          const newChecked = inputRef.current!.node.checked;
           _.$setD(checked, newChecked);
           this.$fire(newChecked);
         },
       });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    textInput: BasicTextInput;
-    passwordInput: BasicPasswordInput;
-    checkbox: BasicCheckbox;
-  }
-}
+  };
+};

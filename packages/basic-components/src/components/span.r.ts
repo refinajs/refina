@@ -1,15 +1,14 @@
-import { OutputComponent, Context, D, Content } from "refina";
+import { Content, D } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("span")
-export class BasicSpan extends OutputComponent {
-  main(_: Context, inner?: D<Content>) {
-    _._span({}, inner);
+declare module "refina" {
+  interface Components {
+    span(inner?: D<Content>): void;
   }
 }
 
-declare module "refina" {
-  interface OutputComponents {
-    span: BasicSpan;
-  }
-}
+Basics.outputComponents.span = function (_) {
+  return inner => {
+    _._span({}, inner);
+  };
+};

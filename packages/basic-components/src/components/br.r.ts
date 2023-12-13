@@ -1,15 +1,13 @@
-import { Context, OutputComponent } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("br")
-export class BasicBr extends OutputComponent {
-  main(_: Context) {
-    _._br();
+declare module "refina" {
+  interface Components {
+    br(): void;
   }
 }
 
-declare module "refina" {
-  interface OutputComponents {
-    br: BasicBr;
-  }
-}
+Basics.outputComponents.br = function (_) {
+  return () => {
+    _._br();
+  };
+};

@@ -1,15 +1,14 @@
-import { OutputComponent, Context, D, Content } from "refina";
+import { Content, D } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("div")
-export class BasicDiv extends OutputComponent {
-  main(_: Context, inner?: D<Content>) {
-    _._div({}, inner);
+declare module "refina" {
+  interface Components {
+    div(inner?: D<Content>): void;
   }
 }
 
-declare module "refina" {
-  interface OutputComponents {
-    div: BasicDiv;
-  }
-}
+Basics.outputComponents.div = function (_) {
+  return inner => {
+    _._div({}, inner);
+  };
+};

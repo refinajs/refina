@@ -1,24 +1,21 @@
-import {
-  Content,
-  Context,
-  D,
-  DArray,
-  LoopKey,
-  OutputComponent,
-  byIndex,
-  getD,
-} from "refina";
+import { Content, D, DArray, LoopKey, byIndex, getD } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("table")
-export class BasicTable extends OutputComponent {
-  main<T>(
-    _: Context,
-    data: D<Iterable<T>>,
-    head: DArray<Content> | D<Content>,
-    key: LoopKey<T>,
-    row: (item: T, index: number) => void,
-  ): void {
+declare module "refina" {
+  interface Components {
+    table<T>(
+      data: D<Iterable<T>>,
+      head: DArray<Content> | D<Content>,
+      key: LoopKey<T>,
+      row: (item: T, index: number) => void,
+    ): void;
+    th(inner: D<Content>): void;
+    td(inner: D<Content>): void;
+  }
+}
+
+Basics.outputComponents.table = function (_) {
+  return (data, head, key, row) => {
     _._div({}, _ => {
       _._table({}, _ => {
         _._thead({}, _ => {
@@ -40,36 +37,17 @@ export class BasicTable extends OutputComponent {
         });
       });
     });
-  }
-}
+  };
+};
 
-@Basics.outputComponent("th")
-export class BasicTh extends OutputComponent {
-  main(_: Context, content: D<Content>): void {
+Basics.outputComponents.th = function (_) {
+  return content => {
     _._th({}, content);
-  }
-}
+  };
+};
 
-@Basics.outputComponent("td")
-export class BasicTd extends OutputComponent {
-  main(_: Context, content: D<Content>): void {
+Basics.outputComponents.td = function (_) {
+  return content => {
     _._td({}, content);
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    table: BasicTable extends C["enabled"]
-      ? <T>(
-          data: D<Iterable<T>>,
-          head: DArray<Content> | D<Content>,
-          key: LoopKey<T>,
-          row: (item: T, index: number) => void,
-        ) => void
-      : never;
-  }
-  interface OutputComponents {
-    th: BasicTh;
-    td: BasicTd;
-  }
-}
+  };
+};

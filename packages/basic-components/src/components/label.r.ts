@@ -1,15 +1,14 @@
-import { OutputComponent, Context, D, Content } from "refina";
+import { Content, D } from "refina";
 import Basics from "../plugin";
 
-@Basics.outputComponent("label")
-export class BasicLabel extends OutputComponent {
-  main(_: Context, inner: D<Content>) {
-    _._label({}, inner);
+declare module "refina" {
+  interface Components {
+    label(inner: D<Content>): void;
   }
 }
 
-declare module "refina" {
-  interface OutputComponents {
-    label: BasicLabel;
-  }
-}
+Basics.outputComponents.label = function (_) {
+  return inner => {
+    _._label({}, inner);
+  };
+};
