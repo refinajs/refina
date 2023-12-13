@@ -26,7 +26,7 @@ let loading = false,
   msg = "";
 
 const $app = app.use(Basics)(_ => {
-  if (_.$updateState) {
+  if (_.$updateContext) {
     _.$root.addCss(
       `font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"`,
     );
