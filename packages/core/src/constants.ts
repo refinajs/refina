@@ -1,6 +1,9 @@
 import { Plugin } from "./app/plugin";
 
-export enum AppStateType {
+/**
+ * The state of the app.
+ */
+export enum AppState {
   /**
    * The app is not running.
    */

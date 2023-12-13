@@ -1,28 +1,19 @@
-import { Context, ContextState } from "../context";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentFuncArgs,
-} from "./component";
+import { Context, IntrinsicRecvContext } from "../context";
+import { Component, Components } from "./component";
 
 /**
  * The base class of all trigger components.
  *
  * A trigger component is a component that can fire events with data.
  * The return value of the context function is whether the event is fired.
- *
- * Register the component class using `@Plugin.triggerComponent(name)` to make it available.
  */
-export abstract class TriggerComponent<
-  Ev,
-  Props = {},
-> extends Component<Props> {
+export class TriggerComponent<Ev, Props = {}> extends Component<Props> {
   /**
    * Fire an event with data.
    *
    * @param data The data of the event.
    */
-  protected $fire = (data: Ev) => {
+  readonly $fire = (data: Ev) => {
     if (
       typeof data === "object" &&
       data !== null &&
@@ -40,91 +31,75 @@ export abstract class TriggerComponent<
    * @param data The data of the event.
    * @returns A function that fires the event.
    */
-  protected $fireWith = (data: Ev) => () => {
+  readonly $fireWith = (data: Ev) => () => {
     this.$fire(data);
   };
-
-  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
- * Extract the event data type of a trigger component.
+ * The names of all trigger components.
  */
-export type TriggerComponentEventData<S extends TriggerComponent<unknown>> =
-  S extends TriggerComponent<infer Ev> ? Ev : never;
+export type TriggerComponentName = {
+  [K in keyof Components]: Components[K] extends (
+    ...args: any[]
+  ) => // @ts-ignore
+  this is {
+    $ev: infer _Ev;
+  }
+    ? K
+    : never;
+}[keyof Components];
 
 /**
- * Create a context function of an trigger component.
+ * Extract the event type of a trigger component.
+ */
+export type TriggerComponentEvent<N extends TriggerComponentName> =
+  Components[N] extends (...args: any[]) => // @ts-ignore
+  this is {
+    $ev: infer Ev;
+  }
+    ? Ev
+    : never;
+
+/**
+ * The factory function of a trigger component.
+ */
+export type TriggerComponentFactory<N extends TriggerComponentName> = (
+  this: Readonly<TriggerComponent<TriggerComponentEvent<N>>>,
+  _: Context,
+) => Components[N];
+
+/**
+ * The trigger component factory function map.
+ */
+export type TriggerComponentFactoryMap = {
+  [N in TriggerComponentName]: TriggerComponentFactory<N>;
+};
+
+/**
+ * Create a context function of a trigger component.
  *
- * @param ctor The component class.
+ * @param ctor The component class constructor.
  * @returns The context function.
  */
-export function createTriggerComponentFunc<
-  T extends ComponentConstructor<TriggerComponent<unknown>>,
->(ctor: T) {
+export function createTriggerComponentFunc(
+  factory: TriggerComponentFactory<TriggerComponentName>,
+) {
   return function (this: Context, ckey: string, ...args: unknown[]): boolean {
-    const component = this.$$processComponent(ckey, ctor, args);
+    const component = this.$intrinsic.$$processComponent(
+      ckey,
+      TriggerComponent,
+      factory,
+      args,
+    );
 
     // If the component is the current event receiver, return `true`.
-    return this.$app.isEventReceiver(component);
+    if (this.$app.isEventReceiver(component)) {
+      // Set `$received` to `true` to skip checking the rest components.
+      (this as unknown as IntrinsicRecvContext).$received = true;
+      return true;
+    } else {
+      return false;
+    }
   };
-}
-
-/**
- * The trigger components map to add the component functions to the context in one go.
- *
- * Add your trigger components to this map using declaration merging:
- *
- * ```ts
- * declare module "refina" {
- *   interface TriggerComponents {
- *     contextFuncName: ComponentClass;
- *   }
- * }
- * ```
- *
- * The keys are the context function names of the components.
- * And the values are the corresponding component classes.
- *
- * **Warning**: Do not add components that have generic types to this map.
- * Because the types of the component functions are not inferred.
- * Use `ContextFuncs` interface instead.
- */
-export interface TriggerComponents {}
-
-/**
- * The additional context properties when receiving the event.
- *
- * Use `this is TriggerComponentFuncAssertThisType` as the return type of the component function,
- * to let TypeScript know that the context properties are available.
- */
-export type TriggerComponentFuncAssertThisType<Ev> = {
-  /**
-   * The event that the app is receiving.
-   */
-  readonly $ev: Ev extends Event
-    ? Ev & {
-        /**
-         * Whether `ev.target` is the same as `ev.currentTarget`.
-         */
-        readonly $isCurrent: boolean;
-      }
-    : Ev;
-};
-
-/**
- * The component functions of trigger components in `TriggerComponents` interface.
- */
-export type TriggerComponentFuncs<C extends ContextState> = {
-  [K in keyof TriggerComponents]: TriggerComponents[K] extends C["enabled"]
-    ? (...args: ComponentFuncArgs<TriggerComponents[K]>) => // @ts-ignore
-      this is TriggerComponentFuncAssertThisType<
-        TriggerComponentEventData<TriggerComponents[K]>
-      >
-    : never;
-};
-
-// Add trigger component functions to the context.
-declare module "../context/base" {
-  interface ContextFuncs<C> extends TriggerComponentFuncs<C> {}
 }

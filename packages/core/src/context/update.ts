@@ -1,5 +1,9 @@
-import type { AppUpdateState, RunningApp } from "../app";
-import { Component, ComponentConstructor } from "../component";
+import { App } from "../app";
+import {
+  Component,
+  ComponentConstructor,
+  ComponentMainFunc,
+} from "../component";
 import { D, Ref, getD, mergeRefs } from "../data";
 import {
   Content,
@@ -13,61 +17,54 @@ import {
   Context,
   ContextFuncs,
   ContextState,
-  EnabledProps,
   InitialContextState,
-  IntrinsicContext,
+  IntrinsicBaseContext,
   RealContextFuncs,
+  initializeBaseContext,
 } from "./base";
 
-export class IntrinsicUpdateContext<
-  CS extends ContextState,
-> extends IntrinsicContext<CS> {
-  constructor($app: RunningApp) {
-    super($app);
-    this.$updateState = this.$state;
-  }
+export interface IntrinsicUpdateContext<
+  CS extends ContextState = InitialContextState,
+> extends IntrinsicBaseContext<CS> {
+  /**
+   * The current parent DOM element.
+   */
+  $$currentDOMParent: DOMElementComponent;
 
-  declare readonly $state: AppUpdateState;
-
-  readonly _: UpdateContext = this as unknown as UpdateContext;
-
-  readonly $updateState: AppUpdateState;
-
-  readonly $recvState: null = null;
-
-  readonly $updateContext: UpdateContext<CS> = this
-    ._ as unknown as UpdateContext<CS>;
-
-  readonly $recvContext: null = null;
-
-  $ref<C2 extends CS["enabled"]>(
-    ref: Ref<C2>,
-    ...refs: Ref<C2>[]
-  ): this is Context<{
-    mode: "fill";
-    enabled: C2;
-  }> {
-    this.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
-    return true;
-  }
+  /**
+   * Components waiting for a `$mainEl`.
+   *
+   * If the value is `true`, the component is waiting for the first DOM element to be its default `$mainEl`.
+   */
+  $$pendingMainElOwner: (DOMElementComponent | Component)[];
 
   /**
    * The `Ref` object of the next component.
    */
-  protected $$nextRef: Ref<unknown> | null = null;
+  $$nextRef: Ref<unknown> | null;
 
   /**
-   * Fulfill `this.$$nextRef` with the given value,
-   *  and clear `this.$$nextRef`.
+   * The properties that will be set to the next component.
+   */
+  $$nextProps: Record<string | number | symbol, unknown>;
+
+  /**
+   * The classes that will be added to the next component.
+   */
+  $$nextCls: string;
+
+  /**
+   * The styles that will be added to the next component.
+   */
+  $$nextCss: string;
+
+  /**
+   * Fulfill `nextRef` with the given value,
+   *  and clear `nextRef`.
    *
    * @param current The value to fulfill.
    */
-  $$fulfillRef(current: unknown) {
-    if (this.$$nextRef !== null) {
-      this.$$nextRef.current = current;
-      this.$$nextRef = null;
-    }
-  }
+  $$fulfillRef(current: unknown): void;
 
   /**
    * Fulfill the pending main element owners with the given main element,
@@ -75,101 +72,185 @@ export class IntrinsicUpdateContext<
    *
    * @param mainEl The main element to fulfill.
    */
-  $$fulfillMainEl(mainEl: DOMElementComponent) {
-    for (const owner of this.$state.pendingMainElOwner) {
-      owner.$mainEl = mainEl;
-    }
-    this.$state.pendingMainElOwner = [];
-  }
-
-  $prop<K extends keyof EnabledProps<CS>, V extends EnabledProps<CS>[K]>(
-    key: K,
-    value: V,
-  ): true {
-    this.$$nextProps[key] = value;
-    return true;
-  }
-
-  $props<Props extends EnabledProps<CS>>(props: Props): true {
-    Object.assign(this.$$nextProps, props);
-    return true;
-  }
+  $$fulfillMainEl(mainEl: DOMElementComponent): void;
 
   /**
-   * The properties that will be set to the next component.
+   * Get the classes that will be added to the next component,
+   *  and clear `nextCls`.
+   *
+   * @returns The classes.
    */
-  protected $$nextProps: Record<string | number | symbol, unknown> = {};
+  $$consumeCls(): string;
 
-  $cls(...args: unknown[]): true {
-    this.$$nextCls +=
+  /**
+   * Get the styles that will be added to the next component,
+   *  and clear `nextCss`.
+   *
+   * @returns The styles.
+   */
+  $$consumeCss(): string;
+
+  /**
+   * Process the content of a DOM element component in `UPDATE` state.
+   *
+   * @param el The DOM element component.
+   * @param content The content of the DOM element component.
+   */
+  $$updateDOMContent(el: DOMElementComponent, content?: D<Content>): void;
+
+  /**
+   * Process a HTML element.
+   *
+   * @param ckey The Ckey of the element.
+   * @param tagName The tag name of the element.
+   * @param cls The classes of the element.
+   * @param css The styles of the element.
+   * @param data The data to assign to the element.
+   * @param inner The inner content of the element.
+   * @param eventListeners The event listeners of the element.
+   */
+  $$processHTMLElement<E extends keyof HTMLElementTagNameMap>(
+    ckey: string,
+    tagName: E,
+    cls: string,
+    css: string,
+    data?: Partial<HTMLElementTagNameMap[E]>,
+    inner?: D<Content>,
+    eventListeners?: DOMElementEventListenersInfoRaw<E>,
+  ): void;
+
+  /**
+   * Process a SVG element.
+   *
+   * @param ckey The Ckey of the element.
+   * @param tagName The tag name of the element.
+   * @param cls The classes of the element.
+   * @param css The styles of the element.
+   * @param data The data to assign to the element.
+   * @param inner The inner content of the element.
+   * @param eventListeners The event listeners of the element.
+   */
+  $$processSVGElement<E extends keyof SVGElementTagNameMap>(
+    ckey: string,
+    tagName: E,
+    cls: string,
+    css: string,
+    data?: SVGElementFuncData,
+    inner?: D<Content>,
+    eventListeners?: DOMElementEventListenersInfoRaw<E>,
+  ): void;
+}
+
+/**
+ * The full context type in `UPDATE` state, with context funcs.
+ */
+export type UpdateContext<CS extends ContextState = InitialContextState> =
+  Readonly<Omit<IntrinsicUpdateContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
+
+/**
+ * Intialize the context in `UPDATE` state.
+ * @param context The context to initialize.
+ * @param app The app instance.
+ */
+export function initializeUpdateContext(
+  context: IntrinsicUpdateContext,
+  app: App,
+) {
+  initializeBaseContext(context, app);
+
+  context.$updateContext = context as unknown as UpdateContext;
+
+  context.$recvContext = null;
+
+  context.$$pendingMainElOwner = [];
+
+  context.$$currentDOMParent = app.root;
+
+  context.$$nextRef = null;
+
+  context.$$nextProps = {};
+
+  context.$$nextCls = "";
+
+  context.$$nextCss = "";
+
+  context.$ref = (ref, ...refs) => {
+    context.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
+    return true;
+  };
+
+  context.$$fulfillRef = current => {
+    if (context.$$nextRef !== null) {
+      context.$$nextRef.current = current;
+      context.$$nextRef = null;
+    }
+  };
+
+  context.$$fulfillMainEl = mainEl => {
+    for (const owner of context.$$pendingMainElOwner) {
+      owner.$mainEl = mainEl;
+    }
+    context.$$pendingMainElOwner = [];
+  };
+
+  context.$prop = (key, value) => {
+    context.$$nextProps[key] = value;
+    return true;
+  };
+
+  context.$props = props => {
+    Object.assign(context.$$nextProps, props);
+    return true;
+  };
+
+  context.$cls = (...args: unknown[]) => {
+    context.$$nextCls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]) + " ";
     return true;
-  }
+  };
 
-  /**
-   * The classes that will be added to the next component.
-   */
-  protected $$nextCls: string = "";
-
-  /**
-   * Get the classes that will be added to the next component,
-   *  and clear `this.$$nextCls`.
-   *
-   * @returns The classes.
-   */
-  protected $$consumeCls() {
-    const cls = this.$$nextCls;
-    this.$$nextCls = "";
+  context.$$consumeCls = () => {
+    const cls = context.$$nextCls;
+    context.$$nextCls = "";
     return cls;
-  }
+  };
 
-  $css(...args: unknown[]): true {
-    this.$$nextCss +=
+  context.$css = (...args: unknown[]) => {
+    context.$$nextCss +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]) + ";";
     return true;
-  }
+  };
 
-  /**
-   * The styles that will be added to the next component.
-   */
-  protected $$nextCss: string = "";
-
-  /**
-   * Get the styles that will be added to the next component,
-   *  and clear `this.$$nextCss`.
-   *
-   * @returns The styles.
-   */
-  protected $$consumeCss() {
-    const css = this.$$nextCss;
-    this.$$nextCss = "";
+  context.$$consumeCss = () => {
+    const css = context.$$nextCss;
+    context.$$nextCss = "";
     return css;
-  }
+  };
 
-  $$assertEmpty() {
-    if (this.$$nextRef) {
-      console.warn("Ref", this.$$nextRef, "is not fulfilled.");
-      this.$$nextRef = null;
+  context.$$assertEmpty = () => {
+    if (context.$$nextRef) {
+      console.warn("Ref", context.$$nextRef, "is not fulfilled.");
+      context.$$nextRef = null;
     }
-    if (Object.keys(this.$$nextProps).length > 0) {
-      console.warn("Props", this.$$nextProps, "is not fulfilled.");
-      this.$$nextProps = {};
+    if (Object.keys(context.$$nextProps).length > 0) {
+      console.warn("Props", context.$$nextProps, "is not fulfilled.");
+      context.$$nextProps = {};
     }
-    if (this.$$nextCls.length > 0) {
-      console.warn("Classes", this.$$nextCls, "is not fulfilled.");
-      this.$$nextCls = "";
+    if (context.$$nextCls.length > 0) {
+      console.warn("Classes", context.$$nextCls, "is not fulfilled.");
+      context.$$nextCls = "";
     }
-    if (this.$$nextCss.length > 0) {
-      console.warn("Styles", this.$$nextCss, "is not fulfilled.");
-      this.$$nextCss = "";
+    if (context.$$nextCss.length > 0) {
+      console.warn("Styles", context.$$nextCss, "is not fulfilled.");
+      context.$$nextCss = "";
     }
-  }
+  };
 
-  $$(funcName: string, ckey: string, ...args: unknown[]): unknown {
+  context.$$ = (funcName, ckey, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
       const [data, inner, eventListeners] = args;
@@ -181,11 +262,11 @@ export class IntrinsicUpdateContext<
         // The context function is for a SVG element.
         const tagName = (funcName[4].toLowerCase() +
           funcName.slice(5)) as keyof SVGElementTagNameMap;
-        this.$$processSVGElement(
+        processSVGElement(
           ckey,
           tagName,
-          this.$$consumeCls(),
-          this.$$consumeCss(),
+          context.$$consumeCls(),
+          context.$$consumeCss(),
           data as SVGElementFuncData | undefined,
           inner as D<Content> | undefined,
           eventListeners as
@@ -195,13 +276,13 @@ export class IntrinsicUpdateContext<
       } else {
         // The context function is for a HTML element.
         const rawTagName = funcName.slice(1);
-        const tagName = (this.$app.htmlElementAlias[rawTagName] ??
+        const tagName = (context.$app.htmlElementAlias[rawTagName] ??
           rawTagName) as keyof HTMLElementTagNameMap;
-        this.$$processHTMLElement(
+        processHTMLElement(
           ckey,
           tagName,
-          this.$$consumeCls(),
-          this.$$consumeCss(),
+          context.$$consumeCls(),
+          context.$$consumeCss(),
           data as
             | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
             | undefined,
@@ -215,147 +296,144 @@ export class IntrinsicUpdateContext<
       return;
     }
     // The context function is for a user-defined component.
-    const func = this.$app.contextFuncs[funcName as keyof RealContextFuncs];
+    const func = context.$app.contextFuncs[funcName as keyof RealContextFuncs];
     if (import.meta.env.DEV) {
       if (!func) {
         throw new Error(`Unknown element ${funcName}.`);
       }
     }
     // Return the return value of the context function.
-    return func.call(this._, ckey, ...args);
-  }
+    return func.call(context._, ckey, ...args);
+  };
 
-  $$t(ckey: string, content: D<string | number | boolean>): void {
+  context.$$t = (ckey, content) => {
     if (import.meta.env.DEV) {
-      if (this.$$consumeCls.length > 0) {
+      if (context.$$consumeCls().length > 0) {
         console.warn(`Text node cannot have classes`);
       }
-      if (this.$$consumeCss.length > 0) {
+      if (context.$$consumeCss().length > 0) {
         console.warn(`Text node cannot have style`);
       }
     }
 
     const text = String(getD(content));
 
-    let textNode = this.$state.currentRefTreeNode[ckey] as
+    let textNode = context.$$currentRefTreeNode[ckey] as
       | DOMNodeComponent
       | undefined;
     if (!textNode) {
       textNode = new TextNodeComponent(document.createTextNode(text));
-      this.$state.currentRefTreeNode[ckey] = textNode;
+      context.$$currentRefTreeNode[ckey] = textNode;
     } else if (textNode.node.textContent !== text) {
       textNode.node.textContent = text;
     }
 
-    this.$$fulfillRef(textNode);
+    context.$$fulfillRef(textNode);
 
-    this.$state.currentDOMParent.pendingChildren.push(textNode);
-  }
+    context.$$currentDOMParent.pendingChildren.push(textNode);
+  };
 
-  $$processComponent<T extends Component>(
+  context.$$processComponent = <T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
+    factory: (this: T, context: Context) => ComponentMainFunc,
     args: unknown[],
-  ): T {
-    let component = this.$state.currentRefTreeNode[ckey] as T | undefined;
+  ): T => {
+    let component = context.$$currentRefTreeNode[ckey] as T | undefined;
     if (!component) {
-      component = new ctor(this.$app);
-      this.$state.currentRefTreeNode[ckey] = component;
+      component = new ctor(context.$app);
+      component.main = factory.call(component, context._);
+      context.$$currentRefTreeNode[ckey] = component;
     }
 
-    this.$$fulfillRef(component);
+    context.$$fulfillRef(component);
 
-    // Store the pending main element owners for this component and clear it.
-    const pendingMainElOwners = this.$state.pendingMainElOwner;
-    this.$state.pendingMainElOwner = [];
+    // Store the pending main element owners for context component and clear it.
+    const pendingMainElOwners = context.$$pendingMainElOwner;
+    context.$$pendingMainElOwner = [];
 
-    // Store the classes and styles for this component and clear them.
-    const css = this.$$consumeCss();
-    const cls = this.$$consumeCls();
+    // Store the classes and styles for context component and clear them.
+    const css = context.$$consumeCss();
+    const cls = context.$$consumeCls();
 
     component.$mainEl = undefined as DOMElementComponent | undefined;
-    this.$state.pendingMainElOwner.push(component);
+    context.$$pendingMainElOwner.push(component);
 
-    component.$props = this.$$nextProps;
-    this.$$nextProps = {};
+    component.$props = context.$$nextProps;
+    context.$$nextProps = {};
 
-    const parentRefTreeNode = this.$state.currentRefTreeNode;
-    this.$state.currentRefTreeNode = component.$refTreeNode;
+    const parentRefTreeNode = context.$$currentRefTreeNode;
+    context.$$currentRefTreeNode = component.$refTreeNode;
 
     try {
-      component.main(this._, ...args);
+      component.main(...args);
       if (import.meta.env.DEV) {
-        this.$$assertEmpty();
+        context.$$assertEmpty();
       }
     } catch (e) {
-      this.$app.callHook("onError", e);
+      context.$app.callHook("onError", e);
     }
 
-    this.$state.currentRefTreeNode = parentRefTreeNode;
+    context.$$currentRefTreeNode = parentRefTreeNode;
 
     if (component.$mainEl) {
       // There is a $mainEl in the component.
       for (const owner of pendingMainElOwners) {
-        // If the owner has a main element, it must be set by calling `this.$main()`.
+        // If the owner has a main element, it must be set by calling `context.$main()`.
         // So we don't need to set it to the default value.
         owner.$mainEl ??= component.$mainEl;
       }
       // All the pending main element owners are fulfilled.
-      this.$state.pendingMainElOwner = [];
+      context.$$pendingMainElOwner = [];
 
       // Add the classes and styles to the main element.
       component.$mainEl.addCls(cls);
       component.$mainEl.addCss(css);
     } else {
       // Not append arrays to ignore pending main element owners in the inner scope.
-      // Pass the pending main element owners for this component to the next component.
-      this.$state.pendingMainElOwner = pendingMainElOwners;
+      // Pass the pending main element owners for context component to the next component.
+      context.$$pendingMainElOwner = pendingMainElOwners;
     }
 
     return component;
-  }
+  };
 
   /**
    * Process the content of a DOM element component in `UPDATE` state.
    *
-   * @param appState The `UPDATE` state of the app.
    * @param el The DOM element component.
    * @param content The content of the DOM element component.
    */
-  $$updateDOMContent(
-    appState: AppUpdateState,
-    el: DOMElementComponent,
-    content?: D<Content>,
-  ) {
-    const parent = appState.currentDOMParent;
-    const refTreeNode = appState.currentRefTreeNode;
+  function updateDOMContent(el: DOMElementComponent, content?: D<Content>) {
+    const parent = context.$$currentDOMParent;
+    const refTreeNode = context.$$currentRefTreeNode;
     parent.pendingChildren.push(el);
 
     if (content !== undefined) {
-      // Set the current DOM parent to this DOM element component.
-      appState.currentDOMParent = el;
-      appState.currentRefTreeNode = el.$refTreeNode;
+      // Set the current DOM parent to context DOM element component.
+      context.$$currentDOMParent = el;
+      context.$$currentRefTreeNode = el.$refTreeNode;
 
       const contentValue = getD(content);
       if (typeof contentValue === "function") {
         // The content is a view function.
 
         try {
-          contentValue(this._);
+          contentValue(context._);
           if (import.meta.env.DEV) {
-            this.$$assertEmpty();
+            context.$$assertEmpty();
           }
         } catch (e) {
-          this.$app.callHook("onError", e);
+          context.$app.callHook("onError", e);
         }
       } else {
         // The content is a text node.
-        this.$$t("_t", contentValue);
+        context.$$t("_t", contentValue);
       }
 
       // Restore the DOM parent.
-      appState.currentDOMParent = parent;
-      appState.currentRefTreeNode = refTreeNode;
+      context.$$currentDOMParent = parent;
+      context.$$currentRefTreeNode = refTreeNode;
     }
   }
 
@@ -370,7 +448,7 @@ export class IntrinsicUpdateContext<
    * @param inner The inner content of the element.
    * @param eventListeners The event listeners of the element.
    */
-  protected $$processHTMLElement<E extends keyof HTMLElementTagNameMap>(
+  function processHTMLElement<E extends keyof HTMLElementTagNameMap>(
     ckey: string,
     tagName: E,
     cls: string,
@@ -379,7 +457,7 @@ export class IntrinsicUpdateContext<
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfoRaw<E> = {},
   ) {
-    let el = this.$state.currentRefTreeNode[ckey] as
+    let el = context.$$currentRefTreeNode[ckey] as
       | DOMElementComponent
       | undefined;
     if (!el) {
@@ -387,13 +465,13 @@ export class IntrinsicUpdateContext<
       el = new DOMElementComponent<keyof HTMLElementTagNameMap>(
         document.createElement(tagName),
       );
-      this.$state.currentRefTreeNode[ckey] = el;
+      context.$$currentRefTreeNode[ckey] = el;
     }
 
-    this.$$fulfillRef(el);
-    this.$$fulfillMainEl(el);
+    context.$$fulfillRef(el);
+    context.$$fulfillMainEl(el);
 
-    this.$$updateDOMContent(this.$state, el, inner);
+    updateDOMContent(el, inner);
 
     for (const key in data) {
       if (data[key] === undefined) {
@@ -423,7 +501,7 @@ export class IntrinsicUpdateContext<
    * @param inner The inner content of the element.
    * @param eventListeners The event listeners of the element.
    */
-  protected $$processSVGElement<E extends keyof SVGElementTagNameMap>(
+  function processSVGElement<E extends keyof SVGElementTagNameMap>(
     ckey: string,
     tagName: E,
     cls: string,
@@ -432,7 +510,7 @@ export class IntrinsicUpdateContext<
     inner?: D<Content>,
     eventListeners: DOMElementEventListenersInfoRaw<E> = {},
   ) {
-    let el = this.$state.currentRefTreeNode[ckey] as
+    let el = context.$$currentRefTreeNode[ckey] as
       | DOMElementComponent
       | undefined;
     if (!el) {
@@ -440,13 +518,13 @@ export class IntrinsicUpdateContext<
       el = new DOMElementComponent<keyof SVGElementTagNameMap>(
         document.createElementNS("http://www.w3.org/2000/svg", tagName),
       );
-      this.$state.currentRefTreeNode[ckey] = el;
+      context.$$currentRefTreeNode[ckey] = el;
     }
 
-    this.$$fulfillRef(el);
-    this.$$fulfillMainEl(el);
+    context.$$fulfillRef(el);
+    context.$$fulfillMainEl(el);
 
-    this.$$updateDOMContent(this.$state, el, inner);
+    updateDOMContent(el, inner);
 
     for (const key in data) {
       const value = data[key];
@@ -468,9 +546,3 @@ export class IntrinsicUpdateContext<
     el.addEventListeners(eventListeners);
   }
 }
-
-/**
- * The full context type in `UPDATE` state, with context funcs.
- */
-export type UpdateContext<CS extends ContextState = InitialContextState> =
-  IntrinsicUpdateContext<CS> & ContextFuncs<CS>;

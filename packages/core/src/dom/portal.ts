@@ -1,5 +1,4 @@
 import { Prelude } from "../constants";
-import { RecvContext, UpdateContext } from "../context";
 import { D } from "../data";
 import { Content } from "./content";
 import { DOMElementComponent } from "./element";
@@ -107,27 +106,25 @@ export class DOMPortalComponent extends DOMElementComponent {
 }
 
 Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
-  let portal = this.$state.currentRefTreeNode[ckey] as
+  let portal = this.$intrinsic.$$currentRefTreeNode[ckey] as
     | DOMPortalComponent
     | undefined;
   if (!portal) {
     portal = new DOMPortalComponent(this.$app.root.node);
-    this.$state.currentRefTreeNode[ckey] = portal;
+    this.$intrinsic.$$currentRefTreeNode[ckey] = portal;
   }
 
-  const updateState = this.$updateState;
-  if (updateState) {
-    const context = this as UpdateContext;
+  const updateContext = this.$updateContext?.$intrinsic;
+  if (updateContext) {
+    updateContext.$$fulfillRef(portal);
 
-    context.$$fulfillRef(portal);
+    updateContext.$app.root.pendingPortals.push(portal);
 
-    context.$app.root.pendingPortals.push(portal);
-
-    context.$$updateDOMContent(updateState, portal, inner);
+    updateContext.$$updateDOMContent(portal, inner);
   } else {
-    const context = this as RecvContext;
+    const recvContext = this.$recvContext!.$intrinsic;
 
-    context.$$processDOMElement("_", inner);
+    recvContext.$$processDOMElement("_", inner);
   }
 
   return portal;

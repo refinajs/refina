@@ -23,7 +23,7 @@ Prelude.registerFunc(
     executor: () => Promise<unknown>,
     id: string | number = "",
   ): boolean {
-    const refTreeNode = this.$state.currentRefTreeNode;
+    const refTreeNode = this.$intrinsic.$$currentRefTreeNode;
 
     if (!refTreeNode[ckey]) {
       // The await call is not started.

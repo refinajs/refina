@@ -1,7 +1,10 @@
 import { App, RefTreeNode } from "../app";
-import { AppStateType } from "../constants";
-import { Context } from "../context";
 import { DOMElementComponent } from "../dom";
+
+/**
+ * The main function of a component.
+ */
+export type ComponentMainFunc = (...args: any[]) => void;
 
 /**
  * The base class of all components.
@@ -37,10 +40,9 @@ export abstract class Component<Props = {}> {
    * Call this method to set the next element as the main element of this component.
    */
   protected $main() {
-    const appState = this.$app.state;
-    if (appState.type === AppStateType.UPDATE) {
-      appState.pendingMainElOwner.push(this);
-    }
+    this.$app.context.$updateContext?.$intrinsic.$$pendingMainElOwner.push(
+      this,
+    );
   }
 
   /**
@@ -54,24 +56,36 @@ export abstract class Component<Props = {}> {
    * The main function of the component.
    * In this function, the component should render its content and receive event under `RECV` state.
    *
-   * @param _ The context of the main function.
    * @param args The arguments of the component function. The type of the arguments should be specified.
    */
-  abstract main(_: Context, ...args: unknown[]): void;
+  main: ComponentMainFunc;
 }
 
 /**
  * The constructor type of **any** component class.
  */
-export type ComponentConstructor<S extends Component = Component> = new (
-  app: App,
-) => S;
+export type ComponentConstructor<T extends Component> = new (app: App) => T;
 
 /**
- * Extract the arguments type of a component function.
+ * The components map.
+ *
+ * Add your components to this map using declaration merging:
+ *
+ * ```ts
+ * declare module "refina" {
+ *   interface Components {
+ *     anOutputComponent(arg?: number): void;
+ *     aTriggerComponent(arg: string): this is { $ev: EventDataType };
+ *     aStatusComponent<T>(arg: T): StatusEnum;
+ *   }
+ * }
+ * ```
+ *
+ * **Note**: Generic types and overloaded functions are supported.
  */
-export type ComponentFuncArgs<S extends Component> = S extends {
-  main(_: unknown, ...args: infer A): void;
+export interface Components {}
+
+// Add component functions to the context.
+declare module "../context/base" {
+  interface ContextFuncs<C> extends Components {}
 }
-  ? A
-  : never;

@@ -1,4 +1,4 @@
-import { RefTreeNode } from "..";
+import { RefTreeNode } from "../app";
 import { Prelude } from "../constants";
 import { Context } from "../context";
 import { D, getD } from "../data";
@@ -33,11 +33,11 @@ type LoopRefTreeNodeMap = Record<string, RefTreeNode>;
 Prelude.registerFunc("for", function <
   T,
 >(this: Context, ckey: string, iterable: D<Iterable<T>>, key: LoopKey<T>, body: (item: T, index: number) => void) {
-  this.$state.currentRefTreeNode[ckey] ??= {};
-  const refTreeNodes = this.$state.currentRefTreeNode[
+  this.$intrinsic.$$currentRefTreeNode[ckey] ??= {};
+  const refTreeNodes = this.$intrinsic.$$currentRefTreeNode[
     ckey
   ] as LoopRefTreeNodeMap;
-  const parentRefTreeNode = this.$state.currentRefTreeNode;
+  const parentRefTreeNode = this.$intrinsic.$$currentRefTreeNode;
 
   const keyFunc = normalizeKey(key);
   let i = 0;
@@ -45,17 +45,17 @@ Prelude.registerFunc("for", function <
     const key = keyFunc(item, i).toString();
 
     refTreeNodes[key] ??= {};
-    this.$state.currentRefTreeNode = refTreeNodes[key];
+    this.$intrinsic.$$currentRefTreeNode = refTreeNodes[key];
 
     body(item, i);
     if (import.meta.env.DEV) {
-      this.$$assertEmpty();
+      this.$intrinsic.$$assertEmpty();
     }
 
     i++;
   }
 
-  this.$state.currentRefTreeNode = parentRefTreeNode;
+  this.$intrinsic.$$currentRefTreeNode = parentRefTreeNode;
 
   return false;
 });
@@ -63,26 +63,26 @@ Prelude.registerFunc("for", function <
 Prelude.registerFunc(
   "forTimes",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
-    this.$state.currentRefTreeNode[ckey] ??= {};
-    const refTreeNodes = this.$state.currentRefTreeNode[
+    this.$intrinsic.$$currentRefTreeNode[ckey] ??= {};
+    const refTreeNodes = this.$intrinsic.$$currentRefTreeNode[
       ckey
     ] as LoopRefTreeNodeMap;
-    const parentRefTreeNode = this.$state.currentRefTreeNode;
+    const parentRefTreeNode = this.$intrinsic.$$currentRefTreeNode;
 
     times = getD(times);
     for (let i = 0; i < times; i++) {
       const key = i.toString();
 
       refTreeNodes[key] ??= {};
-      this.$state.currentRefTreeNode = refTreeNodes[key];
+      this.$intrinsic.$$currentRefTreeNode = refTreeNodes[key];
 
       body(i);
       if (import.meta.env.DEV) {
-        this.$$assertEmpty();
+        this.$intrinsic.$$assertEmpty();
       }
     }
 
-    this.$state.currentRefTreeNode = parentRefTreeNode;
+    this.$intrinsic.$$currentRefTreeNode = parentRefTreeNode;
 
     return false;
   },
@@ -94,7 +94,7 @@ declare module "../context/base" {
      * Loop over an iterable.
      *
      * **Warning**: **DO NOT** use `for` or `while` statement in Refina,
-     *  which does not update $state.currentRefTreeNode,
+     *  which does not update $$currentRefTreeNode,
      *  and will cause unexpected behavior.
      *  Use this function or `_.forTimes` instead.
      *
@@ -114,7 +114,7 @@ declare module "../context/base" {
      * Loop over a range of numbers. Similar to `for (let i = 0; i < times; i++)`.
      *
      * **Warning**: **DO NOT** use `for` or `while` statement in Refina,
-     *  which does not update the $state.currentRefTreeNode,
+     *  which does not update the $$currentRefTreeNode,
      *  and will cause unexpected behavior.
      *  Use this function or `_.for` instead.
      *

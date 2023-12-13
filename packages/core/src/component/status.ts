@@ -1,25 +1,14 @@
-import { Context, ContextState } from "../context";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentFuncArgs,
-} from "./component";
+import { Context } from "../context";
+import { Component, Components } from "./component";
 
 /**
  * The base class of all status components.
  *
- * An status component is a component that has a status.
+ * A status component is a component that has a status.
  *
  * The context functions of status components return the current status.
- *
- * Register the component class using `@Plugin.statusComponent(name)` to make it available.
- *
- * **Note**: Prefer using `ToggleComponent` if the component has a `boolean` status.
  */
-export abstract class StatusComponent<
-  Status,
-  Props = {},
-> extends Component<Props> {
+export class StatusComponent<Status, Props = {}> extends Component<Props> {
   protected $_status: Status;
 
   /**
@@ -41,109 +30,55 @@ export abstract class StatusComponent<
     this.$_status = v;
     this.$update();
   }
-
-  abstract main(_: Context, ...args: unknown[]): void;
 }
 
 /**
- * The base class of all trigger components.
- *
- * A status component is a component that has a `boolean` status.
- *
- * The context functions of status components return the current status.
- *
- * Register the component class using `@Plugin.statusComponent(name)` to make it available.
- *
- * **Note**: This is a special case of `StatusComponent` where the status is `boolean`.
- * To have more than two status, use `StatusComponent` instead.
+ * The name of all status components.
  */
-export abstract class ToggleComponent<Props = {}> extends StatusComponent<
-  boolean,
-  Props
-> {
-  // Set the default status to `false`.
-  protected $_status = false;
-
-  /**
-   * If the status is `false`, set it to `true` and trigger an `UPDATE` call.
-   */
-  $on = () => {
-    this.$status = true;
-  };
-
-  /**
-   * If the status is `true`, set it to `true` and trigger an `UPDATE` call.
-   */
-  $off = () => {
-    this.$status = false;
-  };
-
-  /**
-   * If the status is `true`, set it to `false`. Otherwise, set it to `true`.
-   * Then trigger an `UPDATE` call.
-   */
-  $toggle = () => {
-    this.$status = !this.$status;
-  };
-}
-
-/**
- * Create a context function of an status component.
- *
- * @param ctor The component class.
- * @returns The context function.
- */
-export function createStatusComponentFunc<
-  T extends ComponentConstructor<StatusComponent<any>>,
->(ctor: T) {
-  return function (this: Context, ckey: string, ...args: unknown[]): unknown {
-    const component = this.$$processComponent(ckey, ctor, args);
-
-    // The return value of the context function is the status of the component.
-    return component.$status;
-  };
-}
+export type StatusComponentName = {
+  [K in keyof Components]: ((...args: any[]) => void) extends Components[K]
+    ? never
+    : K;
+}[keyof Components];
 
 /**
  * Extract the status type of a status component.
  */
-export type StatusComponentStatusType<C extends ContextState> =
-  C extends StatusComponent<infer S> ? S : never;
+export type StatusComponentStatus<N extends StatusComponentName> =
+  Components[N] extends (...args: any[]) => infer S ? S : never;
 
 /**
- * The status components map to add the component functions to the context in one go.
- *
- * Add your status components to this map using declaration merging:
- *
- * ```ts
- * declare module "refina" {
- *   interface StatusComponents {
- *     contextFuncName: ComponentClass;
- *   }
- * }
- * ```
- *
- * The keys are the context function names of the components.
- * And the values are the corresponding component classes.
- *
- * **Warning**: Do not add components that have generic types to this map.
- * Because the types of the component functions are not inferred.
- * Use `ContextFuncs` interface instead.
+ * The factory function of a status component.
  */
-export interface StatusComponents {}
+export type StatusComponentFactory<N extends StatusComponentName> = (
+  this: Readonly<StatusComponent<StatusComponentStatus<N>>>,
+  _: Context,
+) => Components[N];
 
 /**
- * The component functions of status components in `StatusComponents` interface.
+ * The status component factory function map.
  */
-export type StatusComponentFuncs<C extends ContextState> = {
-  [K in keyof StatusComponents]: StatusComponents[K] extends C["enabled"]
-    ? (
-        ...args: ComponentFuncArgs<StatusComponents[K]>
-      ) => StatusComponentStatusType<StatusComponents[K]>
-    : never;
+export type StatusComponentFactoryMap = {
+  [N in StatusComponentName]: StatusComponentFactory<N>;
 };
 
-// Add output component functions to the context.
-declare module "../context/base" {
-  interface ContextFuncs<C> extends StatusComponentFuncs<C> {}
+/**
+ * Create a context function of a status component.
+ *
+ * @returns The context function.
+ */
+export function createStatusComponentFunc(
+  factory: StatusComponentFactory<StatusComponentName>,
+) {
+  return function (this: Context, ckey: string, ...args: unknown[]): unknown {
+    const component = this.$intrinsic.$$processComponent(
+      ckey,
+      StatusComponent,
+      factory,
+      args,
+    );
+
+    // If the component is the current event receiver, return `true`.
+    return component.$status;
+  };
 }

@@ -1,19 +1,14 @@
-import { Component } from "../component";
-import { AppStateType } from "../constants";
+import { AppState } from "../constants";
 import {
   Context,
   IntrinsicRecvContext,
   IntrinsicUpdateContext,
   RealContextFuncs,
-  RecvContext,
-  UpdateContext,
+  initializeRecvContext,
+  initializeUpdateContext,
 } from "../context";
 import { D, dangerously_setD } from "../data";
-import {
-  DOMBodyComponent,
-  DOMElementComponent,
-  DOMRootComponent,
-} from "../dom";
+import { DOMBodyComponent, DOMRootComponent } from "../dom";
 import { DOMWindowComponent } from "../dom/window";
 import type { View } from "../view";
 
@@ -65,82 +60,6 @@ export interface AppHookMap {
   onError: (error: unknown) => void;
 }
 
-export interface AppIdleState {
-  type: AppStateType.IDLE;
-}
-
-export interface AppRunningState {
-  type: AppStateType.UPDATE | AppStateType.RECV;
-
-  /**
-   * The current ref tree node.
-   *
-   * Used to get the instance by whether the context function is called.
-   */
-  currentRefTreeNode: RefTreeNode;
-
-  /**
-   * Lifetime: one `UPDATE` or `RECV` call.
-   *
-   * Can be accessed in hooks like `beforeMain` and `afterModifyDOM`.
-   */
-  runtimeData: Record<symbol, unknown>;
-
-  /**
-   * Usage:
-   * 1. To check if a component is processed for multiple times;
-   * 2. To decide whether to dispose a component.
-   */
-  processedComponents: Set<string>;
-}
-
-export interface AppUpdateState extends AppRunningState {
-  type: AppStateType.UPDATE;
-
-  /**
-   * The current parent DOM element.
-   */
-  currentDOMParent: DOMElementComponent;
-
-  /**
-   * Components waiting for a `$mainEl`.
-   *
-   * If the value is `true`, the component is waiting for the first DOM element to be its default `$mainEl`.
-   */
-  pendingMainElOwner: (DOMElementComponent | Component)[];
-}
-
-export interface AppRecvState extends AppRunningState {
-  type: AppStateType.RECV;
-
-  /**
-   * The receiver of the event.
-   */
-  receiver: unknown;
-
-  /**
-   * The event data.
-   */
-  event: unknown;
-
-  /**
-   * Is the event received by the receiver?
-   */
-  received: boolean;
-}
-
-/**
- * The state of the app.
- */
-export type AppState = AppIdleState | AppUpdateState | AppRecvState;
-
-/**
- * `App` in `UPDATE` or `RECV` state.
- */
-export type RunningApp = App & { state: AppRunningState };
-
-const idleState = { type: AppStateType.IDLE } satisfies AppIdleState;
-
 export class App {
   /**
    * @param main The main function of the app
@@ -162,7 +81,7 @@ export class App {
    *
    * Context functions provided by plugins should be merged into this object.
    */
-  contextFuncs = {} as RealContextFuncs;
+  readonly contextFuncs = {} as RealContextFuncs;
 
   /**
    * The map of HTML element aliases.
@@ -171,7 +90,7 @@ export class App {
    *
    * Plugins can add aliases to this map.
    */
-  htmlElementAlias: Record<string, string> = {};
+  readonly htmlElementAlias: Record<string, string> = {};
 
   /**
    * The root element component of the app.
@@ -180,38 +99,43 @@ export class App {
    *
    * Call `app.root.addCls` or `app.root.addCss` to add classes or styles to the root element.
    */
-  root: DOMRootComponent;
+  readonly root: DOMRootComponent;
 
   /**
    * The DOM element component of the document body.
    *
    * Call `app.body.addCls` or `app.body.addCss` to add classes or styles to the document body.
    */
-  body = new DOMBodyComponent(document.body);
+  readonly body = new DOMBodyComponent(document.body);
 
   /**
    * The DOM element component of the window.
    *
    * Call `app.window.addEventListener` to add event listeners to window.
    */
-  window = new DOMWindowComponent(window);
+  readonly window = new DOMWindowComponent(window);
 
   /**
    * Lifetime: from the construction of the app to the window is closed.
    */
-  permanentData: Record<symbol, unknown> = {};
+  readonly permanentData: Record<symbol, unknown> = {};
 
   /**
-   * The current state of the app.
+   * The state of the app.
    */
-  state: AppState = idleState;
+  state: AppState = AppState.IDLE;
+
+  /**
+   * The context of the app.
+   */
+  readonly context: Context = {} as unknown as Context;
 
   /**
    * Each event in this queue requires a later `RECV` call.
    *
    * Can be pushed during `RECV` calls, which means a new event can be triggered by another event.
    */
-  eventQueue: { receiver: unknown; data: unknown }[] = [];
+  readonly eventQueue: { receiver: unknown; data: unknown }[] = [];
 
   /**
    * Whether an `UPDATE` call is required after the recv queue becomes empty.
@@ -232,13 +156,13 @@ export class App {
   /**
    * Trigger an `UPDATE` call.
    */
-  update = () => {
+  readonly update = () => {
     if (import.meta.env.DEV)
       console.debug(`[*] update triggered${new Error().stack?.slice(5)}`);
     this.requireUpdate = true;
 
     // If the app is not running, start it in the next tick.
-    if (this.state.type === AppStateType.IDLE) this.nextTick();
+    if (this.state === AppState.IDLE) this.nextTick();
   };
 
   /**
@@ -247,12 +171,12 @@ export class App {
    * @param receiver The receiver of the event.
    * @param data The event data.
    */
-  recv = (receiver: unknown, data: unknown) => {
+  readonly recv = (receiver: unknown, data: unknown) => {
     if (import.meta.env.DEV)
       console.debug(
-        `[*] recv triggered with receiver ${String(
-          receiver,
-        )}${new Error().stack?.slice(5)}`,
+        `[*] recv triggered with receiver `,
+        receiver,
+        new Error().stack?.slice(5),
       );
     this.eventQueue.push({ receiver, data });
 
@@ -260,7 +184,7 @@ export class App {
     this.requireUpdate = true;
 
     // If the app is not running, start it in the next tick.
-    if (this.state.type === AppStateType.IDLE) this.nextTick();
+    if (this.state === AppState.IDLE) this.nextTick();
   };
 
   /**
@@ -279,9 +203,9 @@ export class App {
               const { receiver, data } = this.eventQueue.shift()!;
 
               console.debug(
-                `[+] recv executing start with id ${String(
-                  receiver,
-                )}, remaining ${this.eventQueue.length}`,
+                `[+] recv executing start with receiver`,
+                receiver,
+                `remaining ${this.eventQueue.length}`,
               );
 
               const startTime = window.performance.now();
@@ -335,12 +259,12 @@ export class App {
   /**
    * Execute the main function of the app in current state.
    */
-  protected execMain(context: Context) {
+  protected execMain() {
     try {
       this.callHook("beforeMain");
-      this.main(context);
+      this.main(this.context);
       if (import.meta.env.DEV) {
-        context.$$assertEmpty();
+        this.context.$intrinsic.$$assertEmpty();
       }
       this.callHook("afterMain");
     } catch (e) {
@@ -350,22 +274,14 @@ export class App {
   }
 
   protected execUpdate() {
-    // Set the `UPDATE` state.
-    this.state = {
-      type: AppStateType.UPDATE,
-      currentRefTreeNode: this.root.$refTreeNode,
-      runtimeData: {},
-      processedComponents: new Set(),
-      currentDOMParent: this.root,
-      pendingMainElOwner: [],
-    } satisfies AppUpdateState;
-
-    const context = new IntrinsicUpdateContext(
-      this as RunningApp,
-    ) as unknown as UpdateContext;
+    this.state = AppState.UPDATE;
+    initializeUpdateContext(
+      this.context as unknown as IntrinsicUpdateContext,
+      this,
+    );
 
     // Execute the main function to update components.
-    this.execMain(context);
+    this.execMain();
 
     // Apply changes to DOM.
     this.callHook("beforeModifyDOM");
@@ -375,30 +291,23 @@ export class App {
     this.callHook("afterModifyDOM");
 
     // Clear the `UPDATE` state.
-    this.state = idleState;
+    this.state = AppState.IDLE;
   }
 
   protected execRecv(receiver: unknown, event: unknown = null) {
-    // Set the `RECV` state.
-    this.state = {
-      type: AppStateType.RECV,
-      currentRefTreeNode: this.root.$refTreeNode,
-      runtimeData: {},
-      processedComponents: new Set(),
+    this.state = AppState.RECV;
+    initializeRecvContext(
+      this.context as unknown as IntrinsicRecvContext,
+      this,
       receiver,
       event,
-      received: false,
-    } satisfies AppRecvState;
-
-    const context = new IntrinsicRecvContext(
-      this as RunningApp,
-    ) as unknown as RecvContext;
+    );
 
     // Execute the main function to receive the event.
-    this.execMain(context);
+    this.execMain();
 
     // Clear the `RECV` state.
-    this.state = idleState;
+    this.state = AppState.IDLE;
   }
 
   /**
@@ -409,7 +318,7 @@ export class App {
   /**
    * Lifecycle: not removed after calls.
    */
-  permanentHooks: {
+  readonly permanentHooks: {
     [K in keyof AppHookMap]?: AppHookMap[K][];
   } = {};
 
@@ -515,12 +424,11 @@ export class App {
    * @param receiver The receiver to test.
    * @returns `true` if the app is under `RECV` state and the receiver is `key`.
    */
-  isEventReceiver(receiver: unknown): this is { state: AppRecvState } {
+  isEventReceiver(receiver: unknown): boolean {
     if (
-      this.state.type === AppStateType.RECV &&
-      this.state.receiver === receiver
+      this.context.$recvContext &&
+      this.context.$recvContext.$receiver === receiver
     ) {
-      this.state.received = true;
       return true;
     } else {
       return false;

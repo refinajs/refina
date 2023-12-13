@@ -1,8 +1,8 @@
 import { Prelude } from "../constants";
 
 Prelude.registerFunc("now", function (ckey: string, precisionMs = 1000) {
-  const refTreeNode = this.$state.currentRefTreeNode;
-  if (this.$updateState && !refTreeNode[ckey]) {
+  const refTreeNode = this.$intrinsic.$$currentRefTreeNode;
+  if (this.$updateContext && !refTreeNode[ckey]) {
     refTreeNode[ckey] = true;
     setTimeout(() => {
       delete refTreeNode[ckey];
@@ -15,8 +15,8 @@ Prelude.registerFunc("now", function (ckey: string, precisionMs = 1000) {
 Prelude.registerFunc(
   "setInterval",
   function (ckey: string, callback: () => void, interval: number) {
-    const refTreeNode = this.$state.currentRefTreeNode;
-    if (this.$updateState && !refTreeNode[ckey]) {
+    const refTreeNode = this.$intrinsic.$$currentRefTreeNode;
+    if (this.$updateContext && !refTreeNode[ckey]) {
       refTreeNode[ckey] = true;
       setTimeout(() => {
         delete refTreeNode[ckey];

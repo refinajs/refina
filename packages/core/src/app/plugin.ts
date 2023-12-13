@@ -1,11 +1,9 @@
 import {
-  ComponentConstructor,
-  OutputComponent,
-  OutputComponents,
-  StatusComponent,
-  StatusComponents,
-  TriggerComponent,
-  TriggerComponents,
+  OutputComponentFactoryMap,
+  StatusComponentFactory,
+  StatusComponentFactoryMap,
+  StatusComponentName,
+  TriggerComponentFactoryMap,
   createOutputComponentFunc,
   createStatusComponentFunc,
   createTriggerComponentFunc,
@@ -47,6 +45,19 @@ export class Plugin<Args extends any[] = []> {
     // Merge the context functions in the plugin into the app.
     Object.assign(app.contextFuncs, this.contextFuncs);
 
+    // Merge the component functions in the plugin into the app.
+    for (const [name, factory] of Object.entries(this.outputComponents)) {
+      app.contextFuncs[name] = createOutputComponentFunc(factory);
+    }
+    for (const [name, factory] of Object.entries(this.statusComponents)) {
+      app.contextFuncs[name] = createStatusComponentFunc(
+        factory as StatusComponentFactory<StatusComponentName>,
+      );
+    }
+    for (const [name, factory] of Object.entries(this.triggerComponents)) {
+      app.contextFuncs[name] = createTriggerComponentFunc(factory);
+    }
+
     if (import.meta.env.DEV) {
       console.debug(`plugin ${this.name} installed.`);
     }
@@ -72,52 +83,17 @@ export class Plugin<Args extends any[] = []> {
   }
 
   /**
-   * Register an output component.
-   *
-   * @param name The name of the component.
-   * @returns A decorator that registers the component.
+   * The output component factory function map.
    */
-  outputComponent<N extends keyof OutputComponents | keyof ContextFuncs<any>>(
-    name: N,
-  ) {
-    return <C extends ComponentConstructor<OutputComponent<any>>>(ctor: C) => {
-      // @ts-ignore
-      this.contextFuncs[name] = createOutputComponentFunc(ctor);
-      return ctor;
-    };
-  }
+  readonly outputComponents: Partial<OutputComponentFactoryMap> = {};
 
   /**
-   * Register a status component.
-   *
-   * @param name The name of the component.
-   * @returns A decorator that registers the component.
+   * The status component factory function map.
    */
-  statusComponent<N extends keyof StatusComponents | keyof ContextFuncs<any>>(
-    name: N,
-  ) {
-    return <C extends ComponentConstructor<StatusComponent<any>>>(ctor: C) => {
-      // @ts-ignore
-      this.contextFuncs[name] = createStatusComponentFunc(ctor);
-      return ctor;
-    };
-  }
+  readonly statusComponents: Partial<StatusComponentFactoryMap> = {};
 
   /**
-   * Register a trigger component.
-   *
-   * @param name The name of the component.
-   * @returns A decorator that registers the component.
+   * The trigger component factory function map.
    */
-  triggerComponent<N extends keyof TriggerComponents | keyof ContextFuncs<any>>(
-    name: N,
-  ) {
-    return <C extends ComponentConstructor<TriggerComponent<any, any>>>(
-      ctor: C,
-    ) => {
-      // @ts-ignore
-      this.contextFuncs[name] = createTriggerComponentFunc(ctor);
-      return ctor;
-    };
-  }
+  readonly triggerComponents: Partial<TriggerComponentFactoryMap> = {};
 }

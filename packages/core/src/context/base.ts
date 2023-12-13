@@ -1,13 +1,13 @@
-import type {
-  AppRecvState,
-  AppRunningState,
-  AppUpdateState,
-  RunningApp,
-} from "../app";
-import { Component, ComponentConstructor } from "../component";
+import type { App, RefTreeNode } from "../app";
+import {
+  Component,
+  ComponentConstructor,
+  ComponentMainFunc,
+} from "../component";
+import { AppState } from "../constants";
 import { D, Ref } from "../data";
-import { RecvContext } from "./recv";
-import { UpdateContext } from "./update";
+import type { RecvContext } from "./recv";
+import type { UpdateContext } from "./update";
 
 /**
  * The state of a context.
@@ -147,18 +147,16 @@ export type EnabledProps<C extends ContextState> = C["mode"] extends "build"
  *  Use `ToFullContext` to add context funcs to the context,
  *  so that users can call them.
  */
-export abstract class IntrinsicContext<CS extends ContextState> {
+export interface IntrinsicBaseContext<CS extends ContextState> {
   /**
-   * @param $app The app instance of this context.
+   * The app instance of this context.
    */
-  constructor(public readonly $app: RunningApp) {
-    this.$state = $app.state;
-  }
+  $app: App;
 
   /**
-   * The current state of the app.
+   * The state of the app.
    */
-  readonly $state: AppRunningState;
+  $appState: AppState;
 
   /**
    * The state of the context.
@@ -167,19 +165,36 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    *
    * This is essential for `this is Context<...>` to work correctly.
    */
-  declare readonly $tsContextState: CS;
+  $tsContextState: CS;
 
   /**
    * Get the context itself with empty ContextState.
    */
-  abstract readonly _: Context;
+  _: Context;
+
+  /**
+   * The intrinsic context.
+   */
+  $intrinsic: this;
+
+  /**
+   * If the context is in `UPDATE` state, it is the update context.
+   *
+   * If the context is in `RECV` state, it is `null`.
+   */
+  $updateContext: UpdateContext<CS> | null;
+
+  /**
+   * If the context is in `RECV` state, it is the recv context.
+   *
+   * If the context is in `UPDATE` state, it is `null`.
+   */
+  $recvContext: RecvContext<CS> | null;
 
   /**
    * Trigger an `UPDATE` call.
    */
-  get $update() {
-    return this.$app.update;
-  }
+  $update: App["update"];
 
   /**
    * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
@@ -188,100 +203,66 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param v The value to set
    * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
    */
-  get $setD() {
-    return this.$app.setD;
-  }
+  $setD: App["setD"];
 
   /**
-   * If the app is in `UPDATE` state, return the state. Otherwise, return `null`.
+   * The shortcut of `app.permanentData`.
    *
-   * You can check whether the app is in `UPDATE` state by `if (_.$updateState)`.
-   *
-   * @example
-   * ```ts
-   * const updateState = _.$updateState;
-   * if (updateState) {
-   *   // updateState is of type AppUpdateState.
-   *   // ...
-   * }
-   * ```
+   * Lifetime: from the construction of the app to the window is closed.
    */
-  abstract readonly $updateState: AppUpdateState | null;
+  $permanentData: App["permanentData"];
 
   /**
-   * If the app is in `RECV` state, return the state. Otherwise, return `null`.
+   * The current ref tree node.
    *
-   * You can check whether the app is in `RECV` state by `if (_.$recvState)`.
-   *
-   * @example
-   * ```ts
-   * const recvState = _.$recvState;
-   * if (recvState) {
-   *   // recvState is of type AppRecvState.
-   *   // ...
-   * }
-   * ```
+   * Used to get the instance by whether the context function is called.
    */
-  abstract readonly $recvState: AppRecvState | null;
+  $$currentRefTreeNode: RefTreeNode;
 
   /**
-   * If the app is in `UPDATE` state, return the context itself. Otherwise, return `null`.
+   * Lifetime: one `UPDATE` or `RECV` call.
    *
-   * You can check whether the app is in `UPDATE` state by `if (_.$updateContext)`.
+   * Can be accessed in hooks like `beforeMain` and `afterModifyDOM`.
    *
-   * @example
-   * ```ts
-   * const updateContext = _.$updateContext;
-   * if (updateContext) {
-   *   // updateContext is of type UpdateContext.
-   *   // ...
-   * }
-   * ```
+   *
+   * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
+   *  which is not scoped to the inner content,
+   *  use `_.provide` to provide values to `_.$runtimeData` instead.
    */
-  abstract readonly $updateContext: UpdateContext<CS> | null;
+  $runtimeData: Record<symbol, unknown>;
 
   /**
-   * If the app is in `RECV` state, return the context itself. Otherwise, return `null`.
-   *
-   * You can check whether the app is in `RECV` state by `if (_.$recvContext)`.
-   *
-   * @example
-   * ```ts
-   * const recvContext = _.$recvContext;
-   * if (recvContext) {
-   *   // recvContext is of type RecvContext.
-   *   // ...
-   * }
-   * ```
+   * Usage:
+   * 1. To check if a component is processed for multiple times;
+   * 2. To decide whether to dispose a component.
    */
-  abstract readonly $recvContext: RecvContext<CS> | null;
+  $$processedComponents: Set<string>;
+
+  /**
+   * If there is something not applied, warn it and reset it.
+   */
+  $$assertEmpty(): void;
 
   /**
    * The component representing the root element of the app.
    *
    * You can use this component to add classes, styles and event listeners to the root element.
    */
-  get $root() {
-    return this.$app.root;
-  }
+  $root: App["root"];
 
   /**
    * The component representing the document body.
    *
    * You can use this component to add classes, styles and event listeners to the document body.
    */
-  get $body() {
-    return this.$app.body;
-  }
+  $body: App["body"];
 
   /**
    * The component representing the document body.
    *
    * You can use this component to add event listeners to window.
    */
-  get $window() {
-    return this.$app.window;
-  }
+  $window: App["window"];
 
   /**
    * Ref the next component.
@@ -303,7 +284,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param refs The rest `Ref` objects to merge.
    * @returns always `true`.
    */
-  abstract $ref<C2 extends CS["enabled"]>(
+  $ref<C2 extends CS["enabled"]>(
     ref: Ref<C2>,
     ...refs: Ref<C2>[]
   ): this is Context<{
@@ -322,10 +303,10 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param value The value of the property to set.
    * @returns always `true`.
    */
-  abstract $prop<
-    K extends keyof EnabledProps<CS>,
-    V extends EnabledProps<CS>[K],
-  >(key: K, value: V): true;
+  $prop<K extends keyof EnabledProps<CS>, V extends EnabledProps<CS>[K]>(
+    key: K,
+    value: V,
+  ): true;
 
   /**
    * Set properties of the next component.
@@ -337,7 +318,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param props The properties to set.
    * @returns always `true`.
    */
-  abstract $props<Props extends EnabledProps<CS>>(props: Props): true;
+  $props<Props extends EnabledProps<CS>>(props: Props): true;
 
   /**
    * Add classes to the next component.
@@ -350,7 +331,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param cls The classes to add.
    * @returns always `true`.
    */
-  abstract $cls(cls: string): true;
+  $cls(cls: string): true;
   /**
    * Add classes to the next component using template literals.
    *
@@ -363,7 +344,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param args The arguments to pass to the template literals.
    * @returns always `true`.
    */
-  abstract $cls(template: TemplateStringsArray, ...args: unknown[]): true;
+  $cls(template: TemplateStringsArray, ...args: unknown[]): true;
 
   /**
    * Add styles to the next component.
@@ -377,7 +358,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * ```
    * @param css The styles to add.
    */
-  abstract $css(css: string): true;
+  $css(css: string): true;
   /**
    * Add styles to the next component using template literals.
    *
@@ -391,34 +372,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param template The template literals.
    * @param args The arguments to pass to the template literals.
    */
-  abstract $css(template: TemplateStringsArray, ...args: unknown[]): true;
-
-  /**
-   * The shortcut of `app.permanentData`.
-   *
-   * Lifetime: from the construction of the app to the window is closed.
-   */
-  get $permanentData() {
-    return this.$app.permanentData;
-  }
-
-  /**
-   * The shortcut of `app.state.runtimeData`.
-   *
-   * Lifetime: one `UPDATE` or `RECV` call.
-   *
-   * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
-   *  which is not scoped to the inner content,
-   *  use `_.provide` to provide values to `_.$runtimeData` instead.
-   */
-  get $runtimeData() {
-    return this.$app.state.runtimeData;
-  }
-
-  /**
-   * If there is something not applied, warn it and reset it.
-   */
-  abstract $$assertEmpty(): void;
+  $css(template: TemplateStringsArray, ...args: unknown[]): true;
 
   /**
    * The transformed context function calls (excluding `_.t` calls).
@@ -439,7 +393,7 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param args The arguments of the context function.
    * @returns The return value of the context function.
    */
-  abstract $$(funcName: string, ckey: string, ...args: unknown[]): unknown;
+  $$(funcName: string, ckey: string, ...args: unknown[]): unknown;
 
   /**
    * The transformed `_.t` calls.
@@ -460,19 +414,21 @@ export abstract class IntrinsicContext<CS extends ContextState> {
    * @param ckey The unique key of this call in source code.
    * @param content The content to render.
    */
-  abstract $$t(ckey: string, content: D<string | number | boolean>): void;
+  $$t(ckey: string, content: D<string | number | boolean>): void;
 
   /**
    * Process a component.
    *
    * @param ckey The Ckey of the component.
    * @param ctor The constructor of the component class.
+   * @param factory The factory function of the component.
    * @param args The parameters to pass to the main function of the component.
    * @returns The component instance.
    */
-  abstract $$processComponent<T extends Component>(
+  $$processComponent<T extends Component>(
     ckey: string,
     ctor: ComponentConstructor<T>,
+    factory: (this: Readonly<T>, context: Context) => ComponentMainFunc,
     args: unknown[],
   ): T;
 }
@@ -480,5 +436,30 @@ export abstract class IntrinsicContext<CS extends ContextState> {
 /**
  * The full context type, with context funcs.
  */
-export type Context<CS extends ContextState = InitialContextState> =
-  IntrinsicContext<CS> & ContextFuncs<CS>;
+export type Context<CS extends ContextState = InitialContextState> = Readonly<
+  Omit<IntrinsicBaseContext<CS>, `$$${string}`>
+> &
+  ContextFuncs<CS>;
+
+/**
+ * Initialize a context.
+ * @param context The context to initialize.
+ * @param app The app instance.
+ */
+export function initializeBaseContext(
+  context: IntrinsicBaseContext<InitialContextState>,
+  app: App,
+) {
+  context._ = context as unknown as Context;
+  context.$app = app;
+  context.$appState = app.state;
+  context.$intrinsic = context;
+  context.$update = app.update;
+  context.$setD = app.setD;
+  context.$$currentRefTreeNode = app.root.$refTreeNode;
+  context.$runtimeData = {};
+  context.$$processedComponents = new Set();
+  context.$root = app.root;
+  context.$body = app.body;
+  context.$window = app.window;
+}
