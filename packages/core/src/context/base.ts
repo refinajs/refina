@@ -456,6 +456,7 @@ export function initializeBaseContext(
   context.$intrinsic = context;
   context.$update = app.update;
   context.$setD = app.setD;
+  context.$permanentData = app.permanentData;
   context.$$currentRefTreeNode = app.root.$refTreeNode;
   context.$runtimeData = {};
   context.$$processedComponents = new Set();
