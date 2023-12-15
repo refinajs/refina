@@ -1,96 +1,123 @@
 import { TextField } from "mdui";
-import {
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { D, HTMLElementComponent, getD, ref } from "refina";
 import MdUI from "../plugin";
 
 export type TextFieldVariant = TextField["variant"];
-
-@MdUI.triggerComponent("mdTextField")
-export class MdTextField extends TriggerComponent<string> {
-  varient: TextFieldVariant = "filled";
-
-  inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
-  main(
-    _: Context,
-    value: D<string>,
-    label?: D<string>,
-    disabled: D<boolean> = false,
-  ): void {
-    _.$ref(this.inputRef) &&
+declare module "refina" {
+  interface Components {
+    mdTextField(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+      varient?: TextFieldVariant,
+    ): this is {
+      $ev: string;
+    };
+  }
+}
+MdUI.triggerComponents.mdTextField = function (_) {
+  const inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
+  return (value, label, disabled = false, varient = "filled") => {
+    _.$ref(inputRef) &&
       _._mdui_text_field({
         value: getD(value),
         label: getD(label),
         disabled: getD(disabled),
-        variant: this.varient,
+        variant: varient,
         oninput: () => {
-          const newValue = this.inputRef.current!.node.value;
+          const newValue = inputRef.current!.node.value;
           _.$setD(value, newValue);
           this.$fire(newValue);
         },
       });
+  };
+};
+
+declare module "refina" {
+  interface Components {
+    mdOutlinedTextField(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: string;
+    };
   }
 }
+MdUI.triggerComponents.mdOutlinedTextField = function (_) {
+  return (value, label) => _.mdTextField(value, label, false, "outlined");
+};
 
-@MdUI.triggerComponent("mdOutlinedTextField")
-export class MdOutlinedTextField extends MdTextField {
-  varient: TextFieldVariant = "outlined";
+declare module "refina" {
+  interface Components {
+    mdPasswordInput(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+      varient?: TextFieldVariant,
+    ): this is {
+      $ev: string;
+    };
+  }
 }
-
-@MdUI.triggerComponent("mdPasswordInput")
-export class MdPasswordInput extends TriggerComponent<string> {
-  varient: TextFieldVariant = "filled";
-
-  inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
-  main(
-    _: Context,
-    value: D<string>,
-    label?: D<string>,
-    disabled: D<boolean> = false,
-  ): void {
-    _.$ref(this.inputRef) &&
+MdUI.triggerComponents.mdPasswordInput = function (_) {
+  const inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
+  return (value, label, disabled = false, varient = "filled") => {
+    _.$ref(inputRef) &&
       _._mdui_text_field({
         value: getD(value),
         label: getD(label),
         disabled: getD(disabled),
-        variant: this.varient,
+        variant: varient,
         type: "password",
         togglePassword: true,
         oninput: () => {
-          const newValue = this.inputRef.current!.node.value;
+          const newValue = inputRef.current!.node.value;
           _.$setD(value, newValue);
           this.$fire(newValue);
         },
       });
+  };
+};
+
+declare module "refina" {
+  interface Components {
+    mdOutlinedPasswordInput(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: string;
+    };
   }
 }
+MdUI.triggerComponents.mdOutlinedPasswordInput = function (_) {
+  return (value, label) => _.mdPasswordInput(value, label, false, "outlined");
+};
 
-@MdUI.triggerComponent("mdOutlinedPasswordInput")
-export class MdOutlinedPasswordInput extends MdPasswordInput {
-  varient: TextFieldVariant = "outlined";
-}
-
-@MdUI.triggerComponent("mdTextarea")
-export class MdTextarea extends TriggerComponent<
-  string,
-  {
-    rows: number | [min?: number, max?: number];
+declare module "refina" {
+  interface Components {
+    MdTextareaProps: {
+      rows: number | [min?: number, max?: number];
+    };
+    mdTextarea(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+      varient?: TextFieldVariant,
+    ): this is {
+      $ev: string;
+    };
   }
-> {
-  varient: TextFieldVariant = "filled";
-
-  inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
-  main(
-    _: Context,
+}
+MdUI.triggerComponents.mdTextarea = function (_) {
+  const inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
+  return (
     value: D<string>,
     label?: D<string>,
     disabled: D<boolean> = false,
-  ): void {
+    varient: TextFieldVariant = "filled",
+  ) => {
     const rowsProps = Array.isArray(this.$props.rows)
       ? {
           autosize: true,
@@ -101,34 +128,33 @@ export class MdTextarea extends TriggerComponent<
           rows: this.$props.rows ?? 3,
         };
 
-    _.$ref(this.inputRef) &&
+    _.$ref(inputRef) &&
       _._mdui_text_field({
         value: getD(value),
         label: getD(label),
         disabled: getD(disabled),
-        variant: this.varient,
+        variant: varient,
         ...rowsProps,
         oninput: () => {
-          const newValue = this.inputRef.current!.node.value;
+          const newValue = inputRef.current!.node.value;
           _.$setD(value, newValue);
           this.$fire(newValue);
         },
       });
-  }
-}
-
-@MdUI.triggerComponent("mdOutlinedTextarea")
-export class MdOutlinedTextarea extends MdTextarea {
-  varient: TextFieldVariant = "outlined";
-}
+  };
+};
 
 declare module "refina" {
-  interface TriggerComponents {
-    mdTextField: MdTextField;
-    mdOutlinedTextField: MdOutlinedTextField;
-    mdPasswordInput: MdPasswordInput;
-    mdOutlinedPasswordInput: MdOutlinedPasswordInput;
-    mdTextarea: MdTextarea;
-    mdOutlinedTextarea: MdOutlinedTextarea;
+  interface Components {
+    mdOutlinedTextarea(
+      value: D<string>,
+      label?: D<string>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: string;
+    };
   }
 }
+MdUI.triggerComponents.mdOutlinedTextarea = function (_) {
+  return (value, label) => _.mdTextarea(value, label, false, "outlined");
+};

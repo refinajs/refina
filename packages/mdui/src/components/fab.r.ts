@@ -1,17 +1,28 @@
 import { Fab } from "mdui";
-import { Content, Context, D, TriggerComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdFab")
-export class MdFab extends TriggerComponent<void> {
-  varient: Fab["variant"];
+export type FabVariant = Fab["variant"];
 
-  main(
-    _: Context,
-    icon: D<string>,
-    disabled: D<boolean> = false,
-    extendedContent: D<Content | undefined> = undefined,
-  ): void {
+declare module "refina" {
+  interface Components {
+    mdFab(
+      icon: D<string>,
+      disabled?: D<boolean>,
+      extendedContent?: D<Content | undefined>,
+      varient?: FabVariant,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+MdUI.triggerComponents.mdFab = function (_) {
+  return (
+    icon,
+    disabled = false,
+    extendedContent = undefined,
+    varient = "primary",
+  ) => {
     const extendedContentValue = getD(extendedContent);
     _._mdui_fab(
       {
@@ -19,15 +30,9 @@ export class MdFab extends TriggerComponent<void> {
         disabled: getD(disabled),
         extended: extendedContentValue !== undefined,
         onclick: this.$fireWith(),
-        variant: this.varient,
+        variant: varient,
       },
       extendedContentValue,
     );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdFab: MdFab;
-  }
-}
+  };
+};

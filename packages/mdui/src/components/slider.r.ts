@@ -1,25 +1,23 @@
-import {
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { D, HTMLElementComponent, getD, ref } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdSlider")
-export class MdSlider extends TriggerComponent<number> {
-  sliderRef = ref<HTMLElementComponent<"mdui-slider">>();
-  main(
-    _: Context,
-    value: D<number>,
-    disabled: D<boolean> = false,
-    step: D<number> = 1,
-    min: D<number> = 0,
-    max: D<number> = 100,
-  ): void {
-    _.$ref(this.sliderRef) &&
+declare module "refina" {
+  interface Components {
+    mdSlider(
+      value: D<number>,
+      disabled?: D<boolean>,
+      step?: D<number>,
+      min?: D<number>,
+      max?: D<number>,
+    ): this is {
+      $ev: number;
+    };
+  }
+}
+MdUI.triggerComponents.mdSlider = function (_) {
+  const sliderRef = ref<HTMLElementComponent<"mdui-slider">>();
+  return (value, disabled = false, step = 1, min = 0, max = 100) => {
+    _.$ref(sliderRef) &&
       _._mdui_slider({
         value: getD(value),
         disabled: getD(disabled),
@@ -27,16 +25,10 @@ export class MdSlider extends TriggerComponent<number> {
         max: getD(max),
         step: getD(step),
         oninput: () => {
-          const newValue = this.sliderRef.current!.node.value;
+          const newValue = sliderRef.current!.node.value;
           _.$setD(value, newValue);
           this.$fire(newValue);
         },
       });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdSlider: MdSlider;
-  }
-}
+  };
+};

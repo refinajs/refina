@@ -1,26 +1,20 @@
-import {
-  Content,
-  Context,
-  D,
-  TriggerComponent,
-  bindArgsToContent,
-  getD,
-} from "refina";
+import { Content, D, bindArgsToContent, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdControlledNavDrawer")
-export class MdControlledNavDrawer extends TriggerComponent<
-  boolean,
-  {
-    contained: boolean;
+declare module "refina" {
+  interface Components {
+    MdControlledNavDrawerProps: {
+      contained: boolean;
+    };
+    mdControlledNavDrawer(
+      open: D<boolean>,
+      inner: D<Content>,
+      modal?: D<boolean>,
+    ): void;
   }
-> {
-  main(
-    _: Context,
-    open: D<boolean>,
-    inner: D<Content>,
-    modal: D<boolean> = false,
-  ): void {
+}
+MdUI.outputComponents.mdControlledNavDrawer = function (_) {
+  return (open, inner, modal = false) => {
     const modalOptions = getD(modal)
       ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true }
       : {};
@@ -28,43 +22,43 @@ export class MdControlledNavDrawer extends TriggerComponent<
       { ...modalOptions, open: getD(open), contained: this.$props.contained },
       inner,
     );
+  };
+};
+
+declare module "refina" {
+  interface Components {
+    MdNavDrawerProps: {
+      contained: boolean;
+    };
+    mdNavDrawer(
+      trigger: D<Content<[open: (open?: boolean) => void]>>,
+      inner: D<Content<[close: (open?: boolean) => void]>>,
+      modal?: D<boolean>,
+    ): this is {
+      $ev: boolean;
+    };
   }
 }
-
-@MdUI.triggerComponent("mdNavDrawer")
-export class MdNavDrawer extends TriggerComponent<
-  boolean,
-  {
-    contained: boolean;
-  }
-> {
-  open = false;
-  main(
-    _: Context,
+MdUI.triggerComponents.mdNavDrawer = function (_) {
+  let open = false;
+  return (
     trigger: D<Content<[open: (open?: boolean) => void]>>,
     inner: D<Content<[close: (open?: boolean) => void]>>,
     modal: D<boolean> = false,
-  ): void {
+  ) => {
     _.embed(
       bindArgsToContent(trigger, (open = true) => {
-        this.open = open;
+        open = open;
         _.$update();
       }),
     );
     _.mdControlledNavDrawer(
-      this.open,
+      open,
       bindArgsToContent(inner, (open = false) => {
-        this.open = open;
+        open = open;
         _.$update();
       }),
       modal,
     );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdControlledNavDrawer: MdControlledNavDrawer;
-    mdNavDrawer: MdNavDrawer;
-  }
-}
+  };
+};

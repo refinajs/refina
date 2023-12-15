@@ -1,43 +1,43 @@
 import {
   Content,
-  Context,
   D,
   DPartialRecord,
   DReadonlyArray,
   HTMLElementComponent,
-  TriggerComponent,
-  TriggerComponentFuncAssertThisType,
   bySelf,
   getD,
   ref,
 } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdRadioGroup")
-export class MdRadioGroup<
-  Value extends string,
-> extends TriggerComponent<Value> {
-  radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
-  main(
-    _: Context,
-    selected: D<Value>,
-    options: DReadonlyArray<Value>,
-    disabled: D<boolean> | DReadonlyArray<boolean> = false,
-    contentOverride: DPartialRecord<Value, Content> = {},
-  ): void {
+declare module "refina" {
+  interface Components {
+    mdRadioGroup<Value extends string>(
+      selected: D<Value>,
+      options: DReadonlyArray<Value>,
+      disabled?: D<boolean> | DReadonlyArray<boolean>,
+      contentOverride?: DPartialRecord<Value, Content>,
+    ): this is {
+      $ev: Value;
+    };
+  }
+}
+MdUI.triggerComponents.mdRadioGroup = function (_) {
+  const radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
+  return (selected, options, disabled = false, contentOverride = {}) => {
     const contentOverrideValue = getD(contentOverride);
     const disabledValue = getD(disabled);
     const groupDisabled = disabledValue === true;
     const optionsDisabled =
       typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
 
-    _.$ref(this.radioGroupRef) &&
+    _.$ref(radioGroupRef) &&
       _._mdui_radio_group(
         {
           value: getD(selected),
           disabled: groupDisabled,
           onchange: () => {
-            const newSelected = this.radioGroupRef.current!.node.value as Value;
+            const newSelected = radioGroupRef.current!.node.value;
             _.$setD(selected, newSelected);
             this.$fire(newSelected);
           },
@@ -53,19 +53,5 @@ export class MdRadioGroup<
             ),
           ),
       );
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    mdRadioGroup: MdRadioGroup<any> extends C["enabled"]
-      ? <Value extends string>(
-          selected: D<Value>,
-          options: DReadonlyArray<Value>,
-          disabled?: D<boolean> | DReadonlyArray<boolean>,
-          contentOverride?: DPartialRecord<Value, Content>,
-        ) => // @ts-ignore
-        this is TriggerComponentFuncAssertThisType<Value>
-      : never;
-  }
-}
+  };
+};

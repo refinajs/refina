@@ -1,34 +1,35 @@
 import {
   Content,
-  Context,
   DArray,
   DPartialRecord,
   HTMLElementComponent,
-  StatusComponent,
   getD,
   ref,
 } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.statusComponent("mdNavBar")
-export class MdNavBar<Value extends string> extends StatusComponent<Value> {
-  navBarRef = ref<HTMLElementComponent<"mdui-navigation-bar">>();
-  main(
-    _: Context,
-    options: DArray<Value | [value: Value, iconName?: string]>,
-    contentOverride: DPartialRecord<Value, Content> = {},
-  ): void {
+declare module "refina" {
+  interface Components {
+    mdNavBar<Value extends string>(
+      options: DArray<Value | [value: Value, iconName?: string]>,
+      contentOverride?: DPartialRecord<Value, Content>,
+    ): Value;
+  }
+}
+MdUI.statusComponents.mdNavBar = function (_) {
+  const navBarRef = ref<HTMLElementComponent<"mdui-navigation-bar">>();
+  return (options, contentOverride = {}) => {
     const contentOverrideValue = getD(contentOverride);
 
     const firstOption = getD(getD(options)[0]);
     this.$_status ??= Array.isArray(firstOption) ? firstOption[0] : firstOption;
 
-    _.$ref(this.navBarRef) &&
+    _.$ref(navBarRef) &&
       _._mdui_navigation_bar(
         {
           value: this.$status,
           onchange: () => {
-            this.$status = this.navBarRef.current!.node.value as Value;
+            this.$status = navBarRef.current!.node.value!;
           },
         },
         _ =>
@@ -50,16 +51,5 @@ export class MdNavBar<Value extends string> extends StatusComponent<Value> {
             },
           ),
       );
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    mdNavBar: MdNavBar<any> extends C["enabled"]
-      ? <Value extends string>(
-          options: DArray<Value | [value: Value, iconName?: string]>,
-          contentOverride?: DPartialRecord<Value, Content>,
-        ) => Value
-      : never;
-  }
-}
+  };
+};

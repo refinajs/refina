@@ -1,9 +1,13 @@
-import { Content, Context, D, OutputComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdBadge")
-export class MdBadge extends OutputComponent {
-  main(_: Context, inner?: D<Content | undefined>): void {
+declare module "refina" {
+  interface Components {
+    mdBadge(inner?: D<Content | undefined>): void;
+  }
+}
+MdUI.outputComponents.mdBadge = function (_) {
+  return inner => {
     const innerValue = getD(inner);
     if (innerValue === undefined) {
       _._mdui_badge({
@@ -17,11 +21,5 @@ export class MdBadge extends OutputComponent {
         innerValue,
       );
     }
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    mdBadge: MdBadge;
-  }
-}
+  };
+};

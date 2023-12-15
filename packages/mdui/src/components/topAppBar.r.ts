@@ -1,9 +1,13 @@
-import { Content, Context, D, OutputComponent } from "refina";
+import { Content, D } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdTopAppBar")
-export class MdTopAppBar extends OutputComponent {
-  main(_: Context, inner: D<Content>, append?: D<Content>): void {
+declare module "refina" {
+  interface Components {
+    mdTopAppBar(inner: D<Content>, append?: D<Content>): void;
+  }
+}
+MdUI.outputComponents.mdTopAppBar = function (_) {
+  return (inner, append) => {
     _._mdui_top_app_bar(
       {},
       append
@@ -17,19 +21,16 @@ export class MdTopAppBar extends OutputComponent {
           }
         : inner,
     );
-  }
-}
-
-@MdUI.outputComponent("mdTopAppBarTitle")
-export class MdTopAppBarTitle extends OutputComponent {
-  main(_: Context, inner: D<Content>): void {
-    _._mdui_top_app_bar_title({}, inner);
-  }
-}
+  };
+};
 
 declare module "refina" {
-  interface OutputComponents {
-    mdTopAppBar: MdTopAppBar;
-    mdTopAppBarTitle: MdTopAppBarTitle;
+  interface Components {
+    mdTopAppBarTitle(inner: D<Content>): void;
   }
 }
+MdUI.outputComponents.mdTopAppBarTitle = function (_) {
+  return inner => {
+    _._mdui_top_app_bar_title({}, inner);
+  };
+};

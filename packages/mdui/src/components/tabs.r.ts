@@ -1,13 +1,4 @@
-import {
-  Content,
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  bySelf,
-  getD,
-  ref,
-} from "refina";
+import { Content, D, HTMLElementComponent, bySelf, getD, ref } from "refina";
 import MdUI from "../plugin";
 
 type _R<T extends readonly any[], U extends readonly any[]> =
@@ -24,11 +15,19 @@ type RepeatedTuple<T extends readonly any[]> =
         >>>>>>>>>>>>>
     >>>;
 
-@MdUI.triggerComponent("mdTabs")
-export class MdTabs extends TriggerComponent<string> {
-  tabsRef = ref<HTMLElementComponent<"mdui-tabs">>();
-  activeTab: string;
-  main(_: Context, ...nameAndContents: (D<string> | D<Content>)[]) {
+declare module "refina" {
+  interface Components {
+    mdTabs(
+      ...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>
+    ): this is {
+      $ev: string;
+    };
+  }
+}
+MdUI.triggerComponents.mdTabs = function (_) {
+  const tabsRef = ref<HTMLElementComponent<"mdui-tabs">>();
+  let activeTab: string;
+  return ((...nameAndContents: (D<string> | D<Content>)[]) => {
     const names: string[] = [],
       contents: D<Content>[] = [];
     for (let i = 0; i < nameAndContents.length; i += 2) {
@@ -36,20 +35,20 @@ export class MdTabs extends TriggerComponent<string> {
       contents.push(nameAndContents[i + 1] as D<Content>);
     }
 
-    this.activeTab ??= nameAndContents[0] as string;
-    let selectedIndex = names.findIndex(name => name === this.activeTab);
+    activeTab ??= nameAndContents[0] as string;
+    let selectedIndex = names.findIndex(name => name === activeTab);
     if (selectedIndex === -1) {
       selectedIndex = 0;
-      this.activeTab = names[0] as string;
+      activeTab = names[0] as string;
     }
 
-    _.$ref(this.tabsRef) &&
+    _.$ref(tabsRef) &&
       _._mdui_tabs(
         {
-          value: this.activeTab,
+          value: activeTab,
           onchange: () => {
-            const newActiveTab = this.tabsRef.current!.node.value!;
-            this.activeTab = newActiveTab;
+            const newActiveTab = tabsRef.current!.node.value!;
+            activeTab = newActiveTab;
             this.$fire(newActiveTab);
           },
         },
@@ -60,13 +59,7 @@ export class MdTabs extends TriggerComponent<string> {
           });
         },
       );
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    mdTabs: MdTabs extends C["enabled"]
-      ? (...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>) => void
-      : never;
-  }
-}
+  }) as unknown as (
+    ...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>
+  ) => void;
+};

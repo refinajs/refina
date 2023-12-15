@@ -1,24 +1,23 @@
-import {
-  Content,
-  Context,
-  D,
-  DArray,
-  LoopKey,
-  OutputComponent,
-  byIndex,
-  getD,
-} from "refina";
+import { Content, D, DArray, LoopKey, byIndex, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdTable")
-export class MdTable extends OutputComponent {
-  main<T>(
-    _: Context,
+declare module "refina" {
+  interface Components {
+    mdTable<T>(
+      data: D<Iterable<T>>,
+      head: DArray<Content> | D<Content>,
+      key: LoopKey<T>,
+      row: (item: T, index: number) => void,
+    ): void;
+  }
+}
+MdUI.outputComponents.mdTable = function (_) {
+  return <T>(
     data: D<Iterable<T>>,
     head: DArray<Content> | D<Content>,
     key: LoopKey<T>,
     row: (item: T, index: number) => void,
-  ): void {
+  ) => {
     _.$cls`mdui-table`;
     _._div({}, _ => {
       _._table({}, _ => {
@@ -41,36 +40,27 @@ export class MdTable extends OutputComponent {
         });
       });
     });
-  }
-}
-
-@MdUI.outputComponent("mdTableHeader")
-export class MdTableHeader extends OutputComponent {
-  main(_: Context, content: D<Content>): void {
-    _._th({}, content);
-  }
-}
-
-@MdUI.outputComponent("mdTableCell")
-export class MdTableCell extends OutputComponent {
-  main(_: Context, content: D<Content>): void {
-    _._td({}, content);
-  }
-}
+  };
+};
 
 declare module "refina" {
-  interface ContextFuncs<C> {
-    mdTable: MdTable extends C["enabled"]
-      ? <T>(
-          data: D<Iterable<T>>,
-          head: DArray<Content> | D<Content>,
-          key: LoopKey<T>,
-          row: (item: T, index: number) => void,
-        ) => void
-      : never;
-  }
-  interface OutputComponents {
-    mdTableHeader: MdTableHeader;
-    mdTableCell: MdTableCell;
+  interface Components {
+    mdTableHeader(inner: D<Content>): void;
   }
 }
+MdUI.outputComponents.mdTableHeader = function (_) {
+  return inner => {
+    _._th({}, inner);
+  };
+};
+
+declare module "refina" {
+  interface Components {
+    mdTableCell(inner: D<Content>): void;
+  }
+}
+MdUI.outputComponents.mdTableCell = function (_) {
+  return inner => {
+    _._td({}, inner);
+  };
+};

@@ -1,15 +1,13 @@
-import { Content, Context, D, OutputComponent } from "refina";
+import { Content, D } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdLayoutMain")
-export class MdLayoutMain extends OutputComponent {
-  main(_: Context, inner: D<Content>): void {
-    _._mdui_layout_main({}, inner);
-  }
-}
-
 declare module "refina" {
-  interface OutputComponents {
-    mdLayoutMain: MdLayoutMain;
+  interface Components {
+    mdLayoutMain(inner: D<Content>): void;
   }
 }
+MdUI.outputComponents.mdLayoutMain = function (_) {
+  return inner => {
+    _._mdui_layout_main({}, inner);
+  };
+};

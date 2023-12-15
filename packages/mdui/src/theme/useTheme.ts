@@ -3,7 +3,7 @@ import MdUI from "../plugin";
 export type MdUITheme = "light" | "dark" | "auto";
 
 MdUI.registerFunc("useMdTheme", function (_ckey, theme: MdUITheme = "auto") {
-  if (this.$updateState) {
+  if (this.$updateContext) {
     this.$body.addCls(`mdui-theme-${theme}`);
   }
 });

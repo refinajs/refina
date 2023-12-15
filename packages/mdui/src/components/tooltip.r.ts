@@ -1,9 +1,18 @@
-import { Content, Context, D, TriggerComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdTooltip")
-export class MdTooltip extends TriggerComponent<boolean> {
-  main(_: Context, text: D<string>, inner: D<Content>): void {
+declare module "refina" {
+  interface Components {
+    mdTooltip(
+      text: D<string>,
+      inner: D<Content>,
+    ): this is {
+      $ev: boolean;
+    };
+  }
+}
+MdUI.triggerComponents.mdTooltip = function (_) {
+  return (text, inner) => {
     _._mdui_tooltip(
       {
         content: getD(text),
@@ -14,11 +23,5 @@ export class MdTooltip extends TriggerComponent<boolean> {
         close: this.$fireWith(false),
       },
     );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdTooltip: MdTooltip;
-  }
-}
+  };
+};

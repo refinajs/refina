@@ -1,35 +1,38 @@
-import {
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { D, HTMLElementComponent, getD, ref } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdRangeSlider")
-export class MdRangeSlider extends TriggerComponent<
-  [low: number, high: number]
-> {
-  sliderRef = ref<HTMLElementComponent<"mdui-range-slider">>();
-  main(
-    _: Context,
-    lowValue: D<number>,
-    highValue: D<number>,
-    disabled: D<boolean> = false,
-    step: D<number> = 1,
-    min: D<number> = 0,
-    max: D<number> = 100,
-  ): void {
-    _.$ref(this.sliderRef) &&
+declare module "refina" {
+  interface Components {
+    mdRangeSlider(
+      lowValue: D<number>,
+      highValue: D<number>,
+      disabled?: D<boolean>,
+      step?: D<number>,
+      min?: D<number>,
+      max?: D<number>,
+    ): this is {
+      $ev: [low: number, high: number];
+    };
+  }
+}
+MdUI.triggerComponents.mdRangeSlider = function (_) {
+  const sliderRef = ref<HTMLElementComponent<"mdui-range-slider">>();
+  return (
+    lowValue,
+    highValue,
+    disabled = false,
+    step = 1,
+    min = 0,
+    max = 100,
+  ) => {
+    _.$ref(sliderRef) &&
       _._mdui_range_slider({
         disabled: getD(disabled),
         min: getD(min),
         max: getD(max),
         step: getD(step),
         oninput: () => {
-          const [newLow, newHigh] = this.sliderRef.current!.node.value;
+          const [newLow, newHigh] = sliderRef.current!.node.value;
           _.$setD(lowValue, newLow);
           _.$setD(highValue, newHigh);
           this.$fire([newLow, newHigh]);
@@ -38,13 +41,7 @@ export class MdRangeSlider extends TriggerComponent<
 
     // TODO: remove this hack
     setTimeout(() => {
-      this.sliderRef.current!.node.value = [getD(lowValue), getD(highValue)];
+      sliderRef.current!.node.value = [getD(lowValue), getD(highValue)];
     });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdRangeSlider: MdRangeSlider;
-  }
-}
+  };
+};

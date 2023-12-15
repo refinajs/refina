@@ -1,25 +1,26 @@
 import { Context, OutputComponent } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdDivider")
-export class MdDivider extends OutputComponent {
-  main(_: Context): void {
-    _._mdui_divider();
+declare module "refina" {
+  interface Components {
+    mdDivider(): void;
   }
 }
+MdUI.outputComponents.mdDivider = function (_) {
+  return () => {
+    _._mdui_divider();
+  };
+};
 
-@MdUI.outputComponent("mdVerticalDivider")
-export class MdVerticalDivider extends OutputComponent {
-  main(_: Context): void {
+declare module "refina" {
+  interface Components {
+    mdVerticalDivider(): void;
+  }
+}
+MdUI.outputComponents.mdVerticalDivider = function (_) {
+  return () => {
     _._mdui_divider({
       vertical: true,
     });
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    mdDivider: MdDivider;
-    mdVerticalDivider: MdVerticalDivider;
-  }
-}
+  };
+};

@@ -1,16 +1,14 @@
-import { Content, Context, D, OutputComponent } from "refina";
+import { Content, D } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdProse")
-export class MdProse extends OutputComponent {
-  main(_: Context, inner: D<Content>): void {
+declare module "refina" {
+  interface Components {
+    mdProse(inner: D<Content>): void;
+  }
+}
+MdUI.outputComponents.mdProse = function (_) {
+  return inner => {
     _.$cls`mdui-prose`;
     _._div({}, inner);
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    mdProse: MdProse;
-  }
-}
+  };
+};

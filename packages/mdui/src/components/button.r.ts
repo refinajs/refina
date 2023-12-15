@@ -1,45 +1,71 @@
 import { Button } from "mdui";
-import { Content, Context, D, TriggerComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import MdUI from "../plugin";
 
 export type ButtonVariant = Button["variant"];
 
-@MdUI.triggerComponent("mdButton")
-export class MdButton extends TriggerComponent<void> {
-  varient: ButtonVariant = "filled";
-
-  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
+declare module "refina" {
+  interface Components {
+    mdButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+      varient?: ButtonVariant,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+MdUI.triggerComponents.mdButton = function (_) {
+  return (inner, disabled = false, variant = "filled") => {
     _._mdui_button(
       {
         disabled: getD(disabled),
         onclick: this.$fireWith(),
-        variant: this.varient,
+        variant: variant,
       },
       inner,
     );
-  }
-}
-
-@MdUI.triggerComponent("mdTonalButton")
-export class MdTonalButton extends MdButton {
-  varient: ButtonVariant = "tonal";
-}
-
-@MdUI.triggerComponent("mdOutlinedButton")
-export class MdOutlinedButton extends MdButton {
-  varient: ButtonVariant = "outlined";
-}
-
-@MdUI.triggerComponent("mdTextButton")
-export class MdTextButton extends MdButton {
-  varient: ButtonVariant = "text";
-}
+  };
+};
 
 declare module "refina" {
-  interface TriggerComponents {
-    mdButton: MdButton;
-    mdTonalButton: MdTonalButton;
-    mdOutlinedButton: MdOutlinedButton;
-    mdTextButton: MdTextButton;
+  interface Components {
+    mdTonalButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: void;
+    };
   }
 }
+MdUI.triggerComponents.mdTonalButton = function (_) {
+  return (inner, disabled) => _.mdButton(inner, disabled, "tonal");
+};
+
+declare module "refina" {
+  interface Components {
+    mdOutlinedButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+MdUI.triggerComponents.mdOutlinedButton = function (_) {
+  return (inner, disabled) => _.mdButton(inner, disabled, "outlined");
+};
+
+declare module "refina" {
+  interface Components {
+    mdTextButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+MdUI.triggerComponents.mdTextButton = function (_) {
+  return (inner, disabled) => _.mdButton(inner, disabled, "text");
+};

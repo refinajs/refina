@@ -1,15 +1,13 @@
-import { Content, Context, D, OutputComponent } from "refina";
+import { Content, D } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdBottomAppBar")
-export class MdBottomAppBar extends OutputComponent {
-  main(_: Context, inner: D<Content>): void {
-    _._mdui_bottom_app_bar({}, inner);
-  }
-}
-
 declare module "refina" {
-  interface OutputComponents {
-    mdBottomAppBar: MdBottomAppBar;
+  interface Components {
+    mdBottomAppBar(inner: D<Content>): void;
   }
 }
+MdUI.outputComponents.mdBottomAppBar = function (_) {
+  return inner => {
+    _._mdui_bottom_app_bar({}, inner);
+  };
+};

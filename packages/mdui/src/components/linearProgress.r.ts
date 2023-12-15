@@ -1,17 +1,15 @@
-import { Context, D, OutputComponent, getD } from "refina";
+import { D, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdLinearProgress")
-export class MdLinearProgress extends OutputComponent {
-  main(_: Context, percentage?: D<number | undefined>): void {
+declare module "refina" {
+  interface Components {
+    mdLinearProgress(percentage?: D<number | undefined>): void;
+  }
+}
+MdUI.outputComponents.mdLinearProgress = function (_) {
+  return percentage => {
     _._mdui_linear_progress({
       value: getD(percentage),
     });
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    mdLinearProgress: MdLinearProgress;
-  }
-}
+  };
+};

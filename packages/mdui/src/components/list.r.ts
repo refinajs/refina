@@ -1,14 +1,17 @@
-import { Context, D, LoopKey, OutputComponent } from "refina";
+import { D, LoopKey } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdList")
-export class MdList extends OutputComponent {
-  main<T>(
-    _: Context,
-    data: D<Iterable<T>>,
-    key: LoopKey<T>,
-    body: (item: T, index: number) => void,
-  ): void {
+declare module "refina" {
+  interface Components {
+    mdList<T>(
+      data: D<Iterable<T>>,
+      key: LoopKey<T>,
+      body: (item: T, index: number) => void,
+    ): void;
+  }
+}
+MdUI.outputComponents.mdList = function (_) {
+  return (data, key, body) => {
     _._mdui_list({}, _ =>
       _.for(data, key, (item, index) =>
         _._mdui_list_item({}, _ => {
@@ -16,17 +19,5 @@ export class MdList extends OutputComponent {
         }),
       ),
     );
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    mdList: MdList extends C["enabled"]
-      ? <T>(
-          data: D<Iterable<T>>,
-          key: LoopKey<T>,
-          body: (item: T, index: number) => void,
-        ) => void
-      : never;
-  }
-}
+  };
+};

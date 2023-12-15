@@ -1,42 +1,41 @@
 import {
   Content,
-  Context,
   D,
   DPartialRecord,
   DReadonlyArray,
   HTMLElementComponent,
-  StatusComponent,
   getD,
   ref,
 } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.statusComponent("mdNavRail")
-export class MdNavRail<Value extends string> extends StatusComponent<
-  Value,
-  {
-    contained: boolean;
+declare module "refina" {
+  interface Components {
+    MdNavRailProps: {
+      contained: boolean;
+    };
+    mdNavRail<Value extends string>(
+      items: DReadonlyArray<[value: Value, iconName?: string]>,
+      contentOverride?: DPartialRecord<Value, Content>,
+      bottomSlot?: D<Content>,
+    ): Value;
   }
-> {
-  navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
-  main(
-    _: Context,
-    items: DReadonlyArray<[value: Value, iconName?: string]>,
-    contentOverride: DPartialRecord<Value, Content> = {},
-    bottomSlot?: D<Content>,
-  ): void {
+}
+MdUI.statusComponents.mdNavRail = function (_) {
+  const navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
+  return (items, contentOverride = {}, bottomSlot) => {
     const contentOverrideValue = getD(contentOverride);
 
     const firstItem = getD(getD(items)[0]);
     this.$_status ??= Array.isArray(firstItem) ? firstItem[0] : firstItem;
 
-    _.$ref(this.navRailRef) &&
+    _.$ref(navRailRef) &&
       _._mdui_navigation_rail(
         {
           value: this.$status,
           contained: this.$props.contained,
           onchange: () => {
-            this.$status = this.navRailRef.current!.node.value as Value;
+            this.$status = navRailRef.current!.node.value!;
           },
         },
         _ => {
@@ -60,17 +59,5 @@ export class MdNavRail<Value extends string> extends StatusComponent<
           }
         },
       );
-  }
-}
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    mdNavRail: MdNavRail<any> extends C["enabled"]
-      ? <Value extends string>(
-          items: DReadonlyArray<[value: Value, iconName?: string]>,
-          contentOverride?: DPartialRecord<Value, Content>,
-          bottomSlot?: D<Content>,
-        ) => Value
-      : never;
-  }
-}
+  };
+};

@@ -1,23 +1,19 @@
-import {
-  Content,
-  Context,
-  D,
-  TriggerComponent,
-  bindArgsToContent,
-  getD,
-} from "refina";
+import { Content, D, bindArgsToContent, getD } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.outputComponent("mdControlledDialog")
-export class MdControlledDialog extends TriggerComponent<boolean> {
-  main(
-    _: Context,
-    open: D<boolean>,
-    title: D<Content>,
-    body: D<Content>,
-    actions?: D<Content>,
-    presistent: D<boolean> = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    mdControlledDialog(
+      open: D<boolean>,
+      title: D<Content>,
+      body: D<Content>,
+      actions?: D<Content>,
+      presistent?: D<boolean>,
+    ): void;
+  }
+}
+MdUI.outputComponents.mdControlledDialog = function (_) {
+  return (open, title, body, actions, presistent = false) => {
     const presistentProps = getD(presistent)
       ? {}
       : { closeOnOverlayClick: true, closeOnEsc: true };
@@ -48,45 +44,49 @@ export class MdControlledDialog extends TriggerComponent<boolean> {
           );
       },
     );
+  };
+};
+
+declare module "refina" {
+  interface Components {
+    mdDialog(
+      trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
+      title: D<Content<[close: (open?: D<boolean>) => void]>>,
+      body: D<Content<[close: (open?: D<boolean>) => void]>>,
+      actions?: D<Content<[close: (open?: D<boolean>) => void]>>,
+      presistent?: D<boolean>,
+    ): this is {
+      $ev: boolean;
+    };
   }
 }
-
-@MdUI.outputComponent("mdDialog")
-export class MdDialog extends TriggerComponent<boolean> {
-  open = false;
-  main(
-    _: Context,
+MdUI.triggerComponents.mdDialog = function (_) {
+  let opened = false;
+  return (
     trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
     title: D<Content<[close: (open?: D<boolean>) => void]>>,
     body: D<Content<[close: (open?: D<boolean>) => void]>>,
     actions?: D<Content<[close: (open?: D<boolean>) => void]>>,
     presistent: D<boolean> = false,
-  ): void {
+  ) => {
     const open = (open: D<boolean> = true) => {
       const openValue = getD(open);
-      this.open = openValue;
+      opened = openValue;
       this.$fire(openValue);
     };
     const close = (open: D<boolean> = false) => {
       const openValue = getD(open);
-      this.open = openValue;
+      opened = openValue;
       this.$fire(openValue);
     };
 
     _.embed(bindArgsToContent(trigger, open));
     _.mdControlledDialog(
-      this.open,
+      opened,
       bindArgsToContent(title, close),
       bindArgsToContent(body, close),
       actions && bindArgsToContent(actions, close),
       presistent,
     );
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    mdControlledDialog: MdControlledDialog;
-    mdDialog: MdDialog;
-  }
-}
+  };
+};

@@ -1,36 +1,31 @@
-import {
-  Content,
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { Content, D, HTMLElementComponent, getD, ref } from "refina";
 import MdUI from "../plugin";
 
-@MdUI.triggerComponent("mdCollapse")
-export class MdCollapse extends TriggerComponent<
-  boolean,
-  {
-    icon: string;
+declare module "refina" {
+  interface Components {
+    MdCollapseProps: {
+      icon: string;
+    };
+    mdCollapse(
+      header: D<Content>,
+      body: D<Content>,
+      disabled?: D<boolean>,
+    ): this is {
+      $ev: boolean;
+    };
   }
-> {
-  collapseRef = ref<HTMLElementComponent<"mdui-collapse">>();
-  main(
-    _: Context,
-    header: D<Content>,
-    body: D<Content>,
-    disabled: D<boolean> = false,
-  ): void {
-    _.$ref(this.collapseRef) &&
+}
+MdUI.triggerComponents.mdCollapse = function (_) {
+  const collapseRef = ref<HTMLElementComponent<"mdui-collapse">>();
+  return (header, body, disabled = false) => {
+    _.$ref(collapseRef) &&
       _._mdui_collapse(
         {
           disabled: getD(disabled),
           accordion: true,
           onchange: () => {
             this.$fire(
-              (this.collapseRef.current!.node.value as string[]).length > 0,
+              (collapseRef.current!.node.value as string[]).length > 0,
             );
           },
         },
@@ -54,11 +49,5 @@ export class MdCollapse extends TriggerComponent<
             },
           ),
       );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    mdCollapse: MdCollapse;
-  }
-}
+  };
+};
