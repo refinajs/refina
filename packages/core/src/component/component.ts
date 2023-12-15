@@ -4,7 +4,7 @@ import { DOMElementComponent } from "../dom";
 /**
  * The main function of a component.
  */
-export type ComponentMainFunc = (...args: any[]) => void;
+export type ComponentMainFunc = (...args: any) => void;
 
 /**
  * The base class of all components.
@@ -13,7 +13,7 @@ export type ComponentMainFunc = (...args: any[]) => void;
  *
  * Register the component class to a plugin to make it available.
  */
-export abstract class Component<Props = {}> {
+export abstract class Component<Props> {
   /**
    * @param $app The app that the component is installed on.
    */
@@ -39,7 +39,7 @@ export abstract class Component<Props = {}> {
   /**
    * Call this method to set the next element as the main element of this component.
    */
-  protected $main() {
+  $main() {
     this.$app.context.$updateContext?.$intrinsic.$$pendingMainElOwner.push(
       this,
     );
@@ -64,7 +64,9 @@ export abstract class Component<Props = {}> {
 /**
  * The constructor type of **any** component class.
  */
-export type ComponentConstructor<T extends Component> = new (app: App) => T;
+export type ComponentConstructor<T extends Component<any>> = new (
+  app: App,
+) => T;
 
 /**
  * The components map.
@@ -84,6 +86,14 @@ export type ComponentConstructor<T extends Component> = new (app: App) => T;
  * **Note**: Generic types and overloaded functions are supported.
  */
 export interface Components {}
+
+export type ComponentPropsKey<N extends string = string> =
+  `${Capitalize<N>}Props`;
+
+export type ComponentProps<N extends keyof Components> =
+  ComponentPropsKey<N> extends keyof Components
+    ? Components[ComponentPropsKey<N>]
+    : {};
 
 // Add component functions to the context.
 declare module "../context/base" {

@@ -1,5 +1,11 @@
 import { Context } from "../context";
-import { Component, Components } from "./component";
+import {
+  Component,
+  ComponentMainFunc,
+  Components,
+  ComponentPropsKey,
+  ComponentProps,
+} from "./component";
 
 /**
  * The base class of all status components.
@@ -8,8 +14,8 @@ import { Component, Components } from "./component";
  *
  * The context functions of status components return the current status.
  */
-export class StatusComponent<Status, Props = {}> extends Component<Props> {
-  protected $_status: Status;
+export class StatusComponent<Status, Props> extends Component<Props> {
+  $_status: Status;
 
   /**
    * The current status of the component.
@@ -36,7 +42,9 @@ export class StatusComponent<Status, Props = {}> extends Component<Props> {
  * The name of all status components.
  */
 export type StatusComponentName = {
-  [K in keyof Components]: ((...args: any[]) => void) extends Components[K]
+  [K in keyof Components]: K extends ComponentPropsKey
+    ? never
+    : ((...args: any) => void) extends Components[K]
     ? never
     : K;
 }[keyof Components];
@@ -45,15 +53,15 @@ export type StatusComponentName = {
  * Extract the status type of a status component.
  */
 export type StatusComponentStatus<N extends StatusComponentName> =
-  Components[N] extends (...args: any[]) => infer S ? S : never;
+  Components[N] extends (...args: any) => infer S ? S : never;
 
 /**
  * The factory function of a status component.
  */
 export type StatusComponentFactory<N extends StatusComponentName> = (
-  this: Readonly<StatusComponent<StatusComponentStatus<N>>>,
+  this: StatusComponent<StatusComponentStatus<N>, ComponentProps<N>>,
   _: Context,
-) => Components[N];
+) => (...args: Parameters<Components[N]>) => void;
 
 /**
  * The status component factory function map.
@@ -74,7 +82,10 @@ export function createStatusComponentFunc(
     const component = this.$intrinsic.$$processComponent(
       ckey,
       StatusComponent,
-      factory,
+      factory as (
+        this: StatusComponent<any, any>,
+        context: Context,
+      ) => ComponentMainFunc,
       args,
     );
 

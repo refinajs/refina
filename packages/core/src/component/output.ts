@@ -1,5 +1,10 @@
 import { Context } from "../context";
-import { Component, Components } from "./component";
+import {
+  Component,
+  Components,
+  ComponentPropsKey,
+  ComponentProps,
+} from "./component";
 
 /**
  * The base class of all output components.
@@ -7,13 +12,15 @@ import { Component, Components } from "./component";
  * An output component is a component that has no status and no trigger.
  * i.e. context functions of output components have no return value.
  */
-export class OutputComponent<Props = {}> extends Component<Props> {}
+export class OutputComponent<Props> extends Component<Props> {}
 
 /**
  * The name of all output components.
  */
 export type OutputComponentName = {
-  [K in keyof Components]: ((...args: any[]) => void) extends Components[K]
+  [K in keyof Components]: K extends ComponentPropsKey
+    ? never
+    : ((...args: any) => void) extends Components[K]
     ? K
     : never;
 }[keyof Components];
@@ -22,7 +29,7 @@ export type OutputComponentName = {
  * The factory function of an output component.
  */
 export type OutputComponentFactory<N extends OutputComponentName> = (
-  this: Readonly<OutputComponent>,
+  this: OutputComponent<ComponentProps<N>>,
   _: Context,
 ) => Components[N];
 

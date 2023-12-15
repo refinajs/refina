@@ -36,7 +36,7 @@ export interface IntrinsicUpdateContext<
    *
    * If the value is `true`, the component is waiting for the first DOM element to be its default `$mainEl`.
    */
-  $$pendingMainElOwner: (DOMElementComponent | Component)[];
+  $$pendingMainElOwner: (DOMElementComponent | Component<any>)[];
 
   /**
    * The `Ref` object of the next component.
@@ -333,7 +333,7 @@ export function initializeUpdateContext(
     context.$$currentDOMParent.pendingChildren.push(textNode);
   };
 
-  context.$$processComponent = <T extends Component>(
+  context.$$processComponent = <T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
     factory: (this: T, context: Context) => ComponentMainFunc,

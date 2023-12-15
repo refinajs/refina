@@ -128,7 +128,7 @@ export function initializeRecvContext(
     // Text node has nothing to receive.
   };
 
-  context.$$processComponent = function <T extends Component>(
+  context.$$processComponent = function <T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
     factory: (this: T, context: Context) => ComponentMainFunc,

@@ -425,10 +425,10 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
    * @param args The parameters to pass to the main function of the component.
    * @returns The component instance.
    */
-  $$processComponent<T extends Component>(
+  $$processComponent<T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    factory: (this: Readonly<T>, context: Context) => ComponentMainFunc,
+    factory: (this: T, context: Context) => ComponentMainFunc,
     args: unknown[],
   ): T;
 }

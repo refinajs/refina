@@ -1,5 +1,10 @@
 import { Context, IntrinsicRecvContext } from "../context";
-import { Component, Components } from "./component";
+import {
+  Component,
+  Components,
+  ComponentPropsKey,
+  ComponentProps,
+} from "./component";
 
 /**
  * The base class of all trigger components.
@@ -7,7 +12,7 @@ import { Component, Components } from "./component";
  * A trigger component is a component that can fire events with data.
  * The return value of the context function is whether the event is fired.
  */
-export class TriggerComponent<Ev, Props = {}> extends Component<Props> {
+export class TriggerComponent<Ev, Props> extends Component<Props> {
   /**
    * Fire an event with data.
    *
@@ -40,12 +45,12 @@ export class TriggerComponent<Ev, Props = {}> extends Component<Props> {
  * The names of all trigger components.
  */
 export type TriggerComponentName = {
-  [K in keyof Components]: Components[K] extends (
-    ...args: any[]
-  ) => // @ts-ignore
-  this is {
-    $ev: infer _Ev;
-  }
+  [K in keyof Components]: K extends ComponentPropsKey
+    ? never
+    : Components[K] extends (...args: any) => // @ts-ignore
+      this is {
+        $ev: infer _Ev;
+      }
     ? K
     : never;
 }[keyof Components];
@@ -54,7 +59,7 @@ export type TriggerComponentName = {
  * Extract the event type of a trigger component.
  */
 export type TriggerComponentEvent<N extends TriggerComponentName> =
-  Components[N] extends (...args: any[]) => // @ts-ignore
+  Components[N] extends (...args: any) => // @ts-ignore
   this is {
     $ev: infer Ev;
   }
@@ -65,7 +70,7 @@ export type TriggerComponentEvent<N extends TriggerComponentName> =
  * The factory function of a trigger component.
  */
 export type TriggerComponentFactory<N extends TriggerComponentName> = (
-  this: Readonly<TriggerComponent<TriggerComponentEvent<N>>>,
+  this: TriggerComponent<TriggerComponentEvent<N>, ComponentProps<N>>,
   _: Context,
 ) => Components[N];
 

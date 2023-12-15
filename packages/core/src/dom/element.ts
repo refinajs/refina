@@ -437,7 +437,7 @@ export type HTMLElementFuncs<C extends ContextState> = {
  */
 export type SVGElementFuncData = Record<
   string,
-  D<undefined | string | number | ((...args: any[]) => any)>
+  D<undefined | string | number | ((...args: any) => any)>
 >;
 
 /**
