@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts",
+    "clean": "del-cli ./dist",
     "check": "tsc --noEmit",
     "prepare": "pnpm build"
   },
@@ -33,6 +34,7 @@
     "@refina/tsconfig": "workspace:^",
     "@types/lodash": "^4.14.199",
     "@types/node": "^20.6.5",
+    "del-cli": "^5.1.0",
     "lodash": "^4.17.21",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
