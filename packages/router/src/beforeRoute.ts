@@ -3,7 +3,8 @@ import { BeforeRouteContext, beforeRouteSymbol } from "./router";
 
 RouterPlugin.registerFunc("beforeRoute", function (_ckey: string) {
   if (this.$app.isEventReceiver(beforeRouteSymbol)) {
-    const pendingRoute = this.$app.state.event as BeforeRouteContext;
+    // @ts-ignore
+    const pendingRoute = this.$ev as BeforeRouteContext;
     if (pendingRoute) {
       Object.assign(this, pendingRoute);
       return true;
