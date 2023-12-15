@@ -1,7 +1,7 @@
 import "@refina/fluentui-icons/checkmarkCircle.r.ts";
 import "@refina/fluentui-icons/errorCircle.r.ts";
 import "@refina/fluentui-icons/warning.r.ts";
-import { Content, Context, D, OutputComponent, View, getD } from "refina";
+import { Content, Context, D, View, getD } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fField.styles";
@@ -14,16 +14,19 @@ const validationMessageIcons = {
   none: () => {},
 } satisfies Record<FieldValidationState, View>;
 
-@FluentUI.outputComponent("fField")
-export class FField extends OutputComponent {
-  main(
-    _: Context,
-    inner: D<Content>,
-    label: D<Content>,
-    required?: D<boolean | Content>,
-    state: D<FieldValidationState> = "none",
-    validationMessage?: D<Content>,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fField(
+      inner: D<Content>,
+      label: D<Content>,
+      required?: D<boolean | Content>,
+      state?: D<FieldValidationState>,
+      validationMessage?: D<Content>,
+    ): void;
+  }
+}
+FluentUI.outputComponents.fField = function (_) {
+  return (inner, label, required, state = "none", validationMessage) => {
     const stateValue = getD(state);
 
     styles.root(_);
@@ -46,11 +49,5 @@ export class FField extends OutputComponent {
         });
       }
     });
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    fField: FField;
-  }
-}
+  };
+};

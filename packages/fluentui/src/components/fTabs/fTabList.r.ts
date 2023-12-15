@@ -1,18 +1,7 @@
-import {
-  Content,
-  Context,
-  D,
-  DArray,
-  Ref,
-  TriggerComponent,
-  byIndex,
-  getD,
-  ref,
-} from "refina";
+import { Content, D, DArray, MainElRef, byIndex, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./animatedIndicator.styles";
 import "./fTab.r";
-import { FTab } from "./fTab.r";
 import styles from "./fTabList.styles";
 
 interface Rect {
@@ -22,8 +11,8 @@ interface Rect {
   height: number;
 }
 
-function getTabRect(tabRef: Ref<FTab>): Rect {
-  const element = tabRef.current!.buttonRef.current!.node;
+function getTabRect(tabRef: MainElRef): Rect {
+  const element = tabRef.current!.$mainEl!.node;
   const parentRect = element.parentElement?.getBoundingClientRect() ?? {
     x: 0,
     y: 0,
@@ -40,15 +29,20 @@ function getTabRect(tabRef: Ref<FTab>): Rect {
   };
 }
 
-@FluentUI.triggerComponent("fTabList")
-export class FTabList extends TriggerComponent<number> {
-  tabRefs = new Map<number, Ref<FTab>>();
-  main(
-    _: Context,
-    selected: D<number>,
-    contents: DArray<Content>,
-    disabled: DArray<boolean | undefined> | D<boolean> = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fTabList(
+      selected: D<number>,
+      contents: DArray<Content>,
+      disabled?: DArray<boolean | undefined> | D<boolean>,
+    ): this is {
+      $ev: number;
+    };
+  }
+}
+FluentUI.triggerComponents.fTabList = function (_) {
+  const tabRefs = new Map<number, MainElRef>();
+  return (selected, contents, disabled = false) => {
     const selectedValue = getD(selected),
       disabledRawValue = getD(disabled);
     const tabListDisabled =
@@ -61,16 +55,16 @@ export class FTabList extends TriggerComponent<number> {
     styles.root(tabListDisabled)(_);
     _._div({}, _ =>
       _.for(contents, byIndex, (content, index) => {
-        let tabRef = this.tabRefs.get(index);
+        let tabRef = tabRefs.get(index);
         if (!tabRef) {
           tabRef = ref();
-          this.tabRefs.set(index, tabRef);
+          tabRefs.set(index, tabRef);
         }
         const tabSelected = selectedValue === index;
         _.$app.pushOnetimeHook("afterModifyDOM", () => {
-          const selectedTabRect = getTabRect(this.tabRefs.get(selectedValue)!);
+          const selectedTabRect = getTabRect(tabRefs.get(selectedValue)!);
           const thisTabRect = getTabRect(tabRef!);
-          const buttonEl = tabRef!.current!.buttonRef.current!.node;
+          const buttonEl = tabRef!.current!.$mainEl!.node;
           const animationOffset = selectedTabRect.x - thisTabRect.x;
           const animationScale = selectedTabRect.width / thisTabRect.width;
           buttonEl.style.setProperty(
@@ -91,11 +85,5 @@ export class FTabList extends TriggerComponent<number> {
         }
       }),
     );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fTabList: FTabList;
-  }
-}
+  };
+};

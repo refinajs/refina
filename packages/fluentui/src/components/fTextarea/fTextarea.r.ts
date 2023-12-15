@@ -1,55 +1,52 @@
-import {
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
-import { FTextareaAppearance, FTextareaResize } from ".";
+import { D, HTMLElementComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTextarea.styles";
+import { FTextareaAppearance, FTextareaResize } from "./fTextarea.types";
 
-@FluentUI.triggerComponent("fTextarea")
-export class FTextarea extends TriggerComponent<string> {
-  appearance: FTextareaAppearance = "outline";
-  inputRef = ref<HTMLElementComponent<"textarea">>();
-
-  main(
-    _: Context,
-    value: D<string>,
-    disabled: D<boolean> = false,
-    placeholder: D<string> = "",
-    resize: D<FTextareaResize> = "none",
-  ): void {
+declare module "refina" {
+  interface Components {
+    fTextarea(
+      value?: D<string>,
+      disabled?: D<boolean>,
+      placeholder?: D<string>,
+      resize?: D<FTextareaResize>,
+      appearance?: FTextareaAppearance,
+    ): this is {
+      $ev: string;
+    };
+  }
+}
+FluentUI.triggerComponents.fTextarea = function (_) {
+  const inputRef = ref<HTMLElementComponent<"textarea">>();
+  return (
+    value,
+    disabled = false,
+    placeholder = "",
+    resize = "none",
+    appearance = "outline",
+  ) => {
     const disabledValue = getD(disabled),
       resizeValue = getD(resize);
 
     styles.root(
       disabledValue,
-      this.appearance.startsWith("filled"),
+      appearance.startsWith("filled"),
       false,
-      this.appearance,
+      appearance,
     )(_);
     _._span({}, _ => {
       styles.textarea(disabledValue, resizeValue)(_);
-      _.$ref(this.inputRef) &&
+      _.$ref(inputRef) &&
         _._textarea({
           value: getD(value),
           disabled: disabledValue,
           placeholder: getD(placeholder),
           oninput: () => {
-            const newVal = this.inputRef.current!.node.value;
+            const newVal = inputRef.current!.node.value;
             _.$setD(value, newVal);
             this.$fire(newVal);
           },
         });
     });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fTextarea: FTextarea;
-  }
-}
+  };
+};

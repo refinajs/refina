@@ -1,5 +1,5 @@
 import { computePosition } from "@floating-ui/dom";
-import { AppStateType, ref } from "refina";
+import { AppState, ref } from "refina";
 import FluentUI from "../plugin";
 import { flip as flipMiddleware, offset as offsetMidware } from "./middleware";
 import type { PositioningOptions, UsePositioninggResult } from "./types";
@@ -48,7 +48,7 @@ FluentUI.registerFunc(
 
     if (options.immediate !== false) {
       this.$app.pushOnetimeHook("afterModifyDOM", () => {
-        if (this.$app.state.type === AppStateType.UPDATE) {
+        if (this.$app.state === AppState.UPDATE) {
           // call twice to ensure the correct position as a workaround
           setTimeout(updatePosition);
           setTimeout(updatePosition);
@@ -56,7 +56,7 @@ FluentUI.registerFunc(
       });
     }
 
-    if (this.$updateState) {
+    if (this.$updateContext) {
       this.$window.addEventListener("resize", updatePosition);
     }
 

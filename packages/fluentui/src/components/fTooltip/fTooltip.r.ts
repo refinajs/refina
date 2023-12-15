@@ -1,4 +1,4 @@
-import { Content, Context, D, Embed, OutputComponent, ref } from "refina";
+import { Component, Content, D, MainElRef, ref } from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
 import "../fPortal";
@@ -6,20 +6,24 @@ import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
 import styles from "./fTooltip.styles";
 
 interface VisibleTooltip {
-  component: FTooltip;
-  hide: (by: FTooltip) => void;
+  component: Component<{}>;
+  hide: (by: Component<{}>) => void;
 }
 
-@FluentUI.outputComponent("fTooltip")
-export class FTooltip extends OutputComponent {
-  visible = false;
-  embedRef = ref<Embed>();
-  timeout = NaN;
-  clearTimeout = () => {
-    if (!Number.isNaN(this.timeout)) clearTimeout(this.timeout);
+declare module "refina" {
+  interface Components {
+    fTooltip(inner: D<Content>, content: D<Content>): void;
+  }
+}
+FluentUI.outputComponents.fTooltip = function (_) {
+  let visible = false;
+  const embedRef: MainElRef = ref();
+  let timeout = NaN;
+  const clearThisTimeout = () => {
+    if (!Number.isNaN(timeout)) clearTimeout(timeout);
   };
 
-  main(_: Context, inner: D<Content>, content: D<Content>): void {
+  return (inner: D<Content>, content: D<Content>) => {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol] as
         | VisibleTooltip
@@ -30,21 +34,21 @@ export class FTooltip extends OutputComponent {
       if (anotherTooltip) {
         visibleTooltip.hide(this);
       }
-      this.clearTimeout();
-      this.timeout = setTimeout(() => {
-        this.visible = true;
+      clearThisTimeout();
+      timeout = setTimeout(() => {
+        visible = true;
         _.$update();
       }, delay);
     };
     const onTriggerLeave = () => {
-      this.clearTimeout();
-      this.timeout = setTimeout(() => {
-        this.visible = false;
+      clearThisTimeout();
+      timeout = setTimeout(() => {
+        visible = false;
         _.$update();
       }, 250);
     };
 
-    let triggerElement = this.embedRef.current?.$mainEl?.node;
+    let triggerElement = embedRef.current?.$mainEl?.node;
     if (triggerElement) {
       triggerElement.onpointerenter = null;
       triggerElement.onpointerleave = null;
@@ -52,9 +56,9 @@ export class FTooltip extends OutputComponent {
       triggerElement.onblur = null;
     }
 
-    _.$ref(this.embedRef) && _.embed(inner);
+    _.$ref(embedRef) && _.embed(inner);
 
-    triggerElement = this.embedRef.current?.$mainEl?.node;
+    triggerElement = embedRef.current?.$mainEl?.node;
     if (triggerElement) {
       const mergeCallbacks =
         <E>(cb1: ((ev: E) => void) | null, cb2: (ev: E) => void) =>
@@ -75,7 +79,7 @@ export class FTooltip extends OutputComponent {
         onTriggerEnter,
       );
       triggerElement.onblur = mergeCallbacks(triggerElement.onblur, () => {
-        this.visible = false;
+        visible = false;
         _.$update();
       });
     } else {
@@ -84,26 +88,26 @@ export class FTooltip extends OutputComponent {
       );
     }
 
-    if (this.visible) {
+    if (visible) {
       (
         _.$permanentData[visibleTooltipSymbol] as VisibleTooltip | undefined
       )?.hide(this);
       _.$permanentData[visibleTooltipSymbol] = {
         component: this,
-        hide: (by: FTooltip) => {
+        hide: (by: Component<{}>) => {
           if (by === this) return;
-          this.clearTimeout();
-          this.visible = false;
+          clearThisTimeout();
+          visible = false;
         },
       } satisfies VisibleTooltip;
 
-      if (_.$updateState) {
+      if (_.$updateContext) {
         _.$window.addEventListener(
           "keydown",
           ev => {
             if (ev.key === "Escape") {
-              if (this.visible) {
-                this.visible = false;
+              if (visible) {
+                visible = false;
                 _.$update();
               }
             }
@@ -115,36 +119,27 @@ export class FTooltip extends OutputComponent {
       }
 
       const positioningOptions = {
-        targetRef: this.embedRef,
-        enabled: this.visible,
+        targetRef: embedRef,
+        enabled: visible,
         arrowPadding: 2 * tooltipBorderRadius,
         position: "above" as const,
         align: "center" as const,
         offset: 4,
         ...resolvePositioningShorthand("above"),
       };
-      const { containerRef } = _.usePositioning(
-        positioningOptions,
-        this.visible,
-      );
+      const { containerRef } = _.usePositioning(positioningOptions, visible);
 
       _.fPortal(_ => {
-        styles.content(this.visible)(_);
+        styles.content(visible)(_);
         _.$ref(containerRef) &&
           _._div(
             {
-              onpointerenter: this.clearTimeout,
+              onpointerenter: clearThisTimeout,
               onpointerleave: onTriggerLeave,
             },
             content,
           );
       });
     }
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    fTooltip: FTooltip;
-  }
-}
+  };
+};

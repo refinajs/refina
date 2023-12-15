@@ -1,5 +1,5 @@
 import "@refina/fluentui-icons/dismiss.r.js";
-import { Content, Context, D, TriggerComponent, getD } from "refina";
+import { Content, Context, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";
 import dialogBodyStyles from "./dialogBody.styles";
@@ -13,18 +13,30 @@ export type FDialogBodyEventData =
   | number
   | undefined;
 
-@FluentUI.triggerComponent("fDialogBody")
-export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
-  main(
-    _: Context,
-    title: D<Content>,
-    content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
-    actions?: D<
-      Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined
-    >,
-    actionsPosition: D<"start" | "end"> = "start",
-    closeButton: D<boolean> = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fDialogBody(
+      title: D<Content>,
+      content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
+      actions?: D<
+        Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined
+      >,
+      actionsPosition?: D<"start" | "end">,
+      closeButton?: D<boolean>,
+    ): this is {
+      $ev: FDialogBodyEventData;
+    };
+  }
+}
+
+FluentUI.triggerComponents.fDialogBody = function (_) {
+  return (
+    title,
+    content,
+    actions,
+    actionsPosition = "start",
+    closeButton = false,
+  ) => {
     const wrapper = (
       content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
     ) => {
@@ -65,11 +77,5 @@ export class FDialogBody extends TriggerComponent<FDialogBodyEventData> {
         _._div({}, wrapper(actionsValue));
       }
     });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fDialogBody: FDialogBody;
-  }
-}
+  };
+};

@@ -1,14 +1,29 @@
-import { Content, Context, D, TriggerComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fButton.styles";
 import { FButtonApperance, FButtonShape } from "./types";
 
-export abstract class FIntrinsicButton extends TriggerComponent<void> {
-  abstract shape: FButtonShape;
-  abstract appearance: FButtonApperance;
-  main(_: Context, inner: D<Content>, disabled: D<boolean> = false): void {
+declare module "refina" {
+  interface Components {
+    fButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+      shape?: FButtonShape,
+      appearance?: FButtonApperance,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+FluentUI.triggerComponents.fButton = function (_) {
+  return (
+    inner,
+    disabled = false,
+    shape = "rounded",
+    appearance = "secondary",
+  ) => {
     const disabledValue = getD(disabled);
-    styles.root(this.shape, this.appearance, false, disabledValue, false)(_);
+    styles.root(shape, appearance, false, disabledValue, false)(_);
     _._button(
       {
         type: "button",
@@ -17,31 +32,37 @@ export abstract class FIntrinsicButton extends TriggerComponent<void> {
       },
       inner,
     );
-  }
-}
-
-@FluentUI.triggerComponent("fButton")
-export class FButton extends FIntrinsicButton {
-  shape: FButtonShape = "rounded";
-  appearance: FButtonApperance = "secondary";
-}
-
-@FluentUI.triggerComponent("fPrimaryButton")
-export class FPrimaryButton extends FIntrinsicButton {
-  shape: FButtonShape = "rounded";
-  appearance: FButtonApperance = "primary";
-}
-
-@FluentUI.triggerComponent("fCircularButton")
-export class FCircularButton extends FIntrinsicButton {
-  shape: FButtonShape = "circular";
-  appearance: FButtonApperance = "secondary";
-}
+  };
+};
 
 declare module "refina" {
-  interface TriggerComponents {
-    fButton: FButton;
-    fPrimaryButton: FPrimaryButton;
-    fCircularButton: FCircularButton;
+  interface Components {
+    fPrimaryButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+      shape?: FButtonShape,
+    ): this is {
+      $ev: void;
+    };
   }
 }
+FluentUI.triggerComponents.fPrimaryButton = function (_) {
+  return (inner, disabled, shape) =>
+    _.fButton(inner, disabled, shape, "primary");
+};
+
+declare module "refina" {
+  interface Components {
+    fCircularButton(
+      inner: D<Content>,
+      disabled?: D<boolean>,
+      appearance?: FButtonApperance,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+FluentUI.triggerComponents.fCircularButton = function (_) {
+  return (inner, disabled, appearance) =>
+    _.fButton(inner, disabled, "circular", appearance);
+};

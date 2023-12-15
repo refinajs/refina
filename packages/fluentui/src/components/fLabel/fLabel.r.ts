@@ -1,15 +1,18 @@
-import { Content, Context, D, OutputComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fLable.styles";
 
-@FluentUI.outputComponent("fLabel")
-export class FLabel extends OutputComponent {
-  main(
-    _: Context,
-    content: D<Content>,
-    required: D<Content | boolean> = false,
-    disabled: D<boolean> = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fLabel(
+      content: D<Content>,
+      required?: D<Content | boolean>,
+      disabled?: D<boolean>,
+    ): void;
+  }
+}
+FluentUI.outputComponents.fLabel = function (_) {
+  return (content, required = false, disabled = false) => {
     const requiredValue = getD(required),
       disabledValue = getD(disabled);
     const requiredContent =
@@ -22,11 +25,5 @@ export class FLabel extends OutputComponent {
         _._span({}, requiredContent);
       }
     });
-  }
-}
-
-declare module "refina" {
-  interface OutputComponents {
-    fLabel: FLabel;
-  }
-}
+  };
+};

@@ -94,15 +94,15 @@ app.use(
   );
 
   _.fDivider("input");
-  _.fTextInput(textInputTest, false, "text input");
+  _.fInput(textInputTest, false, "text input");
   _._br();
   _.fNumberInput(numberInputTest, false, "number input");
   _._br();
   _.fPasswordInput(textInputTest, false, "password input");
   _._br();
-  _.fTextInput(textInputTest, true, "test");
+  _.fInput(textInputTest, true, "test");
   _._br();
-  _.fUnderlineTextInput(textInputTest, false, "underline");
+  _.fUnderlineInput(textInputTest, false, "underline");
 
   _.fDivider("tabs");
   _.fTabs(
@@ -153,7 +153,7 @@ app.use(
   _.fDivider("field");
   _.fField(
     _ => {
-      _.fTextInput(textInputTest, false, "test");
+      _.fInput(textInputTest, false, "test");
     },
     "Username",
     true,

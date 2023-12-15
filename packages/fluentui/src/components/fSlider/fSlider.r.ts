@@ -1,11 +1,4 @@
-import {
-  Context,
-  D,
-  DOMElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { D, DOMElementComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
@@ -17,17 +10,22 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-@FluentUI.triggerComponent("fSlider")
-export class FSlider extends TriggerComponent<number> {
-  inputRef = ref<DOMElementComponent<"input">>();
-  main(
-    _: Context,
-    value: D<number>,
-    disabled: D<boolean> = false,
-    min: D<number> = 0,
-    max: D<number> = 100,
-    step?: D<number | undefined>,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fSlider(
+      value: D<number>,
+      disabled?: D<boolean>,
+      min?: D<number>,
+      max?: D<number>,
+      step?: D<number | undefined>,
+    ): this is {
+      $ev: number;
+    };
+  }
+}
+FluentUI.triggerComponents.fSlider = function (_) {
+  const inputRef = ref<DOMElementComponent<"input">>();
+  return (value, disabled = false, min = 0, max = 100, step) => {
     const valueValue = getD(value),
       disabledValue = getD(disabled),
       minValue = getD(min),
@@ -51,7 +49,7 @@ export class FSlider extends TriggerComponent<number> {
     _._div({}, _ => {
       const onChange = () => {
         const newValue = clamp(
-          Number(this.inputRef.current!.node.value),
+          Number(inputRef.current!.node.value),
           minValue,
           maxValue,
         );
@@ -59,7 +57,7 @@ export class FSlider extends TriggerComponent<number> {
         this.$fire(newValue);
       };
       styles.input(disabledValue)(_);
-      _.$ref(this.inputRef) &&
+      _.$ref(inputRef) &&
         _._input({
           type: "range",
           disabled: disabledValue,
@@ -77,11 +75,5 @@ export class FSlider extends TriggerComponent<number> {
       styles.thumb(disabledValue)(_);
       _._div();
     });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fSlider: FSlider;
-  }
-}
+  };
+};

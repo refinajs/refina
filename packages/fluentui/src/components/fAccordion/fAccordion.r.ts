@@ -1,12 +1,22 @@
 import "@refina/fluentui-icons/chevronRight.r.ts";
-import { Content, Context, D, ToggleComponent, getD } from "refina";
+import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import headerStyles from "./header.styles";
 import itemStyles from "./item.styles";
 
-@FluentUI.statusComponent("fAccordion")
-export class FAccordion extends ToggleComponent {
-  main(_: Context, header: D<Content>, disabled: D<boolean> = false): void {
+declare module "refina" {
+  interface Components {
+    fAccordion(
+      header: D<Content>,
+      disabled?: D<boolean>,
+      defaultOpen?: D<boolean>,
+    ): boolean;
+  }
+}
+FluentUI.statusComponents.fAccordion = function (_) {
+  return (header, disabled = false, defaultOpen = false) => {
+    this.$_status ??= getD(defaultOpen);
+
     const disabledValue = getD(disabled);
 
     itemStyles.root(_);
@@ -18,7 +28,7 @@ export class FAccordion extends ToggleComponent {
           {
             onclick: () => {
               if (disabledValue) return;
-              this.$toggle();
+              this.$status = !this.$status;
             },
           },
           _ => {
@@ -33,17 +43,5 @@ export class FAccordion extends ToggleComponent {
         );
       });
     });
-  }
-}
-
-@FluentUI.statusComponent("fAccordionDefaultOpen")
-export class FAccordionDefaultOpen extends FAccordion {
-  $_status = true;
-}
-
-declare module "refina" {
-  interface StatusComponents {
-    fAccordion: FAccordion;
-    fAccordionDefaultOpen: FAccordionDefaultOpen;
-  }
-}
+  };
+};

@@ -1,11 +1,17 @@
-import { Content, Context, D, TriggerComponent } from "refina";
+import { Content, D } from "refina";
 import FluentUI from "../../plugin";
 import "../fPortal";
 import dialogSurfaceStyles from "./dialogSurface.styles";
 
-@FluentUI.triggerComponent("fDialogSurface")
-export class FDialogSurface extends TriggerComponent<void> {
-  main(_: Context, inner: D<Content>): void {
+declare module "refina" {
+  interface Components {
+    fDialogSurface(inner: D<Content>): this is {
+      $ev: void;
+    };
+  }
+}
+FluentUI.triggerComponents.fDialogSurface = function (_) {
+  return (inner: D<Content>) => {
     _.fPortal(_ => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({
@@ -37,11 +43,5 @@ export class FDialogSurface extends TriggerComponent<void> {
         inner,
       );
     });
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fDialogSurface: FDialogSurface;
-  }
-}
+  };
+};

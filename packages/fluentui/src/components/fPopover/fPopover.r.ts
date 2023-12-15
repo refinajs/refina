@@ -1,10 +1,8 @@
 import {
   Content,
-  Context,
   D,
   HTMLElementComponent,
   MainElRef,
-  TriggerComponent,
   View,
   d,
   getD,
@@ -14,17 +12,28 @@ import FluentUI from "../../plugin";
 import "../fPortal";
 import surfaceStyles from "./surface.styles";
 
-@FluentUI.triggerComponent("fControlledPopover")
-export class FControlledPopover extends TriggerComponent<void> {
-  arrowRef = ref<HTMLElementComponent<"div">>();
-  contentRef = ref<HTMLElementComponent<"div">>();
-  main(
-    _: Context,
-    targetRef: MainElRef,
-    open: D<boolean>,
-    inner: D<Content<[close: () => void]>>,
-    // withArrow: D<boolean> = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fControlledPopover(
+      targetRef: MainElRef,
+      open: D<boolean>,
+      inner: D<Content<[close: () => void]>>,
+      // withArrow？: D<boolean>,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+FluentUI.triggerComponents.fControlledPopover = function (_) {
+  const contentRef = ref<HTMLElementComponent<"div">>();
+  // const arrowRef = ref<HTMLElementComponent<"div">>();
+
+  return (
+    targetRef,
+    open,
+    inner,
+    // withArrow = false,
+  ) => {
     const innerValue = getD(inner);
     const close = () => {
       _.$setD(open, false);
@@ -32,12 +41,12 @@ export class FControlledPopover extends TriggerComponent<void> {
     };
 
     if (getD(open)) {
-      if (_.$updateState) {
+      if (_.$updateContext) {
         _.$root.addEventListener(
           "click",
           ev => {
             const target = ev.composedPath()[0] as HTMLElement;
-            const isOutside = [this.contentRef, targetRef].every(
+            const isOutside = [contentRef, targetRef].every(
               ref => !ref.current!.$mainEl!.node.contains(target),
             );
 
@@ -51,7 +60,7 @@ export class FControlledPopover extends TriggerComponent<void> {
 
       const {} = _.usePositioning({
         targetRef,
-        containerRef: this.contentRef,
+        containerRef: contentRef,
         position: "above" as const,
         align: "center" as const,
         // arrowPadding: 2 * popoverSurfaceBorderRadius,
@@ -66,13 +75,13 @@ export class FControlledPopover extends TriggerComponent<void> {
 
       _.fPortal(_ => {
         surfaceStyles.root("medium")(_);
-        _.$ref(this.contentRef) &&
+        _.$ref(contentRef) &&
           _._div(
             {
               onkeydown: ev => {
                 if (
                   ev.key === "Escape" &&
-                  this.contentRef.current?.node.contains(ev.target as Node)
+                  contentRef.current?.node.contains(ev.target as Node)
                 ) {
                   ev.preventDefault();
                   close();
@@ -82,7 +91,7 @@ export class FControlledPopover extends TriggerComponent<void> {
             _ => {
               // if (getD(withArrow)) {
               //   surfaceStyles.arrow("medium")(_);
-              //   _.$ref(this.arrowRef) && _._div();
+              //   _.$ref(arrowRef) && _._div();
               // }
               _.embed(ctx =>
                 typeof innerValue === "function"
@@ -93,37 +102,33 @@ export class FControlledPopover extends TriggerComponent<void> {
           );
       });
     }
-  }
-}
-
-@FluentUI.triggerComponent("fPopover")
-export class FPopover extends TriggerComponent<boolean> {
-  open = d(false);
-  targetRef = ref<HTMLElementComponent>();
-  main(
-    _: Context,
-    trigger: D<
-      View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>
-    >,
-    inner: D<Content<[close: () => void]>>,
-    // withArrow: D<boolean> = false,
-  ): void {
-    _.embed(ctx =>
-      getD(trigger)(ctx, this.targetRef, open => {
-        this.open.value = getD(open) ?? !this.open.value;
-      }),
-    );
-    if (
-      _.fControlledPopover(this.targetRef, this.open, inner /*, withArrow*/)
-    ) {
-      this.$fire(this.open.value);
-    }
-  }
-}
+  };
+};
 
 declare module "refina" {
-  interface TriggerComponents {
-    fControlledPopover: FControlledPopover;
-    fPopover: FPopover;
+  interface Components {
+    fPopover(
+      trigger: D<
+        View<[targetRef: MainElRef, trigger: (open?: D<boolean>) => void]>
+      >,
+      inner: D<Content<[close: () => void]>>,
+      // withArrow: D<boolean> = false,
+    ): this is {
+      $ev: boolean;
+    };
   }
 }
+FluentUI.triggerComponents.fPopover = function (_) {
+  const opened = d(false);
+  const targetRef = ref<HTMLElementComponent>();
+  return (trigger, inner) => {
+    _.embed(ctx =>
+      getD(trigger)(ctx, targetRef, open => {
+        opened.value = getD(open) ?? !opened.value;
+      }),
+    );
+    if (_.fControlledPopover(targetRef, opened, inner /*, withArrow*/)) {
+      this.$fire(opened.value);
+    }
+  };
+};

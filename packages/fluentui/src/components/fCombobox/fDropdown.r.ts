@@ -2,12 +2,10 @@ import * as keys from "@fluentui/keyboard-keys";
 import "@refina/fluentui-icons/checkmark.r.ts";
 import "@refina/fluentui-icons/chevronDown.r.ts";
 import {
-  Context,
   D,
   DArray,
   DOMElementComponent,
   HTMLElementComponent,
-  TriggerComponent,
   bySelf,
   getD,
   ref,
@@ -140,26 +138,34 @@ function getIndexFromAction(
   }
 }
 
-@FluentUI.triggerComponent("fDropdown")
-export class FDropdown<
-  OptionValue extends string,
-> extends TriggerComponent<OptionValue> {
-  appearance: DropdownAppearance = "outline";
+declare module "refina" {
+  interface Components {
+    fDropdown<OptionValue extends string>(
+      selected: D<OptionValue | "">,
+      options: DArray<OptionValue>,
+      disabled?: D<boolean | D<boolean>[]>,
+      placeholder?: D<string>,
+      appearance?: DropdownAppearance,
+    ): this is {
+      $ev: OptionValue;
+    };
+  }
+}
+FluentUI.triggerComponents.fDropdown = function (_) {
+  let activeIndex = 0;
+  let focusVisible = false;
+  let ignoreNextBlur = false;
+  let open = false;
 
-  activeIndex = 0;
-  focusVisible = false;
-  ignoreNextBlur = false;
-  open = false;
+  const buttonEl = ref<DOMElementComponent<"button">>();
 
-  buttonEl = ref<DOMElementComponent<"button">>();
-
-  main(
-    _: Context,
-    selected: D<OptionValue | "">,
-    options: DArray<OptionValue>,
-    disabled: D<boolean | D<boolean>[]> = false,
-    placeholder?: D<string>,
-  ): void {
+  return (
+    selected,
+    options,
+    disabled = false,
+    placeholder,
+    appearance = "outline",
+  ) => {
     const selectedValue = getD(selected),
       optionsValue = getD(options),
       disabledValue = getD(disabled),
@@ -186,10 +192,10 @@ export class FDropdown<
           "before-top",
         ],
       },
-      this.open,
+      open,
     );
 
-    if (this.open) {
+    if (open) {
       _.$app.pushOnetimeHook("afterModifyDOM", () => {
         containerRef.current!.$mainEl!.node.style.width = `${
           rootRef.current!.$mainEl!.node.clientWidth
@@ -206,77 +212,77 @@ export class FDropdown<
       this.$fire(option);
     };
 
-    dropdownStyles.root(this.appearance, rootDisabled, false)(_);
+    dropdownStyles.root(appearance, rootDisabled, false)(_);
     _.$ref(rootRef) &&
       _._div({}, _ => {
         dropdownStyles.button(
           selectedValue === "" && placeholder !== undefined,
           rootDisabled,
         )(_);
-        _.$ref(this.buttonEl, targetRef) &&
+        _.$ref(buttonEl, targetRef) &&
           _._button(
             {
               onblur: () => {
-                if (!this.ignoreNextBlur) {
-                  this.open = false;
+                if (!ignoreNextBlur) {
+                  open = false;
                 }
-                this.ignoreNextBlur = false;
+                ignoreNextBlur = false;
                 _.$update();
               },
               onclick: () => {
-                this.open = !this.open;
+                open = !open;
                 _.$update();
               },
               onfocus: () => {
                 _.$update();
               },
               onkeydown: ev => {
-                const action = getDropdownActionFromKey(ev, this.open);
+                const action = getDropdownActionFromKey(ev, open);
                 const maxIndex = optionsValue.length - 1;
-                let newIndex = this.activeIndex;
+                let newIndex = activeIndex;
 
                 switch (action) {
                   case "Open":
                     ev.preventDefault();
-                    this.focusVisible = true;
-                    this.open = true;
+                    focusVisible = true;
+                    open = true;
                     break;
                   case "Close":
                     // stop propagation for escape key to avoid dismissing any parent popups
                     ev.stopPropagation();
                     ev.preventDefault();
-                    this.open = false;
+                    open = false;
                     break;
                   case "CloseSelect":
-                    if (!disabledOptions.has(this.activeIndex)) {
-                      this.open = false;
+                    if (!disabledOptions.has(activeIndex)) {
+                      open = false;
                     }
                   // fallthrough
                   case "Select":
-                    this.activeIndex !== -1 && selectOption(this.activeIndex);
+                    activeIndex !== -1 && selectOption(activeIndex);
                     ev.preventDefault();
                     break;
                   case "Tab":
-                    this.activeIndex !== -1 && selectOption(this.activeIndex);
+                    activeIndex !== -1 && selectOption(activeIndex);
                     break;
                   default:
                     newIndex = getIndexFromAction(
                       action,
-                      this.activeIndex,
+                      activeIndex,
                       maxIndex,
                     );
                 }
 
-                if (newIndex !== this.activeIndex) {
+                if (newIndex !== activeIndex) {
                   // prevent default page scroll/keyboard action if the index changed
                   ev.preventDefault();
-                  this.activeIndex = newIndex;
-                  this.focusVisible = true;
+                  activeIndex = newIndex;
+                  focusVisible = true;
                 }
                 _.$update();
               },
               onmouseover: () => {
-                this.focusVisible = false;
+                focusVisible = false;
                 _.$update();
               },
             },
@@ -289,7 +295,7 @@ export class FDropdown<
               _._span({}, _ => _.fiChevronDownRegular());
             },
           );
-        if (this.open) {
+        if (open) {
           _.fPortal(
             _ =>
               dropdownStyles.listbox(_) &&
@@ -298,41 +304,40 @@ export class FDropdown<
               _._div(
                 {
                   onclick: () => {
-                    this.buttonEl.current!.node.focus();
+                    buttonEl.current!.node.focus();
                     _.$update();
                   },
                   onmouseover: () => {
-                    this.focusVisible = false;
+                    focusVisible = false;
                     _.$update();
                   },
                   onmousedown: () => {
-                    this.ignoreNextBlur = true;
+                    ignoreNextBlur = true;
                     _.$update();
                   },
                   onkeydown: ev => {
-                    const action = getDropdownActionFromKey(ev, this.open);
+                    const action = getDropdownActionFromKey(ev, open);
                     const maxIndex = optionsValue.length - 1;
-                    let newIndex = this.activeIndex;
+                    let newIndex = activeIndex;
 
                     switch (action) {
                       case "Select":
                       case "CloseSelect":
-                        this.activeIndex !== -1 &&
-                          selectOption(this.activeIndex);
+                        activeIndex !== -1 && selectOption(activeIndex);
                         break;
                       default:
                         newIndex = getIndexFromAction(
                           action,
-                          this.activeIndex,
+                          activeIndex,
                           maxIndex,
                         );
                     }
 
-                    if (newIndex !== this.activeIndex) {
+                    if (newIndex !== activeIndex) {
                       // prevent default page scroll/keyboard action if the index changed
                       ev.preventDefault();
-                      this.activeIndex = newIndex;
-                      this.focusVisible = true;
+                      activeIndex = newIndex;
+                      focusVisible = true;
                     }
                     _.$update();
                   },
@@ -340,12 +345,12 @@ export class FDropdown<
                 _ =>
                   _.for(options, bySelf, (option, index) => {
                     const optionValue = getD(option);
-                    const active = index === this.activeIndex;
+                    const active = index === activeIndex;
                     const selected = optionValue === selectedValue;
                     const optionDisabled = disabledOptions.has(index);
                     optionStyles.root(
                       active,
-                      this.focusVisible,
+                      focusVisible,
                       optionDisabled,
                       selected,
                     )(_);
@@ -355,9 +360,9 @@ export class FDropdown<
                           if (optionDisabled) {
                             ev.preventDefault();
                           } else {
-                            this.open = false;
+                            open = false;
                           }
-                          this.activeIndex = index;
+                          activeIndex = index;
                           selectOption(index);
                           _.$update();
                         },
@@ -377,39 +382,23 @@ export class FDropdown<
           );
         }
       });
-  }
-}
-
-@FluentUI.triggerComponent("fUnderlineDropdown")
-export class FUnderlineDropdown<
-  OptionValue extends string,
-> extends FDropdown<OptionValue> {
-  appearance: DropdownAppearance = "underline";
-}
+  };
+};
 
 declare module "refina" {
-  interface ContextFuncs<C> {
-    fDropdown: FDropdown<any> extends C["enabled"]
-      ? <OptionValue extends string>(
-          current: D<OptionValue | null>,
-          options: DArray<OptionValue>,
-          disabled?: D<boolean | D<boolean>[]>,
-          placeholder?: D<string>,
-        ) => this is {
-          $: FDropdown<OptionValue>;
-          $ev: OptionValue;
-        }
-      : never;
-    fUnderlineDropdown: FUnderlineDropdown<any> extends C["enabled"]
-      ? <OptionValue extends string>(
-          current: D<OptionValue | null>,
-          options: DArray<OptionValue>,
-          disabled?: D<boolean | D<boolean>[]>,
-          placeholder?: D<string>,
-        ) => this is {
-          $: FUnderlineDropdown<OptionValue>;
-          $ev: OptionValue;
-        }
-      : never;
+  interface Components {
+    fUnderlineDropdown<OptionValue extends string>(
+      selected: D<OptionValue | "">,
+      options: DArray<OptionValue>,
+      disabled?: D<boolean | D<boolean>[]>,
+      placeholder?: D<string>,
+    ): this is {
+      $ev: OptionValue;
+    };
   }
 }
+FluentUI.triggerComponents.fUnderlineDropdown = function (_) {
+  return (selected, options, disabled, placeholder) => {
+    _.fDropdown(selected, options, disabled, placeholder, "underline");
+  };
+};

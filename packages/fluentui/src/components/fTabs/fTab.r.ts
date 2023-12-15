@@ -1,47 +1,36 @@
-import {
-  Content,
-  Context,
-  D,
-  HTMLElementComponent,
-  TriggerComponent,
-  getD,
-  ref,
-} from "refina";
+import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTab.styles";
 
-@FluentUI.triggerComponent("fTab")
-export class FTab extends TriggerComponent<void> {
-  buttonRef = ref<HTMLElementComponent<"button">>();
-  main(
-    _: Context,
-    selected: D<boolean>,
-    content: D<Content>,
-    disabled: D<boolean> = false,
-    animating: boolean = false,
-  ): void {
+declare module "refina" {
+  interface Components {
+    fTab(
+      selected: D<boolean>,
+      content: D<Content>,
+      disabled?: D<boolean>,
+      animating?: boolean,
+    ): this is {
+      $ev: void;
+    };
+  }
+}
+FluentUI.triggerComponents.fTab = function (_) {
+  return (selected, content, disabled = false, animating = false) => {
     const selectedValue = getD(selected),
       disabledValue = getD(disabled);
     styles.root(disabledValue, selectedValue, animating, false)(_);
-    _.$ref(this.buttonRef) &&
-      _._button(
-        {
-          onclick: this.$fireWith(),
-          disabled: disabledValue,
-        },
-        _ => {
-          styles.content(false, false)(_);
-          _._span({}, content);
+    _._button(
+      {
+        onclick: this.$fireWith(),
+        disabled: disabledValue,
+      },
+      _ => {
+        styles.content(false, false)(_);
+        _._span({}, content);
 
-          styles.contentReservedSpace(false)(_);
-          _._span({}, content);
-        },
-      );
-  }
-}
-
-declare module "refina" {
-  interface TriggerComponents {
-    fTab: FTab;
-  }
-}
+        styles.contentReservedSpace(false)(_);
+        _._span({}, content);
+      },
+    );
+  };
+};
