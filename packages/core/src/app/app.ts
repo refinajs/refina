@@ -213,9 +213,9 @@ export class App {
               this.execRecv(receiver, data);
 
               console.debug(
-                `[-] recv executed with id ${String(receiver)} in ${
+                `[-] recv executed in ${
                   window.performance.now() - startTime
-                }ms`,
+                }ms. Received=${this.context.$recvContext!.$received}`,
               );
 
               // There must be at least one `UPDATE` call.
