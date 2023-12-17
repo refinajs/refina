@@ -28,7 +28,7 @@ export default function refina(
         map,
       };
     },
-  } satisfies Plugin;
+  } as Plugin;
 }
 
 export { RefinaTransformer };
