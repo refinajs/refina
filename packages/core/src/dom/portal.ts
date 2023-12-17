@@ -124,7 +124,7 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
   } else {
     const recvContext = this.$recvContext!.$intrinsic;
 
-    recvContext.$$processDOMElement("_", inner);
+    recvContext.$$processDOMElement(ckey, inner);
   }
 
   return portal;
