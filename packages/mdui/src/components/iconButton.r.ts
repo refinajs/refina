@@ -37,7 +37,8 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdFilledIconButton = function (_) {
-  return (icon, disabled) => _.mdIconButton(icon, disabled, "filled");
+  return (icon, disabled) =>
+    _.mdIconButton(icon, disabled, "filled") && this.$fire();
 };
 
 declare module "refina" {
@@ -51,7 +52,8 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdTonalIconButton = function (_) {
-  return (icon, disabled) => _.mdIconButton(icon, disabled, "tonal");
+  return (icon, disabled) =>
+    _.mdIconButton(icon, disabled, "tonal") && this.$fire();
 };
 
 declare module "refina" {
@@ -65,5 +67,6 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdOutlinedIconButton = function (_) {
-  return (icon, disabled) => _.mdIconButton(icon, disabled, "outlined");
+  return (icon, disabled) =>
+    _.mdIconButton(icon, disabled, "outlined") && this.$fire();
 };

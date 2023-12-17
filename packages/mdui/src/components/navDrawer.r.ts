@@ -40,7 +40,7 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdNavDrawer = function (_) {
-  let open = false;
+  let opened = false;
   return (
     trigger: D<Content<[open: (open?: boolean) => void]>>,
     inner: D<Content<[close: (open?: boolean) => void]>>,
@@ -48,15 +48,15 @@ MdUI.triggerComponents.mdNavDrawer = function (_) {
   ) => {
     _.embed(
       bindArgsToContent(trigger, (open = true) => {
-        open = open;
-        _.$update();
+        opened = open;
+        this.$fire(open);
       }),
     );
     _.mdControlledNavDrawer(
-      open,
+      opened,
       bindArgsToContent(inner, (open = false) => {
-        open = open;
-        _.$update();
+        opened = open;
+        this.$fire(open);
       }),
       modal,
     );

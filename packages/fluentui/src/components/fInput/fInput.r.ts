@@ -81,7 +81,7 @@ FluentUI.triggerComponents.fNumberInput = function (_) {
       appearance,
       v => (Number.isNaN(v) ? "" : String(v)),
       v => parseInt(v),
-    );
+    ) && this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -98,7 +98,8 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fPasswordInput = function (_) {
   return (value, disabled, placeholder, appearance = "outline") =>
-    _.fInput(value, disabled, placeholder, "password", appearance);
+    _.fInput(value, disabled, placeholder, "password", appearance) &&
+    this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -115,7 +116,8 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fUnderlineInput = function (_) {
   return (value, disabled, placeholder, type) =>
-    _.fInput(value, disabled, placeholder, type, "underline");
+    _.fInput(value, disabled, placeholder, type, "underline") &&
+    this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -131,7 +133,8 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fUnderlineNumberInput = function (_) {
   return (value, disabled, placeholder) =>
-    _.fNumberInput(value, disabled, placeholder, "underline");
+    _.fNumberInput(value, disabled, placeholder, "underline") &&
+    this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -147,5 +150,6 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fUnderlinePasswordInput = function (_) {
   return (value, disabled, placeholder) =>
-    _.fPasswordInput(value, disabled, placeholder, "underline");
+    _.fPasswordInput(value, disabled, placeholder, "underline") &&
+    this.$fire(_.$ev);
 };

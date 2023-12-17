@@ -48,7 +48,7 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fPrimaryButton = function (_) {
   return (inner, disabled, shape) =>
-    _.fButton(inner, disabled, shape, "primary");
+    _.fButton(inner, disabled, shape, "primary") && this.$fire();
 };
 
 declare module "refina" {
@@ -64,5 +64,5 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fCircularButton = function (_) {
   return (inner, disabled, appearance) =>
-    _.fButton(inner, disabled, "circular", appearance);
+    _.fButton(inner, disabled, "circular", appearance) && this.$fire();
 };

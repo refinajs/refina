@@ -86,6 +86,7 @@ MdUI.triggerComponents.mdOutlinedSelect = function (_) {
     disabled: D<boolean> | DReadonlyArray<boolean> = false,
     contentOverride: DPartialRecord<Value, Content> = {},
   ) => {
-    _.mdSelect(value, options, disabled, contentOverride, "outlined");
+    _.mdSelect(value, options, disabled, contentOverride, "outlined") &&
+      this.$fire(_.$ev);
   };
 };

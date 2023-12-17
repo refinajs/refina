@@ -45,7 +45,8 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdOutlinedTextField = function (_) {
-  return (value, label) => _.mdTextField(value, label, false, "outlined");
+  return (value, label) =>
+    _.mdTextField(value, label, false, "outlined") && this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -92,7 +93,8 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdOutlinedPasswordInput = function (_) {
-  return (value, label) => _.mdPasswordInput(value, label, false, "outlined");
+  return (value, label) =>
+    _.mdPasswordInput(value, label, false, "outlined") && this.$fire(_.$ev);
 };
 
 declare module "refina" {
@@ -156,5 +158,6 @@ declare module "refina" {
   }
 }
 MdUI.triggerComponents.mdOutlinedTextarea = function (_) {
-  return (value, label) => _.mdTextarea(value, label, false, "outlined");
+  return (value, label) =>
+    _.mdTextarea(value, label, false, "outlined") && this.$fire(_.$ev);
 };
