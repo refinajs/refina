@@ -1,6 +1,6 @@
 # `@refina/mdui`
 
-![npm](https://img.shields.io/npm/v/%40refina%2Fmdui?color=green)
+[![npm](https://img.shields.io/npm/v/%40refina%2Fmdui?color=green)](https://www.npmjs.com/package/@refina/mdui)
 
 This is the adapted version of **[MdUI](https://mdui.org/) v2** for [**Refina**](https://refina.vercel.app).
 
