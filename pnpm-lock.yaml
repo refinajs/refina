@@ -369,13 +369,13 @@ importers:
 
   packages/vite-plugin:
     dependencies:
-      '@refina/transformer':
-        specifier: workspace:^
-        version: link:../transformer
       vite:
         specifier: ^4.4.8
         version: 4.4.9(@types/node@20.6.5)
     devDependencies:
+      '@refina/transformer':
+        specifier: workspace:^
+        version: link:../transformer
       '@types/node':
         specifier: ^20.6.5
         version: 20.6.5
