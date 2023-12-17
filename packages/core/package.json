@@ -9,7 +9,9 @@
     "typescript"
   ],
   "files": [
-    "src"
+    "src",
+    "README.md",
+    "tsconfig.json"
   ],
   "type": "module",
   "main": "./src/index.ts",
