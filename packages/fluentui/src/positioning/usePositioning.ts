@@ -15,7 +15,8 @@ FluentUI.registerFunc(
     const targetRef = options.targetRef ?? ref(),
       containerRef = options.containerRef ?? ref();
 
-    if (!enabled) return { targetRef, containerRef, updatePosition: () => {} };
+    if (this.$recvContext || !enabled)
+      return { targetRef, containerRef, updatePosition: () => {} };
 
     const { align, position, offset, fallbackPositions } = options;
 
