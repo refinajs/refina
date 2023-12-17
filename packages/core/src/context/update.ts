@@ -262,7 +262,7 @@ export function initializeUpdateContext(
         // The context function is for a SVG element.
         const tagName = (funcName[4].toLowerCase() +
           funcName.slice(5)) as keyof SVGElementTagNameMap;
-        processSVGElement(
+        context.$$processSVGElement(
           ckey,
           tagName,
           context.$$consumeCls(),
@@ -278,7 +278,7 @@ export function initializeUpdateContext(
         const rawTagName = funcName.slice(1);
         const tagName = (context.$app.htmlElementAlias[rawTagName] ??
           rawTagName) as keyof HTMLElementTagNameMap;
-        processHTMLElement(
+        context.$$processHTMLElement(
           ckey,
           tagName,
           context.$$consumeCls(),
@@ -398,13 +398,7 @@ export function initializeUpdateContext(
     return component;
   };
 
-  /**
-   * Process the content of a DOM element component in `UPDATE` state.
-   *
-   * @param el The DOM element component.
-   * @param content The content of the DOM element component.
-   */
-  function updateDOMContent(el: DOMElementComponent, content?: D<Content>) {
+  context.$$updateDOMContent = (el, content) => {
     const parent = context.$$currentDOMParent;
     const refTreeNode = context.$$currentRefTreeNode;
     parent.pendingChildren.push(el);
@@ -435,28 +429,17 @@ export function initializeUpdateContext(
       context.$$currentDOMParent = parent;
       context.$$currentRefTreeNode = refTreeNode;
     }
-  }
+  };
 
-  /**
-   * Process a HTML element.
-   *
-   * @param ckey The Ckey of the element.
-   * @param tagName The tag name of the element.
-   * @param cls The classes of the element.
-   * @param css The styles of the element.
-   * @param data The data to assign to the element.
-   * @param inner The inner content of the element.
-   * @param eventListeners The event listeners of the element.
-   */
-  function processHTMLElement<E extends keyof HTMLElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    cls: string,
-    css: string,
-    data: Partial<HTMLElementTagNameMap[E]> = {},
-    inner?: D<Content>,
-    eventListeners: DOMElementEventListenersInfoRaw<E> = {},
-  ) {
+  context.$$processHTMLElement = (
+    ckey,
+    tagName,
+    cls,
+    css,
+    data = {},
+    inner,
+    eventListeners = {},
+  ) => {
     let el = context.$$currentRefTreeNode[ckey] as
       | DOMElementComponent
       | undefined;
@@ -471,7 +454,7 @@ export function initializeUpdateContext(
     context.$$fulfillRef(el);
     context.$$fulfillMainEl(el);
 
-    updateDOMContent(el, inner);
+    context.$$updateDOMContent(el, inner);
 
     for (const key in data) {
       if (data[key] === undefined) {
@@ -488,28 +471,17 @@ export function initializeUpdateContext(
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);
-  }
+  };
 
-  /**
-   * Process a SVG element.
-   *
-   * @param ckey The Ckey of the element.
-   * @param tagName The tag name of the element.
-   * @param cls The classes of the element.
-   * @param css The styles of the element.
-   * @param data The data to assign to the element.
-   * @param inner The inner content of the element.
-   * @param eventListeners The event listeners of the element.
-   */
-  function processSVGElement<E extends keyof SVGElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    cls: string,
-    css: string,
-    data: SVGElementFuncData = {},
-    inner?: D<Content>,
-    eventListeners: DOMElementEventListenersInfoRaw<E> = {},
-  ) {
+  context.$$processSVGElement = (
+    ckey,
+    tagName,
+    cls,
+    css,
+    data = {},
+    inner,
+    eventListeners = {},
+  ) => {
     let el = context.$$currentRefTreeNode[ckey] as
       | DOMElementComponent
       | undefined;
@@ -524,7 +496,7 @@ export function initializeUpdateContext(
     context.$$fulfillRef(el);
     context.$$fulfillMainEl(el);
 
-    updateDOMContent(el, inner);
+    context.$$updateDOMContent(el, inner);
 
     for (const key in data) {
       const value = data[key];
@@ -544,5 +516,5 @@ export function initializeUpdateContext(
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);
-  }
+  };
 }

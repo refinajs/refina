@@ -75,6 +75,35 @@ export function initializeRecvContext(
 
   context.$$assertEmpty = () => {};
 
+  context.$$ = function (funcName, ckey, ...args) {
+    if (funcName[0] === "_") {
+      if (this.$received) {
+        return;
+      }
+
+      // The context function is for a HTML or SVG element.
+      const [_data, inner, _eventListeners] = args;
+
+      context.$$processDOMElement(ckey, inner as D<Content> | undefined);
+
+      // HTML and SVG element functions do not have a return value.
+      return;
+    }
+    // The context function is for a user-defined component.
+    const func = this.$app.contextFuncs[funcName as keyof RealContextFuncs];
+    if (import.meta.env.DEV) {
+      if (!func) {
+        throw new Error(`Unknown element ${funcName}.`);
+      }
+    }
+    // Return the return value of the context function.
+    return func.call(this._, ckey, ...args);
+  };
+
+  context.$$t = (ckey, content) => {
+    // Text node has nothing to receive.
+  };
+
   context.$$processDOMElement = (ckey: string, content?: D<Content>) => {
     const contentValue = getD(content);
     if (typeof contentValue === "function") {
@@ -98,34 +127,6 @@ export function initializeRecvContext(
       }
     }
     // Text node is ignored in `RECV` state.
-  };
-
-  context.$$ = function (funcName, ckey, ...args) {
-    if (this.$received) {
-      return;
-    }
-    if (funcName[0] === "_") {
-      // The context function is for a HTML or SVG element.
-      const [_data, inner, _eventListeners] = args;
-
-      context.$$processDOMElement(ckey, inner as D<Content> | undefined);
-
-      // HTML and SVG element functions do not have a return value.
-      return;
-    }
-    // The context function is for a user-defined component.
-    const func = this.$app.contextFuncs[funcName as keyof RealContextFuncs];
-    if (import.meta.env.DEV) {
-      if (!func) {
-        throw new Error(`Unknown element ${funcName}.`);
-      }
-    }
-    // Return the return value of the context function.
-    return func.call(this._, ckey, ...args);
-  };
-
-  context.$$t = (ckey, content) => {
-    // Text node has nothing to receive.
   };
 
   context.$$processComponent = function <T extends Component<any>>(
