@@ -40,16 +40,14 @@
   "readme": "https://github.com/KermanX/refina#readme",
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
-  "dependencies": {
-    "@refina/transformer": "workspace:^"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@refina/transformer": "workspace:^",
     "@types/node": "^20.6.5",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "@types/node": "^20.6.5",
     "vite": "^4.4.8"
   }
 }
