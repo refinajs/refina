@@ -399,6 +399,7 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fUnderlineDropdown = function (_) {
   return (selected, options, disabled, placeholder) => {
-    _.fDropdown(selected, options, disabled, placeholder, "underline");
+    _.fDropdown(selected, options, disabled, placeholder, "underline") &&
+      this.$fire(_.$ev);
   };
 };
