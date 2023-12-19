@@ -30,6 +30,7 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "check": "tsc --noEmit",
+    "prepare": "pnpm build",
     "prepublishOnly": "npm run build"
   },
   "author": "_Kerman",
