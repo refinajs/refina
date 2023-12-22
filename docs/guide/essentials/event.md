@@ -54,7 +54,7 @@ Other components may values of other meanings.
 :::
 
 :::info
-As you can seen, the way how Refina handles events is very similar to [Dear ImGui](https://github.com/ocornut/imgui).
+As you can see, the way how Refina handles events is very similar to [Dear ImGui](https://github.com/ocornut/imgui).
 :::
 
 ### Get the Event Data
