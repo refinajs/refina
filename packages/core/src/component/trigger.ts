@@ -1,9 +1,9 @@
-import { Context, IntrinsicRecvContext } from "../context";
+import { Context, IntrinsicRecvContext, LowlevelContext } from "../context";
 import {
   Component,
-  Components,
-  ComponentPropsKey,
   ComponentProps,
+  ComponentPropsKey,
+  Components,
 } from "./component";
 
 /**
@@ -90,8 +90,12 @@ export type TriggerComponentFactoryMap = {
 export function createTriggerComponentFunc(
   factory: TriggerComponentFactory<TriggerComponentName>,
 ) {
-  return function (this: Context, ckey: string, ...args: unknown[]): boolean {
-    const component = this.$intrinsic.$$processComponent(
+  return function (
+    this: LowlevelContext,
+    ckey: string,
+    ...args: unknown[]
+  ): boolean {
+    const component = this.$$processComponent(
       ckey,
       TriggerComponent,
       factory,

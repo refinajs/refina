@@ -26,6 +26,8 @@ import {
 export interface IntrinsicUpdateContext<
   CS extends ContextState = InitialContextState,
 > extends IntrinsicBaseContext<CS> {
+  $lowlevel: LowlevelUpdateContext;
+
   /**
    * The current parent DOM element.
    */
@@ -146,6 +148,13 @@ export interface IntrinsicUpdateContext<
  */
 export type UpdateContext<CS extends ContextState = InitialContextState> =
   Readonly<Omit<IntrinsicUpdateContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
+
+/**
+ * The full context type in `UPDATE` state, with context funcs and lowlevel APIs.
+ */
+export type LowlevelUpdateContext<
+  CS extends ContextState = InitialContextState,
+> = IntrinsicUpdateContext<CS> & ContextFuncs<CS>;
 
 /**
  * Intialize the context in `UPDATE` state.
@@ -303,7 +312,7 @@ export function initializeUpdateContext(
       }
     }
     // Return the return value of the context function.
-    return func.call(context._, ckey, ...args);
+    return func.call(context.$lowlevel, ckey, ...args);
   };
 
   context.$$t = (ckey, content) => {

@@ -40,9 +40,7 @@ export abstract class Component<Props> {
    * Call this method to set the next element as the main element of this component.
    */
   $main() {
-    this.$app.context.$updateContext?.$intrinsic.$$pendingMainElOwner.push(
-      this,
-    );
+    this.$app.context.$updateContext?.$lowlevel.$$pendingMainElOwner.push(this);
   }
 
   /**

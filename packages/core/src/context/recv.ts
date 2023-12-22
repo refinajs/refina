@@ -18,6 +18,8 @@ import {
 export interface IntrinsicRecvContext<
   CS extends ContextState = InitialContextState,
 > extends IntrinsicBaseContext<CS> {
+  $lowlevel: LowlevelRecvContext;
+
   /**
    * The receiver of the event.
    */
@@ -42,6 +44,12 @@ export interface IntrinsicRecvContext<
  */
 export type RecvContext<CS extends ContextState = InitialContextState> =
   Readonly<Omit<IntrinsicRecvContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
+
+/**
+ * The full context type in `RECV` state, with context funcs and lowlevel APIs.
+ */
+export type LowlevelRecvContext<CS extends ContextState = InitialContextState> =
+  IntrinsicRecvContext<CS> & ContextFuncs<CS>;
 
 /**
  * Initialize a context in `RECV` state.
@@ -97,7 +105,7 @@ export function initializeRecvContext(
       }
     }
     // Return the return value of the context function.
-    return func.call(this._, ckey, ...args);
+    return func.call(this.$lowlevel, ckey, ...args);
   };
 
   context.$$t = (ckey, content) => {

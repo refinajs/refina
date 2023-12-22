@@ -1,5 +1,5 @@
 import { Prelude } from "../constants";
-import { Context } from "../context";
+import { LowlevelContext } from "../context";
 import { PD, d } from "../data";
 
 declare module "../context/base" {
@@ -13,8 +13,10 @@ declare module "../context/base" {
   }
 }
 
-Prelude.registerFunc("var", function <T>(this: Context, ckey: string, init: T) {
-  const refTreeNode = this.$intrinsic.$$currentRefTreeNode;
+Prelude.registerFunc("var", function <
+  T,
+>(this: LowlevelContext, ckey: string, init: T) {
+  const refTreeNode = this.$$currentRefTreeNode;
   if (!refTreeNode[ckey]) {
     refTreeNode[ckey] = d(init);
   }

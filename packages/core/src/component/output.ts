@@ -1,9 +1,9 @@
-import { Context } from "../context";
+import { Context, LowlevelContext } from "../context";
 import {
   Component,
-  Components,
-  ComponentPropsKey,
   ComponentProps,
+  ComponentPropsKey,
+  Components,
 } from "./component";
 
 /**
@@ -49,7 +49,11 @@ export type OutputComponentFactoryMap = {
 export function createOutputComponentFunc(
   factory: OutputComponentFactory<OutputComponentName>,
 ) {
-  return function (this: Context, ckey: string, ...args: unknown[]): void {
-    this.$intrinsic.$$processComponent(ckey, OutputComponent, factory, args);
+  return function (
+    this: LowlevelContext,
+    ckey: string,
+    ...args: unknown[]
+  ): void {
+    this.$$processComponent(ckey, OutputComponent, factory, args);
   };
 }

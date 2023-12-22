@@ -1,10 +1,10 @@
-import { Context } from "../context";
+import { Context, LowlevelContext } from "../context";
 import {
   Component,
   ComponentMainFunc,
-  Components,
-  ComponentPropsKey,
   ComponentProps,
+  ComponentPropsKey,
+  Components,
 } from "./component";
 
 /**
@@ -78,8 +78,12 @@ export type StatusComponentFactoryMap = {
 export function createStatusComponentFunc(
   factory: StatusComponentFactory<StatusComponentName>,
 ) {
-  return function (this: Context, ckey: string, ...args: unknown[]): unknown {
-    const component = this.$intrinsic.$$processComponent(
+  return function (
+    this: LowlevelContext,
+    ckey: string,
+    ...args: unknown[]
+  ): unknown {
+    const component = this.$$processComponent(
       ckey,
       StatusComponent,
       factory as (

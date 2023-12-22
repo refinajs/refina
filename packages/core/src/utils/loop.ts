@@ -1,6 +1,6 @@
 import { RefTreeNode } from "../app";
 import { Prelude } from "../constants";
-import { Context } from "../context";
+import { LowlevelContext } from "../context";
 import { D, getD } from "../data";
 
 /**
@@ -32,12 +32,10 @@ type LoopRefTreeNodeMap = Record<string, RefTreeNode>;
 
 Prelude.registerFunc("for", function <
   T,
->(this: Context, ckey: string, iterable: D<Iterable<T>>, key: LoopKey<T>, body: (item: T, index: number) => void) {
-  this.$intrinsic.$$currentRefTreeNode[ckey] ??= {};
-  const refTreeNodes = this.$intrinsic.$$currentRefTreeNode[
-    ckey
-  ] as LoopRefTreeNodeMap;
-  const parentRefTreeNode = this.$intrinsic.$$currentRefTreeNode;
+>(this: LowlevelContext, ckey: string, iterable: D<Iterable<T>>, key: LoopKey<T>, body: (item: T, index: number) => void) {
+  this.$$currentRefTreeNode[ckey] ??= {};
+  const refTreeNodes = this.$$currentRefTreeNode[ckey] as LoopRefTreeNodeMap;
+  const parentRefTreeNode = this.$$currentRefTreeNode;
 
   const keyFunc = normalizeKey(key);
   let i = 0;
@@ -45,17 +43,17 @@ Prelude.registerFunc("for", function <
     const key = keyFunc(item, i).toString();
 
     refTreeNodes[key] ??= {};
-    this.$intrinsic.$$currentRefTreeNode = refTreeNodes[key];
+    this.$$currentRefTreeNode = refTreeNodes[key];
 
     body(item, i);
     if (import.meta.env.DEV) {
-      this.$intrinsic.$$assertEmpty();
+      this.$$assertEmpty();
     }
 
     i++;
   }
 
-  this.$intrinsic.$$currentRefTreeNode = parentRefTreeNode;
+  this.$$currentRefTreeNode = parentRefTreeNode;
 
   return false;
 });
@@ -63,26 +61,24 @@ Prelude.registerFunc("for", function <
 Prelude.registerFunc(
   "forTimes",
   function (ckey: string, times: D<number>, body: (index: number) => void) {
-    this.$intrinsic.$$currentRefTreeNode[ckey] ??= {};
-    const refTreeNodes = this.$intrinsic.$$currentRefTreeNode[
-      ckey
-    ] as LoopRefTreeNodeMap;
-    const parentRefTreeNode = this.$intrinsic.$$currentRefTreeNode;
+    this.$$currentRefTreeNode[ckey] ??= {};
+    const refTreeNodes = this.$$currentRefTreeNode[ckey] as LoopRefTreeNodeMap;
+    const parentRefTreeNode = this.$$currentRefTreeNode;
 
     times = getD(times);
     for (let i = 0; i < times; i++) {
       const key = i.toString();
 
       refTreeNodes[key] ??= {};
-      this.$intrinsic.$$currentRefTreeNode = refTreeNodes[key];
+      this.$$currentRefTreeNode = refTreeNodes[key];
 
       body(i);
       if (import.meta.env.DEV) {
-        this.$intrinsic.$$assertEmpty();
+        this.$$assertEmpty();
       }
     }
 
-    this.$intrinsic.$$currentRefTreeNode = parentRefTreeNode;
+    this.$$currentRefTreeNode = parentRefTreeNode;
 
     return false;
   },

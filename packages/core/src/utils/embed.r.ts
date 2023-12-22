@@ -25,13 +25,13 @@ Prelude.outputComponents.embed = function (_) {
       try {
         contentValue(_, ...args);
         if (import.meta.env.DEV) {
-          _.$intrinsic.$$assertEmpty();
+          _.$lowlevel.$$assertEmpty();
         }
       } catch (e) {
         this.$app.callHook("onError", e);
       }
     } else {
-      _.$intrinsic.$$t("_t", contentValue);
+      _.$lowlevel.$$t("_t", contentValue);
     }
   };
 };

@@ -107,7 +107,7 @@ export interface ContextFuncs<C extends ContextState> {}
  */
 export type ToRealContextFunc<
   N extends keyof ContextFuncs<any>,
-  Ctx = Context,
+  Ctx = LowlevelContext,
 > = N extends `$${string}`
   ? never
   : ContextFuncs<any>[N] extends (...args: infer Args) => infer RetVal
@@ -119,7 +119,7 @@ export type ToRealContextFunc<
  *
  * **Note**: The type is not precise for performance reasons in type checking.
  */
-export type RealContextFuncs<Ctx = Context> = Record<
+export type RealContextFuncs<Ctx = LowlevelContext> = Record<
   string,
   (this: Ctx, ckey: string, ...args: unknown[]) => unknown
 >;
@@ -173,9 +173,9 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
   _: Context;
 
   /**
-   * The intrinsic context.
+   * The lowlevel context.
    */
-  $intrinsic: this;
+  $lowlevel: LowlevelContext;
 
   /**
    * If the context is in `UPDATE` state, it is the update context.
@@ -442,6 +442,12 @@ export type Context<CS extends ContextState = InitialContextState> = Readonly<
   ContextFuncs<CS>;
 
 /**
+ * The full context type, with context funcs and lowlevel APIs.
+ */
+export type LowlevelContext<CS extends ContextState = InitialContextState> =
+  IntrinsicBaseContext<CS> & ContextFuncs<CS>;
+
+/**
  * Initialize a context.
  * @param context The context to initialize.
  * @param app The app instance.
@@ -453,7 +459,7 @@ export function initializeBaseContext(
   context._ = context as unknown as Context;
   context.$app = app;
   context.$appState = app.state;
-  context.$intrinsic = context;
+  context.$lowlevel = context as unknown as LowlevelContext;
   context.$update = app.update;
   context.$setD = app.setD;
   context.$permanentData = app.permanentData;

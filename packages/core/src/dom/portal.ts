@@ -106,15 +106,15 @@ export class DOMPortalComponent extends DOMElementComponent {
 }
 
 Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
-  let portal = this.$intrinsic.$$currentRefTreeNode[ckey] as
+  let portal = this.$$currentRefTreeNode[ckey] as
     | DOMPortalComponent
     | undefined;
   if (!portal) {
     portal = new DOMPortalComponent(this.$app.root.node);
-    this.$intrinsic.$$currentRefTreeNode[ckey] = portal;
+    this.$$currentRefTreeNode[ckey] = portal;
   }
 
-  const updateContext = this.$updateContext?.$intrinsic;
+  const updateContext = this.$updateContext?.$lowlevel;
   if (updateContext) {
     updateContext.$$fulfillRef(portal);
 
@@ -122,7 +122,7 @@ Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
 
     updateContext.$$updateDOMContent(portal, inner);
   } else {
-    const recvContext = this.$recvContext!.$intrinsic;
+    const recvContext = this.$recvContext!.$lowlevel;
 
     recvContext.$$processDOMElement(ckey, inner);
   }
