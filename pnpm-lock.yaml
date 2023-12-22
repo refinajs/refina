@@ -156,6 +156,9 @@ importers:
       vite:
         specifier: ^4.4.8
         version: 4.5.0(@types/node@20.6.5)
+      vite-plugin-ms-clarity:
+        specifier: ^1.0.0
+        version: 1.0.0(vite@4.5.0)
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../../vite-plugin
@@ -4413,6 +4416,14 @@ packages:
     transitivePeerDependencies:
       - rollup
       - supports-color
+    dev: true
+
+  /vite-plugin-ms-clarity@1.0.0(vite@4.5.0):
+    resolution: {integrity: sha512-+v3ZxfTjCKhJEoezftEekX7iyMaN5cj8vPcH76Fx4ul34xlAS+6lE6iavsS1KY9bGzgZNwWs1HdjbqfAv/X3fw==}
+    peerDependencies:
+      vite: ^4 || ^5
+    dependencies:
+      vite: 4.5.0(@types/node@20.6.5)
     dev: true
 
   /vite@4.4.9(@types/node@20.6.5):
