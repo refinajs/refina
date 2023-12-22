@@ -5,3 +5,4 @@ export * from "./embed.r";
 export * from "./loop";
 export * from "./provide.r";
 export * from "./timing";
+export * from "./var";
