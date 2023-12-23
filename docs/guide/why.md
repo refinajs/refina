@@ -4,7 +4,7 @@
 
 For most of today's web applications, what a page should be like and do what, in fact, can be described in a few words. But to implement it using the traditional frontend frameworks, you always need to write hundreds of lines of code.
 
-It's true that traditional frontend frameworks, such as Vue with Vuetify, can produce well-detailed, great-looking applications. But the fact is that even some large companies cannot create perfect web pages for reasons of development efficiency. Those who can take advantage of the features of traditional frontend frameworks are few. And even they have the ability to do so, they may still have no time to use them to create a perfect web page.
+Traditional frontend frameworks, such as Vue with Vuetify, may generate well-detailed, visually appealing apps. However, even major corporations cannot always produce flawless web apps due to development efficiency. That is, even if people have the talent, they may lack the time to develop a perfect web page, while the majority of folks lack proficiency in traditional frontend frameworks. As a result, some capabilities of standard frontend frameworks go mostly unutilized.
 
 We need a frontend framework that **give first priority to development efficiency**, then to the completeness, then the runtime performance.
 
@@ -12,7 +12,7 @@ We need a frontend framework that **give first priority to development efficienc
 
 - **ImGUI-like state management**
 
-  Free from the burden of state management, just write your code.
+  Free from the burden of state management, just write your code. Like [Svelte](https://svelte.dev/), but with much less code and no complex compiler.
 
 - **No need to write any end tags**
 

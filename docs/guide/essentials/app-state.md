@@ -1,6 +1,6 @@
 # The App State
 
-There are three kinds of states of an App:
+App can be in one of the following three states:
 
 - `IDLE`: The main function of the App is not running.
 - `UPDATE`: Render the page.
@@ -27,7 +27,7 @@ Multiple `UPDATE` calls will be merged into one.
 :::
 
 :::danger
-You can't make any side effects in the `UPDATE` state.
+You SHOULD NOT change the state in the `UPDATE` state.
 
 The following code is illegal, and may cause undefined behavior:
 
@@ -35,7 +35,7 @@ The following code is illegal, and may cause undefined behavior:
 let count = 0;
 app.use(Basics)(_ => {
   _.p(`Count is: ${count}`);
-  count++;
+  count++; // The state will change in the UPDATE state
 });
 ```
 

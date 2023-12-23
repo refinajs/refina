@@ -33,24 +33,24 @@ In the above example, we declare a state `count` to store the count.
 
 As an ImGUI-like framework, you don't need a "reactive system" to handle state changes.
 
-So you can just declare states just like a normal variable. That is, you don't need to use `ref` or `reactive` to declare a state.
+So you can just declare states just as a normal variable. That is, you don't need to use `ref` or `reactive` or `useState` to declare a state.
 
 :::warning
-You SHOULD declare the states in the outer scope of the main function.
+You SHOULD NOT declare the states inside the main function.
 
 Otherwise, the state will be reset every time the main function is called.
 :::
 
 ### Handle Events
 
-Because most of the components/elements has none or only **one** event that is frequently used, Refina use the return value of the component function to indicate whether that event is triggered.
+Because most of the components/elements has none or **only one** event that is frequently used, Refina use the return value of the component function to indicate whether the event is triggered.
 
 For instance, the return value of `_.button` is a boolean value, which indicates whether the button is clicked. And the you can use the `if` statement or the `&&` operator to handle the event.
 
 :::tip
 Only trigger components like `button` and `input` returns a boolean value which indicates whether the event is triggered.
 
-Other components may values of other meanings.
+Other components may return values with different meanings.
 :::
 
 :::info

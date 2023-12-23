@@ -14,25 +14,25 @@ The current state of the App.
 
 Can only be of type `UPDATE` or `RECV`, because there is no Context in the `IDLE` state.
 
-## `_.$updateState` {#update-state}
+## `_.$updateContext` {#update-context}
 
-If the App is in the `UPDATE` state, the value is the state, otherwise it is `null`.
+If the App is in the `UPDATE` state, the value is the context itself, otherwise it is `null`.
 
 **Usage**:
 
 ```ts
 app(_ => {
-  if (_.$updateState) {
+  if (_.$updateContext) {
     _.$root.addCls("dark");
   }
 });
 ```
 
-## `_.$recvState`
+## `_.$recvContext`
 
-Similar to [`_.$updateState`](#update-state).
+Similar to [`_.$updateContext`](#update-context).
 
-If the App is in the `RECV` state, the value is the state, otherwise it is `null`.
+If the App is in the `RECV` state, the value is the context itself, otherwise it is `null`.
 
 ## `_.$update`
 
@@ -80,9 +80,7 @@ You can use this component to add event listeners to window.
 
 ## `_.$ref` {#ref}
 
-See [Ref a Component](../essentials/component#ref-component).
-
-and [Ref a Element](../essentials/lowlevel#ref-element).
+See [Ref a Element](../essentials/lowlevel#ref-element).
 
 ## `_.$props` {#props}
 

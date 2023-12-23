@@ -5,7 +5,11 @@ import ForTimesVue from "../../snippets/for-times.r.vue";
 
 # List Rendering
 
-Just like Vue, a `key` attribute is required when rendering a list.
+Just like Vue.js, a `key` attribute is required when rendering a list.
+
+So you can't use the `for` or `while` statement, because they don't have a `key` attribute.
+
+Instead, you can use the `_.for` and `_.forTimes` context function.
 
 ```ts
 import { bySelf } from "refina";
@@ -25,11 +29,11 @@ app.use(Basics)(_ => {
 
 ## The Key Generator {#key-generator}
 
-The second parameter of `_.for` is a key generator, which is used to generate keys for the items.
+The second parameter of `_.for` is a key generator, which is used to generate keys for each item.
 
-The key generator can be a function in the form of `(item, index) => key`, or a string which means the name of the property of the item to be used as the key.
+The key generator can be a function in the form of `(item, index) => key`, or the key of the property to be used as the key.
 
-There are also some built-in key generators:
+There are also two provided key generators:
 
 - `bySelf`: use the item itself as the key.
 - `byIndex`: use the index of the item as the key.

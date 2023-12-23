@@ -2,7 +2,7 @@
 
 Hooks are functions that are called at specific times during the app's lifecycle.
 
-Hooks can be added when installing a plugin, or in the `UPDATE` call.
+Hooks can be added by plugin when it is being installed, or by main function in the `UPDATE` call.
 
 ## Onetime Hooks
 

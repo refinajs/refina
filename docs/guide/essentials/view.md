@@ -65,7 +65,7 @@ However, this is not recommended for consistency.
 
 ## Passing Parameters {#passing-parameters}
 
-A view function can have parameters. You can decalre the parameters in the simple way:
+A view function can have parameters. You can declare the parameters in the simple way:
 
 ```ts
 export default defineView((_, name: string, id?: number) => {
@@ -100,11 +100,11 @@ export default defineView(_ => {
 Since the states is shared between all the instances of the view, you SHOULD be careful when using states in a view.
 :::
 
-## Difference between View and Component {#view-vs-component}
+## Differences between View and Component {#view-vs-component}
 
 View can be regarded as a simplified version of a component.
 
-The main differences are:
+The major differences are:
 
 - Components are registered as context functions, while views are just normal functions.
 - Each component instance has its own states, while all the instances of a view share the same states.
@@ -114,8 +114,8 @@ The main differences are:
 
 ### How to Choose
 
-If you want to reuse a **fragment** of the page, you should use a _view_.
+If you want to reuse a **fragment of page**, you should use a _view_.
 
-If you want to reuse a **part of code** with its own states, you should use a _component_.
+If you want to reuse a **part of code with its own states**, you should use a _component_.
 
 If you are a **UI library** author, you should always provide _components_.

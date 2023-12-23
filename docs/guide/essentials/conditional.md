@@ -23,3 +23,12 @@ app.use(Basics)(_ => {
 **Result**
 
 <ConditionalRenderingVue />
+
+:::tip
+You can also use the `&&` operator to conditionally render components:
+
+```ts
+input.length > 0 && _.button("Clear");
+```
+
+:::

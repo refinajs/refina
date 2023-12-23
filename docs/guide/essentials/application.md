@@ -2,22 +2,22 @@
 
 ## The app Creator
 
-Every Refina application starts by creating an `app` instance:
+Every Refina.js application starts by creating an `app` instance:
 
 ```ts
 import { app } from "refina";
 
 app(_ => {
-  // The main function
+  // The main function of the app
   // ...
 });
 ```
 
 ## Using Plugins
 
-Calling `app.use` will install the plugin to the app.
+Call `app.use` to install plugin to the app.
 
-Most of the useful components are provided by plugins, we can say that you can't do anything without plugins.
+All the components and utility functions are provided by plugins, so it is hard to do anything without plugins.
 
 ```ts
 import { app } from "refina";
@@ -32,15 +32,15 @@ app.use(Basics)(_ => {
 To use multiple plugins, just call `app.use` in a chain:
 
 ```ts
-app.use(Plugin1).use(Plugin2).use(Plugin3)(_ => {
+app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
   // ...
 });
 ```
 
-In fact, utility functions in Refina itself are provided via the plugin `Prelude`, which is automatically installed when you create an app.
+In fact, components and utility functions in the Refina Core are provided via the plugin `Prelude`, which is automatically installed when you create an app.
 
 :::warning
-Because the limitations of TypeScript, the component functions provided by plugins that are imported but not used are still visible in the context object in the editor. But a runtime error will occur if you use them.
+Because of the limitations of TypeScript, the component functions provided by plugins that are imported but not installed are still visible in the context object in the IDE. But a runtime error will occur if you use them.
 :::
 
 ## The Main Function
@@ -52,7 +52,7 @@ Not only `App`, but also `View` and `Component` have a main function.
 The first parameter of the main function is a `Context` object, which is used to do almost everything like rendering components, handling events, etc.
 
 :::warning
-You can only name the context parameter `_`.
+You can only name the first param of the main function (the context object) as `_`.
 
 Otherwise, the transformation will not work, and errors will occur at runtime.
 :::

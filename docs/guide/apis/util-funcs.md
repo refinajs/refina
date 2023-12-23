@@ -5,15 +5,13 @@ import NowVue from "../../snippets/now.r.vue";
 
 # Utility Context Functions
 
-The utility context functions are a set of functions that defined in the `Prelude` plugin, which is automatically installed when you create an app.
-
-They provide some useful features.
+This page introduces utility context functions in the `Prelude` plugin, which is automatically installed when you create an app.
 
 ## `_.portal`
 
-Render content to the end of the root element.
+Render content in the end of the root element.
 
-This is usefull when you want to render a dialog or a tooltip that should not be affected by the parent element's styles.
+This is usefull when you want to render a dialog or a tooltip that should not be affected by the parent element.
 
 **Example**
 

@@ -44,21 +44,25 @@ When using view functions as the content of a component, you should use the cont
 :::tip
 When using view functions as the content of a component, it is recommended to use the arrow function syntax.
 
-To get the best experience, you can [use Prettier to format your code](../quick-start#use-prettier).
-:::
+To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` option set to `avoid`.
+
+> If you create your project with `npm create refina`, Prettier is already configured for you.
+> :::
 
 :::tip
 The curly braces around the view function can be omitted if the view function has only one statement.
 
-This is because the return value of the view function will be ignores.
+This is because the return value of the view function will always be ignored.
 
-And you can use `&&` to connect directives which always returns `true` with the component function.
+And you can use `&&` to connect directives which always returns `true` to the component function.
 
-For example, the following two ways are equivalent:
+For example,
 
 ```ts
 _.div(_ => _.$css`color: red` && _.p("This is a paragraph."));
 ```
+
+and
 
 ```ts
 _.div(_ => {
@@ -67,6 +71,7 @@ _.div(_ => {
 });
 ```
 
+are equivalent.
 :::
 
 ### Add Classes and Styles {#add-classes-and-styles}
@@ -88,5 +93,5 @@ _.$css`color: ${color}`;
 _.$css("color: " + color);
 ```
 
-And it is recommended to omit the semicolon at the end of the style string, which will be automatically added.
+And it is recommended to omit the semicolon at the end of the CSS text, which will be automatically added.
 :::

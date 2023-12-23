@@ -4,11 +4,11 @@ import LowlevelVue from "../../snippets/lowlevel.r.vue";
 
 # Low-level Rendering
 
-For most of the applications, you can just use the components provided by existing plugins.
+For most applications, you can just use the components provided by existing UI libraries.
 
-But there are still some cases where you need to render components manually.
+But there are still some situations in which you need to render elements manually.
 
-And all the components are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
+Also the components provided by UI libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
 
 :::info
 If a component satisfies your needs, you should use it instead of using low-level rendering functions, as the low-level rendering functions are more verbose and error-prone.
@@ -58,22 +58,22 @@ app(_ => {
 
 ## The Function Name
 
-- For HTML elements, the function name is the tag name of the element with a `_` prefix:
+- For HTML elements, the function name is the tag name with a `_` prefix:
 
   `_._div` for `<div>`.
 
-- For SVG elements, the function name is the tag name of the element with a `_svg` prefix:
+- For SVG elements, the function name is the tag name with a `_svg` prefix:
 
   `_._svgPath` for `<path>`.
 
-- For custom elements, the hyphen in the tag name will become camel case:
+- For custom elements, the hyphens in the tag name will become camel case:
 
   `_._myCustomElement` for `<my-custom-element>`.
 
 ## The Signature
 
 - Parameters: (all optional)
-  - `data`: a object which will be assigned to the element.
+  - `data`: an object which will be assigned to the element.
   - `inner`: the content of the element.
   - `eventListeners`: the event listeners of the element.
 - Return value: `void`
@@ -84,9 +84,9 @@ app(_ => {
 
 > `TheElement` above is the type of the element, e.g. `HTMLDivElement` or `SVGPathElement`.
 
-All the properties of the `data` parameter will be assigned to the element in the following ways:
+All the properties of the `data` parameter will be assigned to the element in the following two ways:
 
-**For HTML elements:**
+**For HTML elements (or custom elements):**
 
 ```ts
 for (const key in data) {
@@ -168,7 +168,7 @@ divElement.addEventListener(
 );
 ```
 
-## Event Handling
+## Event Handling {#event-handling}
 
 As you can see above, there are two ways to handle events:
 
@@ -225,3 +225,9 @@ app.use(Basics)(_ => {
   iframeURL.current?.node.contentWindow?.postMessage("Hello", "*");
 });
 ```
+
+:::tip The usage of `&&`
+To let TypeScript check whether you are using the right type of the ref object, you'd better use the `&&` operator to connect the `_.$ref` directive and the low-level rendering function.
+
+Because the `_.$ref` directive always returns `true`, so the component function will always be called. But if the ref object is not the right type, the component function will be of type `never`, and the IDE will report an error.
+:::

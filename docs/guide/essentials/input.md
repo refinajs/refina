@@ -5,11 +5,11 @@ import InputEventVue from "../../snippets/input-event.r.vue";
 
 # Get the Input Value
 
-Some actions user performed on the page is handled as a event, but some should be read as a value.
+Some actions user performed on the page are handled as events, but some should be read as values.
 
-For instance, you may want to get the value of a input element.
+For instance, you may want to get the value of an input element.
 
-## Example: Get the value of a input element
+## Example: Get the value of an input element
 
 ```ts
 import { d } from "refina";
@@ -32,11 +32,7 @@ app.use(Basics)(_ => {
 
 ### The `d` Function
 
-The `d` function creates an object which has a `value` property to wrap the value.
-
-Because there is no way to pass an intrinsic value by reference in JavaScript, we have to wrap the value in an object.
-
-The object created by `d` function is of **type `PD`**.
+Because there is no way to pass an intrinsic value by reference in JavaScript, we have to wrap the value in an object, and the `d` function creates an object of **type `PD`** to wrap the value.
 
 ### Use a Property of an Object as `PD`
 
@@ -55,15 +51,13 @@ app.use(Basics)(_ => {
 
 ### The `D` Type
 
-The declaration of `D` type is:
+The definition of `D` is:
 
 ```ts
 type D<T> = T | PD<T>;
 ```
 
-As you can see, most of the params of Refina components are of type `D<...>`.
-
-That means you can pass a value or a `PD` object to the param, or just pass the intrinsic value.
+Most of the params of Refina components are of type `D<...>`, which means you can pass just the intrinsic value or a `PD` object to the param.
 
 ### The `getD` Function
 
@@ -78,16 +72,16 @@ assert(getD(wrappedValue) === 1);
 ```
 
 :::info
-If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you don't need to use `getD` function to extract the value.
-
-You can access `wrappedValue.value` directly.
+If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you don't need to use `getD` function to extract the value. You can access `wrappedValue.value` directly.
 :::
 
 ### The `_.$setD` Function
 
 Corresponding to `getD` function, this function can set the value of a `D` object.
 
-It is only used when developing Refina components, which is out of the scope of this section.
+:::info
+There isn't a `setD` function, because a context should be provided to trigger an `UPDATE` call after the value is set.
+:::
 
 ## Another Way to Get Input Value
 

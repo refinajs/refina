@@ -4,9 +4,9 @@
 
 Refina（named after the word "refine"）is a web framework that aims to make frontend development easier and more efficient. It consists of two major parts:
 
-- An ImGUI-like state management system, which gives you the experience like Svelte, but with much less code.
+- An ImGUI-like state management system, which gives you the experience like [Svelte](https://svelte.dev/), but with much less code.
 
-- A page rendering system, which can greatly reduce the amount of code you need to write. And you just need to write plain TypeScript.
+- A refined page rendering system, which can greatly reduce the amount of code you need to write. And you just need to write plain TypeScript.
 
 Here is a minimal example:
 

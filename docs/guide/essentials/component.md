@@ -2,6 +2,8 @@
 
 Components allow us to split the UI into independent and reusable pieces, and think about each piece in isolation.
 
+Unlike components in Vue.js, where components are also used to split the app into several parts, it is preferred to use [view](./view.md) to split the app in Refina.
+
 ## Kinds of Components
 
 There are three kinds of components in Refina:
@@ -13,33 +15,7 @@ There are three kinds of components in Refina:
 :::info
 The above three kinds of components are the most common use cases.
 
-The low-level implementation of components is just a context function. So it is possible to create a kind of component that is not listed above.
-:::
-
-## Ref on Component {#ref-component}
-
-You may want to call some methods or access some properties of a component instance. So you can use [the `_.$ref` directive](../apis/directives.md#ref) to get the component instance.
-
-```ts
-import { ref } from "refina";
-import Form, { TextField } from "refina-plugin-form";
-
-const fieldRef = ref<TextField>();
-
-app.use(Form)(_ => {
-  _.$ref(fieldRef) && _.textField("name", "Name");
-  _.button("reset") && fieldRef.current?.reset();
-});
-```
-
-:::info
-Both the low-level DOM elements and the components can be refed by the `_.$ref` directive.
-:::
-
-:::tip The usage of `&&`
-To let TypeScript check whether you are using the right type of the ref object, you'd better use the `&&` operator to connet the `_.$ref` directive and the component function.
-
-Because the `_.$ref` directive always returns `true`, so the component function will always be called. But if the ref object is not the right type, the component function will be of type `never`, and the IDE will report an error.
+The low-level implementation of components is just a context function. So it is possible to create a kind of component that is not of any kind listed above.
 :::
 
 ## Extra Props {#extra-props}
@@ -51,7 +27,8 @@ app.use(MdUI)(_ => {
   _.$props({
     icon: "person",
     endIcon: "arrow_forward",
-  }) && _.mdChip("Student", true);
+  });
+  _.mdChip("Student", true);
 });
 ```
 
