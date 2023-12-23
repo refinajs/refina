@@ -16,13 +16,6 @@ export class RefinaTransformer {
     return `${fileKey}-${callId.toString(36).toUpperCase()}`;
   }
 
-  shouldTransform(fileName: string) {
-    return (
-      /\.r(\.(test|spec))?\.[tj]s$/i.test(fileName) ||
-      fileName.includes("/.vite/deps/") // The dependencies pre-bundled by Vite
-    );
-  }
-
   transformWithSourceMap(
     fileKey: string,
     code: string,
@@ -44,10 +37,12 @@ export class RefinaTransformer {
       return `_.$$("${name}", "${ckey}",`;
     });
     const map = s.generateMap(options);
-    return {
-      code: s.toString(),
-      map,
-    };
+    return lastKey === 0
+      ? null
+      : {
+          code: s.toString(),
+          map,
+        };
   }
 
   transform(fileKey: string, code: string) {
@@ -68,7 +63,7 @@ export class RefinaTransformer {
         return `_.$$("${name}", "${ckey}",`;
       },
     );
-    return code;
+    return lastKey === 0 ? null : code;
   }
 
   transformFile(fileName: string, code: string) {
@@ -77,12 +72,17 @@ export class RefinaTransformer {
       fileKey = this.toFileKey(this.currentFileId++);
       this.fileKeys.set(fileName, fileKey);
     }
+    const result = this.transformWithSourceMap(fileKey, code, {
+      source: fileName,
+      file: fileName + ".map",
+      includeContent: true,
+    });
+    if (result === null) {
+      this.currentFileId--;
+      return null;
+    }
     return {
-      ...this.transformWithSourceMap(fileKey, code, {
-        source: fileName,
-        file: fileName + ".map",
-        includeContent: true,
-      }),
+      ...result,
       fileKey,
     };
   }

@@ -1,11 +1,5 @@
-import Refina, { RefinaTransformer } from "vite-plugin-refina";
+import Refina from "vite-plugin-refina";
 import { defineConfig } from "vitepress";
-
-class CustomTransformer extends RefinaTransformer {
-  shouldTransform(fileName: string): boolean {
-    return super.shouldTransform(fileName) || fileName.endsWith(".r.vue");
-  }
-}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,7 +7,14 @@ export default defineConfig({
   description: "An extremely refined web framework",
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   vite: {
-    plugins: [Refina(new CustomTransformer()) as any],
+    plugins: [
+      Refina({
+        include: [
+          /\.[tj]s$/,
+          id => id.endsWith(".vue") && !id.includes("node_modules"),
+        ],
+      }) as any,
+    ],
   },
   themeConfig: {
     logo: "/logo.svg",
