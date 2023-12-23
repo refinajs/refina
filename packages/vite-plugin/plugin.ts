@@ -19,6 +19,13 @@ export interface RefinaOptions {
   exclude?: Matcher;
 
   /**
+   * Ignore files from transformation.
+   *
+   * @default /^(((^|\n)\s*\/\/[^\n]*)|\n)*\/\/\s*@refina-ignore/
+   */
+  ignore?: Matcher;
+
+  /**
    * The transformer to use.
    *
    * @default new RefinaTransformer()
@@ -45,8 +52,11 @@ function uniformMatcher(matcher: Matcher): (id: string) => boolean {
 }
 
 export default function Refina(options: RefinaOptions = {}) {
-  const include = uniformMatcher(options.include ?? [/\.[tj]s$/]);
-  const exclude = uniformMatcher(options.exclude ?? []);
+  const include = uniformMatcher(options.include ?? /\.[tj]s$/);
+  const exclude = uniformMatcher(options.exclude ?? (() => false));
+  const ignore = uniformMatcher(
+    options.ignore ?? /^(((^|\n)\s*\/\/[^\n]*)|\n)*\/\/\s*@refina-ignore/,
+  );
   const transformer = options.transformer ?? new RefinaTransformer();
 
   let config: ResolvedConfig;
@@ -57,7 +67,7 @@ export default function Refina(options: RefinaOptions = {}) {
       config = resolvedConfig;
     },
     transform(raw, id) {
-      if (!include(id) || exclude(id)) return null;
+      if (!include(id) || exclude(id) || ignore(raw)) return null;
 
       const result = transformer.transformFile(id, raw);
 
