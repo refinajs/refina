@@ -53,6 +53,7 @@ const iconsDir = join(
 const distDir = join(__dirname, "dist");
 
 if (
+  process.argv[2] !== "--force" &&
   fs.existsSync(distDir) &&
   fs.lstatSync(distDir).isDirectory() &&
   fs.readdirSync(distDir).length > 0

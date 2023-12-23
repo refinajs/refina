@@ -17,10 +17,10 @@
     "./*": "./dist/*"
   },
   "scripts": {
-    "build": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts",
+    "build": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts --force",
     "clean": "del-cli ./dist",
     "check": "tsc --noEmit",
-    "prepare": "pnpm build"
+    "prepare": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts"
   },
   "author": "_Kerman",
   "repository": {
