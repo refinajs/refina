@@ -1,1 +1,1 @@
-export * from "./fSlider.r";
+export * from "./fSlider";

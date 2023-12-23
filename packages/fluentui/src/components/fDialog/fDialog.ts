@@ -1,7 +1,7 @@
 import { Content, D, View, d, getD } from "refina";
 import FluentUI from "../../plugin";
-import "./fDialogBody.r";
-import "./fDialogSurface.r";
+import "./fDialogBody";
+import "./fDialogSurface";
 
 declare module "refina" {
   interface Components {

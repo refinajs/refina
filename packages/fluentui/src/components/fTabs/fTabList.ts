@@ -1,7 +1,7 @@
 import { Content, D, DArray, MainElRef, byIndex, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./animatedIndicator.styles";
-import "./fTab.r";
+import "./fTab";
 import styles from "./fTabList.styles";
 
 interface Rect {

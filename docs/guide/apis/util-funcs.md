@@ -1,6 +1,6 @@
 <script setup>
-import AsyncFetchVue from "../../snippets/async-fetch.r.vue";
-import NowVue from "../../snippets/now.r.vue";
+import AsyncFetchVue from "../../snippets/async-fetch.vue";
+import NowVue from "../../snippets/now.vue";
 </script>
 
 # Utility Context Functions
@@ -97,10 +97,10 @@ Embed a view that is asynchronously loaded.
 **Example**
 
 ```ts
-_.asyncEmbed(() => import("./myView.r.ts"));
+_.asyncEmbed(() => import("./myView.ts"));
 ```
 
-which loads the view from `./myView.r.ts` asynchronously, which is useful for code splitting.
+which loads the view from `./myView.ts` asynchronously, which is useful for code splitting.
 
 :::info
 The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.

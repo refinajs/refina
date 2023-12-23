@@ -1,6 +1,6 @@
-import "@refina/fluentui-icons/checkmarkCircle.r.ts";
-import "@refina/fluentui-icons/errorCircle.r.ts";
-import "@refina/fluentui-icons/warning.r.ts";
+import "@refina/fluentui-icons/checkmarkCircle.ts";
+import "@refina/fluentui-icons/errorCircle.ts";
+import "@refina/fluentui-icons/warning.ts";
 import { Content, Context, D, View, getD } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";

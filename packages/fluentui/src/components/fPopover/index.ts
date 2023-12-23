@@ -1,1 +1,1 @@
-export * from "./fPopover.r";
+export * from "./fPopover";

@@ -10,7 +10,7 @@
     "check": "tsc --noEmit"
   },
   "exports": {
-    ".": "./src/app.r.ts"
+    ".": "./src/app.ts"
   },
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",

@@ -1,4 +1,4 @@
-import "@refina/fluentui-icons/circle.r.ts";
+import "@refina/fluentui-icons/circle.ts";
 import { D, DOMElementComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fSwitch.styles";

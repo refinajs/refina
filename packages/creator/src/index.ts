@@ -179,7 +179,7 @@ async function main() {
   fs.mkdirSync("src");
 
   fs.writeFileSync(
-    "src/app.r.ts",
+    "src/app.ts",
     input.components.includes(0)
       ? input.components.includes(1)
         ? basicsMduiApp(input.useTailwind)

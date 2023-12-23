@@ -1,1 +1,1 @@
-export * from "./fTooltip.r";
+export * from "./fTooltip";

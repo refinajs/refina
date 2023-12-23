@@ -1,4 +1,4 @@
-import "@refina/fluentui-icons/dismiss.r.js";
+import "@refina/fluentui-icons/dismiss.js";
 import { Content, Context, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";

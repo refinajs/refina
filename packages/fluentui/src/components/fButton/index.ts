@@ -1,2 +1,2 @@
-export * from "./fButton.r";
+export * from "./fButton";
 export * from "./types";

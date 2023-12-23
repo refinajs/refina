@@ -1,3 +1,3 @@
-export * from "./fDialog.r";
-export * from "./fDialogBody.r";
-export * from "./fDialogSurface.r";
+export * from "./fDialog";
+export * from "./fDialogBody";
+export * from "./fDialogSurface";

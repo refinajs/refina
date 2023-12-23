@@ -1,6 +1,6 @@
 import * as keys from "@fluentui/keyboard-keys";
-import "@refina/fluentui-icons/checkmark.r.ts";
-import "@refina/fluentui-icons/chevronDown.r.ts";
+import "@refina/fluentui-icons/checkmark.ts";
+import "@refina/fluentui-icons/chevronDown.ts";
 import {
   D,
   DArray,

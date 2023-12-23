@@ -1,5 +1,5 @@
-import "@refina/fluentui-icons/checkmark.r.ts";
-import "@refina/fluentui-icons/square.r.ts";
+import "@refina/fluentui-icons/checkmark.ts";
+import "@refina/fluentui-icons/square.ts";
 import { D, DOMElementComponent, getD, ref } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";

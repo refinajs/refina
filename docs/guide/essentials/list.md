@@ -1,6 +1,6 @@
 <script setup>
-import ListRenderingVue from "../../snippets/list-rendering.r.vue";
-import ForTimesVue from "../../snippets/for-times.r.vue";
+import ListRenderingVue from "../../snippets/list-rendering.vue";
+import ForTimesVue from "../../snippets/for-times.vue";
 </script>
 
 # List Rendering

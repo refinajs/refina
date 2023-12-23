@@ -1,2 +1,2 @@
-export * from "./fCheckbox.r";
+export * from "./fCheckbox";
 export * from "./utils";

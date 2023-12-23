@@ -8,7 +8,7 @@ It is mostly used to render a part of the page for one or few times, or as the c
 
 ## Usage
 
-**myView.r.ts**
+**myView.ts**
 
 ```ts
 import { defineView } from "refina";
@@ -18,10 +18,10 @@ export default defineView(_ => {
 });
 ```
 
-**app.r.ts**
+**app.ts**
 
 ```ts
-import myView from "./myView.r.ts";
+import myView from "./myView.ts";
 
 app(_ => {
   _.div(myView);

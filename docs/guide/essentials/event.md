@@ -1,5 +1,5 @@
 <script setup>   
-import EventHandling from "../../snippets/event-handling.r.vue";
+import EventHandling from "../../snippets/event-handling.vue";
 </script>
 
 # Handle Events

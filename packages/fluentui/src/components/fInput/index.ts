@@ -1,1 +1,1 @@
-export * from "./fInput.r";
+export * from "./fInput";

@@ -1,1 +1,1 @@
-export * from "./fLabel.r";
+export * from "./fLabel";

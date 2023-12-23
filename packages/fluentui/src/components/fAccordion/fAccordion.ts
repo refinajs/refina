@@ -1,4 +1,4 @@
-import "@refina/fluentui-icons/chevronRight.r.ts";
+import "@refina/fluentui-icons/chevronRight.ts";
 import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
 import headerStyles from "./header.styles";

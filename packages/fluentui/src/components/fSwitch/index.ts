@@ -1,1 +1,1 @@
-export * from "./fSwitch.r";
+export * from "./fSwitch";

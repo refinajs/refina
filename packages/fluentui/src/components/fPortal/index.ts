@@ -1,1 +1,1 @@
-export * from "./fPortal.r";
+export * from "./fPortal";

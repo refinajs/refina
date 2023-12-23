@@ -1,2 +1,2 @@
-export * from "./fProgressBar.r";
+export * from "./fProgressBar";
 export * from "./types";

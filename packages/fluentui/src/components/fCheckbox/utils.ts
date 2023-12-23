@@ -1,5 +1,5 @@
 import { DArray, getDArray } from "refina";
-import type { FCheckboxState } from "./fCheckbox.r";
+import type { FCheckboxState } from "./fCheckbox";
 
 /**
  * @returns the mixed state if any of the sources is mixed, true if any of the sources is true and none is false, false otherwise

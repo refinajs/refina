@@ -1,6 +1,6 @@
 import { Content, D, getD } from "refina";
 import FluentUI from "../../plugin";
-import "./fTabList.r";
+import "./fTabList";
 import styles from "./fTabs.styles";
 
 type _R<T extends readonly any[], U extends readonly any[]> =

@@ -41,7 +41,7 @@ Prelude.outputComponents.embed = function (_) {
  *
  * @example
  * ```ts
- * const loader: AsyncContentLoader = () => import("./myView.r.ts");
+ * const loader: AsyncContentLoader = () => import("./myView.ts");
  * ```
  */
 export type AsyncContentLoader<Args extends any[]> = () => Promise<{
@@ -55,7 +55,7 @@ declare module "../component" {
      *
      * @example
      * ```ts
-     * _.asyncEmbed(() => import("./myView.r.ts"));
+     * _.asyncEmbed(() => import("./myView.ts"));
      * ```
      *
      * @param contentLoader A function that returns a promise of a object whose default export is a content.

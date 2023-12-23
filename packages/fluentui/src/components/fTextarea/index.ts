@@ -1,2 +1,2 @@
-export * from "./fTextarea.r";
+export * from "./fTextarea";
 export * from "./fTextarea.types";

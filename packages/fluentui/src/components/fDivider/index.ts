@@ -1,2 +1,2 @@
-export * from "./fDivider.r";
+export * from "./fDivider";
 export * from "./types";
