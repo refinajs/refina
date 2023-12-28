@@ -19,7 +19,7 @@ export type View<Args extends any[] = []> = (
  *
  * @example
  * ```ts
- * export default defineView(_ => {
+ * export default $view(_ => {
  *  // ...
  * });
  * ```
@@ -27,8 +27,6 @@ export type View<Args extends any[] = []> = (
  * @param view The view function.
  * @returns The view function itself.
  */
-export function defineView<Args extends any[] = []>(
-  view: View<Args>,
-): View<Args> {
+export function $view<Args extends any[] = []>(view: View<Args>): View<Args> {
   return view;
 }

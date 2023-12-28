@@ -36,13 +36,13 @@
 ## Example
 
 ```typescript
-import { app, d } from "refina";
+import { $app, d } from "refina";
 import Basics from "@refina/basic-components";
 
 const name = d(""); // just the same as { value: "" }
 let count = 0; // needn't to be warped in d()
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.t`Enter your name:`;
 
   _.textInput(name);

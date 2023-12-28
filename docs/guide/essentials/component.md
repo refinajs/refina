@@ -23,7 +23,7 @@ The low-level implementation of components is just a context function. So it is 
 Sometimes there are many optional props for a component, and it is not convenient to write them all in the positional parameters. So we can use [the `_.$props` directive](../apis/directives.md#props) to add props to the next component as named parameters.
 
 ```ts
-app.use(MdUI)(_ => {
+$app.use(MdUI)(_ => {
   _.$props({
     icon: "person",
     endIcon: "arrow_forward",

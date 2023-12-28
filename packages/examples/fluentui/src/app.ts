@@ -4,7 +4,7 @@ import FluentUI, {
   createDarkTheme,
   createLightTheme,
 } from "@refina/fluentui";
-import { app, byIndex, d, getD } from "refina";
+import { $app, byIndex, d, getD } from "refina";
 
 const myNewTheme: BrandVariants = {
   10: "#020305",
@@ -40,7 +40,7 @@ const dropdownTest = d("");
 const textInputTest = d("");
 const numberInputTest = d(NaN);
 
-app.use(
+$app.use(
   FluentUI,
   darkTheme,
   lightTheme,

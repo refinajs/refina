@@ -7,7 +7,7 @@ import StaticPageVue from "../../snippets/static-page.vue";
 Let's start by rendering a "static" page, which means the page doesn't have any dynamic content.
 
 ```ts
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.$css`color: red`;
   _.h1("Hello, Refina!");
 

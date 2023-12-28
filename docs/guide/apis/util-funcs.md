@@ -16,7 +16,7 @@ This is usefull when you want to render a dialog or a tooltip that should not be
 **Example**
 
 ```ts {4}
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.div(() => {
     _.span("Inside the div");
     _.portal(_ => _.span("Inside the portal"));
@@ -75,7 +75,7 @@ Set the document title.
 ```ts {6}
 import { d } from "refina";
 const username = d("");
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   _.documentTitle(`Hello ${username}`);
@@ -135,7 +135,7 @@ If not specified, it is `1000`, which means the time will be updated every secon
 **Example**
 
 ```ts
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.p(`The current time is ${_.now(500)}`);
 });
 ```

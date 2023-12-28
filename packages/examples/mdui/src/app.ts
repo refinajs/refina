@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
 import MdUI, { CheckboxState } from "@refina/mdui";
 import "@refina/mdui/styles.css";
-import { Content, app, bySelf, d, defineView } from "refina";
+import { $app, $view, Content, bySelf, d } from "refina";
 
-const componentView = defineView((_, name: string, inner: Content) => {
+const componentView = $view((_, name: string, inner: Content) => {
   _._div({}, _ => {
     _.$css`margin-bottom:8px`;
     _._h3({}, name);
@@ -21,7 +21,7 @@ let sliderValue1 = d(40);
 let sliderValue2 = d(60);
 let input = d("Hello");
 
-app.use(MdUI)(_ => {
+$app.use(MdUI)(_ => {
   _.useMdTheme(darkMode ? "dark" : "light");
 
   _.$css`z-index:1999`;

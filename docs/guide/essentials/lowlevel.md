@@ -19,7 +19,7 @@ If a component satisfies your needs, you should use it instead of using low-leve
 ```ts
 let count = 0;
 
-app(_ => {
+$app(_ => {
   _._div(
     {
       id: "my-div",
@@ -216,7 +216,7 @@ import { ref, DOMElementComponent } from "refina";
 
 const iframeRef = ref<DOMElementComponent<"iframe">>();
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.$ref(iframeRef) &&
     _._iframe({
       src: iframeURL,

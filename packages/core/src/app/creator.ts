@@ -55,4 +55,4 @@ function createAppFactory(): AppFactory {
 }
 
 // The initial app factory.
-export const app = createAppFactory();
+export const $app = createAppFactory();

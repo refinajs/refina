@@ -11,12 +11,12 @@ Refina（named after the word "refine"）is a web framework that aims to make fr
 Here is a minimal example:
 
 ```ts
-import { app } from "refina";
+import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
 let count = 0;
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.button(`Count is: ${count}`) && count++;
 });
 ```

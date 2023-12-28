@@ -9,7 +9,7 @@ Just like JSX, you can use the `if-else` statement to conditionally render compo
 ```ts
 let count = 0;
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.p(`Count is: ${count}`);
 
   _.button(`Add`) && count++;

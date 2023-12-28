@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-import { app } from "refina";
+import { $app } from "refina";
 import { onMounted } from "vue";
 import RunRefina from "./run-refina.vue";
 
 onMounted(() => {
   let count = 0;
 
-  app(_ => {
+  $app(_ => {
     _._div(
       {
         id: "my-div",

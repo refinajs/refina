@@ -1,4 +1,4 @@
-import { app } from "refina";
+import { $app } from "refina";
 import { initRootElement } from "../utils";
 
 beforeAll(() => {
@@ -7,7 +7,7 @@ beforeAll(() => {
 
 describe("simple app", () => {
   it("should render a simple app", async () => {
-    const appInstance = app(_ => {
+    const appInstance = $app(_ => {
       _._h1({}, "Hello World!");
       _.$cls`main`;
       _._div({}, _ => {

@@ -16,7 +16,7 @@ import { d } from "refina";
 
 const username = d("");
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   username.value.length && _.button("Clear") && (username.value = "");
@@ -43,7 +43,7 @@ The function `fromProp` can create a `PD` object from a property of an object:
 ```ts
 import { fromProp } from "refina";
 const user = { username: "" };
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.label("Username");
   _.textInput(fromProp(user, "username")); // [!code focus]
 });
@@ -90,7 +90,7 @@ Sometimes you may want to get the input value and do something with it, but you 
 The following example stores the input value to the session storage, instead of a variable.
 
 ```ts
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.label("Username");
   if (_.textInput(sessionStorage.getItem("username") ?? "")) {
     sessionStorage.setItem("username", _.$ev);

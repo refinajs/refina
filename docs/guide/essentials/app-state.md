@@ -33,7 +33,7 @@ The following code is illegal, and may cause undefined behavior:
 
 ```ts
 let count = 0;
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   _.p(`Count is: ${count}`);
   count++; // The state will change in the UPDATE state
 });
@@ -55,7 +55,7 @@ You can't render the page in the `RECV` state.
 The following code is illegal, and may cause undefined behavior:
 
 ```ts
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   if (_.button("Click me")) {
     _.p("Hello");
   }

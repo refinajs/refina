@@ -2,12 +2,12 @@
 
 ## The app Creator
 
-Every Refina.js application starts by creating an `app` instance:
+Every Refina.js application starts by creating an `App` instance:
 
 ```ts
-import { app } from "refina";
+import { $app } from "refina";
 
-app(_ => {
+$app(_ => {
   // The main function of the app
   // ...
 });
@@ -15,24 +15,24 @@ app(_ => {
 
 ## Using Plugins
 
-Call `app.use` to install plugin to the app.
+Call `$app.use` to install plugin to the app.
 
 All the components and utility functions are provided by plugins, so it is hard to do anything without plugins.
 
 ```ts
-import { app } from "refina";
+import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
-app.use(Basics)(_ => {
+$app.use(Basics)(_ => {
   // _.h1 is provided by the Basics plugin
   _.h1("Hello, Refina!");
 });
 ```
 
-To use multiple plugins, just call `app.use` in a chain:
+To use multiple plugins, just call `$app.use` in a chain:
 
 ```ts
-app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
+$app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
   // ...
 });
 ```
@@ -63,10 +63,10 @@ The root element is the element that the app will be mounted to.
 
 By default, the root element is the element with the id `root`.
 
-You can change the root element by passing the id of the element to the second parameter of `app`:
+You can change the root element by passing the id of the element to the second parameter of `$app`:
 
 ```ts
-app(_ => {
+$app(_ => {
   // ...
 }, "my-root");
 ```
@@ -85,11 +85,11 @@ You can just specify different root elements for different applications:
 ```
 
 ```ts
-app(_ => {
+$app(_ => {
   // ...
 }, "root1");
 
-app(_ => {
+$app(_ => {
   // ...
 }, "root2");
 ```

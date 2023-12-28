@@ -2,9 +2,9 @@ export default (tailwind: boolean) => `/**
  * Refina.js with no component library
  */
 
-import { app } from "refina";
+import { $app } from "refina";
 
-app(_ => {${tailwind ? `\n  _.$cls\`text-xl font-bold p-4\`;` : ""}
+$app(_ => {${tailwind ? `\n  _.$cls\`text-xl font-bold p-4\`;` : ""}
   _._h1({}, "Hello, Refina!");
   _._p({}, _ => {${
     tailwind ? `\n    _.$cls\`block p-2 hover:bg-gray-200\`;` : ""

@@ -5,7 +5,7 @@
 
 <script lang="ts" setup>
 import Basics from "@refina/basic-components";
-import { app } from "refina";
+import { $app } from "refina";
 import { onUpdated, ref } from "vue";
 import RunRefina from "./run-refina.vue";
 
@@ -14,7 +14,7 @@ const running = ref(false);
 const run = () => {
   running.value = true;
   setTimeout(() => {
-    app.use(Basics)(_ => {
+    $app.use(Basics)(_ => {
       if (
         _.await(() => fetch("https://jsonplaceholder.typicode.com/todos/1"))
       ) {

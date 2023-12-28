@@ -32,7 +32,7 @@ import "@refina/mdui/styles.css";
 ```ts
 import MdUI from "@refina/mdui";
 
-app.use(MdUI)(_ => {
+$app.use(MdUI)(_ => {
   // ...
 });
 ```
@@ -56,7 +56,7 @@ The hyphens in the component names should be replaced with underscores.
 **Refina Example**:
 
 ```ts
-app.use(MdUI)(_ => {
+$app.use(MdUI)(_ => {
   _._mdui_tooltip(
     {
       content: "Plain tooltip",

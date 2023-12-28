@@ -1,5 +1,5 @@
 import Basics from "@refina/basic-components";
-import { app } from "refina";
+import { $app } from "refina";
 
 window.addEventListener("popstate", () => {
   window.location.reload();
@@ -45,7 +45,7 @@ if (isExample("fluentui")) {
 } else if (isExample("gh-login")) {
   import("@refina/example-gh-login");
 } else {
-  app.use(Basics)(_ => {
+  $app.use(Basics)(_ => {
     _.$root.addCls("p-4");
 
     if (loading) return;
