@@ -12,17 +12,17 @@
     "README.md"
   ],
   "type": "module",
-  "main": "./dist/plugin.js",
-  "types": "./dist/plugin.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/plugin.d.ts",
-        "default": "./dist/plugin.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
-        "types": "./dist/plugin.d.cts",
-        "default": "./dist/plugin.cjs"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     }
   },
@@ -41,7 +41,6 @@
   "readme": "https://github.com/KermanX/refina#readme",
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "@refina/transformer": "workspace:^",
     "@types/node": "^20.6.5",
@@ -50,5 +49,10 @@
   },
   "peerDependencies": {
     "vite": "^4.4.8"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.6",
+    "@babel/types": "^7.23.6",
+    "magic-string": "^0.30.2"
   }
 }

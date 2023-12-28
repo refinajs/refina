@@ -1,7 +1,7 @@
 import type { Options } from "tsup";
 
 export const tsup: Options = {
-  entry: ["./plugin.ts"],
+  entry: ["./src/index.ts"],
   format: ["cjs", "esm"],
   target: "es2019",
   noExternal: ["@refina/transformer"],
