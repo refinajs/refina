@@ -463,7 +463,28 @@ export function initializeBaseContext(
   context.$update = app.update;
   context.$setD = app.setD;
   context.$permanentData = app.permanentData;
-  context.$$currentRefTreeNode = app.root.$refTreeNode;
+
+  if (import.meta.env.DEV) {
+    // Proxy `context.$$currentRefTreeNode` to unref removed ckeys.
+    let currentRefTreeNode = app.root.$refTreeNode;
+    Object.defineProperty(context, "$$currentRefTreeNode", {
+      get() {
+        return currentRefTreeNode;
+      },
+      set(node) {
+        currentRefTreeNode = node;
+        if (window.__REFINA_HMR__) {
+          for (const ckey of window.__REFINA_HMR__.removedCkeys) {
+            delete node[ckey];
+          }
+        }
+      },
+      configurable: true,
+    });
+  } else {
+    context.$$currentRefTreeNode = app.root.$refTreeNode;
+  }
+
   context.$runtimeData = {};
   context.$$processedComponents = new Set();
   context.$root = app.root;

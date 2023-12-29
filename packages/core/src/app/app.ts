@@ -265,6 +265,9 @@ export class App {
       this.main(this.context);
       if (import.meta.env.DEV) {
         this.context.$$assertEmpty();
+        if (window.__REFINA_HMR__) {
+          window.__REFINA_HMR__.removedCkeys = [];
+        }
       }
       this.callHook("afterMain");
     } catch (e) {
