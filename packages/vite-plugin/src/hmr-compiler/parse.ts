@@ -14,6 +14,8 @@ export interface ParseResult {
 
   mainAst: t.Expression;
   mainSrc: MagicString;
+
+  appInstance: string | null;
 }
 
 function isCalleeApp(callee: t.Expression | t.V8IntrinsicIdentifier) {
@@ -36,8 +38,9 @@ export function parse(src: string): ParseResult | false {
       statement.expression.type === "CallExpression" &&
       isCalleeApp(statement.expression.callee)
     ) {
-      const mainStart = statement.expression.arguments[0].start!;
-      const mainEnd = statement.expression.arguments[0].end! - src.length;
+      const mainAst = statement.expression.arguments[0] as t.Expression;
+      const mainStart = mainAst.start!;
+      const mainEnd = mainAst.end! - src.length;
 
       const localsSrc = new MagicString(src);
       localsSrc.remove(mainStart, mainEnd);
@@ -53,8 +56,45 @@ export function parse(src: string): ParseResult | false {
         mainEnd,
         localsAst: statements.filter((_, j) => j !== i),
         localsSrc,
-        mainAst: statement.expression.arguments[0] as t.Expression,
+        mainAst,
         mainSrc,
+        appInstance: null,
+      };
+    }
+    if (
+      statement.type === "VariableDeclaration" &&
+      statement.declarations.length === 1 &&
+      statement.declarations[0].init?.type === "CallExpression" &&
+      isCalleeApp(statement.declarations[0].init.callee)
+    ) {
+      const declaration = statement.declarations[0];
+
+      if (statement.kind !== "const") {
+        throw new Error("Cannot declare non-const app instance.");
+      }
+
+      const mainAst = statement.declarations[0].init
+        .arguments[0] as t.Expression;
+      const mainStart = mainAst.start!;
+      const mainEnd = mainAst.end! - src.length;
+
+      const localsSrc = new MagicString(src);
+      localsSrc.remove(mainStart, mainEnd);
+
+      const mainSrc = new MagicString(src);
+      mainSrc.remove(0, mainStart);
+      mainSrc.remove(mainEnd, src.length);
+
+      return {
+        appCallStart: statement.start!,
+        appCallEnd: statement.end!,
+        mainStart,
+        mainEnd,
+        localsAst: statements.filter((_, j) => j !== i),
+        localsSrc,
+        mainAst,
+        mainSrc,
+        appInstance: (declaration.id as t.Identifier).name,
       };
     }
   }

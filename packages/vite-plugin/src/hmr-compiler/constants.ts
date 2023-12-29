@@ -5,7 +5,7 @@ export function getLocalsAccessor(id: string) {
 
 export const mainFuncId = "__main__";
 
-export const appInstId = "__app__";
+export const appInstDeafultId = "__app__";
 
 export const initFuncId = "__init__";
 

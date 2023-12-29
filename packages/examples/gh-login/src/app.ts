@@ -14,7 +14,7 @@ function login() {
       msg = "Incorrect username or password.";
     }
     loading = false;
-    // $app.update();
+    app.update();
   }, 1000);
 }
 
@@ -25,7 +25,7 @@ let loading = false,
   msgType = "",
   msg = "";
 
-$app.use(Basics)(_ => {
+const app = $app.use(Basics)(_ => {
   if (_.$updateContext) {
     _.$root.addCss(
       `font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"`,

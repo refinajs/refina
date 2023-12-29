@@ -32,7 +32,8 @@ export function compile(
   const mainRaw = parseResult.mainSrc.toString();
 
   const bindings = getBindings(parseResult.localsAst, parseResult.localsSrc);
-  wrapLocals(mainpath, parseResult, bindings);
+
+  wrapLocals(mainpath, parseResult, bindings, parseResult.appInstance);
   processExpr(
     parseResult.mainAst,
     parseResult.mainSrc,

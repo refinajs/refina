@@ -1,5 +1,5 @@
 import {
-  appInstId,
+  appInstDeafultId,
   initFuncId,
   localsObjId,
   mainFuncId,
@@ -12,6 +12,7 @@ export function wrapLocals(
   mainpath: string,
   { appCallStart, mainStart, mainEnd, localsSrc }: ParseResult,
   bindings: Binding[],
+  appInstance: string | null,
 ) {
   localsSrc.prepend(
     `import { ${mainFuncId}, ${initFuncId} } from ${JSON.stringify(
@@ -28,12 +29,18 @@ export function wrapLocals(
       left += `set ${name}(v) { ${name} = v },`;
     }
   }
-  left += `});\n\nconst ${appInstId} = `;
+  if (appInstance) {
+    left += `get ${appInstance}() { return ${appInstance} },`;
+  }
+  left += `});\n\n`;
+  if (!appInstance) {
+    left += `const ${appInstDeafultId} = `;
+  }
   localsSrc.prependLeft(appCallStart, left);
 
   localsSrc.update(mainStart, mainEnd, `${mainFuncId}(${localsObjId})`);
 
   localsSrc.append(`
-  ${initFuncId}(${appInstId}, ${localsObjId});
+  ${initFuncId}(${appInstance ?? appInstDeafultId}, ${localsObjId});
 `);
 }
