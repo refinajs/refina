@@ -37,7 +37,7 @@ export function parse(src: string): ParseResult | false {
       isCalleeApp(statement.expression.callee)
     ) {
       const mainStart = statement.expression.arguments[0].start!;
-      const mainEnd = statement.expression.arguments[0].end!;
+      const mainEnd = statement.expression.arguments[0].end! - src.length;
 
       const localsSrc = new MagicString(src);
       localsSrc.remove(mainStart, mainEnd);

@@ -1,11 +1,15 @@
-import { ParseResult } from "./parse";
+import type t from "@babel/types";
+import type MagicString from "magic-string";
 
 export interface Binding {
   name: string;
   readonly: boolean;
 }
 
-export function getBindings({ localsAst, localsSrc }: ParseResult): Binding[] {
+export function getBindings(
+  localsAst: t.Statement[],
+  localsSrc: MagicString,
+): Binding[] {
   const bindings: Binding[] = [];
   for (const statement of localsAst) {
     if (statement.type === "VariableDeclaration") {

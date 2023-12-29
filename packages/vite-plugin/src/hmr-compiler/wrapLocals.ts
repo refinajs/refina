@@ -37,22 +37,3 @@ export function wrapLocals(
   ${initFuncId}(${appInstId}, ${localsObjId});
 `);
 }
-
-/*
-if (import.meta.hot) {
-  import.meta.hot.accept(${JSON.stringify(
-    slash("/@fs/" + mainpath),
-  )}, (newMainModule) => {
-    const newMain = newMainModule.${mainFuncId}(${localsObjId});
-    if(${appInstId}.state !== "idle") {
-      ${appInstId}.promises.mainExecuted.then(() => {
-        ${appInstId}.main = newMain;
-        ${appInstId}.update();
-      })
-    } else {
-      ${appInstId}.main = newMain;
-      ${appInstId}.update();
-    }
-  });
-}
-*/
