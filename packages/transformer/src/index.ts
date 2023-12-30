@@ -1,9 +1,5 @@
 import MagicString, { SourceMapOptions } from "magic-string";
-import {
-  COMPONENT_FUNC,
-  COMPONENT_FUNC_WITH_TYPE_PARAMS,
-  TEXT_NODE_TAGFUNC,
-} from "./patterns";
+import patterns from "./patterns";
 
 export class RefinaTransformer {
   currentFileId = 0;
@@ -24,18 +20,21 @@ export class RefinaTransformer {
     const s = new MagicString(code);
     let lastKey = 0;
     const generateCkey = () => this.toCkey(fileKey, lastKey++);
-    s.replaceAll(TEXT_NODE_TAGFUNC, (_, text) => {
+    s.replaceAll(patterns.TEXT_NODE_TAGFUNC, (_, text) => {
       const ckey = generateCkey();
       return `_.$$t("${ckey}", \`${text}\`)`;
     });
-    s.replaceAll(COMPONENT_FUNC, (_, name) => {
+    s.replaceAll(patterns.COMPONENT_FUNC, (_, name) => {
       const ckey = generateCkey();
       return name === "t" ? `_.$$t("${ckey}",` : `_.$$("${name}", "${ckey}",`;
     });
-    s.replaceAll(COMPONENT_FUNC_WITH_TYPE_PARAMS, (_, name, _targs) => {
-      const ckey = generateCkey();
-      return `_.$$("${name}", "${ckey}",`;
-    });
+    s.replaceAll(
+      patterns.COMPONENT_FUNC_WITH_TYPE_PARAMS,
+      (_, name, _targs) => {
+        const ckey = generateCkey();
+        return `_.$$("${name}", "${ckey}",`;
+      },
+    );
     const map = s.generateMap(options);
     return lastKey === 0
       ? null
@@ -48,16 +47,16 @@ export class RefinaTransformer {
   transform(fileKey: string, code: string) {
     let lastKey = 0;
     const generateCkey = () => this.toCkey(fileKey, lastKey++);
-    code = code.replaceAll(TEXT_NODE_TAGFUNC, (_, text) => {
+    code = code.replaceAll(patterns.TEXT_NODE_TAGFUNC, (_, text) => {
       const ckey = generateCkey();
       return `_.$$t("${ckey}", \`${text}\`)`;
     });
-    code = code.replaceAll(COMPONENT_FUNC, (_, name) => {
+    code = code.replaceAll(patterns.COMPONENT_FUNC, (_, name) => {
       const ckey = generateCkey();
       return name === "t" ? `_.$$t("${ckey}",` : `_.$$("${name}", "${ckey}",`;
     });
     code = code.replaceAll(
-      COMPONENT_FUNC_WITH_TYPE_PARAMS,
+      patterns.COMPONENT_FUNC_WITH_TYPE_PARAMS,
       (_, name, _targs) => {
         const ckey = generateCkey();
         return `_.$$("${name}", "${ckey}",`;
@@ -74,7 +73,6 @@ export class RefinaTransformer {
     }
     const result = this.transformWithSourceMap(fileKey, code, {
       source: fileName,
-      file: fileName + ".map",
       includeContent: true,
     });
     if (result === null) {
@@ -87,3 +85,5 @@ export class RefinaTransformer {
     };
   }
 }
+
+export { patterns };
