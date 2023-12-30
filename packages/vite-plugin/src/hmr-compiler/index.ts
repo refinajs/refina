@@ -77,8 +77,10 @@ export function update(
 
   const newMainRaw = newSrc.slice(descriptor.mainStart, descriptor.mainEnd);
   if (newMainRaw !== descriptor.mainRaw) {
-    const mainAst = parseExpression(newMainRaw);
-    const mainSrc = new MagicString(newMainRaw);
+    const parseResult = parse(newSrc);
+    if (parseResult === false) return "full-reload";
+    const { mainAst, mainSrc } = parseResult;
+
     processExpr(
       mainAst,
       mainSrc,
