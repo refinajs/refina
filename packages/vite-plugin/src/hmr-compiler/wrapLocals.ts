@@ -9,14 +9,14 @@ import { Binding } from "./getBindings";
 import { ParseResult } from "./parse";
 
 export function wrapLocals(
-  mainpath: string,
+  srcPath: string,
   { appCallStart, mainStart, mainEnd, localsSrc }: ParseResult,
   bindings: Binding[],
   appInstance: string | null,
 ) {
   localsSrc.prepend(
     `import { ${mainFuncId}, ${initFuncId} } from ${JSON.stringify(
-      mainpath + mainUrlSuffix,
+      srcPath + mainUrlSuffix,
     )};`,
   );
 

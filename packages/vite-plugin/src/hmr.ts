@@ -41,7 +41,7 @@ export default function Hmr(
 
         let descriptor = cache.get(entryId)!;
         if (descriptor === undefined) {
-          descriptor = compile(raw, id);
+          descriptor = compile(raw, entryId);
           cache.set(entryId, descriptor);
         }
 

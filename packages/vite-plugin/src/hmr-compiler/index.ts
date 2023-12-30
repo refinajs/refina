@@ -5,6 +5,7 @@ import { parse } from "./parse";
 import { processExpr } from "./process";
 import { wrapLocals } from "./wrapLocals";
 import { wrapMain } from "./wrapMain";
+import { mainUrlSuffix } from "./constants";
 
 export interface RefinaDescriptor {
   mainStart: number;
@@ -23,7 +24,7 @@ export interface RefinaDescriptor {
 
 export function compile(
   src: string,
-  mainpath: string,
+  srcPath: string,
 ): false | RefinaDescriptor {
   const parseResult = parse(src);
   if (parseResult === false) return false;
@@ -33,35 +34,44 @@ export function compile(
 
   const bindings = getBindings(parseResult.localsAst, parseResult.localsSrc);
 
-  wrapLocals(mainpath, parseResult, bindings, parseResult.appInstance);
+  wrapLocals(srcPath, parseResult, bindings, parseResult.appInstance);
   processExpr(
     parseResult.mainAst,
     parseResult.mainSrc,
     new Set(bindings.map(b => b.name)),
   );
   wrapMain(parseResult.mainSrc);
+
   return {
     mainStart: parseResult.mainStart,
     mainEnd: parseResult.mainEnd,
     bindings,
     localsRaw,
     localsContent: parseResult.localsSrc.toString(),
-    localsMap: parseResult.localsSrc.generateMap(),
+    localsMap: parseResult.localsSrc.generateMap({
+      includeContent: true,
+      source: srcPath,
+      file: srcPath + ".map",
+    }),
     mainRaw,
     mainContent: parseResult.mainSrc.toString(),
-    mainMap: parseResult.mainSrc.generateMap(),
+    mainMap: parseResult.mainSrc.generateMap({
+      includeContent: true,
+      source: srcPath,
+      file: srcPath + mainUrlSuffix + ".map",
+    }),
   };
 }
 
 export function update(
   descriptor: RefinaDescriptor,
   newSrc: string,
-  mainpath: string,
+  srcPath: string,
 ) {
   const newLocalsRaw =
     newSrc.slice(0, descriptor.mainStart) + newSrc.slice(descriptor.mainEnd);
   if (newLocalsRaw !== descriptor.localsRaw) {
-    Object.assign(descriptor, compile(newSrc, mainpath));
+    Object.assign(descriptor, compile(newSrc, srcPath));
     return "full-reload";
   }
 
@@ -78,7 +88,11 @@ export function update(
 
     descriptor.mainRaw = newMainRaw;
     descriptor.mainContent = mainSrc.toString();
-    descriptor.mainMap = mainSrc.generateMap();
+    descriptor.mainMap = mainSrc.generateMap({
+      includeContent: true,
+      source: srcPath,
+      file: srcPath + mainUrlSuffix + ".map",
+    });
     return "update-main";
   }
 
