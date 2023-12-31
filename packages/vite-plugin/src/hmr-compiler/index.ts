@@ -1,11 +1,10 @@
-import { parseExpression } from "@babel/parser";
-import MagicString, { SourceMap } from "magic-string";
+import { SourceMap } from "magic-string";
+import { mainUrlSuffix } from "./constants";
 import { Binding, getBindings } from "./getBindings";
 import { parse } from "./parse";
 import { processExpr } from "./process";
 import { wrapLocals } from "./wrapLocals";
 import { wrapMain } from "./wrapMain";
-import { mainUrlSuffix } from "./constants";
 
 export interface RefinaDescriptor {
   mainStart: number;
@@ -32,7 +31,7 @@ export function compile(
   const localsRaw = parseResult.localsSrc.toString();
   const mainRaw = parseResult.mainSrc.toString();
 
-  const bindings = getBindings(parseResult.localsAst, parseResult.localsSrc);
+  const bindings = getBindings(parseResult.localsAst);
 
   wrapLocals(srcPath, parseResult, bindings, parseResult.appInstance);
   processExpr(

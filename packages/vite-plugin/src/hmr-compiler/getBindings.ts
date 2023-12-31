@@ -1,69 +1,22 @@
 import type t from "@babel/types";
-import type MagicString from "magic-string";
 
 export interface Binding {
   name: string;
   readonly: boolean;
 }
 
-export function getBindings(
-  localsAst: t.Statement[],
-  localsSrc: MagicString,
-): Binding[] {
+export function getBindings(ast: t.Statement[]): Binding[] {
   const bindings: Binding[] = [];
-  for (const statement of localsAst) {
+  for (const statement of ast) {
     if (statement.type === "VariableDeclaration") {
       const readonly = statement.kind === "const";
-      const declarations = statement.declarations;
-      for (const declaration of declarations) {
-        const id = declaration.id;
-        switch (id.type) {
-          case "Identifier":
-            bindings.push({ name: id.name, readonly });
-            break;
-          case "MemberExpression":
-            const name = localsSrc.slice(id.start!, id.end!);
-            bindings.push({ name, readonly });
-            break;
-          case "ArrayPattern":
-            break;
-          case "ObjectPattern":
-            for (const property of id.properties) {
-              switch (property.type) {
-                case "RestElement":
-                  if (property.argument.type !== "Identifier")
-                    throw new Error("Rest element must be an identifier");
-                  bindings.push({
-                    name: property.argument.name,
-                    readonly,
-                  });
-                  break;
-                case "ObjectProperty":
-                  if (property.key.type !== "Identifier")
-                    throw new Error("Object property must be an identifier");
-                  bindings.push({
-                    name: property.key.name,
-                    readonly,
-                  });
-                  break;
-                default:
-                  const _exhaustiveCheck: never = property;
-              }
-            }
-            break;
-          case "RestElement":
-          case "AssignmentPattern":
-          case "TSParameterProperty":
-          case "TSAsExpression":
-          case "TSSatisfiesExpression":
-          case "TSTypeAssertion":
-          case "TSNonNullExpression":
-            throw new Error("Unsupported binding type: " + id.type);
-          default:
-            const _exhaustiveCheck: never = id;
-        }
+      for (const declaration of statement.declarations) {
+        addLValToBindings(declaration.id, bindings, readonly);
       }
-    } else if (statement.type === "FunctionDeclaration") {
+    } else if (
+      statement.type === "FunctionDeclaration" ||
+      statement.type === "ClassDeclaration"
+    ) {
       bindings.push({
         name: statement.id!.name,
         readonly: true,
@@ -81,4 +34,65 @@ export function getBindings(
     }
   }
   return bindings;
+}
+
+function addLValToBindings(
+  ast: t.LVal,
+  bindings: Binding[],
+  readonly: boolean,
+) {
+  switch (ast.type) {
+    case "Identifier":
+      bindings.push({
+        name: ast.name,
+        readonly,
+      });
+      break;
+    case "ArrayPattern":
+      for (const element of ast.elements) {
+        if (element !== null) {
+          addLValToBindings(element, bindings, readonly);
+        }
+      }
+      break;
+    case "ObjectPattern":
+      for (const property of ast.properties) {
+        switch (property.type) {
+          case "RestElement":
+            addLValToBindings(property.argument, bindings, readonly);
+            break;
+          case "ObjectProperty":
+            if (property.key.type !== "Identifier")
+              throw new Error("Object property must be an identifier");
+            bindings.push({
+              name: property.key.name,
+              readonly,
+            });
+            break;
+          default:
+            const _exhaustiveCheck: never = property;
+        }
+      }
+      break;
+    case "AssignmentPattern":
+      addLValToBindings(ast.left, bindings, readonly);
+      break;
+    case "RestElement":
+      if (ast.argument.type !== "Identifier")
+        throw new Error("Rest element must be an identifier");
+      bindings.push({
+        name: ast.argument.name,
+        readonly,
+      });
+      break;
+    case "MemberExpression":
+    case "TSParameterProperty":
+    case "TSAsExpression":
+    case "TSSatisfiesExpression":
+    case "TSTypeAssertion":
+    case "TSNonNullExpression":
+      throw new Error("Unsupported binding type: " + ast.type);
+    default:
+      const _exhaustiveCheck: never = ast;
+  }
 }
