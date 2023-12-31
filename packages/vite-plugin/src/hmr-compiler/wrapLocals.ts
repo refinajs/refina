@@ -6,7 +6,7 @@ import {
   mainUrlSuffix,
 } from "./constants";
 import { Binding } from "./getBindings";
-import { ParseResult } from "./parse";
+import { ParseResult } from "./parser";
 
 export function wrapLocals(
   srcPath: string,

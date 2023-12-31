@@ -1,6 +1,7 @@
 import { RefinaTransformer } from "@refina/transformer";
 import type { Plugin, ResolvedConfig } from "vite";
 import { ResolvedCommonOptions } from "./types";
+import { fullReload } from "./hmr";
 
 export interface TransformerOptions {
   /**
@@ -33,14 +34,14 @@ export default function Transformer(
     transform(raw, id) {
       if (!options.isRefina(id, raw)) return null;
 
-      const result = transformer.transformFile(id, raw);
+      const result = transformer.transformFile(id, raw, fullReload.value);
 
       if (result === null) return null;
 
-      const { code, map, fileKey } = result;
+      const { code, map, key } = result;
 
       if (options.logFileMapping ?? config.command === "serve") {
-        this.info(`"${fileKey}"${" ".repeat(3 - fileKey.length)}--> "${id}"`);
+        this.info(`"${key}"${" ".repeat(3 - key.length)}--> "${id}"`);
       }
 
       return {

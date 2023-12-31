@@ -25,7 +25,7 @@ function isCalleeApp(callee: t.Expression | t.V8IntrinsicIdentifier) {
   return false;
 }
 
-export function parse(src: string): ParseResult | false {
+export function parse(src: string): ParseResult | null {
   const statements = babelParse(src, {
     sourceType: "module",
     plugins: ["typescript"],
@@ -98,5 +98,5 @@ export function parse(src: string): ParseResult | false {
       };
     }
   }
-  return false;
+  return null;
 }
