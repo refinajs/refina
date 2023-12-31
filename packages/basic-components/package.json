@@ -7,7 +7,8 @@
     "components"
   ],
   "files": [
-    "src"
+    "src",
+    "README.md"
   ],
   "type": "module",
   "main": "./src/index.ts",
