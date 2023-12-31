@@ -29,10 +29,16 @@ features:
     details: Free from the burden of state management, just write your code.
   - icon: ⚡️
     title: Much less code
-    details: No need to write any end tags, and use positional parameters instead of named parameters.
-  - icon: 🔩
+    details: End tags omitted, and use positional parameters instead of named parameters.
+  - icon: 🧩
     title: Plain TypeScript
-    details: No DSL like JSX or Vue SFC, just plain TypeScript, with a little bit comptime transformation.
+    details: No DSL used. All TypeScript features & devtools are available.
+  - icon: 🔥
+    title: Hot Module Replacement
+    details: Update the view without refreshing the page and losing the state.
+  - icon: 🔩
+    title: Plugin System
+    details: Extend Refina with plugins. Components, directives, and more.
   - icon: 🔑
     title: Fully Typed APIs
     details: Everything is typed, even some dynamic states.

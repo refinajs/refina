@@ -11,7 +11,7 @@ In this section we will introduce how to scaffold a Refina app on your local mac
 Make sure you have an up-to-date version of [Node.js](https://nodejs.org/) installed and your current working directory is the one where you intend to create a project. Run the following command in your command line (without the `>` sign):
 
 ```sh
-> npm create refina   # pnpm preferred
+> npm create refina@latest   # pnpm preferred
 ```
 
 This command will install and execute [create-refina](https://github.com/refinajs/refina/tree/main/packages/creator), the official Refina project scaffolding tool. You will be presented with prompts for several optional features such as TailwindCSS support:

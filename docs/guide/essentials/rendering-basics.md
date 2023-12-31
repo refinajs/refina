@@ -44,9 +44,9 @@ When using view functions as the content of a component, you should use the cont
 :::tip
 When using view functions as the content of a component, it is recommended to use the arrow function syntax.
 
-To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` option set to `avoid`.
+To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` optcdion set to `avoid`.
 
-> If you create your project with `npm create refina`, Prettier is already configured for you.
+> If you create your project with `npm create refina@latest`, Prettier is already configured for you.
 > :::
 
 :::tip
