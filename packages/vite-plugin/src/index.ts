@@ -15,7 +15,14 @@ function uniformMatcher(matcher: Matcher): (id: string) => boolean {
   throw new Error("Invalid matcher");
 }
 
-interface RefinaOptions extends CommonOptions, TransformerOptions {}
+interface RefinaOptions extends CommonOptions, TransformerOptions {
+  /**
+   * Enable HMR.
+   *
+   * @default true
+   */
+  hmr?: boolean;
+}
 
 export default function Refina(options: RefinaOptions = {}): Plugin[] {
   const include = uniformMatcher(options.include ?? /\.[tj]s(\?|$)/);
@@ -29,7 +36,11 @@ export default function Refina(options: RefinaOptions = {}): Plugin[] {
       include(id) && !exclude(id) && !ignore(raw),
   };
 
-  return [Hmr(resolvedOptions), Transformer(resolvedOptions)];
+  const hmrEnabled = options.hmr ?? true;
+
+  return hmrEnabled
+    ? [Hmr(resolvedOptions), Transformer(resolvedOptions)]
+    : [Transformer(resolvedOptions)];
 }
 
 export { RefinaTransformer };

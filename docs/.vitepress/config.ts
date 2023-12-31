@@ -13,6 +13,7 @@ export default defineConfig({
           /\.[tj]s$/,
           id => id.endsWith(".vue") && !id.includes("node_modules"),
         ],
+        hmr: false,
       }) as any,
     ],
   },
