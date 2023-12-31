@@ -5,13 +5,13 @@ import {
   mainFuncId,
   mainUrlSuffix,
 } from "./constants";
-import { Binding } from "./getBindings";
+import { Bindings } from "./getBindings";
 import { ParseResult } from "./parser";
 
 export function wrapLocals(
   srcPath: string,
   { appCallStart, mainStart, mainEnd, localsSrc }: ParseResult,
-  bindings: Binding[],
+  bindings: Bindings,
   appInstance: string | null,
 ) {
   localsSrc.prepend(
@@ -21,7 +21,7 @@ export function wrapLocals(
   );
 
   let left = `\nconst ${localsObjId} = Object.seal({`;
-  for (const { name, readonly } of bindings) {
+  for (const [name, readonly] of Object.entries(bindings)) {
     if (readonly) {
       left += `${name},`;
     } else {

@@ -15,12 +15,21 @@ export function compile(id: string, src: string): RefinaDescriptor | null {
   const mainRaw = parseResult.mainSrc.toString();
 
   const bindings = getBindings(parseResult.localsAst);
+  const usedBindings = new Set<string>();
 
-  wrapLocals(id, parseResult, bindings, parseResult.appInstance);
   processExpr(
     parseResult.mainAst,
-    parseResult.mainSrc,
-    new Set(bindings.map(b => b.name)),
+    { s: parseResult.mainSrc, usedBindings },
+    new Set(Object.keys(bindings)),
+  );
+
+  wrapLocals(
+    id,
+    parseResult,
+    Object.fromEntries(
+      Object.entries(bindings).filter(([name]) => usedBindings.has(name)),
+    ),
+    parseResult.appInstance,
   );
   wrapMain(parseResult.mainSrc);
 

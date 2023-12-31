@@ -1,5 +1,5 @@
 import type { SourceMap } from "magic-string";
-import { Binding } from "./getBindings";
+import type { Bindings } from "./getBindings";
 
 export const localsObjId = "__locals__";
 export function getLocalsAccessor(id: string) {
@@ -24,7 +24,7 @@ export interface RefinaDescriptor {
   mainStart: number;
   mainEnd: number; // negative
 
-  bindings: Binding[];
+  bindings: Bindings;
 
   locals: TransformResult;
 

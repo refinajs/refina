@@ -2,9 +2,14 @@ import t from "@babel/types";
 import MagicString from "magic-string";
 import { getLocalsAccessor } from "./constants";
 
+interface SourceWithMetadata {
+  s: MagicString;
+  usedBindings: Set<string>;
+}
+
 function processStmt(
   ast: t.Statement,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: Set<string>,
 ) {
   switch (ast.type) {
@@ -60,7 +65,7 @@ function processStmt(
       }
       const innerBindings4 = new Set(bindings);
       for (const param of ast.params) {
-        processLVal(param, src, innerBindings4);
+        processDeclarationId(param, src, innerBindings4);
       }
       processStmt(ast.body, src, innerBindings4);
       break;
@@ -182,7 +187,7 @@ function processStmt(
 
 export function processExpr(
   ast: t.Expression,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: ReadonlySet<string>,
 ) {
   switch (ast.type) {
@@ -231,12 +236,16 @@ export function processExpr(
 
     case "FunctionExpression":
       const innerBindings = new Set(bindings);
+      for (const param of ast.params) {
+        processDeclarationId(param, src, innerBindings);
+      }
       processStmt(ast.body, src, innerBindings);
       break;
 
     case "Identifier":
       if (bindings.has(ast.name)) {
-        src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+        src.usedBindings.add(ast.name);
+        src.s.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
       }
       break;
 
@@ -271,7 +280,8 @@ export function processExpr(
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
               if (bindings.has(name)) {
-                src.update(
+                src.usedBindings.add(name);
+                src.s.update(
                   property.key.start!,
                   property.key.end!,
                   `${name}:${getLocalsAccessor(name)}`,
@@ -324,7 +334,7 @@ export function processExpr(
     case "ArrowFunctionExpression":
       const innerBindings3 = new Set(bindings);
       for (const param of ast.params) {
-        processLVal(param, src, innerBindings3);
+        processDeclarationId(param, src, innerBindings3);
       }
       if (ast.body.type === "BlockStatement") {
         processStmt(ast.body, src, innerBindings3);
@@ -427,13 +437,13 @@ export function processExpr(
 
 function processLVal(
   ast: t.LVal,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: ReadonlySet<string>,
 ) {
   switch (ast.type) {
     case "Identifier":
-      if (bindings.has(ast.name))
-        src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+      if (bindings.has(ast.name)) src.usedBindings.add(ast.name);
+      src.s.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
       break;
 
     case "MemberExpression":
@@ -470,7 +480,8 @@ function processLVal(
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
               if (bindings.has(name)) {
-                src.update(
+                src.usedBindings.add(name);
+                src.s.update(
                   property.key.start!,
                   property.key.end!,
                   `${name}:${getLocalsAccessor(name)}`,
@@ -507,7 +518,7 @@ function processLVal(
 
 function processDeclarationId(
   ast: t.LVal,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: Set<string>,
 ) {
   switch (ast.type) {
@@ -589,7 +600,7 @@ function processDeclarationId(
 
 function processVariableDeclaration(
   ast: t.VariableDeclaration,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: Set<string>,
 ) {
   const declarations = ast.declarations;
@@ -601,7 +612,7 @@ function processVariableDeclaration(
 
 function processExprOrPatternLike(
   ast: t.Expression | t.PatternLike,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: ReadonlySet<string>,
 ) {
   if (t.isPatternLike(ast)) {
@@ -617,7 +628,7 @@ function processArgument(
     | t.SpreadElement
     | t.JSXNamespacedName
     | t.ArgumentPlaceholder,
-  src: MagicString,
+  src: SourceWithMetadata,
   bindings: ReadonlySet<string>,
 ) {
   if (t.isJSXNamespacedName(ast)) {
