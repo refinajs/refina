@@ -100,12 +100,12 @@ async function main() {
   process.chdir(root);
 
   type Dependency = [name: string, version: string];
-  const dependencies: Dependency[] = [["refina", "^0.1.0"]];
+  const dependencies: Dependency[] = [["refina", "^0.3.0"]];
   const devDependencies: Dependency[] = [
     ["vite", "^4.4.0"],
     ["typescript", "^5.3.0"],
     ["@refina/tsconfig", "^0.1.0"],
-    ["vite-plugin-refina", "^0.1.0"],
+    ["vite-plugin-refina", "^0.2.0"],
   ];
   const toDepObject = (dependencies: Dependency[]) =>
     Object.fromEntries(
@@ -113,10 +113,10 @@ async function main() {
     );
 
   if (input.components.includes(0)) {
-    dependencies.push(["@refina/basic-components", "^0.1.0"]);
+    dependencies.push(["@refina/basic-components", "^0.2.0"]);
   }
   if (input.components.includes(1)) {
-    dependencies.push(["@refina/mdui", "^0.1.0"]);
+    dependencies.push(["@refina/mdui", "^0.2.0"]);
   }
   if (input.useTailwind) {
     devDependencies.push(["tailwindcss", "^3.3.3"]);
