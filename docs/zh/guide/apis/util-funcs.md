@@ -25,7 +25,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 ```html {6}
 <div id="root">
@@ -62,7 +62,7 @@ if (_.await(() => fetch("https://example.com"))) {
 }
 ```
 
-**Result**
+**运行结果**
 
 <AsyncFetchVue/>
 
@@ -140,7 +140,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <NowVue/>
 
