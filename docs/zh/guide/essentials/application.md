@@ -1,35 +1,35 @@
-# Creating a Refina Application
+# 创建一个 Refina 应用
 
-## The app Creator
+## ​应用实例
 
-Every Refina.js application starts by creating an `App` instance:
+每个 Refina 应用通过调用 `$app` 函数创建：
 
 ```ts
 import { $app } from "refina";
 
 $app(_ => {
-  // The main function of the app
+  // 应用主体 （主函数）
   // ...
 });
 ```
 
-## Using Plugins
+## 使用插件
 
-Call `$app.use` to install plugin to the app.
+通过调用 `$app.use` 向应用添加插件。
 
-All the components and utility functions are provided by plugins, so it is hard to do anything without plugins.
+所有组件和工具函数都通过插件提供。所以插件是必不可少的一部分。
 
 ```ts
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
 $app.use(Basics)(_ => {
-  // _.h1 is provided by the Basics plugin
+  // _.h1 由名为 Basics 的插件提供
   _.h1("Hello, Refina!");
 });
 ```
 
-To use multiple plugins, just call `$app.use` in a chain:
+若要使用多个插件，请链式调用 `$app.use` 方法：
 
 ```ts
 $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
@@ -37,33 +37,33 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 });
 ```
 
-In fact, components and utility functions in the Refina Core are provided via the plugin `Prelude`, which is automatically installed when you create an app.
+事实上，属于Refina核心的组件和工具函数由名为 `Prelude` 插件的提供。这个插件在创建应用时会被自动添加。
 
 :::warning
-Because of the limitations of TypeScript, the component functions provided by plugins that are imported but not installed are still visible in the context object in the IDE. But a runtime error will occur if you use them.
+由于 TypeScript 的限制，如果仅导入插件却不安装它，其类型仍然在上下文对象中可见。 但是如果你使用这些实际上并没有安装的插件，会产生运行时错误。
 :::
 
-## The Main Function
+## 主函数
 
-The main function is where you construct the page and handle events.
+主函数是页面的主体，负责构建页面和处理事件。
 
-Not only `App`, but also `View` and `Component` have a main function.
+不但应用（`App`）有主函数，每个视图（`View`）和组件（`Component`）也有主函数。
 
-The first parameter of the main function is a `Context` object, which is used to do almost everything like rendering components, handling events, etc.
+主函数的第一个参数是上下文对象。通过上下文对象可以进行渲染组件、处理事件等等操作。
 
 :::warning
 You can only name the first param of the main function (the context object) as `_`.
 
-Otherwise, the transformation will not work, and errors will occur at runtime.
+否则，编译时转换将不会工作，并将产生运行时错误。
 :::
 
-## The Root Element
+## 根元素
 
-The root element is the element that the app will be mounted to.
+根元素是应用挂载在 DOM 中的容器元素。
 
-By default, the root element is the element with the id `root`.
+默认的根元素是 `id` 为 `root` 的元素。
 
-You can change the root element by passing the id of the element to the second parameter of `$app`:
+你可以将期望的根元素的 `id` 传入 `$app` 的第二个参数。
 
 ```ts
 $app(_ => {
@@ -71,11 +71,11 @@ $app(_ => {
 }, "my-root");
 ```
 
-## Multiple Application Instances
+## 多个应用实例
 
-It is allowed to have multiple Refina applications on the same page.
+在同一个页面中可以创建多个共存的 Refina 应用。
 
-You can just specify different root elements for different applications:
+你可以为每个应用指定不同的根元素。
 
 ```html
 <body>
