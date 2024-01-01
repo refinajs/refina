@@ -52,7 +52,7 @@ $app(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <LowlevelVue />
 
