@@ -1,6 +1,6 @@
 # Quick Start
 
-:::tip Prerequisites
+:::tip 预备知识
 
 - Familiarity with the command line
 - Install [Node.js](https://nodejs.org/) version 20.0 or higher
