@@ -1,9 +1,27 @@
-import { RefinaDescriptor, mainUrlSuffix } from "./constants";
-import { getBindings } from "./getBindings";
+import type { SourceMap } from "magic-string";
+import { mainUrlSuffix } from "./constants";
+import { Bindings, getBindings } from "./getBindings";
 import { parse } from "./parser";
 import { processExpr } from "./process";
 import { wrapLocals } from "./wrapLocals";
 import { wrapMain } from "./wrapMain";
+
+interface TransformResult {
+  raw: string;
+  code: string;
+  map: SourceMap;
+}
+
+export interface RefinaDescriptor {
+  mainStart: number;
+  mainEnd: number; // negative
+
+  bindings: Bindings;
+
+  locals: TransformResult;
+
+  main: TransformResult;
+}
 
 export function compile(id: string, src: string): RefinaDescriptor | null {
   if (!src.includes("$app")) return null;
