@@ -24,7 +24,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <BasicInputVue />
 
@@ -100,6 +100,6 @@ $app.use(Basics)(_ => {
 
 这里的逻辑是，当用户输入时，`textInput` 组件会触发事件，并以用户新输入的值作为事件的数据。
 
-**Result**
+**运行结果**
 
 <InputEventVue />
