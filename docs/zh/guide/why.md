@@ -16,22 +16,22 @@
 
 - **无需写结束标签**
 
-  End tags are very annoying, and they are not necessary in most cases.
+  结束标签（如`</div>`）对开发效率造成了很大的影响，而它们事实上并不必要。
 
-- **Use positional parameters instead of named parameters**
+- **按位置传入参数，而非按名称**
 
-  You needn't to write the name of the parameter, which saves a lot of time.
+  这样，开发者就不需要写出参数的名称。这节省了很多时间与代码量。
 
-- **Return value as the event handler**
+- **通过返回值监听事件**
 
-  Check the return value of the component function to handle events, so you don't need to write another function.
+  通过检查返回值来判断事件是否发生，就不需要使用回调函数，减少了代码复杂度。
 
-- **Plain TypeScript**
+- **纯 TypeScript 构建页面**
 
-  No DSL like JSX or Vue SFC. So you can use the same syntax in both renderings and logic.
+  无需像 JSX 或 Vue SFC 那样的 DSL。 渲染和逻辑使用同样的、普通的 TypeScript 语法。相关的工具链也都完全兼容。
 
-## The Result
+## 效果
 
-Refina is still in the early stage of development, but it has already shown its advantages in development efficiency.
+Refina 仍然出于开发的早期阶段，但它已经在开发效率上体现了非常大的优势。
 
-Based on the real projects, the **line of code reduced to about `60%~70%`**, and **the development efficiency is `1.4x~1.6x`** of traditional frameworks.
+基于数个真实项目，Refina 相比其他前端框架**减少了大约 `30%~40%` 的代码量**，**开发效率提升至约 `1.4~1.6` 倍**。
