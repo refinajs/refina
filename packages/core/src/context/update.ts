@@ -2,6 +2,7 @@ import { App } from "../app";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentMainFunc,
 } from "../component";
 import { D, Ref, getD, mergeRefs } from "../data";
@@ -14,7 +15,6 @@ import {
   TextNodeComponent,
 } from "../dom";
 import {
-  Context,
   ContextFuncs,
   ContextState,
   InitialContextState,
@@ -345,13 +345,20 @@ export function initializeUpdateContext(
   context.$$processComponent = <T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    factory: (this: T, context: Context) => ComponentMainFunc,
+    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
     args: unknown[],
   ): T => {
     let component = context.$$currentRefTreeNode[ckey] as T | undefined;
     if (!component) {
       component = new ctor(context.$app);
-      component.main = factory.call(component, context._);
+
+      const componentContext = context._ as ComponentContext<any>;
+      componentContext.$expose = exposed => {
+        Object.assign(component!, exposed);
+      };
+
+      component.$mainFunc = factory.call(component, componentContext);
+
       context.$$currentRefTreeNode[ckey] = component;
     }
 
@@ -375,7 +382,7 @@ export function initializeUpdateContext(
     context.$$currentRefTreeNode = component.$refTreeNode;
 
     try {
-      component.main(...args);
+      component.$mainFunc(...args);
       if (import.meta.env.DEV) {
         context.$$assertEmpty();
       }

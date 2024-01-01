@@ -2,6 +2,7 @@ import type { App, RefTreeNode } from "../app";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentMainFunc,
 } from "../component";
 import { AppState } from "../constants";
@@ -428,7 +429,7 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
   $$processComponent<T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    factory: (this: T, context: Context) => ComponentMainFunc,
+    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
     args: unknown[],
   ): T;
 }
