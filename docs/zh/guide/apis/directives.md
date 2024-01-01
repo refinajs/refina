@@ -36,17 +36,17 @@ If the App is in the `RECV` state, the value is the context itself, otherwise it
 
 ## `_.$update`
 
-Call the method to trigger an `UPDATE` call.
+调用此方法以触发页面更新（即触发 `UPDATE` 状态的调用）。
 
-Equivalent to `_.$app.update`.
+与 `_.$app.update` 等价。
 
 ## `_.$setD`
 
-Set the value of a `D` object and trigger an `UPDATE` call if the value is changed.
+设置一个 `D` 所包含的值，并触发页面更新。
 
 ## `_.$ev`
 
-This directive is only available in the event handler.
+这个指令仅在处理事件的代码中可用。
 
 **使用方法**：
 
@@ -62,21 +62,21 @@ $app(_ => {
 
 ## `_.$root`
 
-The component representing the root element of the app.
+代表应用根元素的元素组件。
 
-You can use this component to add classes, styles and event listeners to the root element.
+通过它为根元素设置类名、样式与事件侦听器。
 
 ## `_.$body`
 
-The component representing the document body.
+代表 `window.document` 的元素组件。
 
-You can use this component to add classes, styles and event listeners to the document body.
+通过它为 `document.body` 设置类名、样式与事件侦听器。
 
 ## `_.$window`
 
-The component representing the document body.
+代表 `window.document` 的元素组件。
 
-You can use this component to add event listeners to window.
+通过它为 `window` 添加事件侦听器。
 
 ## `_.$ref` {#ref}
 
@@ -84,36 +84,34 @@ See [Ref a Element](../essentials/lowlevel#ref-element).
 
 ## `_.$props` {#props}
 
-Add extra props to the next component.
+为下一个组件添加额外的 prop。
 
 See [Extra Props](../essentials/component#extra-props).
 
 ## `_.$cls` {#cls}
 
-Add classes to the next component or element.
+向下一个组件或元素添加类名。
 
 See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$css` {#css}
 
-Add styles to the next component or element.
+向下一个组件或元素添加样式。
 
 See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$permanentData`
 
-The shortcut of `_.$app.permanentData`.
+`_.$app.permanentData` 的简写。
 
-**Lifetime**: from the construction of the app to the window is closed.
+**生命周期**: 从页面创建到应用被关闭。
 
 ## `_.$runtimeData` {#runtime-data}
 
-The shortcut of `_.$state.runtimeData`.
+`_.$state.runtimeData` 的简写。
 
-**Lifetime**: one `UPDATE` or `RECV` call.
+**生命周期**：一次 `UPDATE` 或 `RECV` 调用。
 
 :::info
-It is usually a bad idea to write to `_.$runtimeData` directly,
-which is not scoped to the inner content,
-use `_.provide` to provide values to `_.$runtimeData` instead.
+通常你不需要直接读写 `_.$runtimeData`，因为它可能会从可控的作用域泄露。请使用 `_.provide` 方法向一定范围内提供值。
 :::
