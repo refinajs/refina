@@ -19,7 +19,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <StaticPageVue />
 
