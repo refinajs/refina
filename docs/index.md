@@ -17,6 +17,9 @@ hero:
       text: Get Started
       link: /guide/introduction
     - theme: alt
+      text: 中文文档
+      link: /zh/
+    - theme: alt
       text: Why Refina?
       link: /guide/why
     - theme: alt
