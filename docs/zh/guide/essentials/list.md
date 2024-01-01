@@ -23,7 +23,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <ListRenderingVue />
 
@@ -52,6 +52,6 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <ForTimesVue />
