@@ -87,7 +87,7 @@ assert(getD(wrappedValue) === 1);
 
 有时你可能需要对用户的输入进行一些操作，但是又不想将输入的值存储在一个变量中。
 
-The following example stores the input value to the session storage, instead of a variable.
+下面的例子中，用户的输入被存储在 `sessionStorage`，而不是一个变量。
 
 ```ts
 $app.use(Basics)(_ => {
@@ -98,7 +98,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-The logic is that, if the input value is changed, the `textInput` component will emit an event, and the event data is the new value, which can be accessed via `_.$ev`.
+这里的逻辑是，当用户输入时，`textInput` 组件会触发事件，并以用户新输入的值作为事件的数据。
 
 **Result**
 
