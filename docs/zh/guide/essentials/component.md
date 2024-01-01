@@ -1,26 +1,26 @@
-# Components
+# 组件
 
-Components allow us to split the UI into independent and reusable pieces, and think about each piece in isolation.
+组件允许我们将 UI 划分为独立的、可重用的部分，并且可以对每个部分进行单独的思考。
 
-Unlike components in Vue.js, where components are also used to split the app into several parts, it is preferred to use [view](./view.md) to split the app in Refina.
+与 Vue.js 中的组件不同，Refina 中的组件**不**被用于将应用分成几个部分，对于这种需求，请使用[视图](./view.md)。
 
-## Kinds of Components
+## 组件的种类
 
-There are three kinds of components in Refina:
+Refina 中有3种组件：
 
-- **Output component**: Components only do some output. e.g. `h1`, `p`...
-- **Trigger component**: Components with a event to fire. e.g. `button`, `input`...
-- **Status component**: Components with a state. e.g. `checkbox`, `radio`...
+- **输出型组件**：只负责渲染页面内容的组件。 如：`h1`, `p`...
+- **事件型组件**：会触发一个事件的组件。 如：`button`, `input`...
+- **状态型组件**：含有一个状态的组件。 如：`checkbox`, `radio`...
 
 :::info
 The above three kinds of components are the most common use cases.
 
-The low-level implementation of components is just a context function. So it is possible to create a kind of component that is not of any kind listed above.
+组件的底层实现是一个上下文函数。 所以创建一个不属于上述种类的组件是完全可行的。
 :::
 
-## Extra Props {#extra-props}
+## 额外的 props {#extra-props}
 
-Sometimes there are many optional props for a component, and it is not convenient to write them all in the positional parameters. So we can use [the `_.$props` directive](../apis/directives.md#props) to add props to the next component as named parameters.
+有时一个组件有很多可选的 prop。这使得将这些 prop 通过组件函数参数传入十分不便。 这时我们可以使用 [`_.$props` 指令](../apis/directives.md#props) 向下一个组件以按名称传入的方式添加多个额外的 prop。
 
 ```ts
 $app.use(MdUI)(_ => {
@@ -33,18 +33,18 @@ $app.use(MdUI)(_ => {
 ```
 
 :::info
-ALL the extra props are **optional**.
+额外的 prop 都是**可选的**。
 :::
 
 :::info
 The props as parameters are declared in the different way by the component from the extra props.
 
-So you can't pass an extra prop as a parameter to the component, and vice versa.
+所以你不能将额外的 prop 以组件函数参数的方式传入，反之亦然。
 :::
 
-## The Main Element {#main-element}
+## 主元素 {#main-element}
 
-If the component renders a DOM element (text node is excluded), it has a main element, which can be assessed via `componentInstance.$mainEl`.
+如果组件渲染了一个 DOM 元素（不包括文本节点），它就有一个主元素。主元素可以通过`componentInstance.$mainEl`属性获得。
 
 If the component doesn't render any DOM element, its main element is `undefined`.
 
