@@ -13,7 +13,7 @@ The context object has three kinds of properties:
 :::warning
 If you want to use non-directive properties, you MUST name the context object as `_`.
 
-Otherwise, the transformation will not work, and errors will occur at runtime.
+否则，编译时转换将不会工作，并将产生运行时错误。
 :::
 
 ## Component Functions
