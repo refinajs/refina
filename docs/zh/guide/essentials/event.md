@@ -2,9 +2,9 @@
 import EventHandling from "snippets/event-handling.vue";
 </script>
 
-# Handle Events
+# 事件处理
 
-In this section, we will learn how to handle events in Refina.
+本节将介绍在 Refina 中如何处理事件。
 
 ```ts
 let count = 0;
@@ -25,36 +25,36 @@ $app.use(Basics)(_ => {
 
 <EventHandling />
 
-Now let's explain the code above.
+接下来是上面代码的解释。
 
-### Declare a State
+### 定义状态
 
-In the above example, we declare a state `count` to store the count.
+在上面的例子中，我们定义了一个名为 `count` 状态来存储计数值。
 
-As an ImGUI-like framework, you don't need a "reactive system" to handle state changes.
+作为一个类 ImGUI 的框架，Refina 不需要一个”响应式系统“来监听状态的变化。
 
-So you can just declare states just as a normal variable. That is, you don't need to use `ref` or `reactive` or `useState` to declare a state.
+因此你可以直接以最普通的方式定义状态，即使用 `let` 语句。 即，不需要通过 `ref` 或 `reactive` 或 `useState` 来创建状态。
 
 :::warning
 You SHOULD NOT declare the states inside the main function.
 
-Otherwise, the state will be reset every time the main function is called.
+否则，每当主函数被调用，这些状态就会被重置。
 :::
 
-### Handle Events
+### 事件处理
 
-Because most of the components/elements has none or **only one** event that is frequently used, Refina use the return value of the component function to indicate whether the event is triggered.
+因为大部分组件或元素没有或**仅有一个**常用的事件，Refina 以返回值的形式体现事件是否被触发。
 
-For instance, the return value of `_.button` is a boolean value, which indicates whether the button is clicked. And the you can use the `if` statement or the `&&` operator to handle the event.
+比如，`_.button` 的返回值是一给布尔值。当按钮被按下时，`_.button` 会返回一次 `true`，其余时刻，它将返回 `false`。 因此你可以使用 `if` 语句或 `&&` 运算符来处理该事件。
 
 :::tip
 Only trigger components like `button` and `input` returns a boolean value which indicates whether the event is triggered.
 
-Other components may return values with different meanings.
+其他类型的组件可能返回具有其他含义的值。
 :::
 
 :::info
-As you can see, the way how Refina handles events is very similar to [Dear ImGui](https://github.com/ocornut/imgui).
+正如你看见的那样，Refina 的事件处理的写法与 [Dear ImGui](https://github.com/ocornut/imgui) 是否相似。
 :::
 
 ### 获取事件数据
