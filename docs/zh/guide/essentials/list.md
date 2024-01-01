@@ -3,13 +3,13 @@ import ListRenderingVue from "../../snippets/list-rendering.vue";
 import ForTimesVue from "../../snippets/for-times.vue";
 </script>
 
-# List Rendering
+# 列表渲染
 
-Just like Vue.js, a `key` attribute is required when rendering a list.
+就像在 Vue.js 中一样，在渲染列表时需要为每个元素指定唯一的 `key`。
 
-So you can't use the `for` or `while` statement, because they don't have a `key` attribute.
+因此，不可以使用普通的循环来渲染列表。因为它们不接收 `key`。
 
-Instead, you can use the `_.for` and `_.forTimes` context function.
+需要使用 `_.for` 或 `_.forTimes` 等上下文你函数来渲染列表。
 
 ```ts
 import { bySelf } from "refina";
@@ -27,22 +27,22 @@ $app.use(Basics)(_ => {
 
 <ListRenderingVue />
 
-## The Key Generator {#key-generator}
+## key 生成器 {#key-generator}
 
-The second parameter of `_.for` is a key generator, which is used to generate keys for each item.
+`_.for` 的第二个参数是一个 key 生成器，用于为每个元素提供一个唯一的 key。
 
-The key generator can be a function in the form of `(item, index) => key`, or the key of the property to be used as the key.
+key 生成器可以是一个形式为 `(item, index) => key` 的函数，也可以是被作为 key 的元素属性的属性名。
 
-There are also two provided key generators:
+Refina 提供了两个 key 生成器：
 
-- `bySelf`: use the item itself as the key.
-- `byIndex`: use the index of the item as the key.
+- `bySelf`: 将元素本身作为 key。
+- `byIndex`: 将元素的索引作为 key。
 
-## Render for Given Times {#for-times}
+## 重复一定次数 {#for-times}
 
-You can use `_.forTimes` to render for given times.
+可以使用 `_.forTimes` 来将渲染重复数次。
 
-The key generator of `_.forTimes` is omitted, and the index of the item is used as the key.
+`_.forTimes` 没有 key 生成器。它将索引作为 key。
 
 ```ts
 $app.use(Basics)(_ => {
