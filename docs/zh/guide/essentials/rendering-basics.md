@@ -23,7 +23,7 @@ $app.use(Basics)(_ => {
 
 <StaticPageVue />
 
-Now let's explain the code above.
+接下来是上面代码的解释。
 
 ### Simple Components
 
