@@ -1,5 +1,6 @@
-import { compile } from "./compile";
-import { cache } from "./constants";
+import { RefinaDescriptor, compile } from "./compile";
+
+export const cache = new Map<string, RefinaDescriptor | null>();
 
 export function transform(id: string, src: string) {
   const descriptor = cache.get(id) ?? compile(id, src);
