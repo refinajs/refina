@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "./helpers/kind.vue";
-import Optional from "./helpers/optional.vue";
+import Kind from "/std-comps/helpers/kind.vue";
+import Optional from "/std-comps/helpers/optional.vue";
 </script>
 
 # The `Dialog` Component
