@@ -1,16 +1,16 @@
-# Contact Us
+# 关于我们
 
-## The Author
+## 关于作者
 
-- **Email**: [kermanx@qq.com](mailto:kermanx@qq.com)
+- **邮箱**: [kermanx@qq.com](mailto:kermanx@qq.com)
 - **GitHub**: [KermanX](https://github.com/KermanX)
 
-## The QQ Group
+## QQ 群
 
-- **Group Number**: 488240549
+- **群号**: 488240549
 
-## The Discord Server
+## Discord 服务器
 
-- **Server Link**: [Join Refina.js](https://discord.gg/2hjDhfpgzK)
+- **邀请链接**: [Join Refina.js](https://discord.gg/2hjDhfpgzK)
 
-> The Discord server isn't very active. If you have any questions, please contact via email or QQ group.
+> 该服务器可能并不活跃。 如果你有任何问题，欢迎通过邮箱或QQ群联系。
