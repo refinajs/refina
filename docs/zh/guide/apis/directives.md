@@ -1,24 +1,24 @@
-# Directives in the Context Object
+# 上下文对象中的指令
 
-The directives in the context object are all named with a `$` prefix.
+上下文对象中名称以 `$` 开头的是指令。
 
-Directives named with a `$$` prefix are considered as internal directives, which you may not use directly in your code.
+而名称以 `$$` 开头的指令往往在内部被使用。作为应用开发者，你可能无需使用它们。
 
 ## `_.$app`
 
-The App instance.
+当前的应用实例。
 
 ## `_.$state`
 
-The current state of the App.
+当前的应用状态。
 
-Can only be of type `UPDATE` or `RECV`, because there is no Context in the `IDLE` state.
+它可以是 `UPDATE` 或 `RECV`。但它不能是 `IDLE`，因为这时并不存在可用的上下文对象。
 
 ## `_.$updateContext` {#update-context}
 
 If the App is in the `UPDATE` state, the value is the context itself, otherwise it is `null`.
 
-**Usage**:
+**使用方法**：
 
 ```ts
 $app(_ => {
@@ -48,7 +48,7 @@ Set the value of a `D` object and trigger an `UPDATE` call if the value is chang
 
 This directive is only available in the event handler.
 
-**Usage**:
+**使用方法**：
 
 ```ts
 $app(_ => {
