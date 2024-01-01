@@ -21,9 +21,14 @@
     "build:docs": "pnpm -r --filter \"@refina/docs...\" run build",
     "check": "pnpm -r --parallel run check",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "release": "npm run build && npm run changeset && npm run changeset:version && npm run changeset:publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@vitest/coverage-istanbul": "^0.34.6",
     "husky": "^8.0.3",
     "jsdom": "^23.0.1",
