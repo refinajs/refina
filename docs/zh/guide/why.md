@@ -1,20 +1,20 @@
-# Why Refina
+# 为什么选 Refina
 
-## The Problems
+## 前端的困境
 
-For most of today's web applications, what a page should be like and do what, in fact, can be described in a few words. But to implement it using the traditional frontend frameworks, you always need to write hundreds of lines of code.
+对于大部分前端页面，长什么样、要做什么，往往只需要三言两语就能说明白。 但是若要通过传统的前端框架实现它，往往需要写数百行代码。
 
-Traditional frontend frameworks, such as Vue with Vuetify, may generate well-detailed, visually appealing apps. However, even major corporations cannot always produce flawless web apps due to development efficiency. That is, even if people have the talent, they may lack the time to develop a perfect web page, while the majority of folks lack proficiency in traditional frontend frameworks. As a result, some capabilities of standard frontend frameworks go mostly unutilized.
+传统的前端框架，比如 Vue，配合组件库，比如 Vuetify，允许你编写出细节完善、视觉美观的应用。 但是即使是一些“大厂”，也没能总是产出那么高质量的应用，因为开发效率的原因。 这即是说，即使开发者有能力，往往也会由于没有时间而无法做出相当完美的应用。 结果就是，许多传统前端框架的能力几乎得不到发挥，而为拥有这些能力所作的一些设计反而在很多情况下称为了负担。
 
-We need a frontend framework that **give first priority to development efficiency**, then to the completeness, then the runtime performance.
+除了传统前端框架，我们其实需要一个**首先关注开发效率**，其次是功能的完整性，再其次是运行时性能的前端框架。
 
-## The Solutions
+## 解决方案
 
-- **ImGUI-like state management**
+- **类 ImGUI 的状态管理机制**
 
-  Free from the burden of state management, just write your code. Like [Svelte](https://svelte.dev/), but with much less code and no complex compiler.
+  省去状态管理带来的一切心智负担。 就像 [Svelte](https://svelte.dev/) 那样无需手动为数据添加响应性，并且不需要复杂的编译器。
 
-- **No need to write any end tags**
+- **无需写结束标签**
 
   End tags are very annoying, and they are not necessary in most cases.
 
