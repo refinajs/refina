@@ -1,6 +1,6 @@
 <script setup>
-import AsyncFetchVue from "../../snippets/async-fetch.vue";
-import NowVue from "../../snippets/now.vue";
+import AsyncFetchVue from "snippets/async-fetch.vue";
+import NowVue from "snippets/now.vue";
 </script>
 
 # Utility Context Functions

@@ -1,5 +1,5 @@
 <script setup>
-import StaticPageVue from "../../snippets/static-page.vue";
+import StaticPageVue from "snippets/static-page.vue";
 </script>
 
 # Rendering Basics

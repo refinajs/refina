@@ -24,7 +24,7 @@ $app.use(Basics)(_ => {
 **结果展示**
 
 <script setup>
-import CounterVue from '../snippets/counter.vue'
+import CounterVue from 'snippets/counter.vue'
 </script>
 
 <CounterVue />
