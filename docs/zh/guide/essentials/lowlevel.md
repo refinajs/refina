@@ -202,7 +202,6 @@ In the following situations, passing the event listener to the `data` parameter 
 - Want to specify the `options` parameter of the `addEventListener` method.
 
 :::warning Update the app after handling events
-Unlike the component functions, the low-level rendering functions will not update the app automatically after handling events.
 
 You should call `_.$update()` manually to update the app if you want to apply the changes of the states to the app.
 :::
@@ -227,7 +226,6 @@ $app.use(Basics)(_ => {
 ```
 
 :::tip The usage of `&&`
-To let TypeScript check whether you are using the right type of the ref object, you'd better use the `&&` operator to connect the `_.$ref` directive and the low-level rendering function.
 
 Because the `_.$ref` directive always returns `true`, so the component function will always be called. But if the ref object is not the right type, the component function will be of type `never`, and the IDE will report an error.
 :::
