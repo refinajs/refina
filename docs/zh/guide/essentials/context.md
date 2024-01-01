@@ -1,14 +1,14 @@
-# The Context Object
+# 上下文对象
 
-Almost all the APIs of Refina.js are provided via the context object.
+Refina 的很多 API 通过上下文对象提供。
 
-It is used to render components, handle events, etc.
+上下文对象被用于渲染组件、处理事件，等等。
 
-The context object has three kinds of properties:
+上下文对象有3类成员：
 
-- **Component functions**: used to render components.
-- **Utility functions**: used to do some useful things.
-- **Directives**: some special properties and methods.
+- **组件函数**：调用它们以渲染组件/元素。
+- **实用函数**：一些工具方法。
+- **指令**：一些特殊的方法与属性。
 
 :::warning
 If you want to use non-directive properties, you MUST name the context object as `_`.
@@ -16,28 +16,28 @@ If you want to use non-directive properties, you MUST name the context object as
 否则，编译时转换将不会工作，并将产生运行时错误。
 :::
 
-## Component Functions
+## 组件函数
 
-The only way to render components is to call the corresponding component function.
+渲染组件的唯一方法是调用其组件函数。
 
-There are three kinds of component functions:
+有3种组件函数：
 
-1. **Text node**: `_.t`.
-2. **Lowlevel elements**: `_._div`, `_._svgPath`, whose names are prefixed with `_`.
-3. **Component functions** provided by plugins: `_.button` provided by `Basics`, `_.mdButton` provided by `MdUI`, etc. Whose names don't have the `_` prefix.
+1. **文本节点**：即`_.t`。
+2. **底层元素**：原始的 DOM 元素，名称有 `_` 作为前缀，如 `_._div` 和 `_._svgPath`。
+3. **插件提供的组件函数**：比如由 `Basics` 插件提供的 `_.button` 、由 `MdUI` 插件提供的 `_.mdButton`。 它们的名称不含有 `_` 前缀。
 
-## Utility Functions
+## 实用函数
 
-These functions are used to do some useful things, like controlling the rendering process, set a timer, etc.
+这些函数作为工具被使用，比如用来控制渲染顺序、设置定时器等等。
 
-Their names also don't have the `_` prefix.
+它们的名称也不含有 `_` 前缀。
 
-See [Utility Context Functions](/guide/apis/util-funcs.md) for utility functions provided by the Refina Core.
+由 Refina 核心提供的使用函数参见 [Utility Context Functions](/guide/apis/util-funcs.md)。
 
-## Directives
+## 指令
 
-Directives are some special properties and methods of the context object.
+指令是上下文对象上一些特殊的属性与方法。
 
-They are prefixed with `$`, and they are not transformed when compiling.
+它们的名称都有 `$` 前缀。并且它们不会经过编译时转换。
 
-See [Directives](/guide/apis/directives.md) for directives provided by the Refina Core.
+由 Refina 核心提供的指令参见 [Directives](/guide/apis/directives.md)。
