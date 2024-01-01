@@ -1,4 +1,4 @@
-# The App State
+# 应用状态
 
 App can be in one of the following three states:
 
