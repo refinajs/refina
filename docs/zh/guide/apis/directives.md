@@ -16,7 +16,7 @@
 
 ## `_.$updateContext` {#update-context}
 
-If the App is in the `UPDATE` state, the value is the context itself, otherwise it is `null`.
+如果应用处于 `UPDATE` 状态，那么它是当前上下文对象，否则它是 `null`。
 
 **使用方法**：
 
@@ -30,9 +30,9 @@ $app(_ => {
 
 ## `_.$recvContext`
 
-Similar to [`_.$updateContext`](#update-context).
+与 [`_.$updateContext`](#update-context) 类似。
 
-If the App is in the `RECV` state, the value is the context itself, otherwise it is `null`.
+如果应用处于 `RECV` 状态，那么它是当前上下文对象，否则它是 `null`。
 
 ## `_.$update`
 
@@ -52,10 +52,10 @@ If the App is in the `RECV` state, the value is the context itself, otherwise it
 
 ```ts
 $app(_ => {
-  _.$ev; // ERROR: Property '$ev' does not exist on type 'Context'.
+  _.$ev; // 错误： 'Context' 上不存在 '$ev'。
 
   if (_.button("Click me")) {
-    _.$ev; // of type MouseEvent
+    _.$ev; // 类型为 MouseEvent
   }
 });
 ```
@@ -80,25 +80,25 @@ $app(_ => {
 
 ## `_.$ref` {#ref}
 
-See [Ref a Element](../essentials/lowlevel#ref-element).
+参见 [元素引用](../guide/essentials/lowlevel#ref-element)。
 
 ## `_.$props` {#props}
 
 为下一个组件添加额外的 prop。
 
-See [Extra Props](../essentials/component#extra-props).
+参见 [额外的 prop](../essentials/component#extra-props)。
 
 ## `_.$cls` {#cls}
 
 向下一个组件或元素添加类名。
 
-See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
+参见 [添加类名与样式](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$css` {#css}
 
 向下一个组件或元素添加样式。
 
-See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
+参见 [添加类名与样式](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$permanentData`
 
