@@ -11,7 +11,7 @@ It is displayed as a vertical list of buttons on the left side of the screen.
 
 <Kind>StatusComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 const currentPage = _.mdNavRail([
