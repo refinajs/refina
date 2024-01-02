@@ -9,7 +9,7 @@ The main function of the `Switch` component is to toggle a boolean value.
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xSwitch(checked, "Switch me", disabled)) {
