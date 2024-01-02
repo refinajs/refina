@@ -93,32 +93,39 @@ export class RefinaTransformer {
       }
     }
 
+    let changeEnd: undefined | number;
+
     if (changeStart === null) {
-      return lastIndex;
-    }
-
-    const srcLen = s.original.length;
-    const oldSrcLen = oldSrc.length;
-
-    const maxChangeEnd = minCallsNum - changeStart;
-    let changeEnd = -maxChangeEnd;
-    for (let i = 1; i <= maxChangeEnd; i++) {
-      const call = calls.at(-i)!;
-      const oldCall = oldCalls.at(-i)!;
-      if (
-        this.isSameCall(call, oldCall) &&
-        srcLen - call.matchEnd === oldSrcLen - oldCall.matchEnd
-      ) {
-        call.ckey = oldCall.ckey;
-        this.transformCall(s, call);
+      if (calls.length !== oldCalls.length) {
+        changeStart = minCallsNum;
+        changeEnd = undefined;
       } else {
-        changeEnd = -i;
-        break;
+        return lastIndex;
+      }
+    } else {
+      const srcLen = s.original.length;
+      const oldSrcLen = oldSrc.length;
+
+      const maxChangeEnd = minCallsNum - changeStart;
+      changeEnd = -maxChangeEnd;
+      for (let i = 1; i <= maxChangeEnd; i++) {
+        const call = calls.at(-i)!;
+        const oldCall = oldCalls.at(-i)!;
+        if (
+          this.isSameCall(call, oldCall) &&
+          srcLen - call.matchEnd === oldSrcLen - oldCall.matchEnd
+        ) {
+          call.ckey = oldCall.ckey;
+          this.transformCall(s, call);
+        } else {
+          changeEnd = i === 1 ? undefined : -i + 1;
+          break;
+        }
       }
     }
 
     let index = lastIndex;
-    for (const call of calls.slice(changeStart, changeEnd + 1)) {
+    for (const call of calls.slice(changeStart, changeEnd)) {
       call.ckey = this.toCkey(fileKey, ++index);
       this.transformCall(s, call);
     }
