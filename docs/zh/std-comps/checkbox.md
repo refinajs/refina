@@ -9,7 +9,7 @@ The main function of the `Checkbox` component is to toggle a boolean value.
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xCheckbox(state, "Check me", disabled)) {
