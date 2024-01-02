@@ -9,7 +9,7 @@ Use the `Slider` component to select a value from a range.
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xSlider(value, disabled, step, min, max)) {
