@@ -1,6 +1,8 @@
-import { Context, LowlevelContext } from "../context";
+import { LowlevelContext } from "../context";
 import {
   Component,
+  ComponentContext,
+  ComponentExposedKey,
   ComponentProps,
   ComponentPropsKey,
   Components,
@@ -18,7 +20,7 @@ export class OutputComponent<Props> extends Component<Props> {}
  * The name of all output components.
  */
 export type OutputComponentName = {
-  [K in keyof Components]: K extends ComponentPropsKey
+  [K in keyof Components]: K extends ComponentPropsKey | ComponentExposedKey
     ? never
     : ((...args: any) => void) extends Components[K]
     ? K
@@ -30,7 +32,7 @@ export type OutputComponentName = {
  */
 export type OutputComponentFactory<N extends OutputComponentName> = (
   this: OutputComponent<ComponentProps<N>>,
-  _: Context,
+  _: ComponentContext<N>,
 ) => Components[N];
 
 /**
@@ -56,4 +58,13 @@ export function createOutputComponentFunc(
   ): void {
     this.$$processComponent(ckey, OutputComponent, factory, args);
   };
+}
+
+declare module "./component" {
+  interface ComponentRefTypeRawMap {
+    outputComponents: {
+      [N in OutputComponentName]: OutputComponent<ComponentProps<N>> &
+        ComponentExposed<N>;
+    };
+  }
 }

@@ -1,4 +1,5 @@
-import type { DOMElementComponent } from "../dom";
+import type { ComponentRefTypeMap } from "../component";
+import type { DOMElementComponent, DOMElementTagNameMap } from "../dom";
 
 /**
  * A nullable reference to an object.
@@ -68,3 +69,41 @@ type MainElOwner<T extends DOMElementComponent = DOMElementComponent> = {
  */
 export type MainElRef<T extends DOMElementComponent = DOMElementComponent> =
   Ref<MainElOwner<T>>;
+
+/**
+ * A reference to a DOM element.
+ */
+export type ElementRef<E extends keyof DOMElementTagNameMap> = Ref<
+  DOMElementComponent<E>
+>;
+
+/**
+ * Create a `Ref` object refs to a DOM element component.
+ *
+ * @param current The initial value of the `current` property.
+ * @returns The `Ref` object.
+ */
+export function elementRef<E extends keyof DOMElementTagNameMap>(
+  current: DOMElementComponent<E> | null = null,
+): Ref<DOMElementComponent<E>> {
+  return { current };
+}
+
+/**
+ * A reference to a component.
+ */
+export type ComponentRef<N extends keyof ComponentRefTypeMap> = Ref<
+  ComponentRefTypeMap[N]
+>;
+
+/**
+ * Create a `Ref` object refs to a component.
+ *
+ * @param current The initial value of the `current` property.
+ * @returns The `Ref` object.
+ */
+export function componentRef<N extends keyof ComponentRefTypeMap>(
+  current: ComponentRefTypeMap[N] | null = null,
+): Ref<ComponentRefTypeMap[N]> {
+  return { current };
+}

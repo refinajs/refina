@@ -1,12 +1,13 @@
 import { Context, LowlevelContext } from "../context";
 import {
   Component,
+  ComponentContext,
+  ComponentExposedKey,
   ComponentMainFunc,
   ComponentProps,
   ComponentPropsKey,
   Components,
 } from "./component";
-
 /**
  * The base class of all status components.
  *
@@ -42,7 +43,7 @@ export class StatusComponent<Status, Props> extends Component<Props> {
  * The name of all status components.
  */
 export type StatusComponentName = {
-  [K in keyof Components]: K extends ComponentPropsKey
+  [K in keyof Components]: K extends ComponentPropsKey | ComponentExposedKey
     ? never
     : ((...args: any) => void) extends Components[K]
     ? never
@@ -60,7 +61,7 @@ export type StatusComponentStatus<N extends StatusComponentName> =
  */
 export type StatusComponentFactory<N extends StatusComponentName> = (
   this: StatusComponent<StatusComponentStatus<N>, ComponentProps<N>>,
-  _: Context,
+  _: ComponentContext<N>,
 ) => (...args: Parameters<Components[N]>) => void;
 
 /**
@@ -96,4 +97,16 @@ export function createStatusComponentFunc(
     // If the component is the current event receiver, return `true`.
     return component.$status;
   };
+}
+
+declare module "./component" {
+  interface ComponentRefTypeRawMap {
+    statusComponnents: {
+      [N in StatusComponentName]: StatusComponent<
+        StatusComponentStatus<N>,
+        ComponentProps<N>
+      > &
+        ComponentExposed<N>;
+    };
+  }
 }

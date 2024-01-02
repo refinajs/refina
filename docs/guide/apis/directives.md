@@ -34,7 +34,7 @@ Similar to [`_.$updateContext`](#update-context).
 
 If the App is in the `RECV` state, the value is the context itself, otherwise it is `null`.
 
-## `_.$update`
+## `_.$update` {#update}
 
 Call the method to trigger an `UPDATE` call.
 
@@ -113,7 +113,9 @@ The shortcut of `_.$state.runtimeData`.
 **Lifetime**: one `UPDATE` or `RECV` call.
 
 :::info
+
 It is usually a bad idea to write to `_.$runtimeData` directly,
 which is not scoped to the inner content,
 use `_.provide` to provide values to `_.$runtimeData` instead.
+
 :::

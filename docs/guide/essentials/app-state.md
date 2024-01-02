@@ -23,10 +23,13 @@ There are three ways to enter the `UPDATE` state:
 In the `UPDATE` state, the App will render the DOM tree and update the page.
 
 :::tip
+
 Multiple `UPDATE` calls will be merged into one.
+
 :::
 
 :::danger
+
 You SHOULD NOT change the state in the `UPDATE` state.
 
 The following code is illegal, and may cause undefined behavior:
@@ -50,6 +53,7 @@ In this state, the return values of the trigger components can be `true`, if it 
 After the execution is finished in the `RECV` state, the App will always enter the `UPDATE` state.
 
 :::danger
+
 You can't render the page in the `RECV` state.
 
 The following code is illegal, and may cause undefined behavior:

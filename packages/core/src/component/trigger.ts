@@ -1,6 +1,9 @@
-import { Context, IntrinsicRecvContext, LowlevelContext } from "../context";
+import { IntrinsicRecvContext, LowlevelContext } from "../context";
 import {
   Component,
+  ComponentContext,
+  ComponentExposed,
+  ComponentExposedKey,
   ComponentProps,
   ComponentPropsKey,
   Components,
@@ -45,7 +48,7 @@ export class TriggerComponent<Ev, Props> extends Component<Props> {
  * The names of all trigger components.
  */
 export type TriggerComponentName = {
-  [K in keyof Components]: K extends ComponentPropsKey
+  [K in keyof Components]: K extends ComponentPropsKey | ComponentExposedKey
     ? never
     : Components[K] extends (...args: any) => // @ts-ignore
       this is {
@@ -71,7 +74,7 @@ export type TriggerComponentEvent<N extends TriggerComponentName> =
  */
 export type TriggerComponentFactory<N extends TriggerComponentName> = (
   this: TriggerComponent<TriggerComponentEvent<N>, ComponentProps<N>>,
-  _: Context,
+  _: ComponentContext<N>,
 ) => Components[N];
 
 /**
@@ -111,4 +114,16 @@ export function createTriggerComponentFunc(
       return false;
     }
   };
+}
+
+declare module "./component" {
+  interface ComponentRefTypeRawMap {
+    triggerComponents: {
+      [N in TriggerComponentName]: TriggerComponent<
+        TriggerComponentEvent<N>,
+        ComponentProps<N>
+      > &
+        ComponentExposed<N>;
+    };
+  }
 }

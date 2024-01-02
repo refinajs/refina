@@ -6,7 +6,7 @@ For most of today's web applications, what a page should be like and do what, in
 
 Traditional frontend frameworks, such as Vue with Vuetify, may generate well-detailed, visually appealing apps. However, even major corporations cannot always produce flawless web apps due to development efficiency. That is, even if people have the talent, they may lack the time to develop a perfect web page, while the majority of folks lack proficiency in traditional frontend frameworks. As a result, some capabilities of standard frontend frameworks go mostly unutilized.
 
-We need a frontend framework that **give first priority to development efficiency**, then to the completeness, then the runtime performance.
+We need a frontend framework that **gives first priority to development efficiency**, then to completeness, then to runtime performance.
 
 ## The Solutions
 
@@ -20,7 +20,7 @@ We need a frontend framework that **give first priority to development efficienc
 
 - **Use positional parameters instead of named parameters**
 
-  You needn't to write the name of the parameter, which saves a lot of time.
+  You needn't write the name of the parameter, which saves a lot of time.
 
 - **Return value as the event handler**
 
@@ -34,4 +34,4 @@ We need a frontend framework that **give first priority to development efficienc
 
 Refina is still in the early stage of development, but it has already shown its advantages in development efficiency.
 
-Based on the real projects, the **line of code reduced to about `60%~70%`**, and **the development efficiency is `1.4x~1.6x`** of traditional frameworks.
+Based on the real projects, the **line of code is reduced to about `60%~70%`**, and **the development efficiency is `1.4x~1.6x`** of traditional frameworks.

@@ -2,12 +2,12 @@ import { App } from "../app";
 import {
   Component,
   ComponentConstructor,
+  ComponentContext,
   ComponentMainFunc,
 } from "../component";
 import { D, getD } from "../data";
 import { Content, DOMElementComponent } from "../dom";
 import {
-  Context,
   ContextFuncs,
   ContextState,
   InitialContextState,
@@ -140,21 +140,26 @@ export function initializeRecvContext(
   context.$$processComponent = function <T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
-    factory: (this: T, context: Context) => ComponentMainFunc,
+    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
     args: unknown[],
   ) {
     let component = this.$$currentRefTreeNode[ckey] as T | undefined;
 
     if (!component) {
       component = new ctor(this.$app);
-      component.main = factory.call(component, this._);
+
+      const context = this._ as ComponentContext<any>;
+      context.$expose = exposed => exposed;
+
+      component.$mainFunc = factory.call(component, context);
+
       this.$$currentRefTreeNode[ckey] = component;
     } else {
       const parentRefTreeNode = this.$$currentRefTreeNode;
       this.$$currentRefTreeNode = component.$refTreeNode;
 
       // New created component has nothing to receive.
-      component.main(...args);
+      component.$mainFunc(...args);
 
       this.$$currentRefTreeNode = parentRefTreeNode;
     }

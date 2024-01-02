@@ -6,7 +6,7 @@
 - Install [Node.js](https://nodejs.org/) version 20.0 or higher
   :::
 
-In this section we will introduce how to scaffold a Refina app on your local machine. The created project will be using a build setup based on [Vite](https://vitejs.dev).
+In this section, we will introduce how to scaffold a Refina app on your local machine. The created project will be using a build setup based on [Vite](https://vitejs.dev).
 
 Make sure you have an up-to-date version of [Node.js](https://nodejs.org/) installed and your current working directory is the one where you intend to create a project. Run the following command in your command line (without the `>` sign):
 
@@ -42,10 +42,12 @@ Once the project is created, follow the instructions to install dependencies and
 
 You should now have your first Refina project running!
 
-Then, open the `src/app.ts` file, you can see the code of the app. You can edit it and see the changes in the browser.
+Then, open the `src/app.ts` file, and you can see the code of the app. You can edit it and see the changes in the browser.
 
 :::info
+
 By default, Refina will transform all the `.ts` or `.js` files.
 
 You can prevent Refina from transforming a file by adding a `// @refina-ignore` comment at the top of the file.
+
 :::

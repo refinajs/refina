@@ -40,7 +40,9 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 In fact, components and utility functions in the Refina Core are provided via the plugin `Prelude`, which is automatically installed when you create an app.
 
 :::warning
+
 Because of the limitations of TypeScript, the component functions provided by plugins that are imported but not installed are still visible in the context object in the IDE. But a runtime error will occur if you use them.
+
 :::
 
 ## The Main Function
@@ -52,9 +54,11 @@ Not only `App`, but also `View` and `Component` have a main function.
 The first parameter of the main function is a `Context` object, which is used to do almost everything like rendering components, handling events, etc.
 
 :::warning
+
 You can only name the first param of the main function (the context object) as `_`.
 
 Otherwise, the transformation will not work, and errors will occur at runtime.
+
 :::
 
 ## The Root Element

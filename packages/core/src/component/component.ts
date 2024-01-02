@@ -1,4 +1,10 @@
 import { App, RefTreeNode } from "../app";
+import {
+  Context,
+  ContextState,
+  InitialContextState,
+  LowlevelContext,
+} from "../context";
 import { DOMElementComponent } from "../dom";
 
 /**
@@ -56,7 +62,7 @@ export abstract class Component<Props> {
    *
    * @param args The arguments of the component function. The type of the arguments should be specified.
    */
-  main: ComponentMainFunc;
+  $mainFunc: ComponentMainFunc;
 }
 
 /**
@@ -92,6 +98,69 @@ export type ComponentProps<N extends keyof Components> =
   ComponentPropsKey<N> extends keyof Components
     ? Components[ComponentPropsKey<N>]
     : {};
+
+export type ComponentExposedKey<N extends string = string> =
+  `${Capitalize<N>}Exposed`;
+
+export type ComponentExposed<N extends keyof Components> =
+  ComponentExposedKey<N> extends keyof Components
+    ? Components[ComponentExposedKey<N>] & object
+    : void;
+
+interface ComponentOnlyContextFuncs<N extends keyof Components> {
+  /**
+   * Expose an object to the component instance, which can be referenced by user.
+   *
+   * This directive can only be called once outside of the main function.
+   *
+   * Declare the exposed object type via declaration merging:
+   *
+   * ```ts
+   * declare module "refina" {
+   *   interface Components {
+   *     xComponent(arg: number): void;
+   *     XComponentExposed: {
+   *       exposedProp: number;
+   *     };
+   *   }
+   * }
+   * ```
+   *
+   * @param exposed The exposed object.
+   */
+  $expose<T extends ComponentExposed<N>>(exposed: T): T;
+}
+
+/**
+ * The full component context type, with context funcs.
+ */
+export type ComponentContext<
+  N extends keyof Components,
+  CS extends ContextState = InitialContextState,
+> = Context<CS> & ComponentOnlyContextFuncs<N>;
+
+/**
+ * The full component context type, with context funcs and lowlevel APIs.
+ */
+export type LowlevelComponentContext<
+  N extends keyof Components,
+  CS extends ContextState = InitialContextState,
+> = LowlevelContext<CS> & ComponentOnlyContextFuncs<N>;
+
+export interface ComponentRefTypeRawMap {}
+
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
+  x: infer R,
+) => any
+  ? R
+  : never;
+
+/**
+ * The map from component name to its ref type.
+ */
+export type ComponentRefTypeMap = UnionToIntersection<
+  ComponentRefTypeRawMap[keyof ComponentRefTypeRawMap]
+>;
 
 // Add component functions to the context.
 declare module "../context/base" {

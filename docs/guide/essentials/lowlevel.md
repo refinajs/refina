@@ -4,14 +4,16 @@ import LowlevelVue from "snippets/lowlevel.vue";
 
 # Low-level Rendering
 
-For most applications, you can just use the components provided by existing UI libraries.
+For most applications, you can just use the components provided by existing component libraries.
 
 But there are still some situations in which you need to render elements manually.
 
-Also the components provided by UI libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
+Also the components provided by component libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
 
 :::info
+
 If a component satisfies your needs, you should use it instead of using low-level rendering functions, as the low-level rendering functions are more verbose and error-prone.
+
 :::
 
 ## Example
@@ -66,7 +68,7 @@ $app(_ => {
 
   `_._svgPath` for `<path>`.
 
-- For custom elements, the hyphens in the tag name will become camel case:
+- For custom elements (including Web Component), the hyphens in the tag name will become camel case:
 
   `_._myCustomElement` for `<my-custom-element>`.
 
@@ -92,11 +94,9 @@ All the properties of the `data` parameter will be assigned to the element in th
 for (const key in data) {
   if (data[key] === undefined) {
     // Delete the property if the value is undefined.
-    // @ts-ignore
     delete el.node[key];
   } else {
     // For a HTML element, just assign the value to the property.
-    // @ts-ignore
     el.node[key] = data[key];
   }
 }
@@ -111,7 +111,6 @@ for (const key in data) {
     el.node.removeAttribute(key);
   } else if (typeof value === "function") {
     // Cannot stringify a function, so just assign it.
-    // @ts-ignore
     el.node[key] = value;
   } else {
     // For SVG elements, all attributes are string,
@@ -202,9 +201,11 @@ In the following situations, passing the event listener to the `data` parameter 
 - Want to specify the `options` parameter of the `addEventListener` method.
 
 :::warning Update the app after handling events
+
 Unlike the component functions, the low-level rendering functions will not update the app automatically after handling events.
 
-You should call `_.$update()` manually to update the app if you want to apply the changes of the states to the app.
+You should call [`_.$update()`](../apis/directives.md#update) manually to update the app if you want to apply the changes of the states to the app.
+
 :::
 
 ## Ref a Element {#ref-element}
@@ -225,9 +226,3 @@ $app.use(Basics)(_ => {
   iframeURL.current?.node.contentWindow?.postMessage("Hello", "*");
 });
 ```
-
-:::tip The usage of `&&`
-To let TypeScript check whether you are using the right type of the ref object, you'd better use the `&&` operator to connect the `_.$ref` directive and the low-level rendering function.
-
-Because the `_.$ref` directive always returns `true`, so the component function will always be called. But if the ref object is not the right type, the component function will be of type `never`, and the IDE will report an error.
-:::

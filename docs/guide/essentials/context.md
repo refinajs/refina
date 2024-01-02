@@ -11,9 +11,11 @@ The context object has three kinds of properties:
 - **Directives**: some special properties and methods.
 
 :::warning
+
 If you want to use non-directive properties, you MUST name the context object as `_`.
 
 Otherwise, the transformation will not work, and errors will occur at runtime.
+
 :::
 
 ## Component Functions
