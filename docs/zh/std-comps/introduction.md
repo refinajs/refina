@@ -14,11 +14,11 @@ Refina 的标准组件是常用的，且_有一定复杂度_的组件。 不能�
 
 :::tip
 
-在本文档的示例中，我们使用 `x` 前缀来表示标准组件。 比如，`_.xButton`。
+在本文档的示例中，我们使用 `x` 前缀来表示标准组件。 比如，`_.xButton`。 比如，`_.xButton`。
 
-但是，在实际开发中，需要加上你所使用的组件库的前缀。 比如，MdUI 中的按钮是 `_.mdButton`，而在 FluentUI 中是 `_.fButton`。
+但是，在实际开发中，需要加上你所使用的组件库的前缀。 但是，在实际开发中，需要加上你所使用的组件库的前缀。 比如，MdUI 中的按钮是 `_.mdButton`，而在 FluentUI 中是 `_.fButton`。
 
-由 `@refina/basic-components` 提供的组件没有前缀。 比如 `_.button`。
+由 `@refina/basic-components` 提供的组件没有前缀。 比如 `_.button`。 比如 `_.button`。
 
 :::
 
