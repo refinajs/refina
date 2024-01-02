@@ -67,7 +67,7 @@ _.div(_ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-视图可以有参数。 你可以使用普通的语法定义视图参数： 你可以使用普通的语法定义视图参数：
+视图可以有参数。 你可以使用普通的语法定义视图参数：
 
 ```ts
 export default $view((_, name: string, id?: number) => {
