@@ -6,7 +6,7 @@
 - 已安装 20.0 或更高版本的 [Node.js](https://nodejs.org/)。
   :::
 
-在本节中，我们将介绍如何在本地搭建 Refina 应用。 在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
+在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
 
 确保你安装了最新版本的 [Node.js](https://nodejs.org/)，并且你的当前工作目录正是打算创建项目的目录。 在命令行中运行以下命令 (不要带上 `>` 符号)：
 
