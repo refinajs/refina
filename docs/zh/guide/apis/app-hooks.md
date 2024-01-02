@@ -1,14 +1,14 @@
-# App Hooks
+# 钩子
 
-Hooks are functions that are called at specific times during the app's lifecycle.
+钩子是在特定时机被调用的回调函数。
 
-Hooks can be added by plugin when it is being installed, or by main function in the `UPDATE` call.
+钩子可以在插件被安装时添加，或者在 `UPDATE` 状态下由主函数添加。
 
-## Onetime Hooks
+## 一次性钩子
 
-Onetime hooks are called only once.
+一次性钩子在调用一次后会被删除。
 
-Use `_.$app.pushOnetimeHook` to add a onetime hook.
+调用 `_.$app.pushOnetimeHook` 以添加一次性钩子。
 
 Can be accessed via `_.$app.onetimeHooks`.
 
