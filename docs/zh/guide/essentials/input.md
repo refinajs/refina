@@ -73,7 +73,7 @@ assert(getD(wrappedValue) === 1);
 
 :::info
 
-如果数据包裹由 `d` 函数创建，那么它的类型是 `PD<T>`, 因此你不需要使用 `getD` 函数。 你可以直接访问 `wrappedValue.value`. 你可以直接访问 `wrappedValue.value`.
+如果数据包裹由 `d` 函数创建，那么它的类型是 `PD<T>`, 因此你不需要使用 `getD` 函数。 你可以直接访问 `wrappedValue.value`.
 
 :::
 
