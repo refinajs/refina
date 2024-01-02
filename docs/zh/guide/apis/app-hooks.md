@@ -26,46 +26,46 @@
 
 :::tip
 
-`app.runtimeData` is available in this hook.
+`app.runtimeData` 在此钩子中可用。
 
 :::
 
-## `afterMain` Hook
+## `afterMain` 钩子
 
-Called after the main function is executed, whether in `UPDATE` or `RECV` state.
+在应用的主函数被调用之后调用，无论处于 `UPDATE` 或 `RECV` 状态下。
 
 :::tip
 
-`app.runtimeData` is available in this hook.
+`app.runtimeData` 在此钩子中可用。
 
 :::
 
-## `beforeModifyDOM` Hook
+## `beforeModifyDOM` 钩子
 
-Called after the main function is executed in `UPDATE` state, but before the DOM tree is modified and classes and styles are applied.
+在应用主函数在 `UPDATE` 状态下的调用完成后、在更新 DOM 的树结构、设置类名与样式之前调用。
 
 :::tip
 
-`app.runtimeData` is available in this hook.
+`app.runtimeData` 在此钩子中可用。
 
 :::
 
-## `afterModifyDOM` Hook
+## `afterModifyDOM` 钩子
 
-Called after the main function is executed in `UPDATE` state, and the DOM tree is modified and classes and styles are applied.
+在应用主函数在 `UPDATE` 状态下的调用完成并且完成更新 DOM 的树结构、设置类名与样式之后调用。
 
 :::tip
 
-`app.runtimeData` is available in this hook.
+`app.runtimeData` 在此钩子中可用。
 
 :::
 
-## `onError` Hook
+## `onError` 钩子
 
-Called when an error is thrown in the main function.
+当主函数运行时抛出未捕获的错误时调用。
 
 :::info
 
-A hook outputting the error to the console is added by the `Prelude` plugin.
+一个将错误输出至控制台的钩子已经由 `Prelude` 插件自动添加。
 
 :::
