@@ -40,30 +40,34 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 事实上，属于Refina核心的组件和工具函数由名为 `Prelude` 插件的提供。这个插件在创建应用时会被自动添加。
 
 :::warning
-由于 TypeScript 的限制，如果仅导入插件却不安装它，其类型仍然在上下文对象中可见。 但是如果你使用这些实际上并没有安装的插件，会产生运行时错误。
+
+Because of the limitations of TypeScript, the component functions provided by plugins that are imported but not installed are still visible in the context object in the IDE. But a runtime error will occur if you use them.
+
 :::
 
-## 主函数
+## The Main Function
 
-主函数是页面的主体，负责构建页面和处理事件。
+The main function is where you construct the page and handle events.
 
-不但应用（`App`）有主函数，每个视图（`View`）和组件（`Component`）也有主函数。
+Not only `App`, but also `View` and `Component` have a main function.
 
-主函数的第一个参数是上下文对象。通过上下文对象可以进行渲染组件、处理事件等等操作。
+The first parameter of the main function is a `Context` object, which is used to do almost everything like rendering components, handling events, etc.
 
 :::warning
+
 You can only name the first param of the main function (the context object) as `_`.
 
 否则，编译时转换将不会工作，并将产生运行时错误。
+
 :::
 
-## 根元素
+## The Root Element
 
-根元素是应用挂载在 DOM 中的容器元素。
+The root element is the element that the app will be mounted to.
 
-默认的根元素是 `id` 为 `root` 的元素。
+By default, the root element is the element with the id `root`.
 
-你可以将期望的根元素的 `id` 传入 `$app` 的第二个参数。
+You can change the root element by passing the id of the element to the second parameter of `$app`:
 
 ```ts
 $app(_ => {
@@ -71,11 +75,11 @@ $app(_ => {
 }, "my-root");
 ```
 
-## 多个应用实例
+## Multiple Application Instances
 
-在同一个页面中可以创建多个共存的 Refina 应用。
+It is allowed to have multiple Refina applications on the same page.
 
-你可以为每个应用指定不同的根元素。
+You can just specify different root elements for different applications:
 
 ```html
 <body>
