@@ -25,7 +25,9 @@ Can be accessed via `_.$app.permanentHooks`.
 Called before the main function is executed, whether in `UPDATE` or `RECV` state.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `afterMain` Hook
@@ -33,7 +35,9 @@ Called before the main function is executed, whether in `UPDATE` or `RECV` state
 Called after the main function is executed, whether in `UPDATE` or `RECV` state.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `beforeModifyDOM` Hook
@@ -41,7 +45,9 @@ Called after the main function is executed, whether in `UPDATE` or `RECV` state.
 Called after the main function is executed in `UPDATE` state, but before the DOM tree is modified and classes and styles are applied.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `afterModifyDOM` Hook
@@ -49,7 +55,9 @@ Called after the main function is executed in `UPDATE` state, but before the DOM
 Called after the main function is executed in `UPDATE` state, and the DOM tree is modified and classes and styles are applied.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `onError` Hook
@@ -57,5 +65,7 @@ Called after the main function is executed in `UPDATE` state, and the DOM tree i
 Called when an error is thrown in the main function.
 
 :::info
+
 A hook outputting the error to the console is added by the `Prelude` plugin.
+
 :::

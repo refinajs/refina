@@ -72,7 +72,9 @@ assert(getD(wrappedValue) === 1);
 ```
 
 :::info
+
 If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you don't need to use `getD` function to extract the value. You can access `wrappedValue.value` directly.
+
 :::
 
 ### The `_.$setD` Function
@@ -80,7 +82,9 @@ If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you 
 Corresponding to `getD` function, this function can set the value of a `D` object.
 
 :::info
+
 There isn't a `setD` function, because a context should be provided to trigger an `UPDATE` call after the value is set.
+
 :::
 
 ## Another Way to Get Input Value

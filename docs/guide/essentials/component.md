@@ -13,9 +13,11 @@ There are three kinds of components in Refina:
 - **Status component**: Components with a state. e.g. `checkbox`, `radio`...
 
 :::info
+
 The above three kinds of components are the most common use cases.
 
 The low-level implementation of components is just a context function. So it is possible to create a kind of component that is not of any kind listed above.
+
 :::
 
 ## Extra Props {#extra-props}
@@ -33,13 +35,17 @@ $app.use(MdUI)(_ => {
 ```
 
 :::info
+
 ALL the extra props are **optional**.
+
 :::
 
 :::info
+
 The props as parameters are declared in the different way by the component from the extra props.
 
 So you can't pass an extra prop as a parameter to the component, and vice versa.
+
 :::
 
 ## The Main Element {#main-element}
@@ -53,5 +59,7 @@ The main element should be the most important element in the component. And clas
 A component can specify the main element by calling `this.$main()`. If not specified, the first element will be the main element.
 
 :::info
+
 Elements rendered via low-level rendering functions also have a main element, which is always the element itself.
+
 :::

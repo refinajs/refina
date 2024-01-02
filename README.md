@@ -1,4 +1,4 @@
-# refina
+# Refina.js
 
 ![npm](https://img.shields.io/npm/v/refina?label=core&color=green)
 
@@ -21,7 +21,7 @@
 
 ✅ No need to write any end tags.
 
-✅ Use positional parameters, which is more concise than named parameters.
+✅ Use positional parameters, which are more concise than named parameters.
 
 📦 The adaptation of [MdUI v2](https://github.com/zdhxiong/mdui) component library is available.
 
@@ -63,7 +63,7 @@ $app.use(Basics)(_ => {
 
 > There are more examples in the [documentation](https://refina.vercel.app/).
 
-## refina 简介
+## Refina.js 简介
 
 > 注：以下是一些早期的设计理念，部分内容已过时。
 

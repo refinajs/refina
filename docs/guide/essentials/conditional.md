@@ -25,6 +25,7 @@ $app.use(Basics)(_ => {
 <ConditionalRenderingVue />
 
 :::tip
+
 You can also use the `&&` operator to conditionally render components:
 
 ```ts

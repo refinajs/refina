@@ -9,9 +9,9 @@ This page introduces utility context functions in the `Prelude` plugin, which is
 
 ## `_.portal`
 
-Render content in the end of the root element.
+Render content at the end of the root element.
 
-This is usefull when you want to render a dialog or a tooltip that should not be affected by the parent element.
+This is useful when you want to render a dialog or a tooltip that should not be affected by the parent element.
 
 **Example**
 
@@ -42,7 +42,9 @@ $app.use(Basics)(_ => {
 Use data from an async call when rendering.
 
 :::tip
+
 Use `try`/`catch` to handle errors.
+
 :::
 
 **Example**
@@ -82,7 +84,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-## `_.embed`
+## `_.embed` {#embed}
 
 Embed a view function into the current view function.
 
@@ -103,12 +105,14 @@ _.asyncEmbed(() => import("./myView.ts"));
 which loads the view from `./myView.ts` asynchronously, which is useful for code splitting.
 
 :::info
+
 The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
+
 :::
 
 ## `_.provide`
 
-Provide a value or a object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
+Provide a value or an object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
 
 **Example**
 
@@ -127,9 +131,11 @@ _.provide("username", "John", myView, ...viewParams);
 Get the current time in milliseconds.
 
 :::tip
+
 You need to specify the `precisionMs` parameter, which means for how many milliseconds the time will be updated.
 
 If not specified, it is `1000`, which means the time will be updated every second.
+
 :::
 
 **Example**
@@ -149,7 +155,9 @@ $app.use(Basics)(_ => {
 Schedule a callback to be called every `interval` milliseconds.
 
 :::info
+
 The interval will be automatically cleared when it is no longer rendered.
+
 :::
 
 ## `_.for`
