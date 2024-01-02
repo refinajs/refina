@@ -9,7 +9,7 @@ Render a list of items.
 
 <Kind>OutputComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 _.xList(data, bySelf, item => {
