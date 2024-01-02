@@ -4,7 +4,8 @@
 
 - Familiarity with the command line
 - Install [Node.js](https://nodejs.org/) version 20.0 or higher
-  :::
+
+:::
 
 In this section, we will introduce how to scaffold a Refina app on your local machine. The created project will be using a build setup based on [Vite](https://vitejs.dev).
 
@@ -30,7 +31,8 @@ This command will install and execute [create-refina](https://github.com/refinaj
 - `postcss` The CSS preprocessor used by Vite.
 - `autoprefixer` The PostCSS plugin that adds vendor prefixes to CSS rules.
 - `tailwindcss` The CSS framework used by Refina.
-  :::
+
+:::
 
 Once the project is created, follow the instructions to install dependencies and start the dev server:
 

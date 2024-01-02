@@ -19,6 +19,7 @@ export default defineConfig({
     resolve: {
       alias: {
         snippets: "/snippets",
+        helpers: "/helpers",
       },
     },
   },

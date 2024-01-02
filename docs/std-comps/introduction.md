@@ -14,7 +14,7 @@ Some features may not be available in some UI libraries, and some UI libraries m
 
 :::tip
 
-In the examples in this section, we will use the `x` prefix to import the standard components. For example, `_.xButton`.
+In the examples in this section, we will use the `x` prefix to indicate the standard components. For example, `_.xButton`.
 
 However, in the actual code, you should use the prefix of the UI library you're using. For example, `_.mdButton` for MdUI, and `_.fButton` for FluentUI.
 
