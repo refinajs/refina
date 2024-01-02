@@ -9,7 +9,7 @@ Render a table.
 
 <Kind>OutputComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 _.mdTable(
