@@ -6,7 +6,7 @@
 - 已安装 20.0 或更高版本的 [Node.js](https://nodejs.org/)。
   :::
 
-在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
+In this section, we will introduce how to scaffold a Refina app on your local machine. 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
 
 确保你安装了最新版本的 [Node.js](https://nodejs.org/)，并且你的当前工作目录正是打算创建项目的目录。 在命令行中运行以下命令 (不要带上 `>` 符号)：
 
@@ -42,10 +42,12 @@
 
 你现在应该已经运行起来了你的第一个 Refinan 项目！
 
-现在打开 `src/app.ts` 文件，你可以看见应用的主体代码。 你可以编辑它，并在浏览器中实时查看更改。
+Then, open the `src/app.ts` file, and you can see the code of the app. 你可以编辑它，并在浏览器中实时查看更改。
 
 :::info
-Refina 默认转换所有后缀名为 `.ts` 或 `.js` 的文件。
+
+By default, Refina will transform all the `.ts` or `.js` files.
 
 你可以通过在文件开头添加 `// @refina-ignore` 注释以阻止 Refina 转换该文件。
+
 :::
