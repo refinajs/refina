@@ -1,21 +1,10 @@
 import { RefinaTransformer } from "@refina/transformer";
 import { Plugin } from "vite";
-import Hmr from "./hmr";
+import Hmr, { HmrOptions } from "./hmr";
 import Transformer, { TransformerOptions } from "./transformer";
-import { CommonOptions, Matcher, ResolvedCommonOptions } from "./types";
+import { CommonOptions, ResolvedCommonOptions, uniformMatcher } from "./types";
 
-function uniformMatcher(matcher: Matcher): (id: string) => boolean {
-  if (typeof matcher === "function") return matcher;
-  if (typeof matcher === "string") return id => id === matcher;
-  if (matcher instanceof RegExp) return id => matcher.test(id);
-  if (Array.isArray(matcher)) {
-    const matchers = matcher.map(uniformMatcher);
-    return id => matchers.some(v => v(id));
-  }
-  throw new Error("Invalid matcher");
-}
-
-interface RefinaOptions extends CommonOptions, TransformerOptions {
+interface RefinaOptions extends CommonOptions, TransformerOptions, HmrOptions {
   /**
    * Enable HMR.
    *

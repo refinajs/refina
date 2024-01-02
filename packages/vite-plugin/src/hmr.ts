@@ -1,8 +1,15 @@
 import { Plugin } from "vite";
 import { transform, update, mainUrlSuffix } from "./hmr-compiler";
-import { ResolvedCommonOptions } from "./types";
+import { Matcher, ResolvedCommonOptions, uniformMatcher } from "./types";
 
-export interface HmrOptions {}
+export interface HmrOptions {
+  /**
+   * Exclude files from HMR.
+   *
+   * @default []
+   */
+  excludeHmr?: Matcher;
+}
 
 export const fullReload = {
   value: true,
@@ -11,12 +18,16 @@ export const fullReload = {
 export default function Hmr(
   options: HmrOptions & ResolvedCommonOptions,
 ): Plugin {
+  const exclude = uniformMatcher(options.excludeHmr ?? (() => false));
+  const shouldPerformHmr = (id: string, raw: string) =>
+    options.isRefina(id, raw) && !exclude(id);
+
   return {
     name: "refina-hmr",
     apply: "serve",
     enforce: "pre",
     transform(raw, id) {
-      if (!options.isRefina(id, raw)) return null;
+      if (!shouldPerformHmr(id, raw)) return null;
       if (!id.endsWith(mainUrlSuffix)) {
         // locals
         const descriptor = transform(id, raw);
@@ -29,7 +40,9 @@ export default function Hmr(
       }
     },
     async handleHotUpdate(ctx) {
-      const hmr = update(ctx.file, await ctx.read());
+      const content = await ctx.read();
+      if (!shouldPerformHmr(ctx.file, content)) return;
+      const hmr = update(ctx.file, content);
       if (hmr) {
         const localsMod = ctx.modules.find(m => m.id === ctx.file)!;
         const mainMod = ctx.modules.find(

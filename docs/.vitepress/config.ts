@@ -10,10 +10,10 @@ export default defineConfig({
     plugins: [
       Refina({
         include: [
-          /\.[tj]s$/,
-          id => id.endsWith(".vue") && !id.includes("node_modules"),
+          /\.[tj]s(\?|$)/,
+          id => /\.vue(\?|$)/.test(id) && !id.includes("node_modules"),
         ],
-        hmr: false,
+        excludeHmr: [/\.vue(\?|$)/],
       }) as any,
     ],
     resolve: {
