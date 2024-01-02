@@ -14,8 +14,8 @@ hero:
       text: 快速上手
       link: /guide/introduction
     - theme: alt
-      text: 中文文档
-      link: /zh/
+      text: English Version
+      link: /
     - theme: alt
       text: 为什么选 Refina？
       link: /guide/why
