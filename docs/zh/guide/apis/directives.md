@@ -114,8 +114,6 @@ $app(_ => {
 
 :::info
 
-It is usually a bad idea to write to `_.$runtimeData` directly,
-which is not scoped to the inner content,
-use `_.provide` to provide values to `_.$runtimeData` instead.
+通常你不需要直接读写 `_.$runtimeData`，因为它可能会从可控的作用域泄露。请使用 `_.provide` 方法向一定范围内提供值。
 
 :::
