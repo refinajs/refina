@@ -34,7 +34,7 @@ $app(_ => {
 
 如果应用处于 `RECV` 状态，那么它是当前上下文对象，否则它是 `null`。
 
-## `_.$update`
+## `_.$update` {#update}
 
 调用此方法以触发页面更新（即触发 `UPDATE` 状态的调用）。
 
@@ -113,5 +113,9 @@ $app(_ => {
 **生命周期**：一次 `UPDATE` 或 `RECV` 调用。
 
 :::info
-通常你不需要直接读写 `_.$runtimeData`，因为它可能会从可控的作用域泄露。请使用 `_.provide` 方法向一定范围内提供值。
+
+It is usually a bad idea to write to `_.$runtimeData` directly,
+which is not scoped to the inner content,
+use `_.provide` to provide values to `_.$runtimeData` instead.
+
 :::
