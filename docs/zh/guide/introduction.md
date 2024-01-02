@@ -2,7 +2,7 @@
 
 ## 概览
 
-Refina（named after the word "refine"）is a web framework that puts development efficiency first. It builds on top of standard HTML, CSS, and TypeScript and provides a declarative and component-based programming model that helps you efficiently develop user interfaces, be they simple or complex.
+Refina（名字源于 "refine" 一词）是一个专注于提高开发效率的前端框架。 它基于标准 HTML、CSS 和 TypeScript 构建，并提供了一套声明式的、组件化的编程模型，帮助你高效地开发用户界面。无论是简单还是复杂的界面，Refina 都可以胜任。
 
 下面是一个最基本的示例：
 
@@ -27,9 +27,9 @@ import CounterVue from 'snippets/counter.vue'
 
 上面的例子展示了Refina的两个核心功能：
 
-- **Declarative Rendering**: Instead of using a DSL like JSX or Vue templates, Refina allows you to write your components using plain JavaScript/TypeScript. So all development tools can directly support Refina.
+- **声明式渲染**: 不需要像 JSX 或 Vue template 那样的 DSL，只需普通的 JavaScript/TypeScript 就可以编写应用。 因此所有 JavaScript 与 TypeScript 开发工具都可以在 Refina 开发中直接使用。
 
-- **Reactivity**: Refina uses an ImGUI-like state management system. All you need to do is to declare the state you need, just like Svelte. Refina will automatically update the DOM when the state changes.
+- **响应性**：Refina 采用类 ImGUI 的状态管理模式。 你只需要像 Svelte 那样以最普通的方式的定义状态。 当状态改变时，Refina 会自动地更新页面。
 
 你可能已经有了些疑问——先别急。 请继续看下去，以宏观地了解 Refina 作为一个框架提供了什么。
 
