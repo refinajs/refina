@@ -6,26 +6,28 @@
 
 ## 一次性钩子
 
-一次性钩子在调用一次后会被删除。
+一次性钩子在调用一次后会被移除。
 
 调用 `_.$app.pushOnetimeHook` 以添加一次性钩子。
 
-Can be accessed via `_.$app.onetimeHooks`.
+一次性钩子可以通过 `_.$app.onetimeHooks` 访问。
 
-## Permanent Hooks
+## 永久钩子
 
-Permanent hooks won't be removed after being called.
+永久钩子在被调用后不会被移除。
 
-Use `_.$app.pushPermanentHook` to add a permanent hook.
+调用 `_.$app.pushPermanentHook` 以添加永久钩子。
 
-Can be accessed via `_.$app.permanentHooks`.
+永久钩子可以通过 `_.$app.permanentHooks` 访问。
 
-## `beforeMain` Hook
+## `beforeMain` 钩子
 
-Called before the main function is executed, whether in `UPDATE` or `RECV` state.
+在应用的主函数被调用之前调用，无论处于 `UPDATE` 或 `RECV` 状态下。
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `afterMain` Hook
@@ -33,7 +35,9 @@ Called before the main function is executed, whether in `UPDATE` or `RECV` state
 Called after the main function is executed, whether in `UPDATE` or `RECV` state.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `beforeModifyDOM` Hook
@@ -41,7 +45,9 @@ Called after the main function is executed, whether in `UPDATE` or `RECV` state.
 Called after the main function is executed in `UPDATE` state, but before the DOM tree is modified and classes and styles are applied.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `afterModifyDOM` Hook
@@ -49,7 +55,9 @@ Called after the main function is executed in `UPDATE` state, but before the DOM
 Called after the main function is executed in `UPDATE` state, and the DOM tree is modified and classes and styles are applied.
 
 :::tip
+
 `app.runtimeData` is available in this hook.
+
 :::
 
 ## `onError` Hook
@@ -57,5 +65,7 @@ Called after the main function is executed in `UPDATE` state, and the DOM tree i
 Called when an error is thrown in the main function.
 
 :::info
+
 A hook outputting the error to the console is added by the `Prelude` plugin.
+
 :::
