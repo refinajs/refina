@@ -2,9 +2,9 @@
 
 视图是一个函数，它渲染一部分页面。
 
-视图可以被看作简化版的组件，它们直接的区别[稍后](#view-vs-component)会被讨论。
+Views can be seen as a simplified version of a component, which we will introduce [later](#view-vs-component).
 
-它往往被用于拆分页面或复用页面重复出现的部分。
+It is mostly used to render a part of the page for one or few times or as the content of a page for multi-page applications.
 
 ## 使用方式
 
@@ -38,19 +38,20 @@ $app(_ => {
 <span>my view</span>
 ```
 
-## `view` API
+## The `$view` API
 
-使用 `$view` 函数来定义一个视图。
+The `$view` API is used to define a view.
 
-推荐将较大的视图编写在一个单独的文件中，并将这个视图作为默认导出。
+It is recommended to define a view in a separate file and export it as a default export.
 
 ## 嵌入视图 {#embedding-views}
 
 如果视图没有参数，它可以直接作为某个组件的一个“内容”参数，就像表示嵌套层级的箭头函数那样。
 
-如果你想要直接在当前位置嵌入视图，而不是将其传入某个组件，你可以使用 `_.embed`。
+If you want to embed the view, instead of using it as the whole content of a component, you can use [`_.embed`](../apis/util-funcs.md#embed).
 
 :::info
+
 If you are sure you will only use the view for one time, you can just call the view function directly:
 
 ```ts
@@ -61,11 +62,12 @@ _.div(_ => {
 ```
 
 出于一致性的考虑，不建议这么做。
+
 :::
 
-## 传入视图参数 {#passing-parameters}
+## Passing Parameters {#passing-parameters}
 
-视图可以有参数。 你可以使用普通的语法定义视图参数：
+A view function can have parameters. You can declare the parameters simply:
 
 ```ts
 export default $view((_, name: string, id?: number) => {
@@ -76,16 +78,16 @@ export default $view((_, name: string, id?: number) => {
 });
 ```
 
-然后可以这样向视图传递参数：
+Then, you can pass the parameters to the view function:
 
 ```ts
 _.embed(myView, "John", 123);
 _.embed(myView, "Mary");
 ```
 
-## 视图的状态
+## View with States
 
-视图可以有状态，但是这些状态不属于视图，而是属于模块，它在所有使用它的视图中共享。
+A view can have states, but the states are shared between all the instances of the view.
 
 ```ts
 let count = 0;
@@ -97,25 +99,27 @@ export default $view(_ => {
 ```
 
 :::warning
-因为状态在所有使用它的视图中共享，需要小心使用它们。
+
+Since the states are shared between all the instances of the view, you SHOULD be careful when using states in a view.
+
 :::
 
-## 视图与组件的区别 {#view-vs-component}
+## Differences between View and Component {#view-vs-component}
 
-视图可以被看做组件的简化版本。
+Views can be regarded as a simplified version of a component.
 
-它们的主要不同有：
+The major differences are:
 
-- 组件被注册为上下文对象中的函数，而视图只是一个普通的函数。
-- 每个组件实例有它专属的状态，而视图没有。
-- 组件有 `$mainEl` 属性，并且可以向它添加类名和样式；视图则不行。
-- 组件可以通过 `_.$ref` 指令引用其实例，而视图不行，因为视图没有实例。
-- 组件可以有额外的 prop，但是视图没有，视图只有普通的函数参数。
+- Components are registered as context functions, while views are just normal functions.
+- Each component instance has its own states, while all the instances of a view share the same states.
+- A component has a [`$mainEl` property](./component.md#main-element), and classes and styles can be added to it, while a view has no such property.
+- A component can be refed by the [`_.$ref`](../apis/directives.md#ref) directive, while a view can't because a view has no instance.
+- A component has [extra props](./component.md#extra-props), while a view only has parameters.
 
-### 如何选择
+### How to Choose
 
-如果你想复用**页面的片段**，可以使用 _视图_。
+If you want to reuse a **fragment of the page**, you should use a _view_.
 
-如果你想复用**有状态的代码**，你需要使用_组件_。
+If you want to reuse a **part of code with its own states**, you should use a _component_.
 
-如果你是\*\*UI 库（组件库）\*\*作者，你总是应当提供_组件_。
+If you are a **UI library** author, you should always provide _components_.
