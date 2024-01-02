@@ -26,7 +26,7 @@ $app.use(Basics)(_ => {
 
 :::tip
 
-You can also use the `&&` operator to conditionally render components:
+可以使用 `&&` 运算符来根据条件渲染组件：
 
 ```ts
 input.length > 0 && _.button("Clear");
