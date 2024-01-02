@@ -149,7 +149,7 @@ export function initializeRecvContext(
       component = new ctor(this.$app);
 
       const context = this._ as ComponentContext<any>;
-      context.$expose = () => {};
+      context.$expose = exposed => exposed;
 
       component.$mainFunc = factory.call(component, context);
 

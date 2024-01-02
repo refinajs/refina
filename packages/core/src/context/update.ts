@@ -355,6 +355,7 @@ export function initializeUpdateContext(
       const componentContext = context._ as ComponentContext<any>;
       componentContext.$expose = exposed => {
         Object.assign(component!, exposed);
+        return exposed;
       };
 
       component.$mainFunc = factory.call(component, componentContext);

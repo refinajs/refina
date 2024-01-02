@@ -104,8 +104,8 @@ export type ComponentExposedKey<N extends string = string> =
 
 export type ComponentExposed<N extends keyof Components> =
   ComponentExposedKey<N> extends keyof Components
-    ? Components[ComponentExposedKey<N>]
-    : {};
+    ? Components[ComponentExposedKey<N>] & object
+    : void;
 
 interface ComponentOnlyContextFuncs<N extends keyof Components> {
   /**
@@ -128,7 +128,7 @@ interface ComponentOnlyContextFuncs<N extends keyof Components> {
    *
    * @param exposed The exposed object.
    */
-  $expose(exposed: ComponentExposed<N>): void;
+  $expose<T extends ComponentExposed<N>>(exposed: T): T;
 }
 
 /**
