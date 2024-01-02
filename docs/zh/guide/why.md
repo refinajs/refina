@@ -6,7 +6,7 @@
 
 传统的前端框架，比如 Vue，配合组件库，比如 Vuetify，允许你编写出细节完善、视觉美观的应用。 但是即使是一些“大厂”，也没能总是产出那么高质量的应用，因为开发效率的原因。 这即是说，即使开发者有能力，往往也会由于没有时间而无法做出相当完美的应用。 结果就是，许多传统前端框架的能力几乎得不到发挥，而为拥有这些能力所作的一些设计反而在很多情况下称为了负担。
 
-We need a frontend framework that **gives first priority to development efficiency**, then to completeness, then to runtime performance.
+除了传统前端框架，我们其实需要一个**首先关注开发效率**，其次是功能的完整性，再其次是运行时性能的前端框架。
 
 ## 解决方案
 
@@ -20,7 +20,7 @@ We need a frontend framework that **gives first priority to development efficien
 
 - **按位置传入参数，而非按名称**
 
-  You needn't write the name of the parameter, which saves a lot of time.
+  这样，开发者就不需要写出参数的名称。这节省了很多时间与代码量。
 
 - **通过返回值监听事件**
 
@@ -34,4 +34,4 @@ We need a frontend framework that **gives first priority to development efficien
 
 Refina 仍然出于开发的早期阶段，但它已经在开发效率上体现了非常大的优势。
 
-Based on the real projects, the **line of code is reduced to about `60%~70%`**, and **the development efficiency is `1.4x~1.6x`** of traditional frameworks.
+基于数个真实项目，Refina 相比其他前端框架**减少了大约 `30%~40%` 的代码量**，**开发效率提升至约 `1.4~1.6` 倍**。
