@@ -4,7 +4,8 @@
 
 - 熟悉命令行
 - 已安装 20.0 或更高版本的 [Node.js](https://nodejs.org/)。
-  :::
+
+:::
 
 在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
 
@@ -30,7 +31,8 @@
 - `postcss` CSS 预处理器。
 - `autoprefixer` 自动补全 CSS 的浏览器前缀。
 - `tailwindcss` 原子化 CSS 框架。
-  :::
+
+:::
 
 在项目被创建后，通过以下步骤安装依赖并启动开发服务器：
 
