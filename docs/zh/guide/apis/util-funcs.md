@@ -9,9 +9,9 @@ import NowVue from "snippets/now.vue";
 
 ## `_.portal`
 
-在根元素内部的末尾渲染内容。
+Render content at the end of the root element.
 
-这在编写一个对话框（`dialog`）或提示框（`tooltip`）时尤为有用。使用该方法将元素放在根元素末尾使得这些元素不受原位置的父元素影响。
+This is useful when you want to render a dialog or a tooltip that should not be affected by the parent element.
 
 **例子**
 
@@ -42,21 +42,23 @@ $app.use(Basics)(_ => {
 在渲染时使用异步调用的返回值。
 
 :::tip
-可用使用 `try`/`catch` 语句来捕获错误。
+
+Use `try`/`catch` to handle errors.
+
 :::
 
 **例子**
 
 ```ts {1,7}
 if (_.await(() => fetch("https://example.com"))) {
-  // 当 fetch 返回的 Promise 完成后，_.await 返回 true。
+  // When the promise is fulfilled, _.await returns true.
 
   _.p(_.$awaited.statusText);
 
-  // 你可以为 _.await 提供一个唯一的 id 以区分嵌套的调用。
+  // You can also use a custom id for a nesting await call.
   _.await(() => _.$awaited.text(), "Text") && _.p(_.$awaitedText);
 } else {
-  // 若 fetch 返回的 Promise 还未完成，则 _.await 返回 false。
+  // When the promise is pending, _.await returns false.
 
   _.p("Loading...");
 }
@@ -68,7 +70,7 @@ if (_.await(() => fetch("https://example.com"))) {
 
 ## `_.documentTitle`
 
-设置文档标题（标签页标题）。
+Set the document title.
 
 **例子**
 
@@ -82,17 +84,17 @@ $app.use(Basics)(_ => {
 });
 ```
 
-## `_.embed`
+## `_.embed` {#embed}
 
-在当前位置嵌入一个视图。
+Embed a view function into the current view function.
 
-参见 [嵌入视图](../essentials/view.md#embedding-views)。
+See [Embedding Views](../essentials/view.md#embedding-views).
 
-与 [传递视图参数](../essentials/view.md#passing-parameters)。
+and [Passing Parameters](../essentials/view.md#passing-parameters).
 
 ## `_.asyncEmbed`
 
-在当前位置嵌入一个异步加载的视图。
+Embed a view that is asynchronously loaded.
 
 **例子**
 
@@ -100,15 +102,17 @@ $app.use(Basics)(_ => {
 _.asyncEmbed(() => import("./myView.ts"));
 ```
 
-这将从 `./myView.ts` 异步地加载视图。这对代码拆分有帮助。
+which loads the view from `./myView.ts` asynchronously, which is useful for code splitting.
 
 :::info
-通过 `_.asyncEmbed` 加载的视图会被缓存，因此加载函数至多只会被调用一次。
+
+The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
+
 :::
 
 ## `_.provide`
 
-提供一组键值或一个对象到 [`_.$runtimeData`](./directives.md#runtime-data)，并且这些值与对象仅在内部有效。
+Provide a value or an object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
 
 **例子**
 
@@ -116,7 +120,7 @@ _.asyncEmbed(() => import("./myView.ts"));
 _.provide({ username: "John" }, myView, ...viewParams);
 ```
 
-等价于
+which is equivalent to
 
 ```ts
 _.provide("username", "John", myView, ...viewParams);
@@ -124,12 +128,14 @@ _.provide("username", "John", myView, ...viewParams);
 
 ## `_.now`
 
-获取当前的时间，相当于 `Date.now()`。
+Get the current time in milliseconds.
 
 :::tip
+
 You need to specify the `precisionMs` parameter, which means for how many milliseconds the time will be updated.
 
 如果未指定，它是 `1000`，即每一秒会更新视图以展示最新的时间。
+
 :::
 
 **例子**
@@ -146,16 +152,18 @@ $app.use(Basics)(_ => {
 
 ## `_.setInterval`
 
-设置一个定时器，每 `interval` 毫秒调用一次回调函数。
+Schedule a callback to be called every `interval` milliseconds.
 
 :::info
-当这个函数不再被调用时，定时器会被自动清除。
+
+The interval will be automatically cleared when it is no longer rendered.
+
 :::
 
 ## `_.for`
 
-参见 [列表渲染](../essentials/list)。
+See [List rendering](../essentials/list).
 
 ## `_.forTimes`
 
-参见 [重复一定次数](../essentials/list#for-times)。
+See [Render for Given Times](../essentials/list#for-times).
