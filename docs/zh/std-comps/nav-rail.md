@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "/std-comps/helpers/kind.vue";
-import Optional from "/std-comps/helpers/optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `NavRail` Component
@@ -11,7 +11,7 @@ It is displayed as a vertical list of buttons on the left side of the screen.
 
 <Kind>StatusComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 const currentPage = _.mdNavRail([

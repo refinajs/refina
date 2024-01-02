@@ -3,74 +3,76 @@ import AsyncFetchVue from "snippets/async-fetch.vue";
 import NowVue from "snippets/now.vue";
 </script>
 
-# Utility Context Functions
+# 上下文工具函数
 
-This page introduces utility context functions in the `Prelude` plugin, which is automatically installed when you create an app.
+本页介绍了由 Refina 核心的 `Prelude` 插件提供的上下文工具函数。它们在创建应用时被自动安装。
 
 ## `_.portal`
 
-Render content in the end of the root element.
+在根元素内部的末尾渲染内容。
 
-This is usefull when you want to render a dialog or a tooltip that should not be affected by the parent element.
+这在编写一个对话框（`dialog`）或提示框（`tooltip`）时尤为有用。使用该方法将元素放在根元素末尾使得这些元素不受原位置的父元素影响。
 
-**Example**
+**例子**
 
 ```ts {4}
 $app.use(Basics)(_ => {
   _.div(() => {
-    _.span("Inside the div");
-    _.portal(_ => _.span("Inside the portal"));
+    _.span("在 div 内部");
+    _.portal(_ => _.span("在 portal 内部"));
   });
-  _.span("Outside the div");
+  _.span("在 div 外部");
 });
 ```
 
-**Result**
+**运行结果**
 
 ```html {6}
 <div id="root">
   <div>
-    <span>Inside the div</span>
+    <span>在 div 内部</span>
   </div>
-  <span>Outside the div</span>
-  <span>Inside the portal</span>
+  <span>在 div 外部</span>
+  <span>在 portal 内部</span>
 </div>
 ```
 
 ## `_.await`
 
-Use data from an async call when rendering.
+在渲染时使用异步调用的返回值。
 
 :::tip
-Use `try`/`catch` to handle errors.
+
+可用使用 `try`/`catch` 语句来捕获错误。
+
 :::
 
-**Example**
+**例子**
 
 ```ts {1,7}
 if (_.await(() => fetch("https://example.com"))) {
-  // When the promise is fulfilled, _.await returns true.
+  // 当 fetch 返回的 Promise 完成后，_.await 返回 true。
 
   _.p(_.$awaited.statusText);
 
-  // You can also use a custom id for a nesting await call.
+  // 你可以为 _.await 提供一个唯一的 id 以区分嵌套的调用。
   _.await(() => _.$awaited.text(), "Text") && _.p(_.$awaitedText);
 } else {
-  // When the promise is pending, _.await returns false.
+  // 若 fetch 返回的 Promise 还未完成，则 _.await 返回 false。
 
   _.p("Loading...");
 }
 ```
 
-**Result**
+**运行结果**
 
 <AsyncFetchVue/>
 
 ## `_.documentTitle`
 
-Set the document title.
+设置文档标题（标签页标题）。
 
-**Example**
+**例子**
 
 ```ts {6}
 import { d } from "refina";
@@ -82,41 +84,43 @@ $app.use(Basics)(_ => {
 });
 ```
 
-## `_.embed`
+## `_.embed` {#embed}
 
-Embed a view function into the current view function.
+在当前位置嵌入一个视图。
 
-See [Embedding Views](../essentials/view.md#embedding-views).
+参见 [嵌入视图](../essentials/view.md#embedding-views)。
 
-and [Passing Parameters](../essentials/view.md#passing-parameters).
+与 [传递视图参数](../essentials/view.md#passing-parameters)。
 
 ## `_.asyncEmbed`
 
-Embed a view that is asynchronously loaded.
+在当前位置嵌入一个异步加载的视图。
 
-**Example**
+**例子**
 
 ```ts
 _.asyncEmbed(() => import("./myView.ts"));
 ```
 
-which loads the view from `./myView.ts` asynchronously, which is useful for code splitting.
+这将从 `./myView.ts` 异步地加载视图。这对代码拆分有帮助。
 
 :::info
-The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
+
+通过 `_.asyncEmbed` 加载的视图会被缓存，因此加载函数至多只会被调用一次。
+
 :::
 
 ## `_.provide`
 
-Provide a value or a object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
+提供一组键值或一个对象到 [`_.$runtimeData`](./directives.md#runtime-data)，并且这些值与对象仅在内部有效。
 
-**Example**
+**例子**
 
 ```ts
 _.provide({ username: "John" }, myView, ...viewParams);
 ```
 
-which is equivalent to
+等价于
 
 ```ts
 _.provide("username", "John", myView, ...viewParams);
@@ -124,15 +128,17 @@ _.provide("username", "John", myView, ...viewParams);
 
 ## `_.now`
 
-Get the current time in milliseconds.
+获取当前的时间，相当于 `Date.now()`。
 
 :::tip
-You need to specify the `precisionMs` parameter, which means for how many milliseconds the time will be updated.
 
-If not specified, it is `1000`, which means the time will be updated every second.
+你可以指定 `precisionMs` 参数，表示每过多少毫秒需要更新视图以刷新时间。
+
+如果未指定，它是 `1000`，即每一秒会更新视图以展示最新的时间。
+
 :::
 
-**Example**
+**例子**
 
 ```ts
 $app.use(Basics)(_ => {
@@ -140,22 +146,24 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <NowVue/>
 
 ## `_.setInterval`
 
-Schedule a callback to be called every `interval` milliseconds.
+设置一个定时器，每 `interval` 毫秒调用一次回调函数。
 
 :::info
-The interval will be automatically cleared when it is no longer rendered.
+
+当这个函数不再被调用时，定时器会被自动清除。
+
 :::
 
 ## `_.for`
 
-See [List rendering](../essentials/list).
+参见 [列表渲染](../essentials/list)。
 
 ## `_.forTimes`
 
-See [Render for Given Times](../essentials/list#for-times).
+参见 [重复一定次数](../essentials/list#for-times)。

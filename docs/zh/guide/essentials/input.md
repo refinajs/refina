@@ -24,7 +24,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <BasicInputVue />
 
@@ -72,7 +72,9 @@ assert(getD(wrappedValue) === 1);
 ```
 
 :::info
+
 如果数据包裹由 `d` 函数创建，那么它的类型是 `PD<T>`, 因此你不需要使用 `getD` 函数。 你可以直接访问 `wrappedValue.value`.
+
 :::
 
 ### `_.$setD` 函数
@@ -80,7 +82,9 @@ assert(getD(wrappedValue) === 1);
 与 `getD` 函数相对应，这个函数可以设置类型为 `D` 中的数据的值。
 
 :::info
+
 之所以没有 `setD` 函数，是因为当值改变时应当自动地触发 `UPDATE` 调用。而这需要通过一个上下文对象才能实现。
+
 :::
 
 ## 另一种获取用户输入的方式。
@@ -100,6 +104,6 @@ $app.use(Basics)(_ => {
 
 这里的逻辑是，当用户输入时，`textInput` 组件会触发事件，并以用户新输入的值作为事件的数据。
 
-**Result**
+**运行结果**
 
 <InputEventVue />

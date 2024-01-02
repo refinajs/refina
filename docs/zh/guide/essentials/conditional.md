@@ -2,9 +2,9 @@
 import ConditionalRenderingVue from "snippets/conditional-rendering.vue";
 </script>
 
-# Conditional Rendering
+# 条件渲染
 
-Just like JSX, you can use the `if-else` statement to conditionally render components.
+就像 JSX 中一样，你可以直接使用普通的 `if-else` 语句来根据条件决定是否渲染元素。
 
 ```ts
 let count = 0;
@@ -20,12 +20,13 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <ConditionalRenderingVue />
 
 :::tip
-You can also use the `&&` operator to conditionally render components:
+
+可以使用 `&&` 运算符来根据条件渲染组件：
 
 ```ts
 input.length > 0 && _.button("Clear");

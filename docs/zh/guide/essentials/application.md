@@ -40,7 +40,9 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 事实上，属于Refina核心的组件和工具函数由名为 `Prelude` 插件的提供。这个插件在创建应用时会被自动添加。
 
 :::warning
+
 由于 TypeScript 的限制，如果仅导入插件却不安装它，其类型仍然在上下文对象中可见。 但是如果你使用这些实际上并没有安装的插件，会产生运行时错误。
+
 :::
 
 ## 主函数
@@ -52,9 +54,11 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 主函数的第一个参数是上下文对象。通过上下文对象可以进行渲染组件、处理事件等等操作。
 
 :::warning
-You can only name the first param of the main function (the context object) as `_`.
+
+必须将上下文对象（即第一个参数）命名为 `_`。
 
 否则，编译时转换将不会工作，并将产生运行时错误。
+
 :::
 
 ## 根元素

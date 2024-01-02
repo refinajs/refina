@@ -2,9 +2,9 @@
 import StaticPageVue from "snippets/static-page.vue";
 </script>
 
-# Rendering Basics
+# 渲染基础
 
-Let's start by rendering a "static" page, which means the page doesn't have any dynamic content.
+首先我们来构建一个简单的“非交互”页面：
 
 ```ts
 $app.use(Basics)(_ => {
@@ -19,50 +19,49 @@ $app.use(Basics)(_ => {
 });
 ```
 
-**Result**
+**运行结果**
 
 <StaticPageVue />
 
-Now let's explain the code above.
+接下来是上面代码的解释。
 
-### Simple Components
+### 使用简单的组件
 
-Some simple components like `h1` and `img` can be rendered by calling the corresponding component function.
+一些简单的组件，比如 `h1` 与`img` 可以通过调用对应的组件函数直接渲染。
 
-Parameters of the component functions are passed in the positional way, so you needn't to specify the name of the parameters.
+组件的参数按位置传入，因此你不需要指定参数的名称。
 
-### Nested Components
+### 嵌套的组件
 
-Most components have a content, which is usually corresponding to the content of the HTML element.
+许多组件都有一个或多个内容。它们对应渲染的 HTML 的一部分。
 
-You can not only pass a string or a number as the content, but also pass a view function.
+你不但可以将字符串或数字作为内容传入，也可以使用视图函数。
 
-:::warning
-When using view functions as the content of a component, you should use the context object passed in the view function in the innermost scope, instead of using the context object in the outer scope.
+:::tip
+
+当使用视图函数作为组件的内容时，推荐使用箭头函数。
+
+为了获取最佳的开发体验，你可以使用 [Prettier](https://prettier.io/) 来格式化代码，并将 `arrowParens` 设置为 `"avoid"`。
+
+> 如果你通过 `npm create refina@latest` 创建应用，勾选使用 Prettier 即可。
+
 :::
 
 :::tip
-When using view functions as the content of a component, it is recommended to use the arrow function syntax.
 
-To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` optcdion set to `avoid`.
+如果视图函数只有一个语句，那么箭头函数的花括号可以省略。
 
-> If you create your project with `npm create refina@latest`, Prettier is already configured for you.
-> :::
+这是因为视图函数的返回值总是会被忽略。
 
-:::tip
-The curly braces around the view function can be omitted if the view function has only one statement.
+你也可以使用 `&&` 来将数个一定返回真值的语句和最后一个语句连接，将多个语句转换为表达式，并省区花括号。
 
-This is because the return value of the view function will always be ignored.
-
-And you can use `&&` to connect directives which always returns `true` to the component function.
-
-For example,
+比如，
 
 ```ts
 _.div(_ => _.$css`color: red` && _.p("This is a paragraph."));
 ```
 
-and
+与
 
 ```ts
 _.div(_ => {
@@ -71,21 +70,25 @@ _.div(_ => {
 });
 ```
 
-are equivalent.
+等价。
+
 :::
 
-### Add Classes and Styles {#add-classes-and-styles}
+### 添加类名与样式 {#add-classes-and-styles}
 
-You can use the `_.$cls` directive to add classes to the next component, and `_.$css` to add styles.
+使用 `_.$cls` 指令添加类名；使用 `_.$css` 指令添加样式。
 
-The styles and classes will be applied to the [main element](./component.md#main-element) of the following component.
+添加的类名与样式将被设置在下一个渲染的组件的 [主元素](./component.md#main-element)。
 
 :::tip
-`_.$css` and `_.$cls` can be called multiple times in a row, and the styles and classes will be merged.
+
+`_.$css` 与 `_.$cls` 可以连续调用多次，这些调用所添加的类名与样式将被自动合并。
+
 :::
 
 :::tip
-`_.$css` and `_.$cls` can be used as a template tag or a ordinary function, so the following two ways are equivalent:
+
+`_.$css` 与 `_.$cls` 指令均可以作为模板字符串标签或普通的函数使用。因此以下两种写法等价。
 
 ```ts
 const color = "red";
@@ -93,5 +96,6 @@ _.$css`color: ${color}`;
 _.$css("color: " + color);
 ```
 
-And it is recommended to omit the semicolon at the end of the CSS text, which will be automatically added.
+推荐省略样式字符串结尾的分号，因为它会被自动添加。
+
 :::

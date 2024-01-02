@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "/std-comps/helpers/kind.vue";
-import Optional from "/std-comps/helpers/optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `Button` Component
@@ -9,7 +9,7 @@ The main function of the `Button` component is to trigger an action when clicked
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xButton("Click me", disabled)) {

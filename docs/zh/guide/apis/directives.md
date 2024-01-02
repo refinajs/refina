@@ -1,24 +1,24 @@
-# Directives in the Context Object
+# 上下文对象中的指令
 
-The directives in the context object are all named with a `$` prefix.
+上下文对象中名称以 `$` 开头的是指令。
 
-Directives named with a `$$` prefix are considered as internal directives, which you may not use directly in your code.
+而名称以 `$$` 开头的指令往往在内部被使用。作为应用开发者，你可能无需使用它们。
 
 ## `_.$app`
 
-The App instance.
+当前的应用实例。
 
 ## `_.$state`
 
-The current state of the App.
+当前的应用状态。
 
-Can only be of type `UPDATE` or `RECV`, because there is no Context in the `IDLE` state.
+它可以是 `UPDATE` 或 `RECV`。但它不能是 `IDLE`，因为这时并不存在可用的上下文对象。
 
 ## `_.$updateContext` {#update-context}
 
-If the App is in the `UPDATE` state, the value is the context itself, otherwise it is `null`.
+如果应用处于 `UPDATE` 状态，那么它是当前上下文对象，否则它是 `null`。
 
-**Usage**:
+**使用方法**：
 
 ```ts
 $app(_ => {
@@ -30,90 +30,90 @@ $app(_ => {
 
 ## `_.$recvContext`
 
-Similar to [`_.$updateContext`](#update-context).
+与 [`_.$updateContext`](#update-context) 类似。
 
-If the App is in the `RECV` state, the value is the context itself, otherwise it is `null`.
+如果应用处于 `RECV` 状态，那么它是当前上下文对象，否则它是 `null`。
 
-## `_.$update`
+## `_.$update` {#update}
 
-Call the method to trigger an `UPDATE` call.
+调用此方法以触发页面更新（即触发 `UPDATE` 状态的调用）。
 
-Equivalent to `_.$app.update`.
+与 `_.$app.update` 等价。
 
 ## `_.$setD`
 
-Set the value of a `D` object and trigger an `UPDATE` call if the value is changed.
+设置一个 `D` 所包含的值，并触发页面更新。
 
 ## `_.$ev`
 
-This directive is only available in the event handler.
+这个指令仅在处理事件的代码中可用。
 
-**Usage**:
+**使用方法**：
 
 ```ts
 $app(_ => {
-  _.$ev; // ERROR: Property '$ev' does not exist on type 'Context'.
+  _.$ev; // 错误： 'Context' 上不存在 '$ev'。
 
   if (_.button("Click me")) {
-    _.$ev; // of type MouseEvent
+    _.$ev; // 类型为 MouseEvent
   }
 });
 ```
 
 ## `_.$root`
 
-The component representing the root element of the app.
+代表应用根元素的元素组件。
 
-You can use this component to add classes, styles and event listeners to the root element.
+通过它为根元素设置类名、样式与事件侦听器。
 
 ## `_.$body`
 
-The component representing the document body.
+代表 `window.document` 的元素组件。
 
-You can use this component to add classes, styles and event listeners to the document body.
+通过它为 `document.body` 设置类名、样式与事件侦听器。
 
 ## `_.$window`
 
-The component representing the document body.
+代表 `window.document` 的元素组件。
 
-You can use this component to add event listeners to window.
+通过它为 `window` 添加事件侦听器。
 
 ## `_.$ref` {#ref}
 
-See [Ref a Element](../essentials/lowlevel#ref-element).
+参见 [元素引用](../guide/essentials/lowlevel#ref-element)。
 
 ## `_.$props` {#props}
 
-Add extra props to the next component.
+为下一个组件添加额外的 prop。
 
-See [Extra Props](../essentials/component#extra-props).
+参见 [额外的 prop](../essentials/component#extra-props)。
 
 ## `_.$cls` {#cls}
 
-Add classes to the next component or element.
+向下一个组件或元素添加类名。
 
-See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
+参见 [添加类名与样式](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$css` {#css}
 
-Add styles to the next component or element.
+向下一个组件或元素添加样式。
 
-See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
+参见 [添加类名与样式](../essentials/rendering-basics#add-classes-and-styles).
 
 ## `_.$permanentData`
 
-The shortcut of `_.$app.permanentData`.
+`_.$app.permanentData` 的简写。
 
-**Lifetime**: from the construction of the app to the window is closed.
+**生命周期**: 从页面创建到应用被关闭。
 
 ## `_.$runtimeData` {#runtime-data}
 
-The shortcut of `_.$state.runtimeData`.
+`_.$state.runtimeData` 的简写。
 
-**Lifetime**: one `UPDATE` or `RECV` call.
+**生命周期**：一次 `UPDATE` 或 `RECV` 调用。
 
 :::info
-It is usually a bad idea to write to `_.$runtimeData` directly,
-which is not scoped to the inner content,
-use `_.provide` to provide values to `_.$runtimeData` instead.
+
+通常你不需要直接读写 `_.$runtimeData`，因为它可能会从可控的作用域泄露。请使用 `_.provide` 方法向一定范围内提供值。
+
 :::

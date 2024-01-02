@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "/std-comps/helpers/kind.vue";
-import Optional from "/std-comps/helpers/optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `RadioGroup` Component
@@ -9,7 +9,7 @@ The `RadioGroup` component is a group of radio buttons. Users can select one of 
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 _.xRadioGroup(selected, ["A", "B", "C"], allDisabled, {

@@ -1,32 +1,38 @@
-# Standard Components
+# 标准组件
 
-In this section, we will cover the standard components of Refina.
+本章节描述了 Refina 定义的标准组件。
 
-The standard components are the components that are often used and _not too simple_. It isn't guaranteed that they will be included in all component libraries. But component libraries should try its best to fit the interface of the standard components.
+Refina 的标准组件是常用的，且_有一定复杂度_的组件。 不能保证所有组件库都会包含所有这些标准组件。 但组件库应当尽可能地覆盖标准组件，并符合标准组件的接口。
 
 :::warning
-Different UI libraries may have different implementations of the standard components.
 
-Some features may not be available in some UI libraries, and some UI libraries may have additional features.
+标准组件在不同的 UI 库中可能有不同的实现。
+
+一些特性在有些 UI 风格中不可用，而有些 UI 风格会提供一些专有的特性。
+
 :::
 
 :::tip
-In the examples in this section, we will use the `x` prefix to import the standard components. For example, `_.xButton`.
 
-However, in the actual code, you should use the prefix of the UI library you're using. For example, `_.mdButton` for MdUI, and `_.fButton` for FluentUI.
+在本文档的示例中，我们使用 `x` 前缀来表示标准组件。 比如，`_.xButton`。
 
-Components provided by the `@refina/basic-components` package don't have a prefix. For example, `_.button`.
+但是，在实际开发中，需要加上你所使用的组件库的前缀。 比如，MdUI 中的按钮是 `_.mdButton`，而在 FluentUI 中是 `_.fButton`。
+
+由 `@refina/basic-components` 提供的组件没有前缀。 比如 `_.button`。
+
 :::
 
 :::info
-Some components that are too simple and obvious are not included in the standard components. For example, `_.span` and `_.mdIcon`.
 
-Some components that are too specific are also not included in the standard components. For example, `_.mdAppBarTitle`.
+一些过于简单和显然的不属于标准组件的范畴。 比如，`_.span` 与 `_.mdIcon`。
+
+一些只在少数组件库中包含的组件也不属于标准组件的范畴。 比如，`_.mdAppBarTitle`。
+
 :::
 
-## Available Component Libraries
+## 目前可用的组件库
 
-The following component libraries are currently available:
+以下组件库目前已经可用：
 
 [![@refina/basic-components](https://img.shields.io/npm/v/%40refina%2Fbasic-components?label=%40refina%2Fbasic-components\&color=green)](https://www.npmjs.com/package/@refina/basic-components)
 

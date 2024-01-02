@@ -1,61 +1,71 @@
-# App Hooks
+# 钩子
 
-Hooks are functions that are called at specific times during the app's lifecycle.
+钩子是在特定时机被调用的回调函数。
 
-Hooks can be added by plugin when it is being installed, or by main function in the `UPDATE` call.
+钩子可以在插件被安装时添加，或者在 `UPDATE` 状态下由主函数添加。
 
-## Onetime Hooks
+## 一次性钩子
 
-Onetime hooks are called only once.
+一次性钩子在调用一次后会被移除。
 
-Use `_.$app.pushOnetimeHook` to add a onetime hook.
+调用 `_.$app.pushOnetimeHook` 以添加一次性钩子。
 
-Can be accessed via `_.$app.onetimeHooks`.
+一次性钩子可以通过 `_.$app.onetimeHooks` 访问。
 
-## Permanent Hooks
+## 永久钩子
 
-Permanent hooks won't be removed after being called.
+永久钩子在被调用后不会被移除。
 
-Use `_.$app.pushPermanentHook` to add a permanent hook.
+调用 `_.$app.pushPermanentHook` 以添加永久钩子。
 
-Can be accessed via `_.$app.permanentHooks`.
+永久钩子可以通过 `_.$app.permanentHooks` 访问。
 
-## `beforeMain` Hook
+## `beforeMain` 钩子
 
-Called before the main function is executed, whether in `UPDATE` or `RECV` state.
-
-:::tip
-`app.runtimeData` is available in this hook.
-:::
-
-## `afterMain` Hook
-
-Called after the main function is executed, whether in `UPDATE` or `RECV` state.
+在应用的主函数被调用之前调用，无论处于 `UPDATE` 或 `RECV` 状态下。
 
 :::tip
-`app.runtimeData` is available in this hook.
+
+`app.runtimeData` 在此钩子中可用。
+
 :::
 
-## `beforeModifyDOM` Hook
+## `afterMain` 钩子
 
-Called after the main function is executed in `UPDATE` state, but before the DOM tree is modified and classes and styles are applied.
+在应用的主函数被调用之后调用，无论处于 `UPDATE` 或 `RECV` 状态下。
 
 :::tip
-`app.runtimeData` is available in this hook.
+
+`app.runtimeData` 在此钩子中可用。
+
 :::
 
-## `afterModifyDOM` Hook
+## `beforeModifyDOM` 钩子
 
-Called after the main function is executed in `UPDATE` state, and the DOM tree is modified and classes and styles are applied.
+在应用主函数在 `UPDATE` 状态下的调用完成后、在更新 DOM 的树结构、设置类名与样式之前调用。
 
 :::tip
-`app.runtimeData` is available in this hook.
+
+`app.runtimeData` 在此钩子中可用。
+
 :::
 
-## `onError` Hook
+## `afterModifyDOM` 钩子
 
-Called when an error is thrown in the main function.
+在应用主函数在 `UPDATE` 状态下的调用完成并且完成更新 DOM 的树结构、设置类名与样式之后调用。
+
+:::tip
+
+`app.runtimeData` 在此钩子中可用。
+
+:::
+
+## `onError` 钩子
+
+当主函数运行时抛出未捕获的错误时调用。
 
 :::info
-A hook outputting the error to the console is added by the `Prelude` plugin.
+
+一个将错误输出至控制台的钩子已经由 `Prelude` 插件自动添加。
+
 :::

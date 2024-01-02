@@ -1,58 +1,62 @@
-# The App State
+# 应用状态
 
-App can be in one of the following three states:
+应用实例总是处于以下3个状态中的一个：
 
-- `IDLE`: The main function of the App is not running.
-- `UPDATE`: Render the page.
-- `RECV`: Receive an event.
+- `IDLE`: 主函数不在运行。
+- `UPDATE`: 渲染并更新页面中。
+- `RECV`: 接收并处理事件中。
 
-![App States Graph](/media/app-states.png)
+![应用状态流程图](/media/app-states.png)
 
-## The `IDLE` State
+## `IDLE` 状态
 
-After the execution is finished in the `UPDATE` state, the App will enter the `IDLE` state.
+当 `UPDATE` 状态结束后，应用进入 `IDLE` 状态。
 
-## The `UPDATE` State
+## `UPDATE` 状态
 
-There are three ways to enter the `UPDATE` state:
+有三种方式会使得应用进入 `UPDATE` 状态：
 
-- Mount the App.
-- Call the `update` method of the App.
-- The event queue becomes empty.
+- 应用被挂载（初次创建）。
+- 应用实例的 `update` 方法被调用。
+- 事件队列被清空。
 
-In the `UPDATE` state, the App will render the DOM tree and update the page.
+在 `UPDATE` 状态下，应用将生成 DOM tree 并更新页面。
 
 :::tip
-Multiple `UPDATE` calls will be merged into one.
+
+多个 `UPDATE` 调用请求将被合并成一个。
+
 :::
 
 :::danger
-You SHOULD NOT change the state in the `UPDATE` state.
 
-The following code is illegal, and may cause undefined behavior:
+不应当在 `UPDATE` 状态下改变变量。
+
+以下代码是错误的。它会造成未定义行为。
 
 ```ts
 let count = 0;
 $app.use(Basics)(_ => {
   _.p(`Count is: ${count}`);
-  count++; // The state will change in the UPDATE state
+  count++; // count 在 UPDATE 状态下也会被改变
 });
 ```
 
 :::
 
-## The `RECV` State
+## `RECV` 状态
 
-When an event is received, the App will enter the `RECV` state.
+当侦听到事件时，应用进入 `RECV` 状态。
 
-In this state, the return values of the trigger components can be `true`, if it is the event receiver.
+只有在这个状态下，事件型组件的返回值可能是真值（当它就是事件的接收者时）。
 
-After the execution is finished in the `RECV` state, the App will always enter the `UPDATE` state.
+当 `RECV` 状态结束后，应用会进入 `UPDATE` 状态以更新页面。
 
 :::danger
-You can't render the page in the `RECV` state.
 
-The following code is illegal, and may cause undefined behavior:
+不能在 `RECV` 状态下修改 DOM。
+
+以下代码是错误的。它会造成未定义行为。
 
 ```ts
 $app.use(Basics)(_ => {

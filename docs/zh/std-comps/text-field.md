@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "/std-comps/helpers/kind.vue";
-import Optional from "/std-comps/helpers/optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `TextField` Component
@@ -11,7 +11,7 @@ Different from the `Textarea` component, the `TextField` component is a single-l
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xTextField(value, "Username", disabled)) {

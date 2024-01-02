@@ -1,6 +1,6 @@
 <script setup>
-import Kind from "/std-comps/helpers/kind.vue";
-import Optional from "/std-comps/helpers/optional.vue";
+import Kind from "./helpers/kind.vue";
+import Optional from "./helpers/optional.vue";
 </script>
 
 # The `Slider` Component
@@ -9,7 +9,7 @@ Use the `Slider` component to select a value from a range.
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xSlider(value, disabled, step, min, max)) {
