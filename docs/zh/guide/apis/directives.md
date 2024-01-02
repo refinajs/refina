@@ -80,7 +80,7 @@ $app(_ => {
 
 ## `_.$ref` {#ref}
 
-参见 [Ref a Element](../essentials/lowlevel#ref-element)。
+参见 [元素引用](../essentials/lowlevel#ref-element)。
 
 ## `_.$props` {#props}
 
