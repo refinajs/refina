@@ -23,10 +23,13 @@
 在 `UPDATE` 状态下，应用将生成 DOM tree 并更新页面。
 
 :::tip
-多个 `UPDATE` 调用请求将被合并成一个。
+
+Multiple `UPDATE` calls will be merged into one.
+
 :::
 
 :::danger
+
 You SHOULD NOT change the state in the `UPDATE` state.
 
 以下代码是错误的。它会造成未定义行为。
@@ -50,6 +53,7 @@ $app.use(Basics)(_ => {
 当 `RECV` 状态结束后，应用会进入 `UPDATE` 状态以更新页面。
 
 :::danger
+
 You can't render the page in the `RECV` state.
 
 以下代码是错误的。它会造成未定义行为。
