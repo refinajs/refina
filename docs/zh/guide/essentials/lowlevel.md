@@ -4,17 +4,19 @@ import LowlevelVue from "snippets/lowlevel.vue";
 
 # 底层渲染
 
-对于很多应用，已有的组件库已经足够使用。
+For most applications, you can just use the components provided by existing component libraries.
 
 但是仍有小部分情况你需要直接渲染 DOM 元素。
 
-以及，组件库也是通过底层渲染方法来渲染 HTML 或 SVG 元素，以构成组件。
+Also the components provided by component libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
 
 :::info
-如果一个现有的组件已经满足你的需要，请使用它，因为底层渲染更冗长并容易写错。
+
+If a component satisfies your needs, you should use it instead of using low-level rendering functions, as the low-level rendering functions are more verbose and error-prone.
+
 :::
 
-## 例子
+## Example
 
 ```ts
 let count = 0;
@@ -56,53 +58,51 @@ $app(_ => {
 
 <LowlevelVue />
 
-## 函数名
+## The Function Name
 
-- 对于 HTML 元素，函数名是标签名加上 `_` 前缀：
+- For HTML elements, the function name is the tag name with a `_` prefix:
 
-  `_._div` 对应 `<div>`。
+  `_._div` for `<div>`.
 
-- 对于 SVG 元素，函数名是标签名加上 `_svg` 前缀：
+- For SVG elements, the function name is the tag name with a `_svg` prefix:
 
-  `_._svgPath` 对应 `<path>`。
+  `_._svgPath` for `<path>`.
 
-- 对于自定义元素（包括 Web Component)，标签名中的的短横线会被以小驼峰写法代替：
+- For custom elements (including Web Component), the hyphens in the tag name will become camel case:
 
-  `_._myCustomElement` 对应 `<my-custom-element>`。
+  `_._myCustomElement` for `<my-custom-element>`.
 
-## 函数签名
+## The Signature
 
-- 参数：（均为可选参数）
-  - `data`: 将被合并到元素实例的对象。
-  - `inner`: 元素的内容（即打开、闭合标签之间的东西）。
-  - `eventListeners`: 元素的事件侦听器。
-- 返回值: `void`
+- Parameters: (all optional)
+  - `data`: an object which will be assigned to the element.
+  - `inner`: the content of the element.
+  - `eventListeners`: the event listeners of the element.
+- Return value: `void`
 
-## `data` 参数
+## The `data` Parameter
 
-**类型**: `Partial<TheElement>`
+**Type**: `Partial<TheElement>`
 
-> 这里的 `TheElement` 指 DOM 元素的实例类型，比如 `HTMLDivElement`、`SVGPathElement`。
+> `TheElement` above is the type of the element, e.g. `HTMLDivElement` or `SVGPathElement`.
 
-通过 `data` 参数传入的对象将被合并到元素实例。合并操作通过以下两种不同的方式完成：
+All the properties of the `data` parameter will be assigned to the element in the following two ways:
 
-**对于 HTML 元素或自定义元素**：
+**For HTML elements (or custom elements):**
 
 ```ts
 for (const key in data) {
   if (data[key] === undefined) {
-    // 删除值为 undefined 的属性
-    // @ts-ignore
+    // Delete the property if the value is undefined.
     delete el.node[key];
   } else {
-    // 对于 HTM 元素，直接赋值对应的属性
-    // @ts-ignore
+    // For a HTML element, just assign the value to the property.
     el.node[key] = data[key];
   }
 }
 ```
 
-**对于 SVG 元素**：
+**For SVG elements:**
 
 ```ts
 for (const key in data) {
@@ -110,35 +110,35 @@ for (const key in data) {
   if (value === undefined) {
     el.node.removeAttribute(key);
   } else if (typeof value === "function") {
-    // 不能将函数转化为字符串，所以直接赋值
-    // @ts-ignore
+    // Cannot stringify a function, so just assign it.
     el.node[key] = value;
   } else {
-    // 对于 SVG 元素，直接赋值不起作用
+    // For SVG elements, all attributes are string,
+    //  and just assign it to the SVGElement does not work.
     el.node.setAttribute(key, String(value));
   }
 }
 ```
 
-## `inner` 参数
+## The `inner` Parameter
 
-**类型**: `D<Content>`
+**Type**: `D<Content>`
 
-元素的内容（即打开、闭合标签之间的东西）。 它可以是：
+The content of the element. It can be:
 
-- 一个字符串或数字，将被以字符串节点的形式渲染。
-- 一个视图函数，将调用它以渲染内部的元素。
-- 一个包裹了上述2种之一的 `PD` 对象。
+- A string or a number, which will be rendered as a text node.
+- A view function, which will be rendered as the content of the element.
+- A `PD` object of the above two types.
 
-## `eventListeners` 参数
+## The `eventListeners` Parameter
 
-**类型**: `{ [K in TheEventMap]: ((ev: TheEventMap[K]) => void) | { listener: (ev: TheEventMap[K]) => void), options?:  boolean | AddEventListenerOptions } }`
+**Type**: `{ [K in TheEventMap]: ((ev: TheEventMap[K]) => void) | { listener: (ev: TheEventMap[K]) => void), options?:  boolean | AddEventListenerOptions } }`
 
-> 这里的 `TheEventMap` 是元素对应的事件表，比如 `HTMLElementEventMap`、`WebComponentsEventListeners[TagName]`。
+> `TheEventMap` above is the type of the event map, e.g. `HTMLElementEventMap` or `WebComponentsEventListeners[TagName]`.
 
-传入的值应是一个对象，键为事件名，值为回调函数或回调函数与其他选项组成的对象。
+An object whose keys are the names of the events, and values are the event listeners or a object which contains the event listener and the options.
 
-回调函数和其他选项将被传递给元素的 `addEventListener` 方法。
+The event listener and the options will be passed to the `addEventListener` method of the element:
 
 ```ts
 _._div({}, "", {
@@ -153,7 +153,7 @@ _._div({}, "", {
 });
 ```
 
-将会调用：
+Will call:
 
 ```ts
 divElement.addEventListener(
@@ -167,11 +167,11 @@ divElement.addEventListener(
 );
 ```
 
-## 接收事件 {#event-handling}
+## Event Handling {#event-handling}
 
-正如上文所述，底层渲染时有两种接收事件的方式。
+As you can see above, there are two ways to handle events:
 
-- 将回调函数传递给 `data` 参数：
+- Pass the event listener to the `data` parameter:
   ```ts
   _._button(
     {
@@ -183,7 +183,7 @@ divElement.addEventListener(
     "Add",
   );
   ```
-- 将回调函数传递给 `eventListeners` 参数：
+- Pass the event listener to the `eventListeners` parameter:
   ```ts
   _._button({}, "Add", {
     click: () => {
@@ -193,21 +193,24 @@ divElement.addEventListener(
   });
   ```
 
-规则是：\*\*如果将回调函数传递给 `data` 参数能正确工作，那么就不要使用 `eventListeners` 参数。\*\*因为前者更快且更紧凑。
+The rule is: **If passing the event listener to the `data` parameter works, you should use it.** Because this way is faster and more concise.
 
-在以下两种情况，将回调函数传递给 `data` 参数不工作：
+In the following situations, passing the event listener to the `data` parameter may not work:
 
-- 这个事件是一个自定义的事件。
-- 需要指定传递给 `addEventListener` 方法的 `options`。
+- The event is a custom event.
+- Want to specify the `options` parameter of the `addEventListener` method.
 
-:::warning 在接收事件后触发应用更新
+:::warning Update the app after handling events
 
-如果你想要反映状态的更改，你需要手动调用 `_.$update()` 方法以触发应用更新。
+Unlike the component functions, the low-level rendering functions will not update the app automatically after handling events.
+
+You should call [`_.$update()`](../apis/directives.md#update) manually to update the app if you want to apply the changes of the states to the app.
+
 :::
 
-## 元素引用 {#ref-element}
+## Ref a Element {#ref-element}
 
-你可以使用 [`_.$ref` 指令](../apis/directives.md#ref) 来引用元素。
+You can use [the `_.$ref` directive](../apis/directives.md#ref) to ref the element.
 
 ```ts
 import { ref, DOMElementComponent } from "refina";
@@ -223,8 +226,3 @@ $app.use(Basics)(_ => {
   iframeURL.current?.node.contentWindow?.postMessage("Hello", "*");
 });
 ```
-
-:::tip The usage of `&&`
-
-Because the `_.$ref` directive always returns `true`, so the component function will always be called. But if the ref object is not the right type, the component function will be of type `never`, and the IDE will report an error.
-:::
