@@ -11,7 +11,7 @@ Different from the `Textarea` component, the `TextField` component is a single-l
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xTextField(value, "Username", disabled)) {
