@@ -9,7 +9,7 @@ Displays a set of tabs, and only one tab is visible at a time.
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 _.xTabs(
