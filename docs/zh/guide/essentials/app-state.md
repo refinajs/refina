@@ -24,13 +24,13 @@
 
 :::tip
 
-Multiple `UPDATE` calls will be merged into one.
+多个 `UPDATE` 调用请求将被合并成一个。
 
 :::
 
 :::danger
 
-You SHOULD NOT change the state in the `UPDATE` state.
+不应当在 `UPDATE` 状态下改变变量。
 
 以下代码是错误的。它会造成未定义行为。
 
@@ -54,7 +54,7 @@ $app.use(Basics)(_ => {
 
 :::danger
 
-You can't render the page in the `RECV` state.
+不能在 `RECV` 状态下修改 DOM。
 
 以下代码是错误的。它会造成未定义行为。
 
