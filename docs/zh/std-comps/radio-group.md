@@ -9,7 +9,7 @@ The `RadioGroup` component is a group of radio buttons. Users can select one of 
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 _.xRadioGroup(selected, ["A", "B", "C"], allDisabled, {
