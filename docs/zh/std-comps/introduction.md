@@ -6,7 +6,7 @@ Refina 的标准组件是常用的，且_有一定复杂度_的组件。 不能�
 
 :::warning
 
-Different UI libraries may have different implementations of the standard components.
+标准组件在不同的 UI 库中可能有不同的实现。
 
 一些特性在有些 UI 风格中不可用，而有些 UI 风格会提供一些专有的特性。
 
@@ -14,7 +14,7 @@ Different UI libraries may have different implementations of the standard compon
 
 :::tip
 
-In the examples in this section, we will use the `x` prefix to import the standard components. For example, `_.xButton`.
+在本文档的示例中，我们使用 `x` 前缀来表示标准组件。 比如，`_.xButton`。
 
 但是，在实际开发中，需要加上你所使用的组件库的前缀。 比如，MdUI 中的按钮是 `_.mdButton`，而在 FluentUI 中是 `_.fButton`。
 
@@ -24,9 +24,9 @@ In the examples in this section, we will use the `x` prefix to import the standa
 
 :::info
 
-Some components that are too simple and obvious are not included in the standard components. For example, `_.span` and `_.mdIcon`.
+一些过于简单和显然的不属于标准组件的范畴。 比如，`_.span` 与 `_.mdIcon`。
 
-一些只在少数组件库中包含的组件并不属于标准组件的范畴。 比如，`_.mdAppBarTitle`。
+一些只在少数组件库中包含的组件也不属于标准组件的范畴。 比如，`_.mdAppBarTitle`。
 
 :::
 
