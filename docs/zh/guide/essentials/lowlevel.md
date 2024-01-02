@@ -2,13 +2,13 @@
 import LowlevelVue from "snippets/lowlevel.vue";
 </script>
 
-# Low-level Rendering
+# 底层渲染
 
-For most applications, you can just use the components provided by existing UI libraries.
+对于很多应用，已有的组件库已经足够使用。
 
-But there are still some situations in which you need to render elements manually.
+但是仍有小部分情况你需要直接渲染 DOM 元素。
 
-Also the components provided by UI libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
+以及，组件库也是通过底层渲染方法来渲染 HTML 或 SVG 元素，以构成组件。
 
 :::info
 If a component satisfies your needs, you should use it instead of using low-level rendering functions, as the low-level rendering functions are more verbose and error-prone.
