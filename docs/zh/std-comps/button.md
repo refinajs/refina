@@ -9,7 +9,7 @@ The main function of the `Button` component is to trigger an action when clicked
 
 <Kind>TriggerComponent</Kind>
 
-**Example**
+**例子**
 
 ```ts
 if (_.xButton("Click me", disabled)) {
