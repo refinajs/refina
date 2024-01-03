@@ -15,13 +15,6 @@ export function getBindings(ast: t.Statement[]): Bindings {
       statement.type === "ClassDeclaration"
     ) {
       bindings[statement.id!.name] = true;
-    } else if (statement.type === "ImportDeclaration") {
-      if (statement.importKind === "type") continue;
-      for (const specifier of statement.specifiers) {
-        if (specifier.local.name !== "app") {
-          bindings[specifier.local.name] = true;
-        }
-      }
     }
   }
   return bindings;

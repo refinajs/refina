@@ -9,6 +9,8 @@ export interface ParseResult {
   mainStart: number;
   mainEnd: number;
 
+  imports: string;
+
   localsAst: t.Statement[];
   localsSrc: MagicString;
 
@@ -30,6 +32,13 @@ export function parse(src: string): ParseResult | null {
     sourceType: "module",
     plugins: ["typescript"],
   }).program.body;
+
+  let imports = "";
+  for (const statement of statements) {
+    if (statement.type === "ImportDeclaration") {
+      imports += src.slice(statement.start!, statement.end!) + ";\n";
+    }
+  }
 
   for (let i = 0; i < statements.length; i++) {
     const statement = statements[i];
@@ -54,6 +63,7 @@ export function parse(src: string): ParseResult | null {
         appCallEnd: statement.end!,
         mainStart,
         mainEnd,
+        imports,
         localsAst: statements.filter((_, j) => j !== i),
         localsSrc,
         mainAst,
@@ -90,6 +100,7 @@ export function parse(src: string): ParseResult | null {
         appCallEnd: statement.end!,
         mainStart,
         mainEnd,
+        imports,
         localsAst: statements.filter((_, j) => j !== i),
         localsSrc,
         mainAst,

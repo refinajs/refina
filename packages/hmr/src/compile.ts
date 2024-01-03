@@ -49,7 +49,7 @@ export function compile(id: string, src: string): RefinaDescriptor | null {
     ),
     parseResult.appInstance,
   );
-  wrapMain(parseResult.mainSrc);
+  wrapMain(parseResult);
 
   return {
     mainStart: parseResult.mainStart,

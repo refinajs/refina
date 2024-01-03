@@ -1,13 +1,15 @@
-import type MagicString from "magic-string";
 import {
   appInstDeafultId,
   initFuncId,
   localsObjId,
   mainFuncId,
 } from "./constants";
+import { ParseResult } from "./parser";
 
-export function wrapMain(mainSrc: MagicString) {
-  mainSrc.prepend(`export const ${mainFuncId} = (${localsObjId}) => `);
+export function wrapMain({ imports, mainSrc }: ParseResult) {
+  mainSrc.prepend(`${imports}
+export const ${mainFuncId} = (${localsObjId}) => `);
+
   mainSrc.append(`
 let ${appInstDeafultId}, ${localsObjId};
 
