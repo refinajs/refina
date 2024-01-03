@@ -12,13 +12,13 @@ hero:
   actions:
     - theme: brand
       text: 快速上手
-      link: /guide/introduction
+      link: /zh/guide/introduction
     - theme: alt
       text: English Version
       link: /
     - theme: alt
       text: 为什么选 Refina？
-      link: /guide/why
+      link: /zh/guide/why
     - theme: alt
       text: 在 GitHub 上查看
       link: https://github.com/refinajs/refina
