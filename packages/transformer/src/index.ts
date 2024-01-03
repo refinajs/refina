@@ -17,6 +17,8 @@ type CtxFuncCall = (
 };
 
 export class RefinaTransformer {
+  ckeyPrefix = "";
+
   laskFileKey = 0;
   transformedFiles = new Map<
     string,
@@ -33,7 +35,7 @@ export class RefinaTransformer {
   }
 
   protected toCkey(fileKey: string, callId: number) {
-    return `${fileKey}-${callId.toString(36).toUpperCase()}`;
+    return `${this.ckeyPrefix}${fileKey}-${callId.toString(36).toUpperCase()}`;
   }
 
   isSameCall(a: CtxFuncCall, b: CtxFuncCall) {
