@@ -91,7 +91,7 @@ declare module "../context/base" {
       executor: () => Promise<T>,
       id: N,
     ) => // @ts-ignore
-    this is Record<`$awaited${K}`, T>) &
+    this is Record<`$awaited${N}`, T>) &
       (<T>(executor: () => Promise<T>) => // @ts-ignore
       this is {
         $awaited: T;

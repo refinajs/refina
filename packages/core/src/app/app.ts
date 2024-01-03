@@ -332,7 +332,7 @@ export class App {
     /**
      * Store the app instance, because `this` is lost in the getters.
      */
-    app: this,
+    app: this as App,
 
     /**
      * This promise resolves after the `beforeMain` hook is called.
