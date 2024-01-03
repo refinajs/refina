@@ -15,7 +15,7 @@ interface RefinaOptions extends CommonOptions, TransformerOptions, HmrOptions {
 
 export default function Refina(options: RefinaOptions = {}): Plugin[] {
   const include = uniformMatcher(options.include ?? /\.[tj]s(\?|$)/);
-  const exclude = uniformMatcher(options.exclude ?? (() => false));
+  const exclude = uniformMatcher(options.exclude ?? /\?(.*&)?raw/);
   const ignore = uniformMatcher(
     options.ignore ?? /^(((^|\n)\s*\/\/[^\n]*)|\n)*\/\/\s*@refina-ignore/,
   );

@@ -1,5 +1,5 @@
+import { RefinaHmr, mainUrlSuffix } from "@refina/hmr";
 import { Plugin } from "vite";
-import { transform, update, mainUrlSuffix } from "./hmr-compiler";
 import { Matcher, ResolvedCommonOptions, uniformMatcher } from "./types";
 
 export interface HmrOptions {
@@ -22,6 +22,8 @@ export default function Hmr(
   const shouldPerformHmr = (id: string, raw: string) =>
     options.isRefina(id, raw) && !exclude(id);
 
+  const hmr = new RefinaHmr();
+
   return {
     name: "refina-hmr",
     apply: "serve",
@@ -30,20 +32,19 @@ export default function Hmr(
       if (!shouldPerformHmr(id, raw)) return null;
       if (!id.endsWith(mainUrlSuffix)) {
         // locals
-        const descriptor = transform(id, raw);
+        const descriptor = hmr.transform(id, raw);
         return descriptor?.locals;
       } else {
         // app main
         const entryId = id.slice(0, -mainUrlSuffix.length);
-        const descriptor = transform(entryId, raw);
+        const descriptor = hmr.transform(entryId, raw);
         return descriptor?.main;
       }
     },
     async handleHotUpdate(ctx) {
       const content = await ctx.read();
       if (!shouldPerformHmr(ctx.file, content)) return;
-      const hmr = update(ctx.file, content);
-      if (hmr) {
+      if (hmr.update(ctx.file, content)) {
         const localsMod = ctx.modules.find(m => m.id === ctx.file)!;
         const mainMod = ctx.modules.find(
           m => m.id === ctx.file + mainUrlSuffix,

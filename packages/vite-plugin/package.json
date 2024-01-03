@@ -42,6 +42,7 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "devDependencies": {
+    "@refina/hmr": "workspace:^",
     "@refina/transformer": "workspace:^",
     "@types/node": "^20.6.5",
     "tsup": "^7.2.0",

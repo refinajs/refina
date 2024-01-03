@@ -22,7 +22,7 @@ export interface CommonOptions {
   /**
    * Exclude files from transformation.
    *
-   * @default []
+   * @default /\?(.*&)?raw/
    */
   exclude?: Matcher;
 
