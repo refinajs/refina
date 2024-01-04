@@ -12,14 +12,14 @@ Render a table.
 **Example**
 
 ```ts
-_.mdTable(
+_.xTable(
   data,
-  [_ => _.mdIcon("person"), "Age", "Action"],
+  [_ => _.xIcon("person"), "Age", "Action"],
   "name",
   ({ name, age }) => {
-    _.mdTableCell(name);
-    _.mdTableCell(age);
-    _.mdTableCell(_ => _.mdButton("Open") && alert(name));
+    _.xTableCell(name);
+    _.xTableCell(age);
+    _.xTableCell(_ => _.xButton("Open") && alert(name));
   },
 );
 ```
