@@ -22,14 +22,6 @@ export class TriggerComponent<Ev, Props> extends Component<Props> {
    * @param data The data of the event.
    */
   readonly $fire = (data: Ev) => {
-    if (
-      typeof data === "object" &&
-      data !== null &&
-      data instanceof Event &&
-      !Object.hasOwn(data, "$isCurrent")
-    ) {
-      (data as any).$isCurrent = data.target === data.currentTarget;
-    }
     this.$app.recv(this, data);
   };
 
@@ -40,7 +32,7 @@ export class TriggerComponent<Ev, Props> extends Component<Props> {
    * @returns A function that fires the event.
    */
   readonly $fireWith = (data: Ev) => () => {
-    this.$fire(data);
+    this.$app.recv(this, data);
   };
 }
 
