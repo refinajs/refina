@@ -83,9 +83,9 @@ export function initializeRecvContext(
 
   context.$$assertEmpty = () => {};
 
-  context.$$ = function (funcName, ckey, ...args) {
+  context.$$ = (funcName, ckey, ...args) => {
     if (funcName[0] === "_") {
-      if (this.$received) {
+      if (context.$received) {
         return;
       }
 
@@ -98,21 +98,21 @@ export function initializeRecvContext(
       return;
     }
     // The context function is for a user-defined component.
-    const func = this.$app.contextFuncs[funcName as keyof RealContextFuncs];
+    const func = context.$app.contextFuncs[funcName as keyof RealContextFuncs];
     if (import.meta.env.DEV) {
       if (!func) {
         throw new Error(`Unknown element ${funcName}.`);
       }
     }
     // Return the return value of the context function.
-    return func.call(this.$lowlevel, ckey, ...args);
+    return func.call(context.$lowlevel, ckey, ...args);
   };
 
   context.$$t = (ckey, content) => {
     // Text node has nothing to receive.
   };
 
-  context.$$processDOMElement = (ckey: string, content?: D<Content>) => {
+  context.$$processDOMElement = (ckey, content) => {
     const contentValue = getD(content);
     if (typeof contentValue === "function") {
       // The content is a view function.
@@ -137,31 +137,31 @@ export function initializeRecvContext(
     // Text node is ignored in `RECV` state.
   };
 
-  context.$$processComponent = function <T extends Component<any>>(
+  context.$$processComponent = <T extends Component<any>>(
     ckey: string,
     ctor: ComponentConstructor<T>,
     factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
     args: unknown[],
-  ) {
-    let component = this.$$currentRefTreeNode[ckey] as T | undefined;
+  ) => {
+    let component = context.$$currentRefTreeNode[ckey] as T | undefined;
 
     if (!component) {
-      component = new ctor(this.$app);
+      component = new ctor(context.$app);
 
-      const context = this._ as ComponentContext<any>;
-      context.$expose = exposed => exposed;
+      const componentContext = context._ as ComponentContext<any>;
+      componentContext.$expose = exposed => exposed;
 
-      component.$mainFunc = factory.call(component, context);
+      component.$mainFunc = factory.call(component, componentContext);
 
-      this.$$currentRefTreeNode[ckey] = component;
+      context.$$currentRefTreeNode[ckey] = component;
     } else {
-      const parentRefTreeNode = this.$$currentRefTreeNode;
-      this.$$currentRefTreeNode = component.$refTreeNode;
+      const parentRefTreeNode = context.$$currentRefTreeNode;
+      context.$$currentRefTreeNode = component.$refTreeNode;
 
       // New created component has nothing to receive.
       component.$mainFunc(...args);
 
-      this.$$currentRefTreeNode = parentRefTreeNode;
+      context.$$currentRefTreeNode = parentRefTreeNode;
     }
 
     return component;
