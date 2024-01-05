@@ -59,7 +59,7 @@ export class Plugin<Args extends any[] = []> {
     }
 
     if (import.meta.env.DEV) {
-      console.debug(`plugin ${this.name} installed.`);
+      console.debug(`[*] plugin ${this.name} installed.`);
     }
   }
 

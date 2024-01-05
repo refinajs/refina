@@ -140,34 +140,39 @@ export class App {
    *
    * Can be pushed during `RECV` calls, which means a new event can be triggered by another event.
    */
-  readonly eventQueue: { receiver: unknown; data: unknown }[] = [];
+  eventQueue: [receiver: unknown, data: unknown][] = [];
 
   /**
    * Whether an `UPDATE` call is required after the recv queue becomes empty.
    */
-  requireUpdate = false;
+  requireUpdate: boolean;
 
   /**
    * Mount the app to the root element.
    */
   mount() {
-    // Wait until all components registered.
-    // Because the execution order of top-level code in different modules is not guaranteed,
-    setTimeout(() => {
-      this.execUpdate();
-    });
+    if (import.meta.env.DEV) console.debug(`[*] mount app`);
+
+    // `setTimeout` in `this.execUpdate` to wait until all components registered.
+    // Because the execution order of top-level code in different modules is not guaranteed.
+    this.requireUpdate = true;
+    this.execUpdate();
   }
 
   /**
    * Trigger an `UPDATE` call.
    */
   readonly update = () => {
-    if (import.meta.env.DEV)
-      console.debug(`[*] update triggered${new Error().stack?.slice(5)}`);
+    if (import.meta.env.DEV) {
+      const stack = new Error().stack?.replace(/.*\n.*/, "");
+      console.debug(`[*] update triggered${stack}`);
+    }
+
     this.requireUpdate = true;
 
-    // If the app is not running, start it in the next tick.
-    if (this.state === AppState.IDLE) this.nextTick();
+    if (this.state === AppState.IDLE) {
+      this.execUpdate();
+    }
   };
 
   /**
@@ -177,88 +182,70 @@ export class App {
    * @param data The event data.
    */
   readonly recv = (receiver: unknown, data: unknown) => {
-    if (import.meta.env.DEV)
-      console.debug(
-        `[*] recv triggered with receiver `,
-        receiver,
-        new Error().stack?.slice(5),
-      );
-    this.eventQueue.push({ receiver, data });
+    if (import.meta.env.DEV) {
+      const stack = new Error().stack?.replace(/.*\n.*/, "");
+      console.debug(`[*] recv triggered (receiver: ${receiver})${stack}`);
+    }
 
-    // An `UPDATE` call is always required after a `RECV` call.
-    this.requireUpdate = true;
+    if (this.state === AppState.IDLE) {
+      this.state = AppState.RECV;
+      this.eventQueue = [[receiver, data]];
+      this.requireUpdate = true;
 
-    // If the app is not running, start it in the next tick.
-    if (this.state === AppState.IDLE) this.nextTick();
+      while (this.eventQueue.length > 0) {
+        const [receiver, data] = this.eventQueue.shift()!;
+
+        if (import.meta.env.DEV)
+          console.debug(`[+] recv start (receiver: ${receiver}`);
+
+        initializeRecvContext(
+          this.context as unknown as IntrinsicRecvContext,
+          this,
+          receiver,
+          data,
+        );
+        this.execMain();
+
+        if (import.meta.env.DEV)
+          console.debug(`[-] recv end (receiver: ${receiver}`);
+      }
+
+      this.state = AppState.IDLE;
+      this.execUpdate();
+    } else if (this.state === AppState.RECV) {
+      this.eventQueue.push([receiver, data]);
+    } else if (this.state === AppState.UPDATE) {
+      throw new Error("Cannot call trigger recv in `UPDATE` state.");
+    }
   };
 
-  /**
-   * In the next tick, if the event queue non-empty, make a `RECV` call for the first event in the queue.
-   * Otherwise, if the app needs to update, make an `UPDATE` call.
-   */
-  nextTick() {
-    setTimeout(
-      import.meta.env.DEV
-        ? () => {
-            // In development mode, print the debug information.
+  protected execUpdate() {
+    setTimeout(() => {
+      if (!this.requireUpdate) return;
 
-            console.debug(`[!] next tick`);
-            if (this.eventQueue.length > 0) {
-              // Dequeue the first event and execute it.
-              const { receiver, data } = this.eventQueue.shift()!;
+      if (import.meta.env.DEV) console.debug(`[+] update start`);
 
-              console.debug(
-                `[+] recv executing start with receiver`,
-                receiver,
-                `remaining ${this.eventQueue.length}`,
-              );
+      this.state = AppState.UPDATE;
 
-              const startTime = window.performance.now();
+      initializeUpdateContext(
+        this.context as unknown as IntrinsicUpdateContext,
+        this,
+      );
+      this.execMain();
 
-              this.execRecv(receiver, data);
+      // Apply changes to DOM.
+      this.callHook("beforeModifyDOM");
+      this.window.updateDOM();
+      this.body.updateDOM();
+      this.root.updateDOM();
+      this.callHook("afterModifyDOM");
 
-              console.debug(
-                `[-] recv executed in ${
-                  window.performance.now() - startTime
-                }ms. Received=${this.context.$recvContext!.$received}`,
-              );
+      // Clear the `UPDATE` state.
+      this.state = AppState.IDLE;
+      this.requireUpdate = false;
 
-              // There must be at least one `UPDATE` call.
-              this.nextTick();
-            } else if (this.requireUpdate) {
-              // Clear the flag.
-              this.requireUpdate = false;
-
-              console.debug(`[+] update executing start`);
-
-              const startTime = window.performance.now();
-
-              this.execUpdate();
-
-              console.debug(
-                `[-] update executed in ${
-                  window.performance.now() - startTime
-                }ms`,
-              );
-            }
-          }
-        : () => {
-            if (this.eventQueue.length > 0) {
-              // Dequeue the first event and execute it.
-              const { receiver, data } = this.eventQueue.shift()!;
-
-              this.execRecv(receiver, data);
-
-              // There must be at least one `UPDATE` call.
-              this.nextTick();
-            } else if (this.requireUpdate) {
-              // Clear the flag.
-              this.requireUpdate = false;
-
-              this.execUpdate();
-            }
-          },
-    );
+      if (import.meta.env.DEV) console.debug(`[-] update end`);
+    });
   }
 
   /**
@@ -276,46 +263,9 @@ export class App {
       }
       this.callHook("afterMain");
     } catch (e) {
-      // Report the error to the console instead of throwing it to make sure the cleanup code is executed.
-      console.error("Error when executing main:", e, "\nstate:", this.state);
+      // Do not throw the error to make sure the cleanup code is executed.
+      this.callHook("onError", e);
     }
-  }
-
-  protected execUpdate() {
-    this.state = AppState.UPDATE;
-    initializeUpdateContext(
-      this.context as unknown as IntrinsicUpdateContext,
-      this,
-    );
-
-    // Execute the main function to update components.
-    this.execMain();
-
-    // Apply changes to DOM.
-    this.callHook("beforeModifyDOM");
-    this.window.updateDOM();
-    this.body.updateDOM();
-    this.root.updateDOM();
-    this.callHook("afterModifyDOM");
-
-    // Clear the `UPDATE` state.
-    this.state = AppState.IDLE;
-  }
-
-  protected execRecv(receiver: unknown, event: unknown = null) {
-    this.state = AppState.RECV;
-    initializeRecvContext(
-      this.context as unknown as IntrinsicRecvContext,
-      this,
-      receiver,
-      event,
-    );
-
-    // Execute the main function to receive the event.
-    this.execMain();
-
-    // Clear the `RECV` state.
-    this.state = AppState.IDLE;
   }
 
   /**
