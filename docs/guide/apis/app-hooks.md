@@ -20,6 +20,10 @@ Use `_.$app.pushPermanentHook` to add a permanent hook.
 
 Can be accessed via `_.$app.permanentHooks`.
 
+## `initContext` Hook
+
+Initialize the context object.
+
 ## `beforeMain` Hook
 
 Called before the main function is executed, whether in `UPDATE` or `RECV` state.

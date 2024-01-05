@@ -166,4 +166,6 @@ export function initializeRecvContext(
 
     return component;
   };
+
+  app.callHook("initContext", context);
 }

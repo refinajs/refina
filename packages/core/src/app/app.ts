@@ -25,6 +25,11 @@ export type RefTreeNode = Record<string, unknown>;
  */
 export interface AppHookMap {
   /**
+   * Initialize the context object.
+   */
+  initContext: (context: IntrinsicRecvContext | IntrinsicUpdateContext) => void;
+
+  /**
    * Before the main function is executed, whether in `UPDATE` or `RECV` state.
    *
    * `app.runtimeData` is available in this hook.

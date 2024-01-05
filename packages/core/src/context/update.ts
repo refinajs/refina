@@ -534,4 +534,6 @@ export function initializeUpdateContext(
     el.addCss(css);
     el.addEventListeners(eventListeners);
   };
+
+  app.callHook("initContext", context);
 }
