@@ -20,6 +20,10 @@
 
 永久钩子可以通过 `_.$app.permanentHooks` 访问。
 
+## `initContext` Hook
+
+Initialize the context object.
+
 ## `beforeMain` 钩子
 
 在应用的主函数被调用之前调用，无论处于 `UPDATE` 或 `RECV` 状态下。
