@@ -1,6 +1,6 @@
-# `@refina/basic-components`
+# `@refina/bundles`
 
-[![npm](https://img.shields.io/npm/v/%40refina%2Fbasic-components?color=green)](https://www.npmjs.com/package/@refina/basic-components)
+[![npm](https://img.shields.io/npm/v/%40refina%2Fbundles?color=green)](https://www.npmjs.com/package/@refina/bundles)
 
 The bundled version of Refina libs.
 
