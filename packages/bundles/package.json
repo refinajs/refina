@@ -1,0 +1,41 @@
+{
+  "name": "@refina/bundles",
+  "version": "0.0.1",
+  "description": "The bundled version of Refina libs.",
+  "keywords": [
+    "refina",
+    "bundle"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "exports": {
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "build": "tsx ./bundle.ts",
+    "check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "_Kerman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KermanX/refina"
+  },
+  "readme": "https://github.com/KermanX/refina#readme",
+  "bugs": "https://github.com/KermanX/refina/issues",
+  "license": "MIT",
+  "devDependencies": {
+    "@nodelib/fs.walk": "^2.0.0",
+    "@refina/transformer": "workspace:^",
+    "@types/node": "^20.6.5",
+    "consola": "^3.2.3",
+    "rimraf": "^5.0.5",
+    "terser": "^5.26.0",
+    "tsup": "^7.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.2.2"
+  }
+}

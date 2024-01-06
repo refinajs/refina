@@ -1,0 +1,11 @@
+{
+  "include": ["./bundle.ts"],
+  "exclude": ["./dist"],
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "target": "ESNext",
+    "lib": ["ESNext"]
+  }
+}
