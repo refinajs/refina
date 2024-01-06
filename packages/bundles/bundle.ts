@@ -7,14 +7,14 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { rimrafSync } from "rimraf";
 
-consola.start("Starting bundle Refina libs...");
-
 const libs = ["basic-components", "core", "mdui", "transformer"];
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, "dist");
 
 const transformer = new RefinaTransformer();
 transformer.ckeyPrefix = "b_"; // means "bundle"
+
+consola.start("Starting transforming Refina libs...");
 
 for (const lib of libs) {
   try {
@@ -48,6 +48,10 @@ for (const lib of libs) {
   consola.success(`Transformed ${lib}!`);
 }
 
+consola.success(`Transforming complete!`);
+
+consola.start("Starting bundling Refina libs...");
+
 const command = (minify: boolean) =>
   [
     `pnpm exec tsup`,
@@ -73,10 +77,14 @@ const distEntries = fsWalk.walkSync(distDir, { basePath: "." });
 for (const entry of distEntries) {
   if (entry.dirent.isFile()) {
     if (!entry.name.includes("_min")) continue;
-    renameSync(
-      resolve(distDir, entry.path),
-      resolve(distDir, entry.path.replace(/_min/, ".min")),
-    );
+    const originalPath = resolve(distDir, entry.path);
+    const minPath = resolve(distDir, entry.path.replace(/_min/, ".min"));
+    renameSync(originalPath, minPath);
+    if (entry.name.endsWith(".js")) {
+      let code = readFileSync(minPath, "utf-8");
+      code = code.slice(0, -"_min.js.map".length) + ".min.js.map";
+      writeFileSync(minPath, code);
+    }
   }
 }
 
