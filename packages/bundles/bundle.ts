@@ -14,6 +14,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, "dist");
 
 const transformer = new RefinaTransformer();
+transformer.ckeyPrefix = "b_"; // means "bundle"
 
 for (const lib of libs) {
   try {
