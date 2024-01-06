@@ -29,7 +29,7 @@ export interface CommonOptions {
   /**
    * Ignore files from transformation.
    *
-   * @default /^(((^|\n)\s*\/\/[^\n]*)|\n)*\/\/\s*@refina-ignore/
+   * @default /^(((^|\n)\s*\/\/[^\n]*)|\n)*\s*\/\/\s*@refina-ignore/
    */
   ignore?: Matcher;
 }
