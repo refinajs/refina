@@ -54,13 +54,13 @@ Basics.triggerComponents.input = function (_) {
 
 Basics.triggerComponents.textInput = function (_) {
   return (value, disabled, placeholder) => {
-    _.input("text", value, disabled, placeholder);
+    _.input("text", value, disabled, placeholder) && this.$fire(_.$ev);
   };
 };
 
 Basics.triggerComponents.passwordInput = function (_) {
   return (value, disabled, placeholder) => {
-    _.input("password", value, disabled, placeholder);
+    _.input("password", value, disabled, placeholder) && this.$fire(_.$ev);
   };
 };
 
