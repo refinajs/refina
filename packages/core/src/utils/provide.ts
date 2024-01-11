@@ -1,5 +1,4 @@
 import { Prelude } from "../constants";
-import { D } from "../data";
 import { Content } from "../dom";
 
 declare module "../component" {
@@ -20,7 +19,7 @@ declare module "../component" {
     provide<Args extends any[]>(
       key: symbol,
       value: unknown,
-      content: D<Content<Args>>,
+      content: Content<Args>,
       ...args: Args
     ): void;
     /**
@@ -36,7 +35,7 @@ declare module "../component" {
      */
     provide<Args extends any[]>(
       obj: Record<symbol, unknown>,
-      content: D<Content<Args>>,
+      content: Content<Args>,
       ...args: Args
     ): void;
   }
@@ -46,18 +45,14 @@ Prelude.outputComponents.provide = function (_) {
   return (keyOrObj, ...rest) => {
     if (typeof keyOrObj === "symbol") {
       const key = keyOrObj,
-        [value, content, ...args] = rest as [
-          unknown,
-          D<Content<any[]>>,
-          ...any[],
-        ];
+        [value, content, ...args] = rest as [unknown, Content<any[]>, ...any[]];
       const oldVal = _.$runtimeData[key];
       _.$runtimeData[key] = value;
       _.embed(content, ...args);
       _.$runtimeData[key] = oldVal;
     } else {
       const obj = keyOrObj,
-        [content, ...args] = rest as [D<Content<any[]>>, ...any[]];
+        [content, ...args] = rest as [Content<any[]>, ...any[]];
       const symbols = Object.getOwnPropertySymbols(obj);
       const oldVals: Record<symbol, unknown> = {};
       for (const key of symbols) {

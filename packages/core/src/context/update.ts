@@ -5,7 +5,7 @@ import {
   ComponentContext,
   ComponentMainFunc,
 } from "../component";
-import { D, Ref, getD, mergeRefs } from "../data";
+import { Ref, mergeRefs } from "../data";
 import {
   Content,
   DOMElementComponent,
@@ -98,7 +98,7 @@ export interface IntrinsicUpdateContext<
    * @param el The DOM element component.
    * @param content The content of the DOM element component.
    */
-  $$updateDOMContent(el: DOMElementComponent, content?: D<Content>): void;
+  $$updateDOMContent(el: DOMElementComponent, content?: Content): void;
 
   /**
    * Process a HTML element.
@@ -117,7 +117,7 @@ export interface IntrinsicUpdateContext<
     cls: string,
     css: string,
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: D<Content>,
+    inner?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
 
@@ -138,7 +138,7 @@ export interface IntrinsicUpdateContext<
     cls: string,
     css: string,
     data?: SVGElementFuncData,
-    inner?: D<Content>,
+    inner?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
 }
@@ -277,7 +277,7 @@ export function initializeUpdateContext(
           context.$$consumeCls(),
           context.$$consumeCss(),
           data as SVGElementFuncData | undefined,
-          inner as D<Content> | undefined,
+          inner as Content | undefined,
           eventListeners as
             | DOMElementEventListenersInfoRaw<keyof SVGElementTagNameMap>
             | undefined,
@@ -295,7 +295,7 @@ export function initializeUpdateContext(
           data as
             | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
             | undefined,
-          inner as D<Content> | undefined,
+          inner as Content | undefined,
           eventListeners as
             | DOMElementEventListenersInfoRaw<keyof HTMLElementTagNameMap>
             | undefined,
@@ -325,7 +325,7 @@ export function initializeUpdateContext(
       }
     }
 
-    const text = String(getD(content));
+    const text = String(content);
 
     let textNode = context.$$currentRefTreeNode[ckey] as
       | DOMNodeComponent
@@ -425,12 +425,11 @@ export function initializeUpdateContext(
       context.$$currentDOMParent = el;
       context.$$currentRefTreeNode = el.$refTreeNode;
 
-      const contentValue = getD(content);
-      if (typeof contentValue === "function") {
+      if (typeof content === "function") {
         // The content is a view function.
 
         try {
-          contentValue(context._);
+          content(context._);
           if (import.meta.env.DEV) {
             context.$$assertEmpty();
           }
@@ -439,7 +438,7 @@ export function initializeUpdateContext(
         }
       } else {
         // The content is a text node.
-        context.$$t("_t", contentValue);
+        context.$$t("_t", content);
       }
 
       // Restore the DOM parent.

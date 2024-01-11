@@ -1,4 +1,4 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fButton.styles";
 import { FButtonApperance, FButtonShape } from "./types";
@@ -6,8 +6,8 @@ import { FButtonApperance, FButtonShape } from "./types";
 declare module "refina" {
   interface Components {
     fButton(
-      inner: D<Content>,
-      disabled?: D<boolean>,
+      inner: Content,
+      disabled?: boolean,
       shape?: FButtonShape,
       appearance?: FButtonApperance,
     ): this is {
@@ -22,12 +22,11 @@ FluentUI.triggerComponents.fButton = function (_) {
     shape = "rounded",
     appearance = "secondary",
   ) => {
-    const disabledValue = getD(disabled);
-    styles.root(shape, appearance, false, disabledValue, false)(_);
+    styles.root(shape, appearance, false, disabled, false)(_);
     _._button(
       {
         type: "button",
-        disabled: disabledValue,
+        disabled,
         onclick: this.$fireWith(),
       },
       inner,
@@ -38,8 +37,8 @@ FluentUI.triggerComponents.fButton = function (_) {
 declare module "refina" {
   interface Components {
     fPrimaryButton(
-      inner: D<Content>,
-      disabled?: D<boolean>,
+      inner: Content,
+      disabled?: boolean,
       shape?: FButtonShape,
     ): this is {
       $ev: void;
@@ -54,8 +53,8 @@ FluentUI.triggerComponents.fPrimaryButton = function (_) {
 declare module "refina" {
   interface Components {
     fCircularButton(
-      inner: D<Content>,
-      disabled?: D<boolean>,
+      inner: Content,
+      disabled?: boolean,
       appearance?: FButtonApperance,
     ): this is {
       $ev: void;

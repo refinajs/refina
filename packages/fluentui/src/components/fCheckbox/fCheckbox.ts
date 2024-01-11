@@ -1,6 +1,6 @@
 import "@refina/fluentui-icons/checkmark.ts";
 import "@refina/fluentui-icons/square.ts";
-import { D, DOMElementComponent, getD, ref } from "refina";
+import { DOMElementComponent, Model, valueOf, ref } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fCheckbox.styles";
@@ -10,9 +10,9 @@ export type FCheckboxState = true | false | "mixed";
 declare module "refina" {
   interface Components {
     fCheckbox(
-      label: D<string>,
-      checked?: D<FCheckboxState>,
-      disabled?: D<boolean>,
+      label: string,
+      checked?: Model<FCheckboxState>,
+      disabled?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -25,15 +25,14 @@ FluentUI.triggerComponents.fCheckbox = function (_) {
     checked = inputRef.current?.node.checked ?? false,
     disabled = false,
   ) => {
-    const checkedValue = getD(checked),
-      disabledValue = getD(disabled);
+    const checkedValue = valueOf(checked);
 
-    styles.root(disabledValue, checkedValue)(_);
+    styles.root(disabled, checkedValue)(_);
     _._span(
       {
         onclick: () => {
           const newState = checkedValue !== true;
-          _.$setD(checked, newState);
+          _.$updateModel(checked, newState);
           this.$fire(newState);
         },
       },

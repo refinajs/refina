@@ -6,7 +6,7 @@ import {
   ComponentMainFunc,
 } from "../component";
 import { AppState } from "../constants";
-import { D, Ref } from "../data";
+import { Model, Ref } from "../data";
 import type { RecvContext } from "./recv";
 import type { UpdateContext } from "./update";
 
@@ -198,13 +198,13 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
   $update: App["update"];
 
   /**
-   * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
+   * Set the value of a model and trigger an `UPDATE` call if the value is changed.
    *
-   * @param d The `D` to set
-   * @param v The value to set
-   * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
+   * @param model The model.
+   * @param v The new value.
+   * @returns Whether the value is changed.
    */
-  $setD: App["setD"];
+  $updateModel: App["updateModel"];
 
   /**
    * The shortcut of `app.permanentData`.
@@ -415,7 +415,7 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
    * @param ckey The unique key of this call in source code.
    * @param content The content to render.
    */
-  $$t(ckey: string, content: D<string | number | boolean>): void;
+  $$t(ckey: string, content: string | number | boolean): void;
 
   /**
    * Process a component.
@@ -462,7 +462,7 @@ export function initializeBaseContext(
   context.$appState = app.state;
   context.$lowlevel = context as unknown as LowlevelContext;
   context.$update = app.update;
-  context.$setD = app.setD;
+  context.$updateModel = app.updateModel;
   context.$permanentData = app.permanentData;
 
   if (import.meta.env.DEV) {

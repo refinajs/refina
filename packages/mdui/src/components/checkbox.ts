@@ -1,4 +1,4 @@
-import { Content, D, HTMLElementComponent, getD, ref } from "refina";
+import { Content, HTMLElementComponent, Model, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 export type CheckboxState = boolean | undefined;
@@ -6,9 +6,9 @@ export type CheckboxState = boolean | undefined;
 declare module "refina" {
   interface Components {
     mdCheckbox(
-      state: D<CheckboxState>,
-      label?: D<Content>,
-      disabled?: D<boolean>,
+      state: Model<CheckboxState>,
+      label?: Content,
+      disabled?: boolean,
     ): this is {
       $ev: CheckboxState;
     };
@@ -17,7 +17,7 @@ declare module "refina" {
 MdUI.triggerComponents.mdCheckbox = function (_) {
   const checkboxRef = ref<HTMLElementComponent<"mdui-checkbox">>();
   return (state, label, disabled = false) => {
-    const stateValue = getD(state);
+    const stateValue = valueOf(state);
     const checked = stateValue;
     const indeterminate = stateValue === undefined;
 
@@ -26,11 +26,11 @@ MdUI.triggerComponents.mdCheckbox = function (_) {
         {
           checked,
           indeterminate,
-          disabled: getD(disabled),
+          disabled,
           onchange: () => {
             const node = checkboxRef.current!.node;
             const newState = node.indeterminate ? undefined : node.checked;
-            _.$setD(state, newState);
+            _.$updateModel(state, newState);
             this.$fire(newState);
           },
         },

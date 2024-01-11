@@ -1,5 +1,4 @@
 import { Context } from "../context";
-import { D, getD } from "../data";
 import { View } from "../view";
 
 /**
@@ -22,12 +21,11 @@ export type Content<Args extends any[] = []> = string | number | View<Args>;
  * @returns The bound content.
  */
 export function bindArgsToContent<Args extends any[]>(
-  content: D<Content<Args>>,
+  content: Content<Args>,
   ...args: Args
 ) {
-  const contentValue = getD(content);
-  if (typeof contentValue === "function") {
-    return (ctx: Context) => contentValue(ctx, ...args);
+  if (typeof content === "function") {
+    return (ctx: Context) => content(ctx, ...args);
   }
-  return contentValue;
+  return content;
 }

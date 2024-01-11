@@ -12,9 +12,9 @@ For instance, you may want to get the value of an input element.
 ## Example: Get the value of an input element
 
 ```ts
-import { d } from "refina";
+import { model } from "refina";
 
-const username = d("");
+const username = model("");
 
 $app.use(Basics)(_ => {
   _.label("Username");
@@ -28,17 +28,17 @@ $app.use(Basics)(_ => {
 
 <BasicInputVue />
 
-## The Data Wrapper
+## The Model
 
-### The `d` Function
+### The `model` Function
 
-Because there is no way to pass an intrinsic value by reference in JavaScript, we have to wrap the value in an object, and the `d` function creates an object of **type `PD`** to wrap the value.
+Because there is no way to pass an intrinsic value by reference in JavaScript, we have to wrap the value in an object, and the `model` function creates a model object to wrap the value.
 
-### Use a Property of an Object as `PD`
+### Use a Property of an Object as a model
 
 Sometimes you may want the input component to read and write a property of an object.
 
-The function `fromProp` can create a `PD` object from a property of an object:
+The function `propModel` can create a model from a property of an object:
 
 ```ts
 import { fromProp } from "refina";
@@ -49,43 +49,35 @@ $app.use(Basics)(_ => {
 });
 ```
 
-### The `D` Type
+### The `Model` Type
 
-The definition of `D` is:
+The definition of `Model` is:
 
 ```ts
-type D<T> = T | PD<T>;
+type Model<T> = T | JustModel<T>;
 ```
 
-Most of the params of Refina components are of type `D<...>`, which means you can pass just the intrinsic value or a `PD` object to the param.
+### The `valueOf` Function
 
-### The `getD` Function
-
-This function can extract the value from a `D` object.
+This function can extract the value from a model.
 
 ```ts
 const intrinsicValue = 1;
-assert(getD(intrinsicValue) === 1);
+assert(valueOf(intrinsicValue) === 1);
 
-const wrappedValue = d(1);
-assert(getD(wrappedValue) === 1);
+const wrappedValue = model(1);
+assert(valueOf(wrappedValue) === 1);
 ```
 
 :::info
 
-If the wrapped value is defined via `d` function, it is of type `PD<T>`, so you don't need to use `getD` function to extract the value. You can access `wrappedValue.value` directly.
+If the wrapped value is defined via `model` function, it is of type `JustModel<T>`, so you don't need to use `valueOf` function to extract the value. You can access `yourModel.value` directly.
 
 :::
 
-### The `_.$setD` Function
+### The `_.$updateModel` Function
 
-Corresponding to `getD` function, this function can set the value of a `D` object.
-
-:::info
-
-There isn't a `setD` function, because a context should be provided to trigger an `UPDATE` call after the value is set.
-
-:::
+Corresponding to `valueOf` function, this function can update the value of a model.
 
 ## Another Way to Get Input Value
 

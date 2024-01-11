@@ -1,4 +1,4 @@
-import { Content, D, DArray, MainElRef, byIndex, getD, ref } from "refina";
+import { Content, MainElRef, Model, byIndex, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./animatedIndicator.styles";
 import "./fTab";
@@ -32,9 +32,9 @@ function getTabRect(tabRef: MainElRef): Rect {
 declare module "refina" {
   interface Components {
     fTabList(
-      selected: D<number>,
-      contents: DArray<Content>,
-      disabled?: DArray<boolean | undefined> | D<boolean>,
+      selected: Model<number>,
+      contents: Content[],
+      disabled?: (boolean | undefined)[] | boolean,
     ): this is {
       $ev: number;
     };
@@ -43,14 +43,10 @@ declare module "refina" {
 FluentUI.triggerComponents.fTabList = function (_) {
   const tabRefs = new Map<number, MainElRef>();
   return (selected, contents, disabled = false) => {
-    const selectedValue = getD(selected),
-      disabledRawValue = getD(disabled);
-    const tabListDisabled =
-      typeof disabledRawValue === "boolean" ? disabledRawValue : false;
+    const selectedValue = valueOf(selected);
+    const tabListDisabled = typeof disabled === "boolean" ? disabled : false;
     const tabDisabled =
-      typeof disabledRawValue === "boolean"
-        ? []
-        : disabledRawValue.map(d => getD(d) ?? false);
+      typeof disabled === "boolean" ? [] : disabled.map(d => d ?? false);
 
     styles.root(tabListDisabled)(_);
     _._div({}, _ =>
@@ -80,7 +76,7 @@ FluentUI.triggerComponents.fTabList = function (_) {
           _.$ref(tabRef) &&
           _.fTab(tabSelected, content, tabDisabled[index], tabSelected)
         ) {
-          _.$setD(selected, index);
+          _.$updateModel(selected, index);
           this.$fire(index);
         }
       }),

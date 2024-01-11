@@ -1,14 +1,14 @@
 import { TextField } from "mdui";
-import { D, HTMLElementComponent, getD, ref } from "refina";
+import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 export type TextFieldVariant = TextField["variant"];
 declare module "refina" {
   interface Components {
     mdTextField(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
       varient?: TextFieldVariant,
     ): this is {
       $ev: string;
@@ -20,13 +20,13 @@ MdUI.triggerComponents.mdTextField = function (_) {
   return (value, label, disabled = false, varient = "filled") => {
     _.$ref(inputRef) &&
       _._mdui_text_field({
-        value: getD(value),
-        label: getD(label),
-        disabled: getD(disabled),
+        value: valueOf(value),
+        label,
+        disabled,
         variant: varient,
         oninput: () => {
           const newValue = inputRef.current!.node.value;
-          _.$setD(value, newValue);
+          _.$updateModel(value, newValue);
           this.$fire(newValue);
         },
       });
@@ -36,9 +36,9 @@ MdUI.triggerComponents.mdTextField = function (_) {
 declare module "refina" {
   interface Components {
     mdOutlinedTextField(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
     ): this is {
       $ev: string;
     };
@@ -52,9 +52,9 @@ MdUI.triggerComponents.mdOutlinedTextField = function (_) {
 declare module "refina" {
   interface Components {
     mdPasswordInput(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
       varient?: TextFieldVariant,
     ): this is {
       $ev: string;
@@ -66,15 +66,15 @@ MdUI.triggerComponents.mdPasswordInput = function (_) {
   return (value, label, disabled = false, varient = "filled") => {
     _.$ref(inputRef) &&
       _._mdui_text_field({
-        value: getD(value),
-        label: getD(label),
-        disabled: getD(disabled),
+        value: valueOf(value),
+        label,
+        disabled,
         variant: varient,
         type: "password",
         togglePassword: true,
         oninput: () => {
           const newValue = inputRef.current!.node.value;
-          _.$setD(value, newValue);
+          _.$updateModel(value, newValue);
           this.$fire(newValue);
         },
       });
@@ -84,9 +84,9 @@ MdUI.triggerComponents.mdPasswordInput = function (_) {
 declare module "refina" {
   interface Components {
     mdOutlinedPasswordInput(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
     ): this is {
       $ev: string;
     };
@@ -103,9 +103,9 @@ declare module "refina" {
       rows: number | [min?: number, max?: number];
     };
     mdTextarea(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
       varient?: TextFieldVariant,
     ): this is {
       $ev: string;
@@ -114,12 +114,7 @@ declare module "refina" {
 }
 MdUI.triggerComponents.mdTextarea = function (_) {
   const inputRef = ref<HTMLElementComponent<"mdui-text-field">>();
-  return (
-    value: D<string>,
-    label?: D<string>,
-    disabled: D<boolean> = false,
-    varient: TextFieldVariant = "filled",
-  ) => {
+  return (value, label, disabled = false, varient = "filled") => {
     const rowsProps = Array.isArray(this.$props.rows)
       ? {
           autosize: true,
@@ -132,14 +127,14 @@ MdUI.triggerComponents.mdTextarea = function (_) {
 
     _.$ref(inputRef) &&
       _._mdui_text_field({
-        value: getD(value),
-        label: getD(label),
-        disabled: getD(disabled),
+        value: valueOf(value),
+        label,
+        disabled,
         variant: varient,
         ...rowsProps,
         oninput: () => {
           const newValue = inputRef.current!.node.value;
-          _.$setD(value, newValue);
+          _.$updateModel(value, newValue);
           this.$fire(newValue);
         },
       });
@@ -149,9 +144,9 @@ MdUI.triggerComponents.mdTextarea = function (_) {
 declare module "refina" {
   interface Components {
     mdOutlinedTextarea(
-      value: D<string>,
-      label?: D<string>,
-      disabled?: D<boolean>,
+      value: Model<string>,
+      label?: string,
+      disabled?: boolean,
     ): this is {
       $ev: string;
     };

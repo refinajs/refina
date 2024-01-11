@@ -1,4 +1,4 @@
-import { D, DOMElementComponent, getD, ref } from "refina";
+import { DOMElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import styles, { sliderCSSVars } from "./fSlider.styles";
 
@@ -13,11 +13,11 @@ function clamp(value: number, min: number, max: number) {
 declare module "refina" {
   interface Components {
     fSlider(
-      value: D<number>,
-      disabled?: D<boolean>,
-      min?: D<number>,
-      max?: D<number>,
-      step?: D<number | undefined>,
+      value: Model<number>,
+      disabled?: boolean,
+      min?: number,
+      max?: number,
+      step?: number | undefined,
     ): this is {
       $ev: number;
     };
@@ -26,45 +26,38 @@ declare module "refina" {
 FluentUI.triggerComponents.fSlider = function (_) {
   const inputRef = ref<DOMElementComponent<"input">>();
   return (value, disabled = false, min = 0, max = 100, step) => {
-    const valueValue = getD(value),
-      disabledValue = getD(disabled),
-      minValue = getD(min),
-      maxValue = getD(max),
-      stepValue = getD(step);
-    styles.root(disabledValue)(_);
+    const modelValue = valueOf(value);
+
+    styles.root(disabled)(_);
     _.$css`
       ${sliderCSSVars.sliderDirectionVar}: 90deg;
       ${
-        stepValue && stepValue > 0
+        step && step > 0
           ? `${sliderCSSVars.sliderStepsPercentVar}: ${
-              (stepValue * 100) / (maxValue - minValue)
+              (step * 100) / (max - min)
             }%;`
           : ""
       }
       ${sliderCSSVars.sliderProgressVar}: ${getPercent(
-        valueValue,
-        minValue,
-        maxValue,
+        modelValue,
+        min,
+        max,
       )}%;`;
     _._div({}, _ => {
       const onChange = () => {
-        const newValue = clamp(
-          Number(inputRef.current!.node.value),
-          minValue,
-          maxValue,
-        );
-        _.$setD(value, newValue);
+        const newValue = clamp(Number(inputRef.current!.node.value), min, max);
+        _.$updateModel(value, newValue);
         this.$fire(newValue);
       };
-      styles.input(disabledValue)(_);
+      styles.input(disabled)(_);
       _.$ref(inputRef) &&
         _._input({
           type: "range",
-          disabled: disabledValue,
-          min: String(minValue),
-          max: String(maxValue),
-          step: String(stepValue),
-          value: String(clamp(valueValue, minValue, maxValue)),
+          disabled: disabled,
+          min: String(min),
+          max: String(max),
+          step: String(step),
+          value: String(clamp(modelValue, min, max)),
           onchange: onChange,
           oninput: onChange,
         });
@@ -72,7 +65,7 @@ FluentUI.triggerComponents.fSlider = function (_) {
       styles.rail(_);
       _._div();
 
-      styles.thumb(disabledValue)(_);
+      styles.thumb(disabled)(_);
       _._div();
     });
   };

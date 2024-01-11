@@ -7,7 +7,7 @@ import type { DOMElementComponent, DOMElementTagNameMap } from "../dom";
  * Commonly used to reference a component.
  *
  * **Note**: The `current` property of the `Ref` object can be `null`,
- *  which is the biggest difference from `PD`.
+ *  which is the biggest difference to a model.
  */
 export interface Ref<T> {
   /**

@@ -29,7 +29,7 @@ The item value type.
 
 ## Param: `items`
 
-**type**: `DReadonlyArray<[value: Value, iconName?: string]><[value: Value, iconName?: string]>`
+**type**: `readonly [value: Value, iconName?: string][]`
 
 The item' values (which is displayed as texts by default) and icon names.
 
@@ -37,7 +37,7 @@ The item' values (which is displayed as texts by default) and icon names.
 
 <Optional/> = `{}`
 
-**type**: `DPartialRecord<Value, Content>`
+**type**: `Partial<Record<Value, Content>>`
 
 By default, the text of each item is the value itself. You can override it by passing a record mapping each value to its content.
 

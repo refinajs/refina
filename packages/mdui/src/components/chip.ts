@@ -1,4 +1,4 @@
-import { Content, D, HTMLElementComponent, getD, ref } from "refina";
+import { Content, HTMLElementComponent, Model, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
@@ -7,14 +7,14 @@ declare module "refina" {
       icon: string;
       endIcon: string;
     };
-    mdChip(inner: D<Content>, disabled?: D<boolean>): void;
+    mdChip(inner: Content, disabled?: boolean): void;
   }
 }
 MdUI.outputComponents.mdChip = function (_) {
   return (inner, disabled = false) => {
     _._mdui_chip(
       {
-        disabled: getD(disabled),
+        disabled,
         icon: this.$props.icon,
         endIcon: this.$props.endIcon,
       },
@@ -29,9 +29,9 @@ declare module "refina" {
       deleteIcon: string;
     };
     mdSelectableChip(
-      selected: D<boolean>,
-      inner: D<Content>,
-      disabled?: D<boolean>,
+      selected: Model<boolean>,
+      inner: Content,
+      disabled?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -44,11 +44,11 @@ MdUI.triggerComponents.mdSelectableChip = function (_) {
       _._mdui_chip(
         {
           selectable: true,
-          selected: getD(selected),
-          disabled: getD(disabled),
+          selected: valueOf(selected),
+          disabled,
           onchange: () => {
             const newSelected = chipRef.current!.node.selected;
-            _.$setD(selected, newSelected);
+            _.$updateModel(selected, newSelected);
             this.$fire(newSelected);
           },
           selectedIcon: this.$props.selectedIcon,
@@ -64,8 +64,8 @@ declare module "refina" {
       selectedIcon: string;
     };
     mdDeletableChip(
-      inner: D<Content>,
-      disabled?: D<boolean>,
+      inner: Content,
+      disabled?: boolean,
     ): this is {
       $ev: void;
     };
@@ -76,7 +76,7 @@ MdUI.triggerComponents.mdDeletableChip = function (_) {
     _._mdui_chip(
       {
         deletable: true,
-        disabled: getD(disabled),
+        disabled,
         deleteIcon: this.$props.deleteIcon,
       },
       inner,

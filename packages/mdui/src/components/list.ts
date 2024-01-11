@@ -1,10 +1,10 @@
-import { D, LoopKey } from "refina";
+import { LoopKey } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdList<T>(
-      data: D<Iterable<T>>,
+      data: Iterable<T>,
       key: LoopKey<T>,
       body: (item: T, index: number) => void,
     ): void;

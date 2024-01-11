@@ -1,27 +1,24 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fLable.styles";
 
 declare module "refina" {
   interface Components {
     fLabel(
-      content: D<Content>,
-      required?: D<Content | boolean>,
-      disabled?: D<boolean>,
+      content: Content,
+      required?: Content | boolean,
+      disabled?: boolean,
     ): void;
   }
 }
 FluentUI.outputComponents.fLabel = function (_) {
   return (content, required = false, disabled = false) => {
-    const requiredValue = getD(required),
-      disabledValue = getD(disabled);
-    const requiredContent =
-      typeof requiredValue === "boolean" ? "*" : requiredValue;
-    styles.root(disabledValue)(_);
+    const requiredContent = typeof required === "boolean" ? "*" : required;
+    styles.root(disabled)(_);
     _._label({}, _ => {
       _._span({}, content);
-      if (requiredValue !== false) {
-        styles.required(disabledValue)(_);
+      if (required !== false) {
+        styles.required(disabled)(_);
         _._span({}, requiredContent);
       }
     });

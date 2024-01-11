@@ -1,9 +1,9 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
-    mdProse(inner: D<Content>): void;
+    mdProse(inner: Content): void;
   }
 }
 MdUI.outputComponents.mdProse = function (_) {

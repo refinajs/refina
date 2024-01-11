@@ -122,7 +122,7 @@ for (const key in data) {
 
 ## The `inner` Parameter
 
-**Type**: `D<Content>`
+**Type**: `Content`
 
 The content of the element. It can be:
 

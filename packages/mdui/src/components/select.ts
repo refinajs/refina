@@ -1,13 +1,11 @@
 import { Select } from "mdui";
 import {
   Content,
-  D,
-  DPartialRecord,
-  DReadonlyArray,
   HTMLElementComponent,
+  Model,
   bySelf,
-  getD,
   ref,
+  valueOf,
 } from "refina";
 import MdUI from "../plugin";
 
@@ -16,10 +14,10 @@ export type SelectVariant = Select["variant"];
 declare module "refina" {
   interface Components {
     mdSelect<Value extends string>(
-      value: D<Value>,
-      options: DReadonlyArray<Value>,
-      disabled?: D<boolean> | DReadonlyArray<boolean>,
-      contentOverride?: DPartialRecord<Value, Content>,
+      value: Model<Value>,
+      options: readonly Value[],
+      disabled?: boolean | boolean[],
+      contentOverride?: Partial<Record<Value, Content>>,
       varient?: SelectVariant,
     ): this is {
       $ev: Value;
@@ -29,27 +27,24 @@ declare module "refina" {
 MdUI.triggerComponents.mdSelect = function (_) {
   const selectRef = ref<HTMLElementComponent<"mdui-select">>();
   return <Value extends string>(
-    value: D<Value>,
-    options: DReadonlyArray<Value>,
-    disabled: D<boolean> | DReadonlyArray<boolean> = false,
-    contentOverride: DPartialRecord<Value, Content> = {},
+    value: Model<Value>,
+    options: Value[],
+    disabled: boolean | boolean[] = false,
+    contentOverride: Partial<Record<Value, Content>> = {},
     varient: SelectVariant = "filled",
   ) => {
-    const contentOverrideValue = getD(contentOverride);
-    const disabledValue = getD(disabled);
-    const groupDisabled = disabledValue === true;
-    const optionsDisabled =
-      typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
+    const groupDisabled = disabled === true;
+    const optionsDisabled = typeof disabled === "boolean" ? [] : disabled;
 
     _.$ref(selectRef) &&
       _._mdui_select(
         {
-          value: getD(value),
+          value: valueOf(value),
           disabled: groupDisabled,
           variant: varient,
           onchange: () => {
             const newValue = selectRef.current!.node.value as Value;
-            _.$setD(value, newValue);
+            _.$updateModel(value, newValue);
             this.$fire(newValue);
           },
         },
@@ -57,10 +52,10 @@ MdUI.triggerComponents.mdSelect = function (_) {
           _.for(options, bySelf, (value, index) =>
             _._mdui_menu_item(
               {
-                value: getD(value),
+                value,
                 disabled: optionsDisabled[index],
               },
-              contentOverrideValue[value] ?? value,
+              contentOverride[value] ?? value,
             ),
           ),
       );
@@ -70,10 +65,10 @@ MdUI.triggerComponents.mdSelect = function (_) {
 declare module "refina" {
   interface Components {
     mdOutlinedSelect<Value extends string>(
-      value: D<Value>,
-      options: DReadonlyArray<Value>,
-      disabled?: D<boolean> | DReadonlyArray<boolean>,
-      contentOverride?: DPartialRecord<Value, Content>,
+      value: Model<Value>,
+      options: readonly Value[],
+      disabled?: boolean | readonly boolean[],
+      contentOverride?: Partial<Record<Value, Content>>,
     ): this is {
       $ev: Value;
     };
@@ -81,10 +76,10 @@ declare module "refina" {
 }
 MdUI.triggerComponents.mdOutlinedSelect = function (_) {
   return <Value extends string>(
-    value: D<Value>,
-    options: DReadonlyArray<Value>,
-    disabled: D<boolean> | DReadonlyArray<boolean> = false,
-    contentOverride: DPartialRecord<Value, Content> = {},
+    value: Model<Value>,
+    options: Value[],
+    disabled: boolean | boolean[] = false,
+    contentOverride: Partial<Record<Value, Content>> = {},
   ) => {
     _.mdSelect(value, options, disabled, contentOverride, "outlined") &&
       this.$fire(_.$ev);

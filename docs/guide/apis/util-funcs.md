@@ -75,8 +75,8 @@ Set the document title.
 **Example**
 
 ```ts {6}
-import { d } from "refina";
-const username = d("");
+import { model } from "refina";
+const username = model("");
 $app.use(Basics)(_ => {
   _.label("Username");
   _.textInput(username, false, "edit me");

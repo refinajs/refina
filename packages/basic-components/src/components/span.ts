@@ -1,9 +1,9 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
-    span(inner?: D<Content>): void;
+    span(inner?: Content): void;
   }
 }
 

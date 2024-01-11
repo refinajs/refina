@@ -1,4 +1,4 @@
-import { Content, D, bindArgsToContent, getD } from "refina";
+import { Content, bindArgsToContent } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
@@ -6,20 +6,16 @@ declare module "refina" {
     MdControlledNavDrawerProps: {
       contained: boolean;
     };
-    mdControlledNavDrawer(
-      open: D<boolean>,
-      inner: D<Content>,
-      modal?: D<boolean>,
-    ): void;
+    mdControlledNavDrawer(open: boolean, inner: Content, modal?: boolean): void;
   }
 }
 MdUI.outputComponents.mdControlledNavDrawer = function (_) {
   return (open, inner, modal = false) => {
-    const modalOptions = getD(modal)
+    const modalOptions = modal
       ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true }
       : {};
     _._mdui_navigation_drawer(
-      { ...modalOptions, open: getD(open), contained: this.$props.contained },
+      { ...modalOptions, open, contained: this.$props.contained },
       inner,
     );
   };
@@ -31,9 +27,9 @@ declare module "refina" {
       contained: boolean;
     };
     mdNavDrawer(
-      trigger: D<Content<[open: (open?: boolean) => void]>>,
-      inner: D<Content<[close: (open?: boolean) => void]>>,
-      modal?: D<boolean>,
+      trigger: Content<[open: (open?: boolean) => void]>,
+      inner: Content<[close: (open?: boolean) => void]>,
+      modal?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -42,9 +38,9 @@ declare module "refina" {
 MdUI.triggerComponents.mdNavDrawer = function (_) {
   let opened = false;
   return (
-    trigger: D<Content<[open: (open?: boolean) => void]>>,
-    inner: D<Content<[close: (open?: boolean) => void]>>,
-    modal: D<boolean> = false,
+    trigger: Content<[open: (open?: boolean) => void]>,
+    inner: Content<[close: (open?: boolean) => void]>,
+    modal: boolean = false,
   ) => {
     _.embed(
       bindArgsToContent(trigger, (open = true) => {

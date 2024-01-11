@@ -1,5 +1,4 @@
 import { ButtonIcon } from "mdui";
-import { D, getD } from "refina";
 import MdUI from "../plugin";
 
 export type ButtonIconVariant = ButtonIcon["variant"];
@@ -7,8 +6,8 @@ export type ButtonIconVariant = ButtonIcon["variant"];
 declare module "refina" {
   interface Components {
     mdIconButton(
-      icon: D<string>,
-      disabled?: D<boolean>,
+      icon: string,
+      disabled?: boolean,
       varient?: ButtonIconVariant,
     ): this is {
       $ev: void;
@@ -18,8 +17,8 @@ declare module "refina" {
 MdUI.triggerComponents.mdIconButton = function (_) {
   return (icon, disabled = false, varient = "standard") => {
     _._mdui_button_icon({
-      icon: getD(icon),
-      disabled: getD(disabled),
+      icon,
+      disabled,
       onclick: this.$fireWith(),
       variant: varient,
     });
@@ -29,8 +28,8 @@ MdUI.triggerComponents.mdIconButton = function (_) {
 declare module "refina" {
   interface Components {
     mdFilledIconButton(
-      icon: D<string>,
-      disabled?: D<boolean>,
+      icon: string,
+      disabled?: boolean,
     ): this is {
       $ev: void;
     };
@@ -44,8 +43,8 @@ MdUI.triggerComponents.mdFilledIconButton = function (_) {
 declare module "refina" {
   interface Components {
     mdTonalIconButton(
-      icon: D<string>,
-      disabled?: D<boolean>,
+      icon: string,
+      disabled?: boolean,
     ): this is {
       $ev: void;
     };
@@ -59,8 +58,8 @@ MdUI.triggerComponents.mdTonalIconButton = function (_) {
 declare module "refina" {
   interface Components {
     mdOutlinedIconButton(
-      icon: D<string>,
-      disabled?: D<boolean>,
+      icon: string,
+      disabled?: boolean,
     ): this is {
       $ev: void;
     };

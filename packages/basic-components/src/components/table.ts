@@ -1,16 +1,16 @@
-import { Content, D, DArray, LoopKey, byIndex, getD } from "refina";
+import { Content, LoopKey, byIndex } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
     table<T>(
-      data: D<Iterable<T>>,
-      head: DArray<Content> | D<Content>,
+      data: Iterable<T>,
+      head: Content[] | Content,
       key: LoopKey<T>,
       row: (item: T, index: number) => void,
     ): void;
-    th(inner: D<Content>): void;
-    td(inner: D<Content>): void;
+    th(inner: Content): void;
+    td(inner: Content): void;
   }
 }
 
@@ -19,13 +19,12 @@ Basics.outputComponents.table = function (_) {
     _._div({}, _ => {
       _._table({}, _ => {
         _._thead({}, _ => {
-          const headValue = getD(head);
-          if (Array.isArray(headValue)) {
-            _.for(headValue, byIndex, item => {
+          if (Array.isArray(head)) {
+            _.for(head, byIndex, item => {
               _._th({}, item);
             });
           } else {
-            _.embed(headValue);
+            _.embed(head);
           }
         });
         _._tbody({}, _ => {

@@ -1,9 +1,9 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
-    mdLayoutMain(inner: D<Content>): void;
+    mdLayoutMain(inner: Content): void;
   }
 }
 MdUI.outputComponents.mdLayoutMain = function (_) {

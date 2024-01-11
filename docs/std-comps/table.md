@@ -30,13 +30,13 @@ The type of the data of one row.
 
 ## Param: `data`
 
-**type**: `D<Iterable<T>>`
+**type**: `Iterable<T>`
 
 The data to render.
 
 ## Param `head`
 
-**type**: `DArray<Content> | D<Content>`
+**type**: `Content[] | Content`
 
 The head of the table.
 

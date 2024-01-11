@@ -1,4 +1,4 @@
-import { Component, Content, D, MainElRef, ref } from "refina";
+import { Component, Content, MainElRef, ref } from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
 import "../fPortal";
@@ -12,7 +12,7 @@ interface VisibleTooltip {
 
 declare module "refina" {
   interface Components {
-    fTooltip(inner: D<Content>, content: D<Content>): void;
+    fTooltip(inner: Content, content: Content): void;
   }
 }
 FluentUI.outputComponents.fTooltip = function (_) {
@@ -23,7 +23,7 @@ FluentUI.outputComponents.fTooltip = function (_) {
     if (!Number.isNaN(timeout)) clearTimeout(timeout);
   };
 
-  return (inner: D<Content>, content: D<Content>) => {
+  return (inner: Content, content: Content) => {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol] as
         | VisibleTooltip

@@ -5,7 +5,6 @@ import {
   ComponentContext,
   ComponentMainFunc,
 } from "../component";
-import { D, getD } from "../data";
 import { Content, DOMElementComponent } from "../dom";
 import {
   ContextFuncs,
@@ -36,7 +35,7 @@ export interface IntrinsicRecvContext<
    * @param ckey The Ckey of the element.
    * @param content The content of the DOM element component.
    */
-  $$processDOMElement(ckey: string, content?: D<Content>): void;
+  $$processDOMElement(ckey: string, content?: Content): void;
 }
 
 /**
@@ -92,7 +91,7 @@ export function initializeRecvContext(
       // The context function is for a HTML or SVG element.
       const [_data, inner, _eventListeners] = args;
 
-      context.$$processDOMElement(ckey, inner as D<Content> | undefined);
+      context.$$processDOMElement(ckey, inner as Content | undefined);
 
       // HTML and SVG element functions do not have a return value.
       return;
@@ -113,8 +112,7 @@ export function initializeRecvContext(
   };
 
   context.$$processDOMElement = (ckey, content) => {
-    const contentValue = getD(content);
-    if (typeof contentValue === "function") {
+    if (typeof content === "function") {
       // The content is a view function.
 
       const el = context.$$currentRefTreeNode[ckey] as
@@ -126,7 +124,7 @@ export function initializeRecvContext(
         context.$$currentRefTreeNode = el.$refTreeNode;
 
         try {
-          contentValue(context._);
+          content(context._);
         } catch (e) {
           context.$app.callHook("onError", e);
         }

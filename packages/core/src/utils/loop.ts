@@ -1,22 +1,25 @@
 import { RefTreeNode } from "../app";
 import { Prelude } from "../constants";
 import { LowlevelContext } from "../context";
-import { D, getD } from "../data";
+
+type AvaliableKeyImpl<T, K extends keyof T> = K extends any
+  ? T[K] extends string | number
+    ? K
+    : never
+  : never;
 
 /**
  * Pick the keys of a object whose values are suitable for use as a key.
  */
-type KeyHelper<T> = {
-  [K in keyof T]: T[K] extends string | number ? K : never;
-}[keyof T];
+type AvaliableKey<T> = AvaliableKeyImpl<T, keyof T>;
 
 /**
  * A function that generates a key for a item in a loop,
  *  or a key of `T` object whose values are suitable for use as a key.
  */
 export type LoopKey<T> =
-  | KeyHelper<T>
-  | ((item: T, index: number) => D<string | number>);
+  | AvaliableKey<T>
+  | ((item: T, index: number) => string | number);
 
 /**
  * Normalize a key generator to a function.
@@ -32,14 +35,14 @@ type LoopRefTreeNodeMap = Record<string, RefTreeNode>;
 
 Prelude.registerFunc("for", function <
   T,
->(this: LowlevelContext, ckey: string, iterable: D<Iterable<T>>, key: LoopKey<T>, body: (item: T, index: number) => void) {
+>(this: LowlevelContext, ckey: string, iterable: Iterable<T>, key: LoopKey<T>, body: (item: T, index: number) => void) {
   this.$$currentRefTreeNode[ckey] ??= {};
   const refTreeNodes = this.$$currentRefTreeNode[ckey] as LoopRefTreeNodeMap;
   const parentRefTreeNode = this.$$currentRefTreeNode;
 
   const keyFunc = normalizeKey(key);
   let i = 0;
-  for (const item of getD(iterable)) {
+  for (const item of iterable) {
     const key = keyFunc(item, i).toString();
 
     refTreeNodes[key] ??= {};
@@ -60,12 +63,12 @@ Prelude.registerFunc("for", function <
 
 Prelude.registerFunc(
   "forTimes",
-  function (ckey: string, times: D<number>, body: (index: number) => void) {
+  function (ckey: string, times: number, body: (index: number) => void) {
     this.$$currentRefTreeNode[ckey] ??= {};
     const refTreeNodes = this.$$currentRefTreeNode[ckey] as LoopRefTreeNodeMap;
     const parentRefTreeNode = this.$$currentRefTreeNode;
 
-    times = getD(times);
+    times = times;
     for (let i = 0; i < times; i++) {
       const key = i.toString();
 
@@ -100,7 +103,7 @@ declare module "../context/base" {
      */
     for: never extends C["enabled"]
       ? <T = unknown>(
-          iterable: D<Iterable<T>>,
+          iterable: Iterable<T>,
           key: LoopKey<T>,
           body: (item: T, index: number) => void,
         ) => void
@@ -122,7 +125,7 @@ declare module "../context/base" {
      * @param body The body of the loop.
      */
     forTimes: never extends C["enabled"]
-      ? (times: D<number>, body: (index: number) => void) => void
+      ? (times: number, body: (index: number) => void) => void
       : never;
   }
 }
@@ -146,4 +149,4 @@ export const byIndex = (_item: unknown, index: number) => index;
  *
  * **Note**: Only array of string or number can use this key generator.
  */
-export const bySelf = (item: D<string | number>) => `${item}`;
+export const bySelf = (item: string | number) => `${item}`;

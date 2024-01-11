@@ -1,4 +1,4 @@
-import { Content, D, DReadonlyArray, byIndex, getD } from "refina";
+import { Content, byIndex } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
@@ -8,8 +8,8 @@ declare module "refina" {
       endIcons: (string | undefined)[];
     };
     mdSegmentedButton(
-      contents: D<Content>[],
-      disabled?: DReadonlyArray<boolean> | D<boolean>,
+      contents: Content[],
+      disabled?: readonly boolean[] | boolean,
     ): this is {
       $ev: number;
     };
@@ -17,13 +17,11 @@ declare module "refina" {
 }
 MdUI.triggerComponents.mdSegmentedButton = function (_) {
   return (
-    contents: D<Content>[],
-    disabled: DReadonlyArray<boolean> | D<boolean> = false,
+    contents: Content[],
+    disabled: readonly boolean[] | boolean = false,
   ) => {
-    const disabledValue = getD(disabled);
-    const groupDisabled = disabledValue === true;
-    const optionsDisabled =
-      typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
+    const groupDisabled = disabled === true;
+    const optionsDisabled = typeof disabled === "boolean" ? [] : disabled;
 
     _._mdui_segmented_button_group(
       {
