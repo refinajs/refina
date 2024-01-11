@@ -9,10 +9,7 @@ export default defineConfig({
   vite: {
     plugins: [
       Refina({
-        include: [
-          /\.[tj]s(\?|$)/,
-          id => /\.vue(\?|$)/.test(id) && !id.includes("node_modules"),
-        ],
+        include: [/snippets/],
         excludeHmr: [/\.vue(\?|$)/],
       }) as any,
     ],
@@ -22,6 +19,14 @@ export default defineConfig({
         helpers: "/helpers",
       },
     },
+    optimizeDeps: {
+      exclude: ["@refina/repl"],
+    },
+    server: {
+      fs: {
+        allow: ["../../../.."],
+      },
+    },
   },
   themeConfig: {
     logo: "/logo.svg",
@@ -29,6 +34,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Guide", link: "/guide/introduction" },
+      { text: "Tutorial", link: "/tutorial/" },
       { text: "Components", link: "/std-comps/introduction" },
       { text: "Playground", link: "/misc/playground" },
       { text: "Examples", link: "https://gallery.refina.vercel.app" },
