@@ -1,10 +1,10 @@
-import { D, LoopKey } from "refina";
+import { LoopKey } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
     ol<T>(
-      data: D<Iterable<T>>,
+      data: Iterable<T>,
       key: LoopKey<T>,
       itemView: (item: T, index: number) => void,
     ): void;

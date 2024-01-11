@@ -1,10 +1,10 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./panel.styles";
 
 declare module "refina" {
   interface Components {
-    fAccordionPanel(inner: D<Content>): void;
+    fAccordionPanel(inner: Content): void;
   }
 }
 FluentUI.outputComponents.fAccordionPanel = function (_) {

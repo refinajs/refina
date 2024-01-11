@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import Basics from "@refina/basic-components";
-import { $app, d } from "refina";
+import { $app, model } from "refina";
 import logo from "../assets/github-mark-white.svg";
 
 function login() {
@@ -18,8 +18,8 @@ function login() {
   }, 1000);
 }
 
-const username = d("");
-const password = d("");
+const username = model("");
+const password = model("");
 
 let loading = false,
   msgType = "",

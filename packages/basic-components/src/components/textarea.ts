@@ -1,12 +1,12 @@
-import { D, DOMElementComponent, getD, ref } from "refina";
+import { DOMElementComponent, Model, valueOf, ref } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
     textarea(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: string;
     };
@@ -18,12 +18,12 @@ Basics.triggerComponents.textarea = function (_) {
   return (value, disabled, placeholder) => {
     _.$ref(inputRef) &&
       _._textarea({
-        disabled: getD(disabled),
-        placeholder: getD(placeholder),
-        value: getD(value),
+        disabled,
+        placeholder,
+        value: valueOf(value),
         oninput: () => {
           const newValue = inputRef.current!.node.value;
-          _.$setD(value, newValue);
+          _.$updateModel(value, newValue);
           this.$fire(newValue);
         },
       });

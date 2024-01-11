@@ -1,4 +1,4 @@
-import { Content, D, HTMLElementComponent, getD, ref } from "refina";
+import { Content, HTMLElementComponent, ref } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
@@ -7,9 +7,9 @@ declare module "refina" {
       icon: string;
     };
     mdCollapse(
-      header: D<Content>,
-      body: D<Content>,
-      disabled?: D<boolean>,
+      header: Content,
+      body: Content,
+      disabled?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -21,7 +21,7 @@ MdUI.triggerComponents.mdCollapse = function (_) {
     _.$ref(collapseRef) &&
       _._mdui_collapse(
         {
-          disabled: getD(disabled),
+          disabled,
           accordion: true,
           onchange: () => {
             this.$fire(

@@ -1,4 +1,4 @@
-import { D, HTMLElementComponent, getD, ref } from "refina";
+import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./input.styles";
 import { InputAppearance } from "./input.types";
@@ -6,9 +6,9 @@ import { InputAppearance } from "./input.types";
 declare module "refina" {
   interface Components {
     fInput<T>(
-      value: D<T>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<T>,
+      disabled?: boolean,
+      placeholder?: string,
       type?: string,
       appearance?: InputAppearance,
       stringifier?: (v: T) => string,
@@ -29,11 +29,7 @@ FluentUI.triggerComponents.fInput = function (_) {
     stringifier = v => `${v}`,
     parseValue = v => v as any,
   ) => {
-    const valueValue = getD(value),
-      disabledValue = getD(disabled),
-      placeholderValue = getD(placeholder);
-
-    styles.root(appearance, disabledValue, false)(_);
+    styles.root(appearance, disabled, false)(_);
     _._span(
       {
         onclick: () => {
@@ -41,16 +37,16 @@ FluentUI.triggerComponents.fInput = function (_) {
         },
       },
       _ => {
-        styles.input(disabledValue)(_);
+        styles.input(disabled)(_);
         _.$ref(inputRef) &&
           _._input({
             type,
-            value: stringifier(valueValue),
-            disabled: disabledValue,
-            placeholder: placeholderValue,
+            value: stringifier(valueOf(value)),
+            disabled: disabled,
+            placeholder: placeholder,
             oninput: () => {
               const newValue = parseValue(inputRef.current!.node.value);
-              _.$setD(value, newValue);
+              _.$updateModel(value, newValue);
               this.$fire(newValue);
             },
           });
@@ -62,9 +58,9 @@ FluentUI.triggerComponents.fInput = function (_) {
 declare module "refina" {
   interface Components {
     fNumberInput(
-      value: D<number>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<number>,
+      disabled?: boolean,
+      placeholder?: string,
       appearance?: InputAppearance,
     ): this is {
       $ev: number;
@@ -87,9 +83,9 @@ FluentUI.triggerComponents.fNumberInput = function (_) {
 declare module "refina" {
   interface Components {
     fPasswordInput(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
       appearance?: InputAppearance,
     ): this is {
       $ev: string;
@@ -105,9 +101,9 @@ FluentUI.triggerComponents.fPasswordInput = function (_) {
 declare module "refina" {
   interface Components {
     fUnderlineInput(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
       type?: string,
     ): this is {
       $ev: string;
@@ -123,9 +119,9 @@ FluentUI.triggerComponents.fUnderlineInput = function (_) {
 declare module "refina" {
   interface Components {
     fUnderlineNumberInput(
-      value: D<number>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<number>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: number;
     };
@@ -140,9 +136,9 @@ FluentUI.triggerComponents.fUnderlineNumberInput = function (_) {
 declare module "refina" {
   interface Components {
     fUnderlinePasswordInput(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: string;
     };

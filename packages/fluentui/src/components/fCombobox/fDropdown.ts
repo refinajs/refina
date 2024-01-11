@@ -2,13 +2,12 @@ import * as keys from "@fluentui/keyboard-keys";
 import "@refina/fluentui-icons/checkmark.ts";
 import "@refina/fluentui-icons/chevronDown.ts";
 import {
-  D,
-  DArray,
   DOMElementComponent,
   HTMLElementComponent,
+  Model,
   bySelf,
-  getD,
   ref,
+  valueOf,
 } from "refina";
 import FluentUI from "../../plugin";
 import "../../positioning";
@@ -141,10 +140,10 @@ function getIndexFromAction(
 declare module "refina" {
   interface Components {
     fDropdown<OptionValue extends string>(
-      selected: D<OptionValue | "">,
-      options: DArray<OptionValue>,
-      disabled?: D<boolean | D<boolean>[]>,
-      placeholder?: D<string>,
+      selected: Model<OptionValue | "">,
+      options: OptionValue[],
+      disabled?: boolean | boolean[],
+      placeholder?: string,
       appearance?: DropdownAppearance,
     ): this is {
       $ev: OptionValue;
@@ -166,17 +165,13 @@ FluentUI.triggerComponents.fDropdown = function (_) {
     placeholder,
     appearance = "outline",
   ) => {
-    const selectedValue = getD(selected),
-      optionsValue = getD(options),
-      disabledValue = getD(disabled),
-      placeholderValue = getD(placeholder);
+    const selectedValue = valueOf(selected);
 
-    const rootDisabled =
-      typeof disabledValue === "boolean" ? disabledValue : false;
+    const rootDisabled = typeof disabled === "boolean" ? disabled : false;
     const disabledOptions =
-      typeof disabledValue === "boolean"
+      typeof disabled === "boolean"
         ? new Set<number>()
-        : new Set(disabledValue.map((v, i) => (getD(v) ? i : -1)));
+        : new Set(disabled.map((v, i) => (v ? i : -1)));
 
     const rootRef = ref<HTMLElementComponent<"div">>();
     const { targetRef, containerRef } = _.usePositioning(
@@ -207,8 +202,8 @@ FluentUI.triggerComponents.fDropdown = function (_) {
       if (index === -1 || rootDisabled || disabledOptions.has(index)) {
         return;
       }
-      const option = getD(optionsValue[index]);
-      _.$setD(selected, option);
+      const option = options[index];
+      _.$updateModel(selected, option);
       this.$fire(option);
     };
 
@@ -238,7 +233,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
               },
               onkeydown: ev => {
                 const action = getDropdownActionFromKey(ev, open);
-                const maxIndex = optionsValue.length - 1;
+                const maxIndex = options.length - 1;
                 let newIndex = activeIndex;
 
                 switch (action) {
@@ -287,9 +282,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
               },
             },
             _ => {
-              _.t(
-                selectedValue === "" ? placeholderValue ?? "" : selectedValue,
-              );
+              _.t(selectedValue === "" ? placeholder ?? "" : selectedValue);
 
               dropdownStyles.expandIcon(rootDisabled)(_);
               _._span({}, _ => _.fiChevronDownRegular());
@@ -317,7 +310,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                   },
                   onkeydown: ev => {
                     const action = getDropdownActionFromKey(ev, open);
-                    const maxIndex = optionsValue.length - 1;
+                    const maxIndex = options.length - 1;
                     let newIndex = activeIndex;
 
                     switch (action) {
@@ -344,9 +337,8 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                 },
                 _ =>
                   _.for(options, bySelf, (option, index) => {
-                    const optionValue = getD(option);
                     const active = index === activeIndex;
-                    const selected = optionValue === selectedValue;
+                    const selected = option === selectedValue;
                     const optionDisabled = disabledOptions.has(index);
                     optionStyles.root(
                       active,
@@ -374,7 +366,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                           false,
                         )(_);
                         _.fiCheckmarkFilled();
-                        _.t(optionValue);
+                        _.t(option);
                       },
                     );
                   }),
@@ -388,10 +380,10 @@ FluentUI.triggerComponents.fDropdown = function (_) {
 declare module "refina" {
   interface Components {
     fUnderlineDropdown<OptionValue extends string>(
-      selected: D<OptionValue | "">,
-      options: DArray<OptionValue>,
-      disabled?: D<boolean | D<boolean>[]>,
-      placeholder?: D<string>,
+      selected: Model<OptionValue | "">,
+      options: OptionValue[],
+      disabled?: boolean | boolean[],
+      placeholder?: string,
     ): this is {
       $ev: OptionValue;
     };

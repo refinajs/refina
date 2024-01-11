@@ -1,4 +1,4 @@
-import { D, HTMLElementComponent, getD, ref } from "refina";
+import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTextarea.styles";
 import { FTextareaAppearance, FTextareaResize } from "./fTextarea.types";
@@ -6,10 +6,10 @@ import { FTextareaAppearance, FTextareaResize } from "./fTextarea.types";
 declare module "refina" {
   interface Components {
     fTextarea(
-      value?: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
-      resize?: D<FTextareaResize>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
+      resize?: FTextareaResize,
       appearance?: FTextareaAppearance,
     ): this is {
       $ev: string;
@@ -25,25 +25,22 @@ FluentUI.triggerComponents.fTextarea = function (_) {
     resize = "none",
     appearance = "outline",
   ) => {
-    const disabledValue = getD(disabled),
-      resizeValue = getD(resize);
-
     styles.root(
-      disabledValue,
+      disabled,
       appearance.startsWith("filled"),
       false,
       appearance,
     )(_);
     _._span({}, _ => {
-      styles.textarea(disabledValue, resizeValue)(_);
+      styles.textarea(disabled, resize)(_);
       _.$ref(inputRef) &&
         _._textarea({
-          value: getD(value),
-          disabled: disabledValue,
-          placeholder: getD(placeholder),
+          value: valueOf(value),
+          disabled: disabled,
+          placeholder,
           oninput: () => {
             const newVal = inputRef.current!.node.value;
-            _.$setD(value, newVal);
+            _.$updateModel(value, newVal);
             this.$fire(newVal);
           },
         });

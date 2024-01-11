@@ -1,4 +1,4 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import "./fTabList";
 import styles from "./fTabs.styles";
@@ -19,9 +19,7 @@ type RepeatedTuple<T extends readonly any[]> =
 
 declare module "refina" {
   interface Components {
-    fTabs(
-      ...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>
-    ): this is {
+    fTabs(...tabs: RepeatedTuple<[name: string, content: Content]>): this is {
       $ev: string;
     };
   }
@@ -30,10 +28,10 @@ FluentUI.triggerComponents.fTabs = function (_) {
   let activeTab: string;
   return (...nameAndContents) => {
     const names: string[] = [],
-      contents: D<Content>[] = [];
+      contents: Content[] = [];
     for (let i = 0; i < nameAndContents.length; i += 2) {
-      names.push(getD(nameAndContents[i]) as string);
-      contents.push(nameAndContents[i + 1] as D<Content>);
+      names.push(nameAndContents[i] as string);
+      contents.push(nameAndContents[i + 1] as Content);
     }
 
     activeTab ??= nameAndContents[0] as string;

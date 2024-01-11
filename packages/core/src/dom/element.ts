@@ -1,6 +1,5 @@
 import { RefTreeNode } from "../app";
 import { ContextState } from "../context";
-import { D } from "../data";
 import { Content } from "./content";
 import { DOMNodeComponent, MaybeChildNode } from "./node";
 
@@ -425,7 +424,7 @@ export type HTMLElementFuncs<C extends ContextState> = {
   [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: DOMElementComponent<E> extends C["enabled"]
     ? (
         data?: Partial<HTMLElementTagNameMap[E]>,
-        inner?: D<Content>,
+        inner?: Content,
         eventListeners?: DOMElementEventListenersInfoRaw<E>,
       ) => void
     : never;
@@ -437,7 +436,7 @@ export type HTMLElementFuncs<C extends ContextState> = {
  */
 export type SVGElementFuncData = Record<
   string,
-  D<undefined | string | number | ((...args: any) => any)>
+  undefined | string | number | ((...args: any) => any)
 >;
 
 /**
@@ -479,7 +478,7 @@ export type SVGElementFuncs<C extends ContextState> = {
   [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C["enabled"]
     ? (
         data?: SVGElementFuncData,
-        inner?: D<Content>,
+        inner?: Content,
         eventListeners?: DOMElementEventListenersInfoRaw<E>,
       ) => void
     : never;

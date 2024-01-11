@@ -40,9 +40,9 @@ Call the method to trigger an `UPDATE` call.
 
 Equivalent to `_.$app.update`.
 
-## `_.$setD`
+## `_.$updateModel`
 
-Set the value of a `D` object and trigger an `UPDATE` call if the value is changed.
+Update the value of a model and trigger an `UPDATE` call if the value is changed.
 
 ## `_.$ev`
 

@@ -1,24 +1,24 @@
 import { Prelude } from "../constants";
 import { LowlevelContext } from "../context";
-import { PD, d } from "../data";
+import { JustModel, model } from "../data";
 
 declare module "../context/base" {
   interface ContextFuncs<C extends ContextState> {
     /**
-     * Create a `PD` object.
+     * Create a model.
      *
      * @param init The initial value.
      */
-    var<T>(init: T): PD<T>;
+    useModel<T>(init: T): JustModel<T>;
   }
 }
 
-Prelude.registerFunc("var", function <
+Prelude.registerFunc("useModel", function <
   T,
 >(this: LowlevelContext, ckey: string, init: T) {
   const refTreeNode = this.$$currentRefTreeNode;
   if (!refTreeNode[ckey]) {
-    refTreeNode[ckey] = d(init);
+    refTreeNode[ckey] = model(init);
   }
-  return refTreeNode[ckey] as PD<T>;
+  return refTreeNode[ckey] as JustModel<T>;
 });

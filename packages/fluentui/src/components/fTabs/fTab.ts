@@ -1,13 +1,13 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fTab.styles";
 
 declare module "refina" {
   interface Components {
     fTab(
-      selected: D<boolean>,
-      content: D<Content>,
-      disabled?: D<boolean>,
+      selected: boolean,
+      content: Content,
+      disabled?: boolean,
       animating?: boolean,
     ): this is {
       $ev: void;
@@ -16,13 +16,11 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fTab = function (_) {
   return (selected, content, disabled = false, animating = false) => {
-    const selectedValue = getD(selected),
-      disabledValue = getD(disabled);
-    styles.root(disabledValue, selectedValue, animating, false)(_);
+    styles.root(disabled, selected, animating, false)(_);
     _._button(
       {
         onclick: this.$fireWith(),
-        disabled: disabledValue,
+        disabled: disabled,
       },
       _ => {
         styles.content(false, false)(_);

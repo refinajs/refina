@@ -4,7 +4,7 @@ import FluentUI, {
   createDarkTheme,
   createLightTheme,
 } from "@refina/fluentui";
-import { $app, byIndex, d, getD } from "refina";
+import { $app, byIndex, model, valueOf } from "refina";
 
 const myNewTheme: BrandVariants = {
   10: "#020305",
@@ -33,12 +33,12 @@ const lightTheme: Theme = {
   ...createLightTheme(myNewTheme),
 };
 
-const switchTest = d(true);
-const checkboxSources = [d(false), d(false), d(true), d(false)];
-const sliderTest = d(5);
-const dropdownTest = d("");
-const textInputTest = d("");
-const numberInputTest = d(NaN);
+const switchTest = model(true);
+const checkboxSources = [model(false), model(false), model(true), model(false)];
+const sliderTest = model(5);
+const dropdownTest = model("");
+const textInputTest = model("");
+const numberInputTest = model(NaN);
 
 $app.use(
   FluentUI,
@@ -59,7 +59,7 @@ $app.use(
     _.fCheckbox(`Checkbox ${index}`, source),
   );
   _._br();
-  const sourcesSet = new Set(checkboxSources.map(getD));
+  const sourcesSet = new Set(checkboxSources.map(valueOf));
   const mixedState = sourcesSet.has(true)
     ? sourcesSet.has(false)
       ? "mixed"

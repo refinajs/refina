@@ -1,5 +1,5 @@
 import MagicString, { SourceMapOptions } from "magic-string";
-import patterns from "./patterns";
+import patterns from "./patterns.js";
 
 type CtxFuncCall = (
   | {

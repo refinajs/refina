@@ -1,11 +1,11 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdTooltip(
-      text: D<string>,
-      inner: D<Content>,
+      text: string,
+      inner: Content,
     ): this is {
       $ev: boolean;
     };
@@ -15,7 +15,7 @@ MdUI.triggerComponents.mdTooltip = function (_) {
   return (text, inner) => {
     _._mdui_tooltip(
       {
-        content: getD(text),
+        content: text,
       },
       inner,
       {

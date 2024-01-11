@@ -1,14 +1,14 @@
 import "@refina/fluentui-icons/circle.ts";
-import { D, DOMElementComponent, getD, ref } from "refina";
+import { DOMElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fSwitch.styles";
 
 declare module "refina" {
   interface Components {
     fSwitch(
-      label: D<string>,
-      state: D<boolean>,
-      disabled?: D<boolean>,
+      label: string,
+      state: Model<boolean>,
+      disabled?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -17,15 +17,15 @@ declare module "refina" {
 FluentUI.triggerComponents.fSwitch = function (_) {
   const inputRef = ref<DOMElementComponent<"input">>();
   return (label, state, disabled = false) => {
-    const stateValue = getD(state),
-      disabledValue = getD(disabled);
+    const stateValue = valueOf(state);
+
     styles.root(_);
     _._div(
       {
         onclick: () => {
-          if (!disabledValue) {
+          if (!disabled) {
             const newState = !stateValue;
-            _.$setD(state, newState);
+            _.$updateModel(state, newState);
             this.$fire(newState);
           }
         },
@@ -35,7 +35,7 @@ FluentUI.triggerComponents.fSwitch = function (_) {
         _.$ref(inputRef) &&
           _._input({
             type: "checkbox",
-            disabled: disabledValue,
+            disabled: disabled,
             checked: stateValue,
           });
         styles.indicator(_);
