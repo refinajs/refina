@@ -1,6 +1,6 @@
 {
   "name": "@refina/bundles",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "The bundled version of Refina libs.",
   "keywords": [
     "refina",
@@ -15,8 +15,8 @@
     "./*": "./dist/*"
   },
   "scripts": {
-    "build": "tsx ./bundle.ts",
-    "check": "tsc --noEmit",
+    "dev": "vite",
+    "build": "vite build",
     "prepublishOnly": "npm run build"
   },
   "author": "_Kerman",
@@ -28,14 +28,9 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "devDependencies": {
-    "@nodelib/fs.walk": "^2.0.0",
-    "@refina/transformer": "workspace:^",
     "@types/node": "^20.6.5",
-    "consola": "^3.2.3",
-    "rimraf": "^5.0.5",
     "terser": "^5.26.0",
-    "tsup": "^7.2.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5.2.2"
+    "vite": "^4.4.8",
+    "vite-plugin-refina": "workspace:^"
   }
 }
