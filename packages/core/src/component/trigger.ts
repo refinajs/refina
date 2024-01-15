@@ -1,12 +1,12 @@
-import { IntrinsicRecvContext, LowlevelContext } from "../context";
+import { IntrinsicBaseContext, IntrinsicRecvContext } from "../context";
 import {
   Component,
   ComponentContext,
-  ComponentExposed,
   ComponentExposedKey,
   ComponentProps,
   ComponentPropsKey,
   Components,
+  createComponentDefiner,
 } from "./component";
 
 /**
@@ -64,7 +64,9 @@ export type TriggerComponentEvent<N extends TriggerComponentName> =
 /**
  * The factory function of a trigger component.
  */
-export type TriggerComponentFactory<N extends TriggerComponentName> = (
+export type TriggerComponentFactory<
+  N extends TriggerComponentName = TriggerComponentName,
+> = (
   this: TriggerComponent<TriggerComponentEvent<N>, ComponentProps<N>>,
   _: ComponentContext<N>,
 ) => Components[N];
@@ -82,11 +84,9 @@ export type TriggerComponentFactoryMap = {
  * @param ctor The component class constructor.
  * @returns The context function.
  */
-export function createTriggerComponentFunc(
-  factory: TriggerComponentFactory<TriggerComponentName>,
-) {
+export function createTriggerComponentFunc(factory: TriggerComponentFactory) {
   return function (
-    this: LowlevelContext,
+    this: IntrinsicBaseContext,
     ckey: string,
     ...args: unknown[]
   ): boolean {
@@ -107,6 +107,15 @@ export function createTriggerComponentFunc(
     }
   };
 }
+
+/**
+ * Define a trigger component.
+ *
+ * @param factory The factory function.
+ */
+export const $defineTrigger = createComponentDefiner(
+  createTriggerComponentFunc,
+);
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {

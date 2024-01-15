@@ -120,7 +120,7 @@ export type ToRealContextFunc<
  *
  * **Note**: The type is not precise for performance reasons in type checking.
  */
-export type RealContextFuncs<Ctx = LowlevelContext> = Record<
+export type RealContextFuncs<Ctx = IntrinsicBaseContext> = Record<
   string,
   (this: Ctx, ckey: string, ...args: unknown[]) => unknown
 >;
@@ -148,7 +148,9 @@ export type EnabledProps<C extends ContextState> = C["mode"] extends "build"
  *  Use `ToFullContext` to add context funcs to the context,
  *  so that users can call them.
  */
-export interface IntrinsicBaseContext<CS extends ContextState> {
+export interface IntrinsicBaseContext<
+  CS extends ContextState = InitialContextState,
+> {
   /**
    * The app instance of this context.
    */
@@ -389,12 +391,12 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
    * // After transformation
    * _.$$("_div", "E-3", {}, "Content");
    * ```
-   * @param funcName The name of the context function.
    * @param ckey The unique key of this call in source code.
+   * @param funcName The name of the context function.
    * @param args The arguments of the context function.
    * @returns The return value of the context function.
    */
-  $$(funcName: string, ckey: string, ...args: unknown[]): unknown;
+  $$c(ckey: string, funcName: string, ...args: unknown[]): unknown;
 
   /**
    * The transformed `_.t` calls.
@@ -418,6 +420,35 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
   $$t(ckey: string, content: string | number | boolean): void;
 
   /**
+   * The transformed `_(...)` calls.
+   *
+   * A unique key is generated for each call in source code,
+   *  and passed to the `ckey` parameter of this function.
+   *
+   * @example
+   * ```ts
+   * // Before transformation
+   * _("$cls")
+   * _("_div")
+   * _(myComponent)
+   *
+   * // After transformation
+   * _.$$d("E-3", "$cls")
+   * _.$$d("E-4", "_div")
+   * _.$$d("E-5", myComponent)
+   * ```
+   * @param ckey The unique key of this call in source code.
+   * @param name The name of the context function.
+   * @param callee The called function as a context function.
+   * @returns The curresponding context property or context function.
+   */
+  $$d<K extends keyof this["$lowlevel"]>(
+    ckey: string,
+    name: K,
+  ): this["$lowlevel"][K];
+  $$d<V>(ckey: string, callee: (this: this, ckey: string) => V): V;
+
+  /**
    * Process a component.
    *
    * @param ckey The Ckey of the component.
@@ -434,13 +465,19 @@ export interface IntrinsicBaseContext<CS extends ContextState> {
   ): T;
 }
 
+interface ContextDirectCall {
+  <V>(callee: (this: IntrinsicBaseContext, ckey: string) => V): V;
+  <K extends keyof this>(name: K): this[K];
+}
+
 /**
  * The full context type, with context funcs.
  */
 export type Context<CS extends ContextState = InitialContextState> = Readonly<
   Omit<IntrinsicBaseContext<CS>, `$$${string}`>
 > &
-  ContextFuncs<CS>;
+  ContextFuncs<CS> &
+  ContextDirectCall;
 
 /**
  * The full context type, with context funcs and lowlevel APIs.
@@ -453,10 +490,7 @@ export type LowlevelContext<CS extends ContextState = InitialContextState> =
  * @param context The context to initialize.
  * @param app The app instance.
  */
-export function initializeBaseContext(
-  context: IntrinsicBaseContext<InitialContextState>,
-  app: App,
-) {
+export function initializeBaseContext(context: IntrinsicBaseContext, app: App) {
   context._ = context as unknown as Context;
   context.$app = app;
   context.$appState = app.state;
@@ -491,4 +525,38 @@ export function initializeBaseContext(
   context.$root = app.root;
   context.$body = app.body;
   context.$window = app.window;
+
+  context.$$d = (
+    ckey: string,
+    nameOrCallee:
+      | keyof LowlevelContext
+      | ((this: IntrinsicBaseContext, ckey: string) => unknown),
+  ) => {
+    if (typeof nameOrCallee === "function") {
+      return nameOrCallee.call(context, ckey);
+    } else if (
+      typeof nameOrCallee === "symbol" ||
+      String(nameOrCallee)[0] === "$"
+    ) {
+      const member = context[nameOrCallee as keyof typeof context];
+      if (typeof member === "function") {
+        return member.bind(context);
+      } else {
+        return member;
+      }
+    } else if (nameOrCallee === "t") {
+      return (...args: any) => {
+        context.$$t(
+          ckey,
+          Array.isArray(args[0])
+            ? String.raw({ raw: args[0] }, ...args.slice(1))
+            : args[0],
+        );
+      };
+    } else {
+      return (...args: unknown[]) => {
+        context.$$c(ckey, nameOrCallee, ...args);
+      };
+    }
+  };
 }

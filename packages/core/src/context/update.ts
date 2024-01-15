@@ -259,7 +259,7 @@ export function initializeUpdateContext(
     }
   };
 
-  context.$$ = (funcName, ckey, ...args) => {
+  context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
       const [data, inner, eventListeners] = args;

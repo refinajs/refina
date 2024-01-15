@@ -14,6 +14,7 @@ import {
   RealContextFuncs,
   initializeBaseContext,
 } from "./base";
+
 export interface IntrinsicRecvContext<
   CS extends ContextState = InitialContextState,
 > extends IntrinsicBaseContext<CS> {
@@ -82,7 +83,7 @@ export function initializeRecvContext(
 
   context.$$assertEmpty = () => {};
 
-  context.$$ = (funcName, ckey, ...args) => {
+  context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       if (context.$received) {
         return;

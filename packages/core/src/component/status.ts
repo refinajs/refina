@@ -1,4 +1,4 @@
-import { Context, LowlevelContext } from "../context";
+import { Context, IntrinsicBaseContext } from "../context";
 import {
   Component,
   ComponentContext,
@@ -7,6 +7,7 @@ import {
   ComponentProps,
   ComponentPropsKey,
   Components,
+  createComponentDefiner,
 } from "./component";
 /**
  * The base class of all status components.
@@ -59,7 +60,9 @@ export type StatusComponentStatus<N extends StatusComponentName> =
 /**
  * The factory function of a status component.
  */
-export type StatusComponentFactory<N extends StatusComponentName> = (
+export type StatusComponentFactory<
+  N extends StatusComponentName = StatusComponentName,
+> = (
   this: StatusComponent<StatusComponentStatus<N>, ComponentProps<N>>,
   _: ComponentContext<N>,
 ) => (...args: Parameters<Components[N]>) => void;
@@ -76,11 +79,9 @@ export type StatusComponentFactoryMap = {
  *
  * @returns The context function.
  */
-export function createStatusComponentFunc(
-  factory: StatusComponentFactory<StatusComponentName>,
-) {
+export function createStatusComponentFunc(factory: StatusComponentFactory) {
   return function (
-    this: LowlevelContext,
+    this: IntrinsicBaseContext,
     ckey: string,
     ...args: unknown[]
   ): unknown {
@@ -98,6 +99,13 @@ export function createStatusComponentFunc(
     return component.$status;
   };
 }
+
+/**
+ * Define a status component.
+ *
+ * @param factory The factory function.
+ */
+export const $defineStatus = createComponentDefiner(createStatusComponentFunc);
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {
