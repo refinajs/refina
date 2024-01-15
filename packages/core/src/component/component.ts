@@ -3,7 +3,9 @@ import {
   Context,
   ContextState,
   InitialContextState,
+  IntrinsicBaseContext,
   LowlevelContext,
+  RealContextFuncs,
 } from "../context";
 import { DOMElementComponent } from "../dom";
 
@@ -161,6 +163,23 @@ type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
 export type ComponentRefTypeMap = UnionToIntersection<
   ComponentRefTypeRawMap[keyof ComponentRefTypeRawMap]
 >;
+
+/**
+ * Create the definer of one kind of components.
+ *
+ * @param funcCreator The function to create the context function from the factory.
+ * @returns The definer function.
+ */
+export function createComponentDefiner<F>(
+  funcCreator: (factory: F) => RealContextFuncs[string],
+) {
+  return (factory: F) => {
+    const func = funcCreator(factory);
+    return function (this: IntrinsicBaseContext, ckey: string) {
+      return (...args: unknown[]) => func.call(this, ckey, ...args);
+    };
+  };
+}
 
 // Add component functions to the context.
 declare module "../context/base" {

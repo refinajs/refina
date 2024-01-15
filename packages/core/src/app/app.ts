@@ -1,8 +1,9 @@
 import { AppState } from "../constants";
 import {
+  Context,
+  IntrinsicBaseContext,
   IntrinsicRecvContext,
   IntrinsicUpdateContext,
-  LowlevelContext,
   RealContextFuncs,
   initializeRecvContext,
   initializeUpdateContext,
@@ -133,7 +134,7 @@ export class App {
   /**
    * The context of the app.
    */
-  readonly context = {} as unknown as LowlevelContext;
+  readonly context = {} as unknown as IntrinsicBaseContext;
 
   /**
    * Each event in this queue requires a later `RECV` call.
@@ -254,7 +255,7 @@ export class App {
   protected execMain() {
     try {
       this.callHook("beforeMain");
-      this.main(this.context);
+      this.main(this.context as unknown as Context);
       if (import.meta.env.DEV) {
         this.context.$$assertEmpty();
         if (window.__REFINA_HMR__) {

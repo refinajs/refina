@@ -1,4 +1,4 @@
-import { LowlevelContext } from "../context";
+import { IntrinsicBaseContext } from "../context";
 import {
   Component,
   ComponentContext,
@@ -6,6 +6,7 @@ import {
   ComponentProps,
   ComponentPropsKey,
   Components,
+  createComponentDefiner,
 } from "./component";
 
 /**
@@ -30,7 +31,9 @@ export type OutputComponentName = {
 /**
  * The factory function of an output component.
  */
-export type OutputComponentFactory<N extends OutputComponentName> = (
+export type OutputComponentFactory<
+  N extends OutputComponentName = OutputComponentName,
+> = (
   this: OutputComponent<ComponentProps<N>>,
   _: ComponentContext<N>,
 ) => Components[N];
@@ -48,17 +51,22 @@ export type OutputComponentFactoryMap = {
  * @param ctor The component class.
  * @returns The context function.
  */
-export function createOutputComponentFunc(
-  factory: OutputComponentFactory<OutputComponentName>,
-) {
+export function createOutputComponentFunc(factory: OutputComponentFactory) {
   return function (
-    this: LowlevelContext,
+    this: IntrinsicBaseContext,
     ckey: string,
     ...args: unknown[]
   ): void {
     this.$$processComponent(ckey, OutputComponent, factory, args);
   };
 }
+
+/**
+ * Define an output component.
+ *
+ * @param factory The factory function.
+ */
+export const $defineOutput = createComponentDefiner(createOutputComponentFunc);
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {
