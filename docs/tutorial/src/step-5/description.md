@@ -1,4 +1,4 @@
-# Listen to Events
+# Handle Events
 
 We can listen to events by checking the return value of the component function:
 
@@ -10,9 +10,9 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Statements inside the `if` block will only be executed when the button is clicked. These statements are called the event handler.
+Only when the button is clicked, the corresponding `_.button` call will return `true`, and statements inside the `if` block will be executed. These statements are the event handler.
 
-`_.$ev` is the event data. In the example above, it is a `MouseEvent` object. `_.$ev` can only be used inside the event handler.
+`_.$ev` is the event data. As for `_.button`, it is a `MouseEvent` object. `_.$ev` can only be used inside the event handler.
 
 You can update states inside the event handler:
 
@@ -25,6 +25,25 @@ $app.use(Basics)(_ => {
 });
 ```
 
+<!--
+
+:::warning Do not update states outside the event handler.
+
+The following code will cause undefined behavior:
+
+```ts
+let n = 0;
+$app(_ => {
+  n++;
+});
+```
+
+`n` will be incremented every time the view function is called, which is not predictable.
+
+:::
+
+-->
+
 After the events are handled, Refina will re-render the application automatically.
 
-Now, try to implement a counter yourself that counts the number of clicks on the button.
+Now, try to implement a counter yourself which counts the number of clicks on the button.

@@ -1,6 +1,6 @@
 # Add Styles and Class Names
 
-In the previous step, we learned how to render components using functions on the context object. These functions are called component functions. There are also directives on the context object. In this step, we will learn how to use two of them: `_.$cls` and `_.$css`.
+In the previous step, we learned how to render components using some functions in the context object, which are called **component functions**. There are also **directives** in the context object. In this step, we will learn how to use two directives: `_.$cls` and `_.$css`.
 
 `_.$cls` is used to add class names to the next component. It can be used both as a function and a tag function:
 

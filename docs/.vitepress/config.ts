@@ -9,7 +9,8 @@ export default defineConfig({
   vite: {
     plugins: [
       Refina({
-        include: [/snippets/],
+        include: [/\.vue(\?|$)/, /\.[tj]s(\?|$)/],
+        exclude: [/\.data\.ts/, /node_modules/],
         excludeHmr: [/\.vue(\?|$)/],
       }) as any,
     ],

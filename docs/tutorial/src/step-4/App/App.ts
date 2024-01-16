@@ -1,6 +1,10 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
+// Should declare states here?
+
 $app.use(Basics)(_ => {
-  _.h1("Make me styled!");
+  // Or here?
+
+  _.p("Count is 0!");
 });

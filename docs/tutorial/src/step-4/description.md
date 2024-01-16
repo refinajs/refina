@@ -15,13 +15,17 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Attention: variables declared inside the view function are not states. They are just local temporary variables, which are re-created every time the view function is called.
+:::warning States should be declared outside the view function.
 
-Just like JSX, you can render components conditionally using `if` statements or other operators:
+Variables declared inside the view function are not states. They are just local temporary variables, which are re-created every time the view function is called.
+
+:::
+
+Just like in JSX, you can render components conditionally using `if` statements or other operators:
 
 ```ts
 let cond = true;
-let value: number | undefined;
+let value: number | null | undefined;
 
 $app.use(Basics)(_ => {
   if (cond) {
@@ -30,10 +34,10 @@ $app.use(Basics)(_ => {
     _.h1("Hello Refina!");
   }
 
-  cond && _.p("Cond is truthy.");
-
-  value ?? _.p("Value is undefined.");
+  cond && _.p("cond is truthy.");
+  value === 1 && _.p("value is 1.");
+  value ?? _.p("value is null or undefined.");
 });
 ```
 
-Now, try to create some states yourself, and use it to render dynamic text content for the `_.h1` in the template.
+Now, try to create a "count" state yourself, and use it to render the content of `_.p`.
