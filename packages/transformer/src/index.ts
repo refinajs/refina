@@ -251,4 +251,4 @@ export function transformFragment(
   return lastKey === 0 ? null : src;
 }
 
-export { patterns };
+export { patterns, MagicString };
