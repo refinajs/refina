@@ -1,4 +1,4 @@
-import { Content, D, HTMLElementComponent, bySelf, getD, ref } from "refina";
+import { Content, HTMLElementComponent, bySelf, ref } from "refina";
 import MdUI from "../plugin";
 
 type _R<T extends readonly any[], U extends readonly any[]> =
@@ -17,9 +17,7 @@ type RepeatedTuple<T extends readonly any[]> =
 
 declare module "refina" {
   interface Components {
-    mdTabs(
-      ...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>
-    ): this is {
+    mdTabs(...tabs: RepeatedTuple<[name: string, content: Content]>): this is {
       $ev: string;
     };
   }
@@ -27,12 +25,12 @@ declare module "refina" {
 MdUI.triggerComponents.mdTabs = function (_) {
   const tabsRef = ref<HTMLElementComponent<"mdui-tabs">>();
   let activeTab: string;
-  return ((...nameAndContents: (D<string> | D<Content>)[]) => {
+  return ((...nameAndContents: (string | Content)[]) => {
     const names: string[] = [],
-      contents: D<Content>[] = [];
+      contents: Content[] = [];
     for (let i = 0; i < nameAndContents.length; i += 2) {
-      names.push(getD(nameAndContents[i]) as string);
-      contents.push(nameAndContents[i + 1] as D<Content>);
+      names.push(nameAndContents[i] as string);
+      contents.push(nameAndContents[i + 1] as Content);
     }
 
     activeTab ??= nameAndContents[0] as string;
@@ -60,6 +58,6 @@ MdUI.triggerComponents.mdTabs = function (_) {
         },
       );
   }) as unknown as (
-    ...tabs: RepeatedTuple<[name: D<string>, content: D<Content>]>
+    ...tabs: RepeatedTuple<[name: string, content: Content]>
   ) => void;
 };

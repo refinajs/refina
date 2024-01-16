@@ -1,5 +1,4 @@
 import { Prelude } from "../constants";
-import { D } from "../data";
 import { Content } from "./content";
 import { DOMElementComponent } from "./element";
 import { DOMNodeComponent, MaybeChildNode } from "./node";
@@ -105,7 +104,7 @@ export class DOMPortalComponent extends DOMElementComponent {
   removeFrom(_parent: Element): void {}
 }
 
-Prelude.registerFunc("portal", function (ckey: string, inner: D<Content>) {
+Prelude.registerFunc("portal", function (ckey, inner) {
   let portal = this.$$currentRefTreeNode[ckey] as
     | DOMPortalComponent
     | undefined;
@@ -139,7 +138,7 @@ declare module "../context/base" {
      *  that should not be affected by the parent element's styles.
      */
     portal: DOMPortalComponent extends C["enabled"]
-      ? (inner: D<Content>) => void
+      ? (inner: Content) => void
       : never;
   }
 }

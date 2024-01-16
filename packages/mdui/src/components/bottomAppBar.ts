@@ -1,9 +1,9 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
-    mdBottomAppBar(inner: D<Content>): void;
+    mdBottomAppBar(inner: Content): void;
   }
 }
 MdUI.outputComponents.mdBottomAppBar = function (_) {

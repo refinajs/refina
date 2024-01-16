@@ -16,7 +16,7 @@ To know more about Refina, please visit:
 ### Via CDN
 
 ```html
-<script src="https://unpkg.com/@refina/bundles/<lib-name>"></script>
+<script src="https://unpkg.com/@refina/bundles/<lib-name>.js"></script>
 ```
 
 **Note:** Replace `<lib-name>` with the name of the lib you want to use.

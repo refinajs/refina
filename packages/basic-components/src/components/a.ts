@@ -1,19 +1,14 @@
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
-    a(inner: D<Content>, href: D<string>): void;
+    a(inner: Content, href: string): void;
   }
 }
 
 Basics.outputComponents.a = function (_) {
   return (inner, href) => {
-    _._a(
-      {
-        href: getD(href),
-      },
-      inner,
-    );
+    _._a({ href }, inner);
   };
 };

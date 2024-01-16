@@ -6,4 +6,4 @@ export * from "./hmr";
 export * from "./loop";
 export * from "./provide";
 export * from "./timing";
-export * from "./var";
+export * from "./useModel";

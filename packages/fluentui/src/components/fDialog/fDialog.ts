@@ -1,4 +1,4 @@
-import { Content, D, View, d, getD } from "refina";
+import { Content, Model, View, model, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import "./fDialogBody";
 import "./fDialogSurface";
@@ -6,13 +6,13 @@ import "./fDialogSurface";
 declare module "refina" {
   interface Components {
     fControlledDialog(
-      open: D<boolean>,
-      title: D<Content>,
-      content: D<Content<[close: () => void]>>,
-      actions?: D<Content<[close: () => void]>>,
-      actionsPosition?: D<"start" | "end">,
-      persist?: D<boolean>,
-      closeButton?: D<boolean>,
+      open: Model<boolean>,
+      title: Content,
+      content: Content<[close: () => void]>,
+      actions?: Content<[close: () => void]>,
+      actionsPosition?: "start" | "end",
+      persist?: boolean,
+      closeButton?: boolean,
     ): this is {
       $ev: void;
     };
@@ -28,19 +28,19 @@ FluentUI.triggerComponents.fControlledDialog = function (_) {
     persist = false,
     closeButton = true,
   ) => {
-    if (getD(open)) {
+    if (valueOf(open)) {
       if (
         _.fDialogSurface(_ => {
           if (
             _.fDialogBody(title, content, actions, actionsPosition, closeButton)
           ) {
-            _.$setD(open, false);
+            _.$updateModel(open, false);
             this.$fire();
           }
         })
       ) {
         if (!persist) {
-          _.$setD(open, false);
+          _.$updateModel(open, false);
           this.$fire();
         }
       }
@@ -51,19 +51,19 @@ FluentUI.triggerComponents.fControlledDialog = function (_) {
 declare module "refina" {
   interface Components {
     fDialog(
-      trigger: D<View<[open: (open?: boolean) => void]>>,
-      title: D<Content>,
-      content: D<Content<[close: () => void]>>,
-      actions?: D<Content<[close: () => void]>>,
-      actionsPosition?: D<"start" | "end">,
-      persist?: D<boolean>,
+      trigger: View<[open: (open?: boolean) => void]>,
+      title: Content,
+      content: Content<[close: () => void]>,
+      actions?: Content<[close: () => void]>,
+      actionsPosition?: "start" | "end",
+      persist?: boolean,
     ): this is {
       $ev: boolean;
     };
   }
 }
 FluentUI.triggerComponents.fDialog = function (_) {
-  const opened = d(false);
+  const opened = model(false);
   return (
     trigger,
     title,
@@ -73,7 +73,7 @@ FluentUI.triggerComponents.fDialog = function (_) {
     persist = false,
   ) => {
     _.embed(ctx =>
-      getD(trigger)(ctx, (open = true) => {
+      trigger(ctx, (open = true) => {
         opened.value = open;
         this.$fire(open);
       }),

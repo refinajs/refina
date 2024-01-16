@@ -1,11 +1,11 @@
-import { Content, D, DArray, LoopKey, byIndex, getD } from "refina";
+import { Content, LoopKey, byIndex } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdTable<T>(
-      data: D<Iterable<T>>,
-      head: DArray<Content> | D<Content>,
+      data: Iterable<T>,
+      head: Content[] | Content,
       key: LoopKey<T>,
       row: (item: T, index: number) => void,
     ): void;
@@ -13,8 +13,8 @@ declare module "refina" {
 }
 MdUI.outputComponents.mdTable = function (_) {
   return <T>(
-    data: D<Iterable<T>>,
-    head: DArray<Content> | D<Content>,
+    data: Iterable<T>,
+    head: Content[] | Content,
     key: LoopKey<T>,
     row: (item: T, index: number) => void,
   ) => {
@@ -22,13 +22,12 @@ MdUI.outputComponents.mdTable = function (_) {
     _._div({}, _ => {
       _._table({}, _ => {
         _._thead({}, _ => {
-          const headValue = getD(head);
-          if (Array.isArray(headValue)) {
-            _.for(headValue, byIndex, item => {
+          if (Array.isArray(head)) {
+            _.for(head, byIndex, item => {
               _._th({}, item);
             });
           } else {
-            _.embed(headValue);
+            _.embed(head);
           }
         });
         _._tbody({}, _ => {
@@ -45,7 +44,7 @@ MdUI.outputComponents.mdTable = function (_) {
 
 declare module "refina" {
   interface Components {
-    mdTableHeader(inner: D<Content>): void;
+    mdTableHeader(inner: Content): void;
   }
 }
 MdUI.outputComponents.mdTableHeader = function (_) {
@@ -56,7 +55,7 @@ MdUI.outputComponents.mdTableHeader = function (_) {
 
 declare module "refina" {
   interface Components {
-    mdTableCell(inner: D<Content>): void;
+    mdTableCell(inner: Content): void;
   }
 }
 MdUI.outputComponents.mdTableCell = function (_) {

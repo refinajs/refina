@@ -1,11 +1,11 @@
-import { D, HTMLElementComponent, getD, ref } from "refina";
+import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdSwitch(
-      checked: D<boolean>,
-      disabled?: D<boolean>,
+      checked: Model<boolean>,
+      disabled?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -16,11 +16,11 @@ MdUI.triggerComponents.mdSwitch = function (_) {
   return (checked, disabled = false) => {
     _.$ref(switchRef) &&
       _._mdui_switch({
-        checked: getD(checked),
-        disabled: getD(disabled),
+        checked: valueOf(checked),
+        disabled,
         onchange: () => {
           const newState = switchRef.current!.node.checked;
-          _.$setD(checked, newState);
+          _.$updateModel(checked, newState);
           this.$fire(newState);
         },
       });

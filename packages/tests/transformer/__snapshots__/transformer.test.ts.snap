@@ -1,0 +1,109 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`transformer > should transform new file correctly 1`] = `
+"
+      _.$$c(\\"~-1\\", \\"div\\",1, _ => {
+        _.$$c(\\"~-2\\", \\"div\\",2, _ => {
+          _.$$c(\\"~-3\\", \\"div\\",3);
+        });
+      });
+      _.$$t(\\"~-4\\", \`123\`);
+      _.$$t(\\"~-5\\",123);
+      _.$$d(\\"~-6\\", comp)(1, _ => {})
+      _.$cls\`abc\`;
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (append) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"div\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (append) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"div\\",2);
+      _.$$c(\\"0-3\\", \\"div\\",3);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (insert) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"span\\",2);
+      _.$$t(\\"0-3\\", \`123\`);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (insert) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-4\\", \\"div\\",2);
+      _.$$c(\\"0-2\\", \\"span\\",3);
+      _.$$t(\\"0-3\\", \`123\`);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (modify last) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"span\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (modify last) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-3\\", \\"a\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (modify) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"span\\",2);
+      _.$$c(\\"0-3\\", \\"a\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (modify) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-4\\", \\"div\\",2);
+      _.$$c(\\"0-3\\", \\"a\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (same) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"div\\",2);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (same) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"div\\",3);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (swap) 1`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-2\\", \\"span\\",2);
+      _.$$c(\\"0-3\\", \\"a\\",2);
+      _.$$c(\\"0-4\\", \\"div\\",5);
+    "
+`;
+
+exports[`transformer > should update transformed file correctly (swap) 2`] = `
+"
+      _.$$c(\\"0-1\\", \\"div\\",1);
+      _.$$c(\\"0-5\\", \\"a\\",2);
+      _.$$c(\\"0-6\\", \\"span\\",2);
+      _.$$c(\\"0-4\\", \\"div\\",5);
+    "
+`;

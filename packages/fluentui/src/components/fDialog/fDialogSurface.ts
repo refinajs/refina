@@ -1,17 +1,17 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import "../fPortal";
 import dialogSurfaceStyles from "./dialogSurface.styles";
 
 declare module "refina" {
   interface Components {
-    fDialogSurface(inner: D<Content>): this is {
+    fDialogSurface(inner: Content): this is {
       $ev: void;
     };
   }
 }
 FluentUI.triggerComponents.fDialogSurface = function (_) {
-  return (inner: D<Content>) => {
+  return (inner: Content) => {
     _.fPortal(_ => {
       dialogSurfaceStyles.backdrop(false)(_);
       _._div({

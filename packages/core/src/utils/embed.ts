@@ -1,5 +1,4 @@
 import { Prelude } from "../constants";
-import { D, getD } from "../data";
 import { Content } from "../dom";
 
 declare module "../component" {
@@ -14,16 +13,15 @@ declare module "../component" {
      * @param content The content to embed.
      * @param args The arguments to pass to the content, if the content is a view function.
      */
-    embed<Args extends any[]>(content: D<Content<Args>>, ...args: Args): void;
+    embed<Args extends any[]>(content: Content<Args>, ...args: Args): void;
   }
 }
 
 Prelude.outputComponents.embed = function (_) {
   return (content, ...args) => {
-    const contentValue = getD(content);
-    if (typeof contentValue === "function") {
+    if (typeof content === "function") {
       try {
-        contentValue(_, ...args);
+        content(_, ...args);
         if (import.meta.env.DEV) {
           _.$lowlevel.$$assertEmpty();
         }
@@ -31,7 +29,7 @@ Prelude.outputComponents.embed = function (_) {
         this.$app.callHook("onError", e);
       }
     } else {
-      _.$lowlevel.$$t("_t", contentValue);
+      _.$lowlevel.$$t("_t", content);
     }
   };
 };
@@ -62,7 +60,7 @@ declare module "../component" {
      * @param args The arguments to pass to the content, if the content is a view function.
      */
     asyncEmbed<Args extends any[]>(
-      contentLoader: D<AsyncContentLoader<Args>>,
+      contentLoader: AsyncContentLoader<Args>,
       ...args: Args
     ): void;
   }
@@ -74,7 +72,7 @@ Prelude.outputComponents.asyncEmbed = function (_) {
     if (loadedContent) {
       _.embed(loadedContent, ...args);
     } else {
-      getD(contentLoader)().then(v => {
+      contentLoader().then(v => {
         loadedContent = v.default;
         _.$update();
       });

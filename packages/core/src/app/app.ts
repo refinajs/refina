@@ -1,13 +1,14 @@
 import { AppState } from "../constants";
 import {
+  Context,
+  IntrinsicBaseContext,
   IntrinsicRecvContext,
   IntrinsicUpdateContext,
-  LowlevelContext,
   RealContextFuncs,
   initializeRecvContext,
   initializeUpdateContext,
 } from "../context";
-import { D, dangerously_setD } from "../data";
+import { Model, dangerously_updateModel } from "../data";
 import { DOMBodyComponent, DOMRootComponent } from "../dom";
 import { DOMWindowComponent } from "../dom/window";
 import type { View } from "../view";
@@ -133,7 +134,7 @@ export class App {
   /**
    * The context of the app.
    */
-  readonly context = {} as unknown as LowlevelContext;
+  readonly context = {} as unknown as IntrinsicBaseContext;
 
   /**
    * Each event in this queue requires a later `RECV` call.
@@ -254,7 +255,7 @@ export class App {
   protected execMain() {
     try {
       this.callHook("beforeMain");
-      this.main(this.context);
+      this.main(this.context as unknown as Context);
       if (import.meta.env.DEV) {
         this.context.$$assertEmpty();
         if (window.__REFINA_HMR__) {
@@ -362,14 +363,14 @@ export class App {
   }
 
   /**
-   * Set the value of a `D` and trigger an `UPDATE` call if the value is changed.
+   * Set the value of a model and trigger an `UPDATE` call if the value is changed.
    *
-   * @param d The `D` to set
-   * @param v The value to set
-   * @returns Whether the value is changed, i.e. whether an `UPDATE` call is triggered or whether `d` is a `PD`.
+   * @param model The model.
+   * @param v The new value.
+   * @returns Whether the value is changed.
    */
-  setD = <T>(d: D<T>, v: T): boolean => {
-    if (dangerously_setD(d, v)) {
+  updateModel = <T>(model: Model<T>, v: T): boolean => {
+    if (dangerously_updateModel(model, v)) {
       this.update();
       return true;
     }

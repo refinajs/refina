@@ -1,22 +1,20 @@
 import {
   Content,
-  D,
-  DPartialRecord,
-  DReadonlyArray,
   HTMLElementComponent,
+  Model,
   bySelf,
-  getD,
   ref,
+  valueOf,
 } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdRadioGroup<Value extends string>(
-      selected: D<Value>,
-      options: DReadonlyArray<Value>,
-      disabled?: D<boolean> | DReadonlyArray<boolean>,
-      contentOverride?: DPartialRecord<Value, Content>,
+      selected: Model<Value>,
+      options: readonly Value[],
+      disabled?: boolean | boolean[],
+      contentOverride?: Partial<Record<Value, Content>>,
     ): this is {
       $ev: Value;
     };
@@ -25,20 +23,17 @@ declare module "refina" {
 MdUI.triggerComponents.mdRadioGroup = function (_) {
   const radioGroupRef = ref<HTMLElementComponent<"mdui-radio-group">>();
   return (selected, options, disabled = false, contentOverride = {}) => {
-    const contentOverrideValue = getD(contentOverride);
-    const disabledValue = getD(disabled);
-    const groupDisabled = disabledValue === true;
-    const optionsDisabled =
-      typeof disabledValue === "boolean" ? [] : disabledValue.map(getD);
+    const groupDisabled = disabled === true;
+    const optionsDisabled = typeof disabled === "boolean" ? [] : disabled;
 
     _.$ref(radioGroupRef) &&
       _._mdui_radio_group(
         {
-          value: getD(selected),
+          value: valueOf(selected),
           disabled: groupDisabled,
           onchange: () => {
             const newSelected = radioGroupRef.current!.node.value;
-            _.$setD(selected, newSelected);
+            _.$updateModel(selected, newSelected);
             this.$fire(newSelected);
           },
         },
@@ -46,10 +41,10 @@ MdUI.triggerComponents.mdRadioGroup = function (_) {
           _.for(options, bySelf, (value, index) =>
             _._mdui_radio(
               {
-                value: getD(value),
+                value,
                 disabled: optionsDisabled[index],
               },
-              contentOverrideValue[value] ?? value,
+              contentOverride[value] ?? value,
             ),
           ),
       );

@@ -1,27 +1,18 @@
-import {
-  Content,
-  DArray,
-  DPartialRecord,
-  HTMLElementComponent,
-  getD,
-  ref,
-} from "refina";
+import { Content, HTMLElementComponent, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdNavBar<Value extends string>(
-      options: DArray<Value | [value: Value, iconName?: string]>,
-      contentOverride?: DPartialRecord<Value, Content>,
+      options: (Value | [value: Value, iconName?: string])[],
+      contentOverride?: Partial<Record<Value, Content>>,
     ): Value;
   }
 }
 MdUI.statusComponents.mdNavBar = function (_) {
   const navBarRef = ref<HTMLElementComponent<"mdui-navigation-bar">>();
   return (options, contentOverride = {}) => {
-    const contentOverrideValue = getD(contentOverride);
-
-    const firstOption = getD(getD(options)[0]);
+    const firstOption = valueOf(options)[0];
     this.$_status ??= Array.isArray(firstOption) ? firstOption[0] : firstOption;
 
     _.$ref(navBarRef) &&
@@ -35,18 +26,15 @@ MdUI.statusComponents.mdNavBar = function (_) {
         _ =>
           _.for(
             options,
-            item => getD(item)[0],
+            option => (Array.isArray(option) ? option[0] : option),
             option => {
-              const optionValue = getD(option);
-              const [value, icon] = Array.isArray(optionValue)
-                ? optionValue
-                : [optionValue];
+              const [value, icon] = Array.isArray(option) ? option : [option];
               _._mdui_navigation_bar_item(
                 {
                   value,
                   icon,
                 },
-                contentOverrideValue[value] ?? value,
+                contentOverride[value] ?? value,
               );
             },
           ),

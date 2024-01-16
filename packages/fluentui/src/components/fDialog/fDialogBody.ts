@@ -1,5 +1,5 @@
 import "@refina/fluentui-icons/dismiss.js";
-import { Content, Context, D, getD } from "refina";
+import { Content, Context } from "refina";
 import FluentUI from "../../plugin";
 import dialogActionsStyles from "./dialogActions.styles";
 import dialogBodyStyles from "./dialogBody.styles";
@@ -16,13 +16,13 @@ export type FDialogBodyEventData =
 declare module "refina" {
   interface Components {
     fDialogBody(
-      title: D<Content>,
-      content: D<Content<[close: (ev?: FDialogBodyEventData) => void]>>,
-      actions?: D<
-        Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined
-      >,
-      actionsPosition?: D<"start" | "end">,
-      closeButton?: D<boolean>,
+      title: Content,
+      content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
+      actions?:
+        | Content<[close: (ev?: FDialogBodyEventData) => void]>
+        | undefined,
+      actionsPosition?: "start" | "end",
+      closeButton?: boolean,
     ): this is {
       $ev: FDialogBodyEventData;
     };
@@ -46,16 +46,12 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
       return content;
     };
 
-    const contentValue = getD(content),
-      actionsValue = getD(actions),
-      closeButtonValue = getD(closeButton);
-
     dialogBodyStyles.root(_);
     _._div({}, _ => {
-      dialogTitleStyles.root(!closeButtonValue)(_);
+      dialogTitleStyles.root(!closeButton)(_);
       _._div({}, title);
 
-      if (closeButtonValue) {
+      if (closeButton) {
         dialogTitleStyles.action(_);
         _._div({}, _ => {
           dialogTitleStyles.closeButton(_);
@@ -70,11 +66,11 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
       }
 
       dialogContentStyles.root(_);
-      _._div({}, wrapper(contentValue));
+      _._div({}, wrapper(content));
 
-      if (actionsValue !== undefined) {
-        dialogActionsStyles.root(true, getD(actionsPosition))(_);
-        _._div({}, wrapper(actionsValue));
+      if (actions !== undefined) {
+        dialogActionsStyles.root(true, actionsPosition)(_);
+        _._div({}, wrapper(actions));
       }
     });
   };

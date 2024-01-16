@@ -1,26 +1,26 @@
-import { Content, D, bindArgsToContent, getD } from "refina";
+import { Content, bindArgsToContent } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdControlledDialog(
-      open: D<boolean>,
-      title: D<Content>,
-      body: D<Content>,
-      actions?: D<Content>,
-      presistent?: D<boolean>,
+      open: boolean,
+      title: Content,
+      body: Content,
+      actions?: Content,
+      presistent?: boolean,
     ): void;
   }
 }
 MdUI.outputComponents.mdControlledDialog = function (_) {
   return (open, title, body, actions, presistent = false) => {
-    const presistentProps = getD(presistent)
+    const presistentProps = presistent
       ? {}
       : { closeOnOverlayClick: true, closeOnEsc: true };
     _._mdui_dialog(
       {
         ...presistentProps,
-        open: getD(open),
+        open,
       },
       _ => {
         _._div(
@@ -50,11 +50,11 @@ MdUI.outputComponents.mdControlledDialog = function (_) {
 declare module "refina" {
   interface Components {
     mdDialog(
-      trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
-      title: D<Content<[close: (open?: D<boolean>) => void]>>,
-      body: D<Content<[close: (open?: D<boolean>) => void]>>,
-      actions?: D<Content<[close: (open?: D<boolean>) => void]>>,
-      presistent?: D<boolean>,
+      trigger: Content<[open: (open?: boolean) => void]>,
+      title: Content<[close: (open?: boolean) => void]>,
+      body: Content<[close: (open?: boolean) => void]>,
+      actions?: Content<[close: (open?: boolean) => void]>,
+      presistent?: boolean,
     ): this is {
       $ev: boolean;
     };
@@ -63,21 +63,19 @@ declare module "refina" {
 MdUI.triggerComponents.mdDialog = function (_) {
   let opened = false;
   return (
-    trigger: D<Content<[open: (open?: D<boolean>) => void]>>,
-    title: D<Content<[close: (open?: D<boolean>) => void]>>,
-    body: D<Content<[close: (open?: D<boolean>) => void]>>,
-    actions?: D<Content<[close: (open?: D<boolean>) => void]>>,
-    presistent: D<boolean> = false,
+    trigger: Content<[open: (open?: boolean) => void]>,
+    title: Content<[close: (open?: boolean) => void]>,
+    body: Content<[close: (open?: boolean) => void]>,
+    actions?: Content<[close: (open?: boolean) => void]>,
+    presistent: boolean = false,
   ) => {
-    const open = (open: D<boolean> = true) => {
-      const openValue = getD(open);
-      opened = openValue;
-      this.$fire(openValue);
+    const open = (open = true) => {
+      opened = open;
+      this.$fire(open);
     };
-    const close = (open: D<boolean> = false) => {
-      const openValue = getD(open);
-      opened = openValue;
-      this.$fire(openValue);
+    const close = (open = false) => {
+      opened = open;
+      this.$fire(open);
     };
 
     _.embed(bindArgsToContent(trigger, open));

@@ -36,11 +36,11 @@
 ## Example
 
 ```typescript
-import { $app, d } from "refina";
+import { $app, model } from "refina";
 import Basics from "@refina/basic-components";
 
-const name = d(""); // just the same as { value: "" }
-let count = 0; // needn't to be warped in d()
+const name = model("");
+let count = 0; // no need to use ref()
 
 $app.use(Basics)(_ => {
   _.t`Enter your name:`;

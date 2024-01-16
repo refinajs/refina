@@ -1,10 +1,10 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import styles from "./fPortal.styles";
 
 declare module "refina" {
   interface Components {
-    fPortal(inner: D<Content>): void;
+    fPortal(inner: Content): void;
   }
 }
 FluentUI.outputComponents.fPortal = function (_) {

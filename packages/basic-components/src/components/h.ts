@@ -1,14 +1,14 @@
-import { Content, D } from "refina";
+import { Content } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
-    h1(inner: D<Content>): void;
-    h2(inner: D<Content>): void;
-    h3(inner: D<Content>): void;
-    h4(inner: D<Content>): void;
-    h5(inner: D<Content>): void;
-    h6(inner: D<Content>): void;
+    h1(inner: Content): void;
+    h2(inner: Content): void;
+    h3(inner: Content): void;
+    h4(inner: Content): void;
+    h5(inner: Content): void;
+    h6(inner: Content): void;
   }
 }
 

@@ -1,7 +1,7 @@
 import "@refina/fluentui-icons/checkmarkCircle.ts";
 import "@refina/fluentui-icons/errorCircle.ts";
 import "@refina/fluentui-icons/warning.ts";
-import { Content, Context, D, View, getD } from "refina";
+import { Content, Context, View } from "refina";
 import FluentUI from "../../plugin";
 import "../fLabel";
 import styles from "./fField.styles";
@@ -17,18 +17,16 @@ const validationMessageIcons = {
 declare module "refina" {
   interface Components {
     fField(
-      inner: D<Content>,
-      label: D<Content>,
-      required?: D<boolean | Content>,
-      state?: D<FieldValidationState>,
-      validationMessage?: D<Content>,
+      inner: Content,
+      label: Content,
+      required?: boolean | Content,
+      state?: FieldValidationState,
+      validationMessage?: Content,
     ): void;
   }
 }
 FluentUI.outputComponents.fField = function (_) {
   return (inner, label, required, state = "none", validationMessage) => {
-    const stateValue = getD(state);
-
     styles.root(_);
     _._div({}, _ => {
       styles.label(_);
@@ -37,13 +35,10 @@ FluentUI.outputComponents.fField = function (_) {
       _.embed(inner);
 
       if (validationMessage) {
-        styles.validationMessage(
-          stateValue === "error",
-          stateValue !== "none",
-        )(_);
+        styles.validationMessage(state === "error", state !== "none")(_);
         _._div({}, _ => {
-          styles.validationMessageIcon(stateValue)(_);
-          _.embed(validationMessageIcons[stateValue]);
+          styles.validationMessageIcon(state)(_);
+          _.embed(validationMessageIcons[state]);
 
           _.embed(validationMessage);
         });

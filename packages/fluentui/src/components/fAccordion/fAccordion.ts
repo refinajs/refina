@@ -1,5 +1,5 @@
 import "@refina/fluentui-icons/chevronRight.ts";
-import { Content, D, getD } from "refina";
+import { Content } from "refina";
 import FluentUI from "../../plugin";
 import headerStyles from "./header.styles";
 import itemStyles from "./item.styles";
@@ -7,27 +7,25 @@ import itemStyles from "./item.styles";
 declare module "refina" {
   interface Components {
     fAccordion(
-      header: D<Content>,
-      disabled?: D<boolean>,
-      defaultOpen?: D<boolean>,
+      header: Content,
+      disabled?: boolean,
+      defaultOpen?: boolean,
     ): boolean;
   }
 }
 FluentUI.statusComponents.fAccordion = function (_) {
   return (header, disabled = false, defaultOpen = false) => {
-    this.$_status ??= getD(defaultOpen);
-
-    const disabledValue = getD(disabled);
+    this.$_status ??= defaultOpen;
 
     itemStyles.root(_);
     _._div({}, _ => {
-      headerStyles.root(disabledValue)(_);
+      headerStyles.root(disabled)(_);
       _._div({}, _ => {
-        headerStyles.button(disabledValue)(_);
+        headerStyles.button(disabled)(_);
         _._button(
           {
             onclick: () => {
-              if (disabledValue) return;
+              if (disabled) return;
               this.$status = !this.$status;
             },
           },

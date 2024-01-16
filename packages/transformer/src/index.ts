@@ -1,5 +1,5 @@
 import MagicString, { SourceMapOptions } from "magic-string";
-import patterns from "./patterns";
+import patterns from "./patterns.js";
 
 type CtxFuncCall = (
   | {
@@ -8,6 +8,10 @@ type CtxFuncCall = (
     }
   | {
       type: "c";
+      name: string;
+    }
+  | {
+      type: "d";
       name: string;
     }
 ) & {
@@ -41,7 +45,8 @@ export class RefinaTransformer {
   isSameCall(a: CtxFuncCall, b: CtxFuncCall) {
     return (
       (a.type === "t" && b.type === "t") ||
-      (a.type === "c" && b.type === "c" && a.name === b.name)
+      (a.type === "c" && b.type === "c" && a.name === b.name) ||
+      (a.type === "d" && b.type === "d" && a.name === b.name)
     );
   }
 
@@ -49,14 +54,16 @@ export class RefinaTransformer {
     const { matchStart, matchEnd, ckey } = call;
     if (call.type === "t") {
       s.update(matchStart, matchEnd, `_.$$t("${ckey}", \`${call.content}\`)`);
-    } else {
+    } else if (call.type === "c") {
       s.update(
         matchStart,
         matchEnd,
         call.name === "t"
           ? `_.$$t("${ckey}",`
-          : `_.$$("${call.name}", "${ckey}",`,
+          : `_.$$c("${ckey}", "${call.name}",`,
       );
+    } else {
+      s.update(matchStart, matchEnd, `_.$$d("${ckey}", ${call.name})`);
     }
   }
 
@@ -210,6 +217,16 @@ export function searchCtxFuncCalls(src: string): CtxFuncCall[] {
       matchEnd,
     });
   }
+  for (const match of src.matchAll(patterns.DIRECT_CALL)) {
+    const matchStart = match.index!;
+    const matchEnd = matchStart + match[0].length;
+    calls.push({
+      type: "d",
+      name: match[1],
+      matchStart,
+      matchEnd,
+    });
+  }
   calls.sort((a, b) => a.matchStart - b.matchStart);
   return calls;
 }
@@ -225,9 +242,13 @@ export function transformFragment(
   });
   src = src.replaceAll(patterns.COMPONENT_FUNC, (_, name) => {
     const ckey = generateCkey(lastKey++);
-    return name === "t" ? `_.$$t("${ckey}",` : `_.$$("${name}", "${ckey}",`;
+    return name === "t" ? `_.$$t("${ckey}",` : `_.$$c("${ckey}", "${name}",`;
+  });
+  src = src.replaceAll(patterns.DIRECT_CALL, (_, name) => {
+    const ckey = generateCkey(lastKey++);
+    return `_.$$d("${ckey}", ${name})`;
   });
   return lastKey === 0 ? null : src;
 }
 
-export { patterns };
+export { patterns, MagicString };

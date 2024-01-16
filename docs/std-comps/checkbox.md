@@ -19,9 +19,9 @@ if (_.xCheckbox(state, "Check me", disabled)) {
 
 ## Param: `state`
 
-**type**: `D<boolean>`
+**type**: `Model<boolean>`
 
-> ↑ `D<boolean|undefined>` if indeterminate state is supported
+> ↑ `Model<boolean|undefined>` if indeterminate state is supported
 
 The state of the checkbox.
 
@@ -29,7 +29,7 @@ The state of the checkbox.
 
 <Optional/>
 
-**type**: `D<Content>`
+**type**: `Content`
 
 The label of the checkbox.
 
@@ -37,7 +37,7 @@ The label of the checkbox.
 
 <Optional/> = `false`
 
-**type**: `D<boolean>`
+**type**: `boolean`
 
 Whether the checkbox is disabled.
 

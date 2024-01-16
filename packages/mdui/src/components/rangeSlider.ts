@@ -1,15 +1,15 @@
-import { D, HTMLElementComponent, getD, ref } from "refina";
+import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import MdUI from "../plugin";
 
 declare module "refina" {
   interface Components {
     mdRangeSlider(
-      lowValue: D<number>,
-      highValue: D<number>,
-      disabled?: D<boolean>,
-      step?: D<number>,
-      min?: D<number>,
-      max?: D<number>,
+      lowValue: Model<number>,
+      highValue: Model<number>,
+      disabled?: boolean,
+      step?: number,
+      min?: number,
+      max?: number,
     ): this is {
       $ev: [low: number, high: number];
     };
@@ -27,21 +27,21 @@ MdUI.triggerComponents.mdRangeSlider = function (_) {
   ) => {
     _.$ref(sliderRef) &&
       _._mdui_range_slider({
-        disabled: getD(disabled),
-        min: getD(min),
-        max: getD(max),
-        step: getD(step),
+        disabled,
+        min,
+        max,
+        step,
         oninput: () => {
           const [newLow, newHigh] = sliderRef.current!.node.value;
-          _.$setD(lowValue, newLow);
-          _.$setD(highValue, newHigh);
+          _.$updateModel(lowValue, newLow);
+          _.$updateModel(highValue, newHigh);
           this.$fire([newLow, newHigh]);
         },
       });
 
     // TODO: remove this hack
     setTimeout(() => {
-      sliderRef.current!.node.value = [getD(lowValue), getD(highValue)];
+      sliderRef.current!.node.value = [valueOf(lowValue), valueOf(highValue)];
     });
   };
 };

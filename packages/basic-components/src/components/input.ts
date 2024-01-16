@@ -1,34 +1,34 @@
-import { D, DOMElementComponent, getD, ref } from "refina";
+import { DOMElementComponent, Model, valueOf, ref } from "refina";
 import Basics from "../plugin";
 
 declare module "refina" {
   interface Components {
     input(
-      type: D<string>,
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      type: string,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: string;
     };
 
     textInput(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: string;
     };
 
     passwordInput(
-      value: D<string>,
-      disabled?: D<boolean>,
-      placeholder?: D<string>,
+      value: Model<string>,
+      disabled?: boolean,
+      placeholder?: string,
     ): this is {
       $ev: string;
     };
 
-    checkbox(checked: D<boolean>): this is {
+    checkbox(checked: Model<boolean>): this is {
       $ev: boolean;
     };
   }
@@ -39,13 +39,13 @@ Basics.triggerComponents.input = function (_) {
   return (type, value, disabled, placeholder) => {
     _.$ref(inputRef) &&
       _._input({
-        type: getD(type),
-        disabled: getD(disabled),
-        placeholder: getD(placeholder),
-        value: getD(value),
+        type,
+        disabled,
+        placeholder,
+        value: valueOf(value),
         oninput: () => {
           const newValue = inputRef.current!.node.value;
-          _.$setD(value, newValue);
+          _.$updateModel(value, newValue);
           this.$fire(newValue);
         },
       });
@@ -70,10 +70,10 @@ Basics.triggerComponents.checkbox = function (_) {
     _.$ref(inputRef) &&
       _._input({
         type: "checkbox",
-        checked: getD(checked),
+        checked: valueOf(checked),
         onchange: () => {
           const newChecked = inputRef.current!.node.checked;
-          _.$setD(checked, newChecked);
+          _.$updateModel(checked, newChecked);
           this.$fire(newChecked);
         },
       });
