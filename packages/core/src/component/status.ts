@@ -1,13 +1,11 @@
-import { Context, IntrinsicBaseContext } from "../context";
+import { Context, ContextDirectCallee, IntrinsicBaseContext } from "../context";
 import {
   Component,
   ComponentContext,
   ComponentExposedKey,
-  ComponentMainFunc,
   ComponentProps,
   ComponentPropsKey,
   Components,
-  createComponentDefiner,
 } from "./component";
 /**
  * The base class of all status components.
@@ -67,6 +65,11 @@ export type StatusComponentFactory<
   _: ComponentContext<N>,
 ) => (...args: Parameters<Components[N]>) => void;
 
+type UnregisteredStatusComponentFactory<Status, Args extends any[]> = (
+  this: StatusComponent<Status, {}>,
+  _: Context,
+) => (...args: Args) => void;
+
 /**
  * The status component factory function map.
  */
@@ -79,19 +82,16 @@ export type StatusComponentFactoryMap = {
  *
  * @returns The context function.
  */
-export function createStatusComponentFunc(factory: StatusComponentFactory) {
-  return function (
-    this: IntrinsicBaseContext,
-    ckey: string,
-    ...args: unknown[]
-  ): unknown {
+export function createStatusComponentFunc(
+  factory:
+    | StatusComponentFactory
+    | UnregisteredStatusComponentFactory<any, any>,
+) {
+  return function (this: IntrinsicBaseContext, ckey: string, ...args: any) {
     const component = this.$$processComponent(
       ckey,
       StatusComponent,
-      factory as (
-        this: StatusComponent<any, any>,
-        context: Context,
-      ) => ComponentMainFunc,
+      factory as any,
       args,
     );
 
@@ -105,7 +105,14 @@ export function createStatusComponentFunc(factory: StatusComponentFactory) {
  *
  * @param factory The factory function.
  */
-export const $defineStatus = createComponentDefiner(createStatusComponentFunc);
+export function $defineStatus<Status, Args extends any[]>(
+  factory: UnregisteredStatusComponentFactory<Status, Args>,
+): ContextDirectCallee<(...args: Args) => void> {
+  const func = createStatusComponentFunc(factory);
+  return function (ckey) {
+    return (...args) => func.call(this, ckey, ...args);
+  };
+}
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {

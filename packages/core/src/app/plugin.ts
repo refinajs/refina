@@ -1,8 +1,6 @@
 import {
   OutputComponentFactoryMap,
-  StatusComponentFactory,
   StatusComponentFactoryMap,
-  StatusComponentName,
   TriggerComponentFactoryMap,
   createOutputComponentFunc,
   createStatusComponentFunc,
@@ -47,15 +45,13 @@ export class Plugin<Args extends any[] = []> {
 
     // Merge the component functions in the plugin into the app.
     for (const [name, factory] of Object.entries(this.outputComponents)) {
-      app.contextFuncs[name] = createOutputComponentFunc(factory);
+      app.contextFuncs[name] = createOutputComponentFunc(factory as any);
     }
     for (const [name, factory] of Object.entries(this.statusComponents)) {
-      app.contextFuncs[name] = createStatusComponentFunc(
-        factory as StatusComponentFactory<StatusComponentName>,
-      );
+      app.contextFuncs[name] = createStatusComponentFunc(factory as any);
     }
     for (const [name, factory] of Object.entries(this.triggerComponents)) {
-      app.contextFuncs[name] = createTriggerComponentFunc(factory);
+      app.contextFuncs[name] = createTriggerComponentFunc(factory as any);
     }
 
     if (import.meta.env.DEV) {

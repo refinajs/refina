@@ -1,4 +1,9 @@
-import { IntrinsicBaseContext, IntrinsicRecvContext } from "../context";
+import {
+  Context,
+  ContextDirectCallee,
+  IntrinsicBaseContext,
+  IntrinsicRecvContext,
+} from "../context";
 import {
   Component,
   ComponentContext,
@@ -6,7 +11,6 @@ import {
   ComponentProps,
   ComponentPropsKey,
   Components,
-  createComponentDefiner,
 } from "./component";
 
 /**
@@ -71,6 +75,11 @@ export type TriggerComponentFactory<
   _: ComponentContext<N>,
 ) => Components[N];
 
+type UnregisteredTriggerComponentFactory<Ev, Args extends any[]> = (
+  this: TriggerComponent<Ev, {}>,
+  _: Context,
+) => (...args: Args) => void;
+
 /**
  * The trigger component factory function map.
  */
@@ -84,11 +93,13 @@ export type TriggerComponentFactoryMap = {
  * @param ctor The component class constructor.
  * @returns The context function.
  */
-export function createTriggerComponentFunc(factory: TriggerComponentFactory) {
+export function createTriggerComponentFunc(
+  factory: UnregisteredTriggerComponentFactory<any, any>,
+) {
   return function (
     this: IntrinsicBaseContext,
     ckey: string,
-    ...args: unknown[]
+    ...args: any
   ): boolean {
     const component = this.$$processComponent(
       ckey,
@@ -113,9 +124,14 @@ export function createTriggerComponentFunc(factory: TriggerComponentFactory) {
  *
  * @param factory The factory function.
  */
-export const $defineTrigger = createComponentDefiner(
-  createTriggerComponentFunc,
-);
+export function $defineTrigger<Ev, Args extends any[]>(
+  factory: UnregisteredTriggerComponentFactory<Ev, Args>,
+): ContextDirectCallee<(...args: Args) => void> {
+  const func = createTriggerComponentFunc(factory);
+  return function (ckey) {
+    return (...args) => func.call(this, ckey, ...args);
+  };
+}
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {

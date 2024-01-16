@@ -122,7 +122,7 @@ export type ToRealContextFunc<
  */
 export type RealContextFuncs<Ctx = IntrinsicBaseContext> = Record<
   string,
-  (this: Ctx, ckey: string, ...args: unknown[]) => unknown
+  (this: Ctx, ckey: string, ...args: any) => unknown
 >;
 
 /**
@@ -465,8 +465,13 @@ export interface IntrinsicBaseContext<
   ): T;
 }
 
+export type ContextDirectCallee<V> = (
+  this: IntrinsicBaseContext,
+  ckey: string,
+) => V;
+
 interface ContextDirectCall {
-  <V>(callee: (this: IntrinsicBaseContext, ckey: string) => V): V;
+  <V>(callee: ContextDirectCallee<V>): V;
   <K extends keyof this>(name: K): this[K];
 }
 
