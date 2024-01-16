@@ -45,14 +45,14 @@ Prelude.outputComponents.provide = function (_) {
   return (keyOrObj, ...rest) => {
     if (typeof keyOrObj === "symbol") {
       const key = keyOrObj,
-        [value, content, ...args] = rest as [unknown, Content<any[]>, ...any[]];
+        [value, content, ...args] = rest as [unknown, Content<any>, ...any];
       const oldVal = _.$runtimeData[key];
       _.$runtimeData[key] = value;
       _.embed(content, ...args);
       _.$runtimeData[key] = oldVal;
     } else {
       const obj = keyOrObj,
-        [content, ...args] = rest as [Content<any[]>, ...any[]];
+        [content, ...args] = rest as [Content<any>, ...any];
       const symbols = Object.getOwnPropertySymbols(obj);
       const oldVals: Record<symbol, unknown> = {};
       for (const key of symbols) {

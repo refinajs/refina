@@ -1,4 +1,4 @@
-import { IntrinsicBaseContext } from "../context";
+import { Context, ContextDirectCallee, IntrinsicBaseContext } from "../context";
 import {
   Component,
   ComponentContext,
@@ -6,7 +6,6 @@ import {
   ComponentProps,
   ComponentPropsKey,
   Components,
-  createComponentDefiner,
 } from "./component";
 
 /**
@@ -38,6 +37,11 @@ export type OutputComponentFactory<
   _: ComponentContext<N>,
 ) => Components[N];
 
+type UnregisteredOutputComponentFactory<Args extends any[]> = (
+  this: OutputComponent<{}>,
+  _: Context,
+) => (...args: Args) => void;
+
 /**
  * The output component factory function map.
  */
@@ -51,11 +55,13 @@ export type OutputComponentFactoryMap = {
  * @param ctor The component class.
  * @returns The context function.
  */
-export function createOutputComponentFunc(factory: OutputComponentFactory) {
+export function createOutputComponentFunc(
+  factory: OutputComponentFactory | UnregisteredOutputComponentFactory<any>,
+) {
   return function (
     this: IntrinsicBaseContext,
     ckey: string,
-    ...args: unknown[]
+    ...args: any
   ): void {
     this.$$processComponent(ckey, OutputComponent, factory, args);
   };
@@ -66,7 +72,14 @@ export function createOutputComponentFunc(factory: OutputComponentFactory) {
  *
  * @param factory The factory function.
  */
-export const $defineOutput = createComponentDefiner(createOutputComponentFunc);
+export function $defineOutput<Args extends any[]>(
+  factory: UnregisteredOutputComponentFactory<Args>,
+): ContextDirectCallee<(...args: Args) => void> {
+  const func = createOutputComponentFunc(factory);
+  return function (ckey) {
+    return (...args) => func.call(this, ckey, ...args);
+  };
+}
 
 declare module "./component" {
   interface ComponentRefTypeRawMap {
