@@ -1,4 +1,5 @@
-import { Context } from "./context";
+import { $defineOutput } from "./component";
+import type { Context } from "./context";
 
 /**
  * The type of a view function.
@@ -15,7 +16,7 @@ export type View<Args extends any[] = []> = (
 ) => void;
 
 /**
- * Define a view function with type checking.
+ * Define an output component by a view function.
  *
  * @example
  * ```ts
@@ -25,8 +26,12 @@ export type View<Args extends any[] = []> = (
  * ```
  *
  * @param view The view function.
- * @returns The view function itself.
+ * @returns An output component.
  */
-export function $view<Args extends any[] = []>(view: View<Args>): View<Args> {
-  return view;
+export function $view<Args extends any[] = []>(view: View<Args>) {
+  return $defineOutput(function (_) {
+    return (...args: Args) => {
+      view(_, ...args);
+    };
+  });
 }
