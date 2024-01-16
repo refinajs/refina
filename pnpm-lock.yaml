@@ -377,6 +377,9 @@ importers:
 
   packages/tests:
     dependencies:
+      '@refina/transformer':
+        specifier: workspace:^
+        version: link:../transformer
       refina:
         specifier: workspace:^
         version: link:../core
