@@ -1,0 +1,30 @@
+# Views
+
+视图是一个函数，它渲染一部分页面。
+
+It is used to split the page into multiple parts, which can be rendered separately, and reused.
+
+To define a view in Refina, you can use the `$view` function:
+
+```ts
+import { $view } from "refina";
+
+export default $view((_, id) => {
+  _.h1("Card");
+});
+```
+
+To use a view, you call the context object with the view function:
+
+```ts
+import { $app } from "refina";
+import CardView from "./CardView";
+
+$app(_ => {
+  _(CardView)("1");
+  _(CardView)("2");
+  _(CardView)("3");
+});
+```
+
+Now, let's try to use views to extract the duplicated code into a view, and use the view to render the content.
