@@ -1,6 +1,6 @@
 import path from "path";
 import { createMarkdownRenderer } from "vitepress";
-import { readExamples, ExampleData } from "../../examples/examples.data";
+import { readExamples, ExampleData } from "../examples/examples.data";
 export declare const data: Record<string, ExampleData>;
 export default {
   watch: "./src/**",
@@ -9,11 +9,11 @@ export default {
     const files = readExamples(path.resolve(__dirname, "./src"));
     for (const step in files) {
       const stepFiles = files[step];
-      const desc = stepFiles["description.md"] as string;
+      const desc = (stepFiles["description.md"] as string);
       if (desc) {
         stepFiles["description.md"] = md.render(desc);
       }
     }
     return files;
-  },
+  }
 };

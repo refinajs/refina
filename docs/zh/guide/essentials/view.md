@@ -19,11 +19,11 @@ export default $view(_ => {
 **app.ts**
 
 ```ts
-import myView from "./myView.ts";
+import MyView from "./MyView.ts";
 
 $app(_ => {
-  _.div(myView);
-  _.embed(myView);
+  _(MyView)();
+  _.div(MyView.$func);
 });
 ```
 
@@ -44,7 +44,7 @@ $app(_ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-视图可以有参数。 你可以使用普通的语法定义视图参数： 你可以使用普通的语法定义视图参数：
+视图可以有参数。 你可以使用普通的语法定义视图参数：
 
 ```ts
 export default $view((_, name: string, id?: number) => {
@@ -58,8 +58,8 @@ export default $view((_, name: string, id?: number) => {
 然后可以这样向视图传递参数：
 
 ```ts
-_.embed(myView, "John", 123);
-_.embed(myView, "Mary");
+_(MyView)("John", 123);
+_(MyView)("Mary");
 ```
 
 ## 视图的状态
@@ -97,6 +97,6 @@ export default $view(_ => {
 
 如果你想复用**页面的片段**，可以使用 _视图_。
 
-如果你想复用**有状态的代码**，你需要使用*组件*。
+如果你想复用**有状态的代码**，你需要使用_组件_。
 
-如果你是\*\*UI 库（组件库）\*\*作者，你总是应当提供*组件*。
+如果你是\*\*UI 库（组件库）\*\*作者，你总是应当提供_组件_。
