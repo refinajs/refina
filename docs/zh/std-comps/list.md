@@ -24,7 +24,7 @@ The type of the data of one row.
 
 ## Param: `data`
 
-**type**: `Iterable<T>`
+**type**: `D<Iterable<T>>`
 
 The data to render.
 
