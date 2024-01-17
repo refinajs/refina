@@ -19,7 +19,7 @@ if (_.xSwitch(checked, "Switch me", disabled)) {
 
 ## Param: `checked`
 
-**type**: `Model<boolean>`
+**type**: `D<boolean>`
 
 The state of the switch.
 
@@ -27,7 +27,7 @@ The state of the switch.
 
 <Optional/>
 
-**type**: `Content`
+**type**: `D<Content>`
 
 The label of the switch.
 
@@ -35,7 +35,7 @@ The label of the switch.
 
 <Optional/> = `false`
 
-**type**: `boolean`
+**type**: `D<boolean>`
 
 Whether the switch is disabled.
 
