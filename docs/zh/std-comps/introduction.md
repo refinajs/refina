@@ -2,7 +2,7 @@
 
 本章节描述了 Refina 定义的标准组件。
 
-Refina 的标准组件是常用的，且*有一定复杂度*的组件。 不能保证所有组件库都会包含所有这些标准组件。 但组件库应当尽可能地覆盖标准组件，并符合标准组件的接口。
+Refina 的标准组件是常用的，且_有一定复杂度_的组件。 不能保证所有组件库都会包含所有这些标准组件。 但组件库应当尽可能地覆盖标准组件，并符合标准组件的接口。
 
 :::warning
 
@@ -34,6 +34,6 @@ Refina 的标准组件是常用的，且*有一定复杂度*的组件。 不能�
 
 以下组件库目前已经可用：
 
-[![@refina/basic-components](https://img.shields.io/npm/v/%40refina%2Fbasic-components?label=%40refina%2Fbasic-components&color=green)](https://www.npmjs.com/package/@refina/basic-components)
+[![@refina/basic-components](https://img.shields.io/npm/v/%40refina%2Fbasic-components?label=%40refina%2Fbasic-components\&color=green)](https://www.npmjs.com/package/@refina/basic-components)
 
-[![@refina/mdui](https://img.shields.io/npm/v/%40refina%2Fmdui?label=%40refina%2Fmdui&color=green)](https://www.npmjs.com/package/@refina/mdui)
+[![@refina/mdui](https://img.shields.io/npm/v/%40refina%2Fmdui?label=%40refina%2Fmdui\&color=green)](https://www.npmjs.com/package/@refina/mdui)
