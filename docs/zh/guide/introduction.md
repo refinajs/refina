@@ -1,4 +1,4 @@
-# Introduction
+# 简介
 
 ## 概览
 
@@ -20,42 +20,41 @@ $app.use(Basics)(_ => {
 **结果展示**
 
 <script setup>
-import "@vue/theme";
-import CounterVue from "snippets/counter.vue"
+import CounterVue from 'snippets/counter.vue'
 </script>
 
 <CounterVue />
 
 上面的例子展示了Refina的两个核心功能：
 
-- **声明式渲染**: 不需要像 JSX 或 Vue template 那样的 DSL，只需普通的 JavaScript/TypeScript 就可以编写应用。 因此所有 JavaScript 与 TypeScript 开发工具都可以在 Refina 开发中直接使用。
+- **声明式渲染**: 不需要像 JSX 或 Vue template 那样的 DSL，只需普通的 JavaScript/TypeScript 就可以编写应用。 因此所有 JavaScript 与 TypeScript 开发工具都可以在 Refina 开发中直接使用。 因此所有 JavaScript 与 TypeScript 开发工具都可以在 Refina 开发中直接使用。
 
-- **响应性**：Refina 采用类 ImGUI 的状态管理模式。 你只需要像 Svelte 那样以最普通的方式的定义状态。 当状态改变时，Refina 会自动地更新页面。
+- **响应性**：Refina 采用类 ImGUI 的状态管理模式。 你只需要像 Svelte 那样以最普通的方式的定义状态。 当状态改变时，Refina 会自动地更新页面。 你只需要像 Svelte 那样以最普通的方式的定义状态。 当状态改变时，Refina 会自动地更新页面。
 
 你可能已经有了些疑问——先别急。 请继续看下去，以宏观地了解 Refina 作为一个框架提供了什么。
 
 :::tip 预备知识
 
-文档接下来的内容会假设你对 HTML、CSS 和 JavaScript 已经基本熟悉。 如果你对前端开发完全陌生，最好不要直接从一个框架开始进行入门学习——最好是掌握了基础知识再回到这里。 如有需要，你可以通过这些 [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)、[HTML](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML) 和 [CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps) 概述来检验你的知识水平。 如果之前有其他框架的经验会很有帮助，但也不是必须的。
+文档接下来的内容会假设你对 HTML、CSS 和 JavaScript 已经基本熟悉。 如果你对前端开发完全陌生，最好不要直接从一个框架开始进行入门学习——最好是掌握了基础知识再回到这里。 文档接下来的内容会假设你对 HTML、CSS 和 JavaScript 已经基本熟悉。 如果你对前端开发完全陌生，最好不要直接从一个框架开始进行入门学习——最好是掌握了基础知识再回到这里。 如有需要，你可以通过这些 [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)、[HTML](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML) 和 [CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps) 概述来检验你的知识水平。 如果之前有其他框架的经验会很有帮助，但也不是必须的。 如果之前有其他框架的经验会很有帮助，但也不是必须的。
 
 :::
 
-## Pick Your Learning Path
+## 选择你的学习路径
 
-Different developers have different learning styles. Feel free to pick a learning path that suits your preference - although we do recommend going over all of the content, if possible!
+不同的开发者有不同的学习方式。 尽管在可能的情况下，我们推荐你通读所有内容，但你还是可以自由地选择一种自己喜欢的学习路径！
 
 <div class="vt-box-container next-steps">
   <a class="vt-box" href="../tutorial/">
-    <p class="next-steps-link">Try the Tutorial</p>
-    <p class="next-steps-caption">For those who prefer learning things hands-on.</p>
+    <p class="next-steps-link">尝试互动教程</p>
+    <p class="next-steps-caption">适合喜欢边动手边学的读者。</p>
   </a>
   <a class="vt-box" href="./quick-start">
-    <p class="next-steps-link">Read the Guide</p>
-    <p class="next-steps-caption">The guide walks you through every aspect of the framework in full detail.</p>
+    <p class="next-steps-link">继续阅读该指南</p>
+    <p class="next-steps-caption">该指南会带你深入了解框架所有方面的细节。</p>
   </a>
   <a class="vt-box" href="/misc/playground">
-    <p class="next-steps-link">Playground</p>
-    <p class="next-steps-caption">Explore Refina on your own.</p>
+    <p class="next-steps-link">前往演练场</p>
+    <p class="next-steps-caption">自由地探索 Refina。</p>
   </a>
 </div>
 
