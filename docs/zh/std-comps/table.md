@@ -12,14 +12,14 @@ Render a table.
 **例子**
 
 ```ts
-_.xTable(
+_.mdTable(
   data,
-  [_ => _.xIcon("person"), "Age", "Action"],
+  [_ => _.mdIcon("person"), "Age", "Action"],
   "name",
   ({ name, age }) => {
-    _.xTableCell(name);
-    _.xTableCell(age);
-    _.xTableCell(_ => _.xButton("Open") && alert(name));
+    _.mdTableCell(name);
+    _.mdTableCell(age);
+    _.mdTableCell(_ => _.mdButton("Open") && alert(name));
   },
 );
 ```
@@ -30,13 +30,13 @@ The type of the data of one row.
 
 ## Param: `data`
 
-**type**: `Iterable<T>`
+**type**: `D<Iterable<T>>`
 
 The data to render.
 
 ## Param `head`
 
-**type**: `Content[] | Content`
+**type**: `DArray<Content> | D<Content>`
 
 The head of the table.
 
