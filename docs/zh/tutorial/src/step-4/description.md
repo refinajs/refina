@@ -1,6 +1,6 @@
-# Using States
+# 状态
 
-States in Refina are just plain JavaScript values. You can use them to store data and render dynamic content.
+Refina 中的状态是普通的 JavaScript 变量。 你可以使用状态来存储数据，并渲染动态的内容。
 
 ```ts
 let message = "Hello World!";
@@ -15,13 +15,13 @@ $app.use(Basics)(_ => {
 });
 ```
 
-:::warning States should be declared outside the view function.
+:::warning 状态应当定义在视图函数的外部
 
-Variables declared inside the view function are not states. They are just local temporary variables, which are re-created every time the view function is called.
+在视图函数内部定义的函数不是状态。 它们只是局部的临时变量，在每次调用视图函数时被重新创建。
 
 :::
 
-Just like in JSX, you can render components conditionally using `if` statements or other operators:
+就像在 JSX 中那样，你可以使用 `if` 语句或者其他运算符来根据条件渲染组件：
 
 ```ts
 let cond = true;
@@ -40,4 +40,4 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Now, try to create a "count" state yourself, and use it to render the content of `_.p`.
+现在，请尝试自己创建一个 "count" 状态，并用它来渲染 `_.p` 组件的内容。
