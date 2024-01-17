@@ -75,8 +75,8 @@ if (_.await(() => fetch("https://example.com"))) {
 **例子**
 
 ```ts {6}
-import { model } from "refina";
-const username = model("");
+import { d } from "refina";
+const username = d("");
 $app.use(Basics)(_ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
@@ -86,23 +86,23 @@ $app.use(Basics)(_ => {
 
 ## `_.embed` {#embed}
 
-Embed content into the current view.
+在当前位置嵌入一个视图。
 
 ## `_.asyncEmbed`
 
-Embed content that is asynchronously loaded.
+在当前位置嵌入异步加载的内容。
 
 **例子**
 
 ```ts
-_.asyncEmbed(() => import("./someContent.ts"));
+_.asyncEmbed(() => import("./myView.ts"));
 ```
 
-which loads the content from `./someContent.ts` asynchronously, which is useful for code splitting.
+这将从 `./someContent.ts` 异步地加载内容。这对代码拆分有帮助。
 
 :::info
 
-The content loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
+通过 `_.asyncEmbed` 加载的视图会被缓存，因此加载函数至多只会被调用一次。
 
 :::
 
