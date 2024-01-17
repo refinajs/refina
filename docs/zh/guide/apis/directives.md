@@ -42,7 +42,7 @@ $app(_ => {
 
 ## `_.$updateModel`
 
-Update the value of a model and trigger an `UPDATE` call if the value is changed.
+设置一个 `Model` 所包含的值，并触发页面更新。
 
 ## `_.$ev`
 
