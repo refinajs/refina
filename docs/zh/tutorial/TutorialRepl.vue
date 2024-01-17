@@ -9,7 +9,7 @@ import {
   VTLink,
 } from "@vue/theme";
 import { computed, nextTick, ref, version } from "vue";
-import { onHashChange, resolveSFCExample } from "../helpers/utils";
+import { onHashChange, resolveSFCExample } from "../../helpers/utils";
 import { data } from "./tutorial.data";
 import { useData } from "vitepress";
 
