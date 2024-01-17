@@ -1,15 +1,15 @@
-# Getting Started {#getting-started}
+# 开始 {#getting-started}
 
-Welcome to the Refina tutorial!
+欢迎来到 Refina 互动教程！
 
-The goal of this tutorial is to quickly give you an experience of what it feels like to work with Refina, right in the browser. It does not aim to be comprehensive, and you don't need to understand everything before moving on. However, after you complete it, make sure to also read the <a target="_blank" href="/guide/introduction.html">Guide</a> which covers each topic in more detail.
+本教程的目标是让你在浏览器中快速体验使用 Refina 是什么感受， 因此它不会太过深入解释所有细节，如果有些东西你一时无法完全理解，也不必担心。 但是，在完成本教程之后，请务必阅读<a target="_blank" href="/guide/introduction.html">指南</a>，以确保你对涉及的话题有更深入、完整的理解。
 
-## Prerequisites {#prerequisites}
+## 前置要求 {#prerequisites}
 
-The tutorial assumes basic familiarity with HTML, CSS and JavaScript. If you are totally new to front-end development, it might not be the best idea to jump right into a framework as your first step - grasp the basics then come back! 如果之前有其他框架的经验会很有帮助，但也不是必须的。
+本教程假定你基本熟悉 HTML、CSS 和 JavaScript。 对于前端开发来说，一个完全的新手也许并不适合上手就学习框架——最好是掌握了基础知识再回来。 如果之前有其他框架的经验会很有帮助，但也不是必须的。
 
-## How to Use This Tutorial {#how-to-use-this-tutorial}
+## 如何使用本教程 {#how-to-use-this-tutorial}
 
-You can edit the code <span class="wide">on the right</span><span class="narrow">below</span> and see the result update instantly. Each step will introduce a core feature of Refina, and you will be expected to complete the code to get the demo working. If you get stuck, you will have a "Show me!" button that reveals the working code for you. Try not to rely on it too much - you'll learn faster by figuring things out on your own.
+你可以编辑<span class="wide">右侧</span><span class="narrow">下方</span>的代码，并立即看到结果更新。 教程每一步都会介绍一个 Refina 的核心功能，并期望你能够补全代码，让 demo 运行起来。 如果你卡住了，会有一个“看答案！”按钮，点击它，会为你揭晓能够运行的代码。 试着不要太依赖该按钮——自己解决会学得更快。
 
-Ready? Click "Next" to get started.
+准备好了吗？ 点击“下一步”按钮开始吧。
