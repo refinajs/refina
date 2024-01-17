@@ -124,7 +124,7 @@ for (const key in data) {
 
 ## `inner` 参数
 
-**类型**: `D<Content>`
+**Type**: `Content`
 
 元素的内容（即打开、闭合标签之间的东西）。 它可以是：
 
