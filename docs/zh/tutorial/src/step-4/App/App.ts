@@ -1,10 +1,10 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
-// Should declare states here?
+// 在这里定义状态？
 
 $app.use(Basics)(_ => {
-  // Or here?
+  // 还是这里？
 
   _.p("Count is 0!");
 });

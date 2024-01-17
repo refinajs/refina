@@ -1,6 +1,7 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 import PartView from "./PartView";
+
 $app.use(Basics)(_ => {
   _.h1("Title");
   _(PartView)("Part 1", "Content 1");

@@ -154,6 +154,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: "指南", link: "/zh/guide/introduction" },
+          { text: "互动教程", link: "/zh/tutorial/" },
           { text: "标准组件", link: "/zh/std-comps/introduction" },
           { text: "演练场", link: "/zh/misc/playground" },
           { text: "组件库", link: "https://gallery.refina.vercel.app" },

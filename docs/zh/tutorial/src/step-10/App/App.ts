@@ -1,8 +1,10 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 import JSConfetti from "js-confetti";
+
 const confetti = new JSConfetti();
 confetti.addConfetti();
+
 $app.use(Basics)(_ => {
   _.$css`
     all: unset;

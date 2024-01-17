@@ -9,7 +9,7 @@ import {
   VTLink,
 } from "@vue/theme";
 import { computed, nextTick, ref, version } from "vue";
-import { onHashChange, resolveSFCExample } from "../helpers/utils";
+import { onHashChange, resolveSFCExample } from "../../helpers/utils";
 import { data } from "./tutorial.data";
 import { useData } from "vitepress";
 
@@ -123,10 +123,10 @@ updateExample();
       </div>
       <footer>
         <a v-if="prevStep" :href="`#${prevStep}`"
-          ><VTIconChevronLeft class="vt-link-icon" style="margin: 0" /> 上一步 </a
-        >
-        <a class="next-step" v-if="nextStep" :href="`#${nextStep}`"
-          > 下一步 <VTIconChevronRight class="vt-link-icon"
+          ><VTIconChevronLeft class="vt-link-icon" style="margin: 0" /> 上一步
+        </a>
+        <a class="next-step" v-if="nextStep" :href="`#${nextStep}`">
+          下一步 <VTIconChevronRight class="vt-link-icon"
         /></a>
       </footer>
     </article>
