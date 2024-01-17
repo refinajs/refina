@@ -2,7 +2,7 @@
 
 Welcome to the Refina tutorial!
 
-The goal of this tutorial is to quickly give you an experience of what it feels like to work with Refina, right in the browser. It does not aim to be comprehensive, and you don't need to understand everything before moving on. However, after you complete it, make sure to also read the <a target="_blank" href="/guide/introduction.html">Guide</a> which covers each topic in more detail.
+The goal of this tutorial is to quickly give you an experience of what it feels like to work with Refina, right in the browser. It does not aim to be comprehensive, and you don't need to understand everything before moving on. However, after you complete it, make sure to also read the <a target="_blank" href="../guide/introduction.html">Guide</a> which covers each topic in more detail.
 
 ## Prerequisites {#prerequisites}
 

@@ -16,7 +16,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Notice how we are also giving each todo object a unique id via the second parameter of `_.for`. The key allows Refina to accurately move each `<p>` to match the position of its corresponding object in the array.
+Notice how we are also giving each todo object a unique key via the second parameter of `_.for`. The key allows Refina to accurately move each `<p>` to match the position of its corresponding object in the array.
 
 The key can be an object key of each item in the list, or a function that returns a unique key for each item. `bySelf` and `byIndex` are two built-in functions that can be used as the key.
 
