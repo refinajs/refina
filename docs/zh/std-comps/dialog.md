@@ -29,7 +29,7 @@ _.xDialog(
 
 ## Param: `trigger`
 
-**type**: `D<Content<[open: (open?: D<boolean>) => void]>>`
+**type**: `Content<[open: (open?: boolean) => void]>`
 
 The trigger part of the dialog.
 
@@ -39,13 +39,13 @@ The trigger part can call the `open` function as a callback to open the dialog.
 
 ## Param: `title`
 
-**type**: `D<Content<[close: (open?: D<boolean>) => void]>>`
+**type**: `Content<[close: (open?: boolean) => void]>`
 
 The title part of the dialog.
 
 ## Param: `body`
 
-**type**: `D<Content<[close: (open?: D<boolean>) => void]>>`
+**type**: `Content<[close: (open?: boolean) => void]>`
 
 The body part of the dialog.
 
@@ -53,7 +53,7 @@ The body part of the dialog.
 
 <Optional/>
 
-**type**: `D<Content<[close: (open?: D<boolean>) => void]>>`
+**type**: `Content<[close: (open?: boolean) => void]>`
 
 The actions part of the dialog.
 
@@ -61,7 +61,7 @@ The actions part of the dialog.
 
 <Optional/> = `false`
 
-**type**: `D<boolean>`
+**type**: `boolean`
 
 If the dialog is persistent, it will not be closed when clicking outside of it, and there will be no default close button.
 
