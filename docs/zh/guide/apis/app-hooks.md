@@ -20,9 +20,9 @@
 
 永久钩子可以通过 `_.$app.permanentHooks` 访问。
 
-## `initContext` Hook
+## `initContext` 钩子
 
-Initialize the context object.
+在该钩子中初始化上下文对象。
 
 ## `beforeMain` 钩子
 
