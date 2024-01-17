@@ -19,7 +19,7 @@ if (_.xButton("Click me", disabled)) {
 
 ## Param: `inner`
 
-**type**: `D<Content>`
+**type**: `Content`
 
 The content of the button.
 
@@ -27,7 +27,7 @@ The content of the button.
 
 <Optional/> = `false`
 
-**type**: `D<boolean>`
+**type**: `boolean`
 
 Whether the button is disabled.
 
