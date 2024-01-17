@@ -21,7 +21,7 @@ if (_.xTextField(value, "Username", disabled)) {
 
 ## Param: `value`
 
-**type**: `D<string>`
+**type**: `Model<string>`
 
 The value of the text field.
 
@@ -29,9 +29,9 @@ The value of the text field.
 
 <Optional/>
 
-**type**: `D<string>`
+**type**: `string`
 
-> ↑ `D<Content>` if HTML label is supported.
+> ↑ `Content` if HTML label is supported.
 
 The label of the text field.
 
@@ -39,7 +39,7 @@ The label of the text field.
 
 <Optional/>
 
-**type**: `D<string>`
+**type**: `string`
 
 The placeholder of the text field.
 
@@ -49,7 +49,7 @@ The placeholder of the text field.
 
 <Optional/> = `false`
 
-**type**: `D<boolean>`
+**type**: `boolean`
 
 Whether the text field is disabled.
 
