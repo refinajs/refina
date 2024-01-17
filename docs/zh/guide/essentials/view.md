@@ -19,11 +19,11 @@ export default $view(_ => {
 **app.ts**
 
 ```ts
-import MyView from "./MyView.ts";
+import myView from "./myView.ts";
 
 $app(_ => {
-  _(MyView)();
-  _.div(MyView.$func);
+  _.div(myView);
+  _.embed(myView);
 });
 ```
 
@@ -44,7 +44,7 @@ $app(_ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-视图可以有参数。 你可以使用普通的语法定义视图参数：
+视图可以有参数。 你可以使用普通的语法定义视图参数： 你可以使用普通的语法定义视图参数：
 
 ```ts
 export default $view((_, name: string, id?: number) => {
@@ -58,8 +58,8 @@ export default $view((_, name: string, id?: number) => {
 然后可以这样向视图传递参数：
 
 ```ts
-_(MyView)("John", 123);
-_(MyView)("Mary");
+_.embed(myView, "John", 123);
+_.embed(myView, "Mary");
 ```
 
 ## 视图的状态
