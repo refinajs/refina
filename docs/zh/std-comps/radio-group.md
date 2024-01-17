@@ -30,13 +30,13 @@ The option value type.
 
 ## Param: `selected`
 
-**type**: `D<Value>`
+**type**: `Model<Value>`
 
 The currently selected value.
 
 ## Param: `options`
 
-**type**: `DReadonlyArray<Value>`
+**type**: `readonly Value[]`
 
 The options.
 
@@ -44,7 +44,7 @@ The options.
 
 <Optional/> = `false`
 
-**type**: `D<boolean> | DReadonlyArray<boolean>`
+**type**: `boolean | readonly boolean[]`
 
 If the value is an array, it will be used to disable each option. Otherwise, it will be used to disable all options.
 
@@ -52,7 +52,7 @@ If the value is an array, it will be used to disable each option. Otherwise, it 
 
 <Optional/> = `{}`
 
-**type**: `DPartialRecord<Value, Content>`
+**type**: `Partial<Record<Value, Content>>`
 
 By default, the content of each option is the value itself. You can override it by passing a record mapping each value to its content.
 
