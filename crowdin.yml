@@ -3,4 +3,8 @@ files:
     ignore:
       - /docs/zh
       - /docs/index.md
+      - /docs/tutorial
+      - /docs/README.md
     translation: /docs/%two_letters_code%/**/%original_file_name%
+  - source: /docs/tutorial/**/*
+    translation: /docs/%two_letters_code%/tutorial/**/%original_file_name%
