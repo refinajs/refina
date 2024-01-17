@@ -40,9 +40,9 @@ $app(_ => {
 
 与 `_.$app.update` 等价。
 
-## `_.$setD`
+## `_.$updateModel`
 
-设置一个 `D` 所包含的值，并触发页面更新。
+Update the value of a model and trigger an `UPDATE` call if the value is changed.
 
 ## `_.$ev`
 
