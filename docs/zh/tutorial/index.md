@@ -9,7 +9,7 @@ returnToTop: false
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import ReplLoading from '../../helpers/ReplLoading.vue'
+import ReplLoading from '../helpers/ReplLoading.vue'
 
 export default {
   components: {
