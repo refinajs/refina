@@ -1,6 +1,6 @@
-# Get User Input
+# 获取用户输入
 
-Using event handlers, we can get user input and update states accordingly.
+通过接收事件，我们可用获取用户输入并据此更新状态：
 
 ```ts
 let name = "";
@@ -13,9 +13,9 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Try typing in the input box in the "PREVIEW" tab - you should see the text in `<p>` updating as you type.
+试着在 "PREVIEW" 栏中的输入框中输入字符，你会看见 `<p>` 中的文字同步更新。
 
-To simplify that, there is another way to make the user input directly update a state rather than updating it manually in the event handler:
+还有一个更加简单的方式可以将用户输入直接保存到一个状态，而无需手动处理事件以保存输入：
 
 ```ts
 import { $app, model } from "refina";
@@ -26,13 +26,13 @@ $app.use(Basics)(_ => {
   _.textInput(name);
 
   _.p(`Hello ${name}!`);
-  // equivalent to:
+  // 等价于：
   // _.p(`Hello ${name.value}!`);
 });
 ```
 
-The `model` function creates a `JustModel<T>` object which simply wraps an intrinsic value as an object, so that the component can get the "reference" to the value and update it directly.
+`model` 函数创建了一个 `JustModel<T>` 对象。它简单地把原始值包裹为对象，于是组件可以“引用”到值并直接更新它。
 
-As for the `textInput` component (and similar components), it takes a `Model<string>` as its first parameter, which accepts an intrinsic `string` or a `JustModel<string>` object. When user types in the input box, it updates the value of the model.
+`textInput` 组件（以及一些类似的组件）接收 类型为 `Model<string>` 的值作为它的第一个参数，即，既可以是原始值也可以是 model。 当用户在输入框中输入时，组件会更新 model 的值。
 
-Now, try to refactor the code to use `model`. Also, when the input box is not empty, display a "clear" button to clear the input.
+现在，试着使用 `model` 重构编辑器中的代码。 并且在当输入框不为空时显示一个可以清除输入内容的按钮。
