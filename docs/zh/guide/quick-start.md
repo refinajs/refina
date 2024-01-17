@@ -7,15 +7,15 @@
 
 :::
 
-在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
+在本节中，我们将介绍如何在本地搭建 Refina 应用。 在本节中，我们将介绍如何在本地搭建 Refina 应用。 创建的项目将使用基于 [Vite](https://vitejs.dev) 的构建设置。
 
-确保你安装了最新版本的 [Node.js](https://nodejs.org/)，并且你的当前工作目录正是打算创建项目的目录。 在命令行中运行以下命令 (不要带上 `>` 符号)：
+确保你安装了最新版本的 [Node.js](https://nodejs.org/)，并且你的当前工作目录正是打算创建项目的目录。 在命令行中运行以下命令 (不要带上 `>` 符号)： 在命令行中运行以下命令 (不要带上 `>` 符号)：
 
 ```sh
 > npm create refina@latest   # 推荐使用 pnpm
 ```
 
-这一指令将会安装并执行 [create-refina](https://github.com/refinajs/refina/tree/main/packages/creator)，它是 Refina 官方的项目脚手架工具。 你将会看到一些诸如组件库和 TailwindCSS 之类的可选功能提示：
+这一指令将会安装并执行 [create-refina](https://github.com/refinajs/refina/tree/main/packages/creator)，它是 Refina 官方的项目脚手架工具。 你将会看到一些诸如组件库和 TailwindCSS 之类的可选功能提示： 你将会看到一些诸如组件库和 TailwindCSS 之类的可选功能提示：
 
 ![Create Refina](/media/create-refina.png)
 
@@ -44,7 +44,7 @@
 
 你现在应该已经运行起来了你的第一个 Refinan 项目！
 
-现在打开 `src/app.ts` 文件，你可以看见应用的主体代码。 你可以编辑它，并在浏览器中实时查看更改。
+现在打开 `src/app.ts` 文件，你可以看见应用的主体代码。 你可以编辑它，并在浏览器中实时查看更改。 你可以编辑它，并在浏览器中实时查看更改。
 
 :::info
 
