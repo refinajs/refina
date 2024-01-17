@@ -15,5 +15,16 @@
   ],
   "editor.guides.bracketPairs": "active",
   "vitest.commandLine": "pnpm exec vitest --coverage",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "grammarly.selectors": [
+    {
+      "language": "markdown",
+      "scheme": "file",
+      "pattern": "docs/tutorial/src/*"
+    },
+    {
+      "language": "markdown",
+      "scheme": "file"
+    }
+  ]
 }
