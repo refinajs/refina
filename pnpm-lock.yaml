@@ -36,8 +36,8 @@ importers:
         specifier: workspace:^
         version: link:../packages/basic-components
       '@refina/repl':
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.6
+        version: 0.0.6
       '@vue/theme':
         specifier: ^2.2.5
         version: 2.2.5(@algolia/client-search@4.22.0)(search-insights@2.13.0)(vitepress@1.0.0-rc.31)(vue@3.3.9)
@@ -51,6 +51,9 @@ importers:
       '@refina/tsconfig':
         specifier: workspace:^
         version: link:../packages/tsconfig
+      js-confetti:
+        specifier: ^0.12.0
+        version: 0.12.0
       vite-plugin-refina:
         specifier: workspace:^
         version: link:../packages/vite-plugin
@@ -1582,8 +1585,8 @@ packages:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
     dev: true
 
-  /@refina/repl@0.0.4:
-    resolution: {integrity: sha512-/xMLtXuWCKxo/VyrvGIHIJR1Js8LB+V0mA86MbTIse0rZMoxJI5//hQR/1kiGvBxnxmLnAB9x92NQEuRz5niKw==}
+  /@refina/repl@0.0.6:
+    resolution: {integrity: sha512-9/8kgkoP4RqIahJttJLWV66yAuu3RzakxF9yfVyfJQ+hoq09pbFx5ITc8CKB5vp9hvCy81YvoZKGcWXJV1EwCg==}
     dependencies:
       '@refina/transformer': 0.2.0
       typescript: 5.3.3
@@ -3770,6 +3773,10 @@ packages:
   /joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
+    dev: true
+
+  /js-confetti@0.12.0:
+    resolution: {integrity: sha512-1R0Akxn3Zn82pMqW65N1V2NwKkZJ75bvBN/VAb36Ya0YHwbaSiAJZVRr/19HBxH/O8x2x01UFAbYI18VqlDN6g==}
     dev: true
 
   /js-tokens@4.0.0:

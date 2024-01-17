@@ -1,5 +1,5 @@
-import Basics from "@refina/basic-components";
 import { $app } from "refina";
+import Basics from "@refina/basic-components";
 import PartView from "./PartView";
 
 $app.use(Basics)(_ => {
