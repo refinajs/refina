@@ -1,10 +1,10 @@
-# Views
+# 视图
 
 视图是一个函数，它渲染一部分页面。
 
-It is used to split the page into multiple parts, which can be rendered separately, and reused.
+他被用来将页面分割为相对独立的几个部分，并且可以复用。
 
-To define a view in Refina, you can use the `$view` function:
+使用 `$view` 函数来定义视图：
 
 ```ts
 import { $view } from "refina";
@@ -14,7 +14,7 @@ export default $view((_, id) => {
 });
 ```
 
-To use a view, you call the context object with the view function:
+将上下文对象作为函数调用以渲染视图：
 
 ```ts
 import { $app } from "refina";
@@ -27,4 +27,4 @@ $app(_ => {
 });
 ```
 
-Now, let's try to use views to extract the duplicated code into a view, and use the view to render the content.
+现在，试着将编辑器中重复的代码提炼为一个视图，并使用该视图来渲染页面。
