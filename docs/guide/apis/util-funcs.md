@@ -86,27 +86,23 @@ $app.use(Basics)(_ => {
 
 ## `_.embed` {#embed}
 
-Embed a view function into the current view function.
-
-See [Embedding Views](../essentials/view.md#embedding-views).
-
-and [Passing Parameters](../essentials/view.md#passing-parameters).
+Embed content into the current view.
 
 ## `_.asyncEmbed`
 
-Embed a view that is asynchronously loaded.
+Embed content that is asynchronously loaded.
 
 **Example**
 
 ```ts
-_.asyncEmbed(() => import("./myView.ts"));
+_.asyncEmbed(() => import("./someContent.ts"));
 ```
 
-which loads the view from `./myView.ts` asynchronously, which is useful for code splitting.
+which loads the content from `./someContent.ts` asynchronously, which is useful for code splitting.
 
 :::info
 
-The view loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
+The content loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
 
 :::
 

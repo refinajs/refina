@@ -2,8 +2,6 @@
 
 A view is a function that renders a part of the page.
 
-Views can be seen as a simplified version of a component, which we will introduce [later](#view-vs-component).
-
 It is mostly used to render a part of the page for one or few times or as the content of a page for multi-page applications.
 
 ## Usage
@@ -21,11 +19,11 @@ export default $view(_ => {
 **app.ts**
 
 ```ts
-import myView from "./myView.ts";
+import MyView from "./MyView.ts";
 
 $app(_ => {
-  _.div(myView);
-  _.embed(myView);
+  _(MyView)();
+  _.div(MyView.$func);
 });
 ```
 
@@ -44,27 +42,6 @@ The `$view` API is used to define a view.
 
 It is recommended to define a view in a separate file and export it as a default export.
 
-## Embedding Views {#embedding-views}
-
-If a view has no parameters, you can use it directly as the content of a component.
-
-If you want to embed the view, instead of using it as the whole content of a component, you can use [`_.embed`](../apis/util-funcs.md#embed).
-
-:::info
-
-If you are sure you will only use the view for one time, you can just call the view function directly:
-
-```ts
-_.div(_ => {
-  _.span("my view");
-  myView(_);
-});
-```
-
-However, this is not recommended for consistency.
-
-:::
-
 ## Passing Parameters {#passing-parameters}
 
 A view function can have parameters. You can declare the parameters simply:
@@ -81,8 +58,8 @@ export default $view((_, name: string, id?: number) => {
 Then, you can pass the parameters to the view function:
 
 ```ts
-_.embed(myView, "John", 123);
-_.embed(myView, "Mary");
+_(MyView)("John", 123);
+_(MyView)("Mary");
 ```
 
 ## View with States
