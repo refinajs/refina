@@ -24,7 +24,7 @@ _.xTabs(
 
 ## Params: `...tabs`
 
-**type**: `RepeatedTuple<[name: string, content: Content]>` (An alternating list of `string` and `Content`).
+**type**: `RepeatedTuple<[name: D<string>, content: D<Content>]>` (An alternating list of `D<string>` and `D<Content>`).
 
 The tab names and contents.
 
