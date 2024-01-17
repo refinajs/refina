@@ -12,9 +12,9 @@ import InputEventVue from "snippets/input-event.vue";
 ## 例子：获取用户在 input 元素中的输入。
 
 ```ts
-import { model } from "refina";
+import { d } from "refina";
 
-const username = model("");
+const username = d("");
 
 $app.use(Basics)(_ => {
   _.label("Username");
@@ -28,17 +28,17 @@ $app.use(Basics)(_ => {
 
 <BasicInputVue />
 
-## The Model
+## Model 对象
 
-### The `model` Function
+### `model` 函数
 
-Because there is no way to pass an intrinsic value by reference in JavaScript, we have to wrap the value in an object, and the `model` function creates a model object to wrap the value.
+因为在 JavaScript 中没有办法直接引用原始值，我们需要将原始值包裹在一个对象中来实现引用的效果。`d` 函数即是通过创建一个类型为 **`PD`** 的对象来包裹原始值。
 
-### Use a Property of an Object as a model
+### 将对象的属性转化为一个 model
 
 你可能想要将输入框的值读/写到一个对象的某个属性。
 
-The function `propModel` can create a model from a property of an object:
+`fromModel` 函数可以将对象的属性转化为一个 model。
 
 ```ts
 import { fromProp } from "refina";
@@ -49,35 +49,35 @@ $app.use(Basics)(_ => {
 });
 ```
 
-### The `Model` Type
+### `D` 类型
 
-The definition of `Model` is:
+`D` 的定义是：
 
 ```ts
-type Model<T> = T | JustModel<T>;
+type D<T> = T | PD<T>;
 ```
 
-### The `valueOf` Function
+### `d` 函数
 
-This function can extract the value from a model.
+该函数可以从类型为 `Model` 的值中取出原始值。
 
 ```ts
 const intrinsicValue = 1;
-assert(valueOf(intrinsicValue) === 1);
+assert(getD(intrinsicValue) === 1);
 
-const wrappedValue = model(1);
-assert(valueOf(wrappedValue) === 1);
+const wrappedValue = d(1);
+assert(getD(wrappedValue) === 1);
 ```
 
 :::info
 
-If the wrapped value is defined via `model` function, it is of type `JustModel<T>`, so you don't need to use `valueOf` function to extract the value. You can access `yourModel.value` directly.
+如果数据包裹由 `d` 函数创建，那么它的类型是 `PD<T>`, 因此你不需要使用 `getD` 函数。 你可以直接访问 `wrappedValue.value`. You can access `yourModel.value` directly.
 
 :::
 
-### The `_.$updateModel` Function
+### `_.$setD` 函数
 
-Corresponding to `valueOf` function, this function can update the value of a model.
+与 `valueOf` 函数相对应，这个函数可以设置类型为 `Model` 中的数据的值，并触发应用的更新。
 
 ## 另一种获取用户输入的方式。
 
