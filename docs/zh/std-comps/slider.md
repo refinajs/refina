@@ -19,7 +19,7 @@ if (_.xSlider(value, disabled, step, min, max)) {
 
 ## Param: `value`
 
-**type**: `number`
+**type**: `D<number>`
 
 The percentage of the slider, from 0 to 100.
 
@@ -27,7 +27,7 @@ The percentage of the slider, from 0 to 100.
 
 <Optional/> = `false`
 
-**type**: `boolean`
+**type**: `D<boolean>`
 
 Whether the slider is disabled.
 
@@ -35,7 +35,7 @@ Whether the slider is disabled.
 
 <Optional/> = `1`
 
-**type**: `number`
+**type**: `D<number>`
 
 The step of the slider.
 
@@ -43,7 +43,7 @@ The step of the slider.
 
 <Optional/> = `0`
 
-**type**: `number`
+**type**: `D<number>`
 
 The minimum value of the slider.
 
@@ -51,7 +51,7 @@ The minimum value of the slider.
 
 <Optional/> = `100`
 
-**type**: `number`
+**type**: `D<number>`
 
 The maximum value of the slider.
 
