@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/// <reference types="vitepress/client" />
 import { Repl, ReplStore } from "@refina/repl";
 import Monaco from "@refina/repl/monaco-editor";
 import {
@@ -65,7 +66,9 @@ function updateExample(scroll = false) {
   let hash = location.hash.slice(1);
   if (!data.hasOwnProperty(hash)) {
     hash = "step-1";
-    location.replace(`/tutorial/#${hash}`);
+    location.replace(
+      location.pathname.replace(/tutorial.*$/, `tutorial/#${hash}`),
+    );
   }
   currentStep.value = hash;
 
