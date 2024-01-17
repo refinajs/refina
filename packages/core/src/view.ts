@@ -1,5 +1,5 @@
 import { $defineOutput } from "./component";
-import type { Context } from "./context";
+import type { Context, ContextDirectCallee } from "./context";
 
 /**
  * The type of a view function.
@@ -29,9 +29,13 @@ export type View<Args extends any[] = []> = (
  * @returns An output component.
  */
 export function $view<Args extends any[] = []>(view: View<Args>) {
-  return $defineOutput(function (_) {
+  const wrapped = $defineOutput(function (_) {
     return (...args: Args) => {
       view(_, ...args);
     };
-  });
+  }) as ContextDirectCallee<(...args: Args) => void> & {
+    $func: View<Args>;
+  };
+  wrapped.$func = view;
+  return wrapped;
 }
