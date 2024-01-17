@@ -1,10 +1,10 @@
-# You Did It!
+# 你做到了！
 
-You have finished the tutorial!
+你已经完成了整个教程！
 
-At this point, you should have a good idea of what it's like to work with Refina. However, we covered a lot of things really fast and glossed over the details, so definitely keep learning! As a next step, you can:
+现在，你应该大致明白使用 Refina 开发应用是怎样的感觉了。 虽然我们飞快地介绍了许多东西，但也因此忽略了大量的细节，所以千万别这样就满足了！ 接下来，你可以：
 
-- Set up a real Refina project on your machine by following the [Quick Start](../../../guide/quick-start).
-- Go through the [Main Guide](../../../guide/essentials/application), which covers all the topics we learned so far in greater details, and much more.
+- 参考[快速上手](../../../guide/quick-start)，在你的机器上创建一个真实的 Refina 项目。
+- 阅读[指南](../../../guide/essentials/application)——它更详细地探讨了我们目前学过的所有话题，并且还有许多其他更深入的内容。
 
-We can't wait to see what you build next!
+我们很期待看到你能用 Refina 打造出怎样的作品！
