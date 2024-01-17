@@ -88,13 +88,9 @@ $app.use(Basics)(_ => {
 
 在当前位置嵌入一个视图。
 
-参见 [嵌入视图](../essentials/view.md#embedding-views)。
-
-与 [传递视图参数](../essentials/view.md#passing-parameters)。
-
 ## `_.asyncEmbed`
 
-在当前位置嵌入一个异步加载的视图。
+在当前位置嵌入异步加载的内容。
 
 **例子**
 
@@ -102,7 +98,7 @@ $app.use(Basics)(_ => {
 _.asyncEmbed(() => import("./myView.ts"));
 ```
 
-这将从 `./myView.ts` 异步地加载视图。这对代码拆分有帮助。
+这将从 `./someContent.ts` 异步地加载内容。这对代码拆分有帮助。
 
 :::info
 
