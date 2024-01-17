@@ -186,7 +186,12 @@ updateExample();
 
 .vt-menu-link.active {
   font-weight: 500;
-  color: var(--vt-c-brand);
+  color: var(--vp-c-brand);
+}
+
+.vt-menu-link {
+  text-decoration: none;
+  color: var(--vp-c-text);
 }
 
 footer {
@@ -234,7 +239,7 @@ footer a {
 
 button {
   background-color: var(--vp-c-brand);
-  color: var(--vt-c-bg);
+  color: var(--vp-c-bg);
   padding: 4px 12px 3px;
   border-radius: 8px;
   font-weight: 600;
