@@ -1,28 +1,28 @@
 # 底层渲染
 
-In the previous steps, we have used components to render our application. However, sometimes you need to render something that is not provided as a component.
+在之前的步骤中，我们使用组件来渲染页面。 但是，有时你想要渲染的东西并没有对应的组件。
 
-Low-level rendering functions give you the full ability to render any DOM element. Also, components are implemented using these low-level rendering functions.
+底层渲染函数允许你渲染任何的 DOM 元素。 以及，组件归根结底也是通过这些底层渲染函数实现的。
 
-Here is an example:
+下面是一个示例：
 
 ```ts
 let count = 0;
 
 $app(_ => {
-  _.$cls`my-button`; // _.$cls and _.$css are also available
+  _.$cls`my-button`; // _.$cls 和 _.$css 仍然可用
   _._button(
-    // Attributes (optional)
+    // 元素属性（可选）
     {
       id: "my-div",
       onclick() {
         count++;
-        _.$update(); // Update the application
+        _.$update(); // 记得更新应用
       },
     },
-    // Content (optional)
+    // 元素内容（可选）
     _ => _.span(`Count is ${count}`),
-    // Event listeners (optional)
+    // 事件侦听器（可选）
     {
       hover: {
         mousemove(ev) {
@@ -35,12 +35,12 @@ $app(_ => {
 });
 ```
 
-This is much less convenient than using components. When you think you are going to use a low-level rendering function instead of a not-perfect component, please consider whether it is necessary: Is it worth spending time to have that feature? Often minor features can take a lot of time without being very useful.
+这比使用组件要不那么方便。 当你觉得需要使用底层渲染函数，而不是使用组件是，请考虑这是否是必须的：底层渲染函数提供的额外功能真的值得花时间事先吗？ 往往一些细枝末节且特别的功能会耗费开发者大量的时间，却并没有成比例的用处。
 
-The name of the low-level rendering functions are like this:
+底层渲染函数的名字遵循这样的规律：
 
-- **HTML**: `_._div` for `<div>`
-- **Web components**: `_._custom_element` for `<custom-element>`
-- **SVG**: `_._svgCircle` for `<circle>`
+- **HTML**: `_._div` 是 `<div>`
+- **Web components**: `_._custom_element` 是 `<custom-element>`
+- **SVG**: `_._svgCircle` 是 `<circle>`
 
-Now, let's rewrite the HTML in the comment using low-level rendering functions.
+现在，试着将注释中的 HTML 代码通过底层渲染函数重写。
