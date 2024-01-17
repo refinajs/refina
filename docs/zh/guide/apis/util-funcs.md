@@ -86,7 +86,7 @@ $app.use(Basics)(_ => {
 
 ## `_.embed` {#embed}
 
-在当前位置嵌入一个视图。
+将内容嵌入当前位置。
 
 ## `_.asyncEmbed`
 
@@ -95,7 +95,7 @@ $app.use(Basics)(_ => {
 **例子**
 
 ```ts
-_.asyncEmbed(() => import("./myView.ts"));
+_.asyncEmbed(() => import("./someContent.ts"));
 ```
 
 这将从 `./someContent.ts` 异步地加载内容。这对代码拆分有帮助。
