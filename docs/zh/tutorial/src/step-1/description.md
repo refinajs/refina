@@ -2,7 +2,7 @@
 
 欢迎来到 Refina 互动教程！
 
-本教程的目标是让你在浏览器中快速体验使用 Refina 是什么感受， 因此它不会太过深入解释所有细节，如果有些东西你一时无法完全理解，也不必担心。 但是，在完成本教程之后，请务必阅读<a target="_blank" href="/guide/introduction.html">指南</a>，以确保你对涉及的话题有更深入、完整的理解。
+本教程的目标是让你在浏览器中快速体验使用 Refina 是什么感受， 因此它不会太过深入解释所有细节，如果有些东西你一时无法完全理解，也不必担心。 However, after you complete it, make sure to also read the <a target="_blank" href="../guide/introduction.html">Guide</a> which covers each topic in more detail.
 
 ## 前置要求 {#prerequisites}
 
