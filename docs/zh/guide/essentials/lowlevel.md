@@ -12,7 +12,7 @@ import LowlevelVue from "snippets/lowlevel.vue";
 
 :::info
 
-如果一个现有的组件已经满足你的需要，请使用它，因为底层渲染更冗长并容易写错。
+如果一个现有的组件已经满足你的需要，请使用它，因为底层渲染更冗长并容易写错。 函数签名
 
 :::
 
@@ -124,7 +124,7 @@ for (const key in data) {
 
 ## `inner` 参数
 
-**Type**: `Content`
+**类型**: `D<Content>`
 
 元素的内容（即打开、闭合标签之间的东西）。 它可以是：
 
