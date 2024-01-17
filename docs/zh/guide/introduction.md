@@ -1,4 +1,4 @@
-# 简介
+# Introduction
 
 ## 概览
 
@@ -20,7 +20,8 @@ $app.use(Basics)(_ => {
 **结果展示**
 
 <script setup>
-import CounterVue from 'snippets/counter.vue'
+import "@vue/theme";
+import CounterVue from "snippets/counter.vue"
 </script>
 
 <CounterVue />
@@ -39,6 +40,47 @@ import CounterVue from 'snippets/counter.vue'
 
 :::
 
-## 尝试使用 Refina
+## Pick Your Learning Path
 
-你可以在 [**Playground**](/misc/playground) 快速尝试使用 Refina 开发。
+Different developers have different learning styles. Feel free to pick a learning path that suits your preference - although we do recommend going over all of the content, if possible!
+
+<div class="vt-box-container next-steps">
+  <a class="vt-box" href="../tutorial/">
+    <p class="next-steps-link">Try the Tutorial</p>
+    <p class="next-steps-caption">For those who prefer learning things hands-on.</p>
+  </a>
+  <a class="vt-box" href="./quick-start">
+    <p class="next-steps-link">Read the Guide</p>
+    <p class="next-steps-caption">The guide walks you through every aspect of the framework in full detail.</p>
+  </a>
+  <a class="vt-box" href="/misc/playground">
+    <p class="next-steps-link">Playground</p>
+    <p class="next-steps-caption">Explore Refina on your own.</p>
+  </a>
+</div>
+
+<style scoped>
+.next-steps > * {
+  text-decoration: none;
+}
+.next-steps .vt-box {
+  border: 1px solid transparent;
+}
+.next-steps .vt-box:hover {
+  border-color: var(--vp-c-brand);
+  transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+.next-steps-link {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+  margin-bottom: .75em;
+  display: block;
+  color: var(--vp-c-brand);
+}
+.next-steps-caption {
+  margin-bottom: 0;
+  color: var(--vp-c-text-2);
+  transition: color .5s;
+}
+</style>
