@@ -1,12 +1,12 @@
-# Declarative Rendering
+# 声明式渲染
 
-What you see in the editor is a Refina application. A Refina application is created by the `$app` function, which takes a view function as an argument. That view function is the main function of the application, which describes how the HTML should look like and what it should do based on JavaScript state.
+你在编辑器中看到的是一个 Refina 应用。 Refina 应用通过 `$app` 函数创建，其参数是一个视图函数。 这个视图函数就是应用的主函数，它根据 JavaScript 的状态来描述 HTML 应该是什么样子、要做什么事情。
 
-The view function is called every time the state changes or an event should be received.
+每当接收事件和更新视图时，应用的主函数都会被调用。
 
-To render components, you can use the `Basics` plugin in `@refina/basic-components` package. It provides a set of basic components that you can use to build your application.
+此处安装了 `@refina/basic-components` 包的 `Basics` 插件， 它提供了一系列简单的组件，帮助你快速构建页面。
 
-Each of the components has a corresponding function on the `_` parameter, which we call a context object. Simply calling the function will render the component:
+每个组件在视图函数的第一个参数上有一个对应的组件函数。这个参数是上下文对象，它必须被命名为 `_`。 简单地调用组件函数会渲染组件。
 
 ```ts
 $app.use(Basics)(_ => {
@@ -18,7 +18,7 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Some parameters of the component represent `Content`s. You can pass a string, a number or a view function to it:
+组件的一些参数代表“内容”（子元素）。 你可以向它们传入字符串、数字或者是视图函数。
 
 ```ts
 $app.use(Basics)(_ => {
@@ -36,11 +36,11 @@ $app.use(Basics)(_ => {
 });
 ```
 
-To render a text node, you can use the `_.t` function, which can also be a tag function:
+你还可以使用 `_.t` 函数来渲染一个文本节点。`_.t` 也可以作为标签函数使用：
 
 ```ts
 _.t("Hello world!");
 _.t`Hello world!`;
 ```
 
-Now, try to create an application yourself, and render some components in it.
+现在，试着自己创建一个应用，并渲染一些组件。
