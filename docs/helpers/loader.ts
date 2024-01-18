@@ -1,18 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { ExampleData } from "../helpers/utils";
-
-export declare const data: Record<string, ExampleData>;
-
-export { ExampleData };
-
-export default {
-  watch: "src/**",
-  load() {
-    const srcDir = path.resolve(__dirname, "./src");
-    return readExamples(srcDir);
-  },
-};
+import * as fs from "node:fs";
+import * as path from "node:path";
+import type { ExampleData } from "./utils";
 
 export function readExamples(srcDir: string): Record<string, ExampleData> {
   const examples = fs.readdirSync(srcDir);

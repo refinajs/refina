@@ -1,6 +1,7 @@
-import path from "path";
+import * as path from "path";
 import { createMarkdownRenderer } from "vitepress";
-import { readExamples, ExampleData } from "../examples/examples.data";
+import { readExamples } from "../helpers/loader";
+import type { ExampleData } from "../helpers/utils";
 
 export declare const data: Record<string, ExampleData>;
 
