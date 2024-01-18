@@ -2,6 +2,7 @@
 import Basics from "@refina/basic-components";
 import { $app, model } from "refina";
 import logo from "../assets/github-mark-white.svg";
+import "./styles.css";
 
 function login() {
   loading = true;

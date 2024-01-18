@@ -1,4 +1,6 @@
+import chalk from "chalk";
 import fs from "fs";
+import lastestVersion from "latest-version";
 import path from "path";
 import prompts from "prompts";
 import basicsApp from "./templates/app/basics";
@@ -9,19 +11,17 @@ import extensionsRaw from "./templates/extensions";
 import gitignoreRaw from "./templates/gitignore";
 import baseHTML from "./templates/html/base";
 import mduiHeader from "./templates/html/mdui";
-import tailwindHead from "./templates/html/tailwind";
 import postcssConfigRaw from "./templates/postcssConfig";
 import prettierrcRaw from "./templates/prettierrc";
+import readmeRaw from "./templates/readme";
 import settingsRaw from "./templates/settings";
+import stylesRaw from "./templates/styles";
 import tailwindConfigRaw from "./templates/tailwindConfig";
 import tsconfigRaw from "./templates/tsconfig";
 import viteConfigRaw from "./templates/viteConfig";
 import { banner } from "./utils/banner";
-import { isValidPackageName, toValidPackageName } from "./utils/pkgName";
-import readmeRaw from "./templates/readme";
-import chalk from "chalk";
 import { packageManager, runCommand } from "./utils/pkgManager";
-import lastestVersion from "latest-version";
+import { isValidPackageName, toValidPackageName } from "./utils/pkgName";
 
 async function getLatestDependency(packageName: string) {
   return [packageName, `^${await lastestVersion(packageName)}`] as [
@@ -179,9 +179,6 @@ async function main() {
   if (input.components.includes(1)) {
     head += mduiHeader;
   }
-  if (input.useTailwind) {
-    head += tailwindHead(input.components.includes(1));
-  }
   fs.writeFileSync("index.html", baseHTML(head));
 
   fs.mkdirSync("src");
@@ -195,6 +192,11 @@ async function main() {
       : input.components.includes(1)
       ? mduiApp(input.useTailwind)
       : intrinsicApp(input.useTailwind),
+  );
+
+  fs.writeFileSync(
+    "src/styles.css",
+    stylesRaw(input.useTailwind, input.components.includes(1)),
   );
 
   fs.mkdirSync(".vscode");

@@ -4,6 +4,7 @@ export default (tailwind: boolean) => `/**
 
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
+import "./styles.css";
 
 $app.use(Basics)(_ => {${tailwind ? `\n  _.$cls\`text-xl font-bold p-4\`;` : ""}
   _.h1("Hello, Refina!");

@@ -2,9 +2,9 @@ export default (tailwind: boolean) => `/**
  * Refina.js + MdUI
  */
 
-import MdUI from "@refina/mdui";
-import "@refina/mdui/styles.css";
 import { $app, model } from "refina";
+import MdUI from "@refina/mdui";
+import "./styles.css";
 
 let count = 0;
 const username = model("Refina");

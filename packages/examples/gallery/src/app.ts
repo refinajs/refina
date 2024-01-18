@@ -32,19 +32,15 @@ function isExample(id: ExampleId) {
   return location.hash === `#${id}`;
 }
 
-function removeTailwind() {
-  document.getElementById("tailwind-styles")?.remove();
-}
-
 if (isExample("fluentui")) {
-  removeTailwind();
   import("@refina/example-fluentui");
 } else if (isExample("mdui")) {
-  removeTailwind();
   import("@refina/example-mdui");
 } else if (isExample("gh-login")) {
+  import("./tailwind.css");
   import("@refina/example-gh-login");
 } else {
+  import("./tailwind.css");
   $app.use(Basics)(_ => {
     _.$root.addCls("p-4");
 

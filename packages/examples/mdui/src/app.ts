@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import MdUI, { CheckboxState } from "@refina/mdui";
-import "@refina/mdui/styles.css";
 import { $app, $view, Content, bySelf, model } from "refina";
+import "./styles.css";
 
 const ShowComponent = $view((_, name: string, inner: Content) => {
   _._div({}, _ => {
