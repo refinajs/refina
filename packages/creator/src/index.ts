@@ -21,6 +21,14 @@ import { isValidPackageName, toValidPackageName } from "./utils/pkgName";
 import readmeRaw from "./templates/readme";
 import chalk from "chalk";
 import { packageManager, runCommand } from "./utils/pkgManager";
+import lastestVersion from "latest-version";
+
+async function getLatestDependency(packageName: string) {
+  return [packageName, `^${await lastestVersion(packageName)}`] as [
+    string,
+    string,
+  ];
+}
 
 async function main() {
   console.log();
@@ -100,12 +108,12 @@ async function main() {
   process.chdir(root);
 
   type Dependency = [name: string, version: string];
-  const dependencies: Dependency[] = [["refina", "^0.3.0"]];
+  const dependencies: Dependency[] = [await getLatestDependency("refina")];
   const devDependencies: Dependency[] = [
     ["vite", "^4.4.0"],
-    ["typescript", "^5.3.0"],
-    ["@refina/tsconfig", "^0.1.0"],
-    ["vite-plugin-refina", "^0.2.0"],
+    await getLatestDependency("typescript"),
+    await getLatestDependency("@refina/tsconfig"),
+    await getLatestDependency("vite-plugin-refina"),
   ];
   const toDepObject = (dependencies: Dependency[]) =>
     Object.fromEntries(
@@ -113,10 +121,10 @@ async function main() {
     );
 
   if (input.components.includes(0)) {
-    dependencies.push(["@refina/basic-components", "^0.2.0"]);
+    dependencies.push(await getLatestDependency("@refina/basic-components"));
   }
   if (input.components.includes(1)) {
-    dependencies.push(["@refina/mdui", "^0.2.0"]);
+    dependencies.push(await getLatestDependency("@refina/mdui"));
   }
   if (input.useTailwind) {
     devDependencies.push(["tailwindcss", "^3.3.3"]);
