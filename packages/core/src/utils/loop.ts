@@ -1,6 +1,6 @@
 import { RefTreeNode } from "../app";
 import { Prelude } from "../constants";
-import { LowlevelContext } from "../context";
+import type { IntrinsicBaseContext } from "../context";
 
 type AvaliableKeyImpl<T, K extends keyof T> = K extends any
   ? T[K] extends string | number
@@ -35,7 +35,7 @@ type LoopRefTreeNodeMap = Record<string, RefTreeNode>;
 
 Prelude.registerFunc("for", function <
   T,
->(this: LowlevelContext, ckey: string, iterable: Iterable<T>, key: LoopKey<T>, body: (item: T, index: number) => void) {
+>(this: IntrinsicBaseContext, ckey: string, iterable: Iterable<T>, key: LoopKey<T>, body: (item: T, index: number) => void) {
   this.$$currentRefTreeNode[ckey] ??= {};
   const refTreeNodes = this.$$currentRefTreeNode[ckey] as LoopRefTreeNodeMap;
   const parentRefTreeNode = this.$$currentRefTreeNode;

@@ -1,10 +1,5 @@
 import { App, RefTreeNode } from "../app";
-import {
-  Context,
-  ContextState,
-  InitialContextState,
-  LowlevelContext,
-} from "../context";
+import { Context, ContextState, InitialContextState } from "../context";
 import { DOMElementComponent } from "../dom";
 
 /**
@@ -138,14 +133,6 @@ export type ComponentContext<
   N extends keyof Components,
   CS extends ContextState = InitialContextState,
 > = Context<CS> & ComponentOnlyContextFuncs<N>;
-
-/**
- * The full component context type, with context funcs and lowlevel APIs.
- */
-export type LowlevelComponentContext<
-  N extends keyof Components,
-  CS extends ContextState = InitialContextState,
-> = LowlevelContext<CS> & ComponentOnlyContextFuncs<N>;
 
 export interface ComponentRefTypeRawMap {}
 

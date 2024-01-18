@@ -18,7 +18,7 @@ import {
 export interface IntrinsicRecvContext<
   CS extends ContextState = InitialContextState,
 > extends IntrinsicBaseContext<CS> {
-  $lowlevel: LowlevelRecvContext;
+  $lowlevel: IntrinsicRecvContext;
 
   /**
    * The receiver of the event.
@@ -44,12 +44,6 @@ export interface IntrinsicRecvContext<
  */
 export type RecvContext<CS extends ContextState = InitialContextState> =
   Readonly<Omit<IntrinsicRecvContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
-
-/**
- * The full context type in `RECV` state, with context funcs and lowlevel APIs.
- */
-export type LowlevelRecvContext<CS extends ContextState = InitialContextState> =
-  IntrinsicRecvContext<CS> & ContextFuncs<CS>;
 
 /**
  * Initialize a context in `RECV` state.

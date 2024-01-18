@@ -1,5 +1,5 @@
 import { Prelude } from "../constants";
-import { LowlevelContext } from "../context";
+import type { IntrinsicBaseContext } from "../context";
 import { JustModel, model } from "../data";
 
 declare module "../context/base" {
@@ -15,7 +15,7 @@ declare module "../context/base" {
 
 Prelude.registerFunc("useModel", function <
   T,
->(this: LowlevelContext, ckey: string, init: T) {
+>(this: IntrinsicBaseContext, ckey: string, init: T) {
   const refTreeNode = this.$$currentRefTreeNode;
   if (!refTreeNode[ckey]) {
     refTreeNode[ckey] = model(init);

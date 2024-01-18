@@ -6,7 +6,7 @@ import {
   ComponentMainFunc,
 } from "../component";
 import { AppState } from "../constants";
-import { Model, Ref } from "../data";
+import { Ref } from "../data";
 import type { RecvContext } from "./recv";
 import type { UpdateContext } from "./update";
 
@@ -97,7 +97,10 @@ export interface InitialContextState extends ContextState {
  * }
  * ```
  */
-export interface ContextFuncs<C extends ContextState> {}
+export interface ContextFuncs<C extends ContextState> {
+  <V>(callee: ContextDirectCallee<V>): V;
+  <K extends keyof this>(name: K): this[K];
+}
 
 /**
  * Get the real context function type from the transformed context function type.
@@ -108,7 +111,7 @@ export interface ContextFuncs<C extends ContextState> {}
  */
 export type ToRealContextFunc<
   N extends keyof ContextFuncs<any>,
-  Ctx = LowlevelContext,
+  Ctx = IntrinsicBaseContext,
 > = N extends `$${string}`
   ? never
   : ContextFuncs<any>[N] extends (...args: infer Args) => infer RetVal
@@ -178,7 +181,7 @@ export interface IntrinsicBaseContext<
   /**
    * The lowlevel context.
    */
-  $lowlevel: LowlevelContext;
+  $lowlevel: IntrinsicBaseContext;
 
   /**
    * If the context is in `UPDATE` state, it is the update context.
@@ -470,25 +473,13 @@ export type ContextDirectCallee<V> = (
   ckey: string,
 ) => V;
 
-interface ContextDirectCall {
-  <V>(callee: ContextDirectCallee<V>): V;
-  <K extends keyof this>(name: K): this[K];
-}
-
 /**
  * The full context type, with context funcs.
  */
 export type Context<CS extends ContextState = InitialContextState> = Readonly<
   Omit<IntrinsicBaseContext<CS>, `$$${string}`>
 > &
-  ContextFuncs<CS> &
-  ContextDirectCall;
-
-/**
- * The full context type, with context funcs and lowlevel APIs.
- */
-export type LowlevelContext<CS extends ContextState = InitialContextState> =
-  IntrinsicBaseContext<CS> & ContextFuncs<CS>;
+  ContextFuncs<CS>;
 
 /**
  * Initialize a context.
@@ -499,7 +490,7 @@ export function initializeBaseContext(context: IntrinsicBaseContext, app: App) {
   context._ = context as unknown as Context;
   context.$app = app;
   context.$appState = app.state;
-  context.$lowlevel = context as unknown as LowlevelContext;
+  context.$lowlevel = context;
   context.$update = app.update;
   context.$updateModel = app.updateModel;
   context.$permanentData = app.permanentData;
@@ -534,7 +525,8 @@ export function initializeBaseContext(context: IntrinsicBaseContext, app: App) {
   context.$$d = (
     ckey: string,
     nameOrCallee:
-      | keyof LowlevelContext
+      | keyof IntrinsicBaseContext
+      | keyof ContextFuncs<InitialContextState>
       | ((this: IntrinsicBaseContext, ckey: string) => unknown),
   ) => {
     if (typeof nameOrCallee === "function") {

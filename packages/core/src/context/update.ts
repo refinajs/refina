@@ -26,7 +26,7 @@ import {
 export interface IntrinsicUpdateContext<
   CS extends ContextState = InitialContextState,
 > extends IntrinsicBaseContext<CS> {
-  $lowlevel: LowlevelUpdateContext;
+  $lowlevel: IntrinsicUpdateContext;
 
   /**
    * The current parent DOM element.
@@ -148,13 +148,6 @@ export interface IntrinsicUpdateContext<
  */
 export type UpdateContext<CS extends ContextState = InitialContextState> =
   Readonly<Omit<IntrinsicUpdateContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
-
-/**
- * The full context type in `UPDATE` state, with context funcs and lowlevel APIs.
- */
-export type LowlevelUpdateContext<
-  CS extends ContextState = InitialContextState,
-> = IntrinsicUpdateContext<CS> & ContextFuncs<CS>;
 
 /**
  * Intialize the context in `UPDATE` state.
