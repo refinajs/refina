@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@refina/basic-components": "workspace:^",
-    "@refina/repl": "^0.0.6",
+    "@refina/repl": "^0.0.7",
     "@vue/theme": "^2.2.5",
     "refina": "workspace:^",
     "vue": "^3.3.9"
