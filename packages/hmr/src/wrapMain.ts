@@ -18,20 +18,14 @@ export function ${initFuncId}(app, locals) {
   ${localsObjId} = locals;
 }
 
-if (import.meta.hot) {
-  import.meta.hot.accept((newMainModule) => {
-    newMainModule.${initFuncId}(${appInstDeafultId}, ${localsObjId});
-    const newMain = newMainModule.${mainFuncId}(${localsObjId});
-    if(${appInstDeafultId}.state !== "idle") {
-      ${appInstDeafultId}.promises.mainExecuted.then(() => {
-        ${appInstDeafultId}.main = newMain;
-        ${appInstDeafultId}.update();
-      })
-    } else {
-      ${appInstDeafultId}.main = newMain;
-      ${appInstDeafultId}.update();
-    }
-  });
-}
+import.meta.hot?.accept(async (newMainModule) => {
+  newMainModule.${initFuncId}(${appInstDeafultId}, ${localsObjId});
+  const newMain = newMainModule.${mainFuncId}(${localsObjId});
+  if(${appInstDeafultId}.state !== "idle") {
+    await ${appInstDeafultId}.promises.mainExecuted;
+  }
+  ${appInstDeafultId}.main = newMain;
+   ${appInstDeafultId}.update();
+});
 `);
 }
