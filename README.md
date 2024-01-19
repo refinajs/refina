@@ -1,37 +1,27 @@
-# Refina.js
+# Refina.js [![npm](https://img.shields.io/npm/v/refina?label=core&color=green)](https://www.npmjs.com/package/refina)
 
-![npm](https://img.shields.io/npm/v/refina?label=core&color=green)
+_An extremely **refined** web framework._
+
+Yet another web framework? Yes, but it's different from others **from the ground up**. 🆕
+
+⚡ **`1.4x~1.6x`** development efficiency.
+
+💡 No need to use `ref()`, states can be Intrinsic JS values.
+
+🧩 No new syntax, use plain TypeScript or JavaScript.
+
+🔑 Fully Typed APIs.
+
+🔥 Hot Module Replacement.
+
+✍️ No closing tags.
+
+🪗 Use positional parameters, rather than named parameters.
 
 [**Documentation**](https://refina.vercel.app/) |
-[**Examples**](https://gallery.refina.vercel.app/) |
+[**中文文档**](https://refinajs.github.io/refina/zh/) |
 [**Get Started**](https://refina.vercel.app/guide/introduction.html) |
 [**Why Refina**](https://refina.vercel.app/guide/why.html)
-
-### 🆕 An extremely **refined** web framework. 🆕
-
-⚡ Line of code reduced to about `60%~70%` of traditional frameworks. _(Approximately, based on real projects)_
-
-⚡ Development efficiency is `1.4x~1.6x` of traditional frameworks. _(Approximately, based on real projects)_
-
-✅ ImGUI-like state management, which gives you the experience like Svelte, but with much less code.
-
-✅ No DSL like JSX or Vue SFC, just plain TypeScript, with a little bit comptime transformation.
-
-✅ Full TypeScript support, everything is typed, even some dynamic states.
-
-✅ No need to write any end tags.
-
-✅ Use positional parameters, which are more concise than named parameters.
-
-📦 The adaptation of [MdUI v2](https://github.com/zdhxiong/mdui) component library is available.
-
-📦 The rewrite of [Fluent UI v9](https://react.fluentui.dev/) component library is partially available.
-
-🛢️ Work well with [Tailwind CSS](https://tailwindcss.com/).
-
-🛢️ You can also use the CSS-in-JS library [Griffel](https://griffel.js.org/).
-
-🛠️ Work well with [Vite](https://vitejs.dev/).
 
 ## Example
 
@@ -48,7 +38,7 @@ $app.use(Basics)(_ => {
   _.textInput(name);
 
   if (_.button("Click me!", name.length === 0)) {
-    // returns true if the button is clicked
+    // when the button is clicked
     count++;
     console.log(_.$ev);
     // (TS)        ^? :MouseEvent
@@ -61,11 +51,40 @@ $app.use(Basics)(_ => {
 });
 ```
 
-> There are more examples in the [documentation](https://refina.vercel.app/).
+### Getting Started
 
-## Refina.js 简介
+You can:
 
-> 注：以下是一些早期的设计理念，部分内容已过时。
+- Read the [Documentation](https://refina.vercel.app/) ([中文翻译](https://refinajs.github.io/refina/zh/)).
+
+- Try the [Tutorial](https://refina.vercel.app/tutorial) ([中文翻译](https://refinajs.github.io/refina/zh/tutorial)).
+
+- Try the [Playground](https://refina.vercel.app/misc/playground) ([国内版](https://refinajs.github.io/refina/zh/misc/playground)).
+
+- Run `pnpm create refina@latest` to create a new project.
+
+### Ecosystem
+
+📦 Basic components are available. ([EXAMPLE](https://gallery.refina.vercel.app/#gh-login) |
+[NPM](https://www.npmjs.com/package/@refina/basic-components))
+
+📦 The adaptation of [MdUI v2](https://github.com/zdhxiong/mdui) component library is available.
+([EXAMPLE](https://gallery.refina.vercel.app/#mdui) |
+[NPM](https://www.npmjs.com/package/@refina/mdui))
+
+📦 The rewrite of [Fluent UI v9](https://react.fluentui.dev/) component library is partially available.
+([EXAMPLE](https://gallery.refina.vercel.app/#fluentui))
+
+🛢️ Work well with [Tailwind CSS](https://tailwindcss.com/).
+([EXAMPLE](https://gallery.refina.vercel.app/#gh-login))
+
+🛢️ You can also use the CSS-in-JS library [Griffel](https://griffel.js.org/).
+
+🛠️ Work well with [Vite](https://vitejs.dev/). ([PLUGIN](https://www.npmjs.com/package/vite-plugin-refina))
+
+### 设计理念
+
+> 注：以下是一些较早期的设计理念，部分内容已被更新代替。
 
 ### 有许多成熟的前端框架，还需要一个新的吗？
 
