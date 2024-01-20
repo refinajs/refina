@@ -1,5 +1,5 @@
 import { Content, MainElRef, Model, byIndex, ref, valueOf } from "refina";
-import FluentUI from "../../plugin";
+import FluentUI from "../../../plugin";
 import { tabIndicatorCssVars } from "./indicator.styles";
 import useStyles from "./styles";
 

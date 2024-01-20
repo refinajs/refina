@@ -5,7 +5,7 @@ import {
   makeStyles,
   shorthands,
 } from "@refina/griffel";
-import { createFocusOutlineStyle } from "../../focus";
+import { createFocusOutlineStyle } from "../../../focus";
 
 export const dialogTitleClassNames = {
   root: "fui-DialogTitle",

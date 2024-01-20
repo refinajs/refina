@@ -1,5 +1,5 @@
 import { Content } from "refina";
-import FluentUI from "../../plugin";
+import FluentUI from "../../../plugin";
 import useSurfaceStyles from "./styles";
 
 declare module "refina" {

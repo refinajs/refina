@@ -1,6 +1,6 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
 import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
-import { createCustomFocusIndicatorStyle } from "../../focus";
+import { createCustomFocusIndicatorStyle } from "../../../focus";
 import { activeIndicatorStyles as activeIndicatorStyles2 } from "../tabList/indicator.styles";
 
 export const tabClassNames = {

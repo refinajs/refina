@@ -4,7 +4,7 @@ import {
   makeStyles,
   shorthands,
 } from "@refina/griffel";
-import { DIALOG_GAP, MEDIA_QUERY_BREAKPOINT_SELECTOR } from "./constants";
+import { DIALOG_GAP, MEDIA_QUERY_BREAKPOINT_SELECTOR } from "../constants";
 
 export const dialogActionsClassNames = {
   root: "fui-DialogActions",

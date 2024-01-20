@@ -1,6 +1,6 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
 import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
-import { createFocusOutlineStyle } from "../../focus";
+import { createFocusOutlineStyle } from "../../../focus";
 
 export const accordionHeaderClassNames = {
   root: "fui-AccordionHeader",

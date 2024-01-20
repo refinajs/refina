@@ -1,6 +1,6 @@
 import "@refina/fluentui-icons/dismiss.js";
 import { Content, Context } from "refina";
-import FluentUI from "../../plugin";
+import FluentUI from "../../../plugin";
 import useActionsStyles from "./actions.styles";
 import useBodyStyles from "./body.styles";
 import useContentStyles from "./content.styles";

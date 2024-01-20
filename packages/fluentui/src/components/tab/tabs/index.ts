@@ -1,5 +1,5 @@
 import { Content } from "refina";
-import FluentUI from "../../plugin";
+import FluentUI from "../../../plugin";
 import useStyles from "./styles";
 
 type _R<T extends readonly any[], U extends readonly any[]> =

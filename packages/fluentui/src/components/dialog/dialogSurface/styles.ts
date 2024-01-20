@@ -5,12 +5,12 @@ import {
   makeStyles,
   shorthands,
 } from "@refina/griffel";
-import { createFocusOutlineStyle } from "../../focus";
+import { createFocusOutlineStyle } from "../../../focus";
 import {
   MEDIA_QUERY_BREAKPOINT_SELECTOR,
   SURFACE_BORDER_WIDTH,
   SURFACE_PADDING,
-} from "../dialogBody/constants";
+} from "../constants";
 
 export const dialogSurfaceClassNames = {
   root: "fui-DialogSurface",

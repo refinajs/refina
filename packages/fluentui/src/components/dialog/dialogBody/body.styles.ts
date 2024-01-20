@@ -3,7 +3,7 @@ import {
   DIALOG_GAP,
   MEDIA_QUERY_BREAKPOINT_SELECTOR,
   SURFACE_PADDING,
-} from "./constants";
+} from "../constants";
 
 export const dialogBodyClassNames = {
   root: "fui-DialogBody",
