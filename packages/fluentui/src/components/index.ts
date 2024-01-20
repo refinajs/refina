@@ -2,7 +2,7 @@ export * from "./accordion";
 export * from "./accordionPanel";
 export * from "./button";
 export * from "./checkbox";
-export * from "./combobox";
+export * from "./dropdown";
 export * from "./dialog";
 export * from "./dialogBody";
 export * from "./dialogSurface";
