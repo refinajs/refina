@@ -1,15 +1,15 @@
 import { tokens } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
-  shorthands,
   makeStyles,
-  mergeClasses,
+  shorthands,
 } from "@refina/griffel";
 import { createFocusOutlineStyle } from "../../focus";
 import {
-  SURFACE_PADDING,
-  SURFACE_BORDER_WIDTH,
   MEDIA_QUERY_BREAKPOINT_SELECTOR,
+  SURFACE_BORDER_WIDTH,
+  SURFACE_PADDING,
 } from "../dialogBody/constants";
 
 export const dialogSurfaceClassNames = {
@@ -68,12 +68,12 @@ const backdropResetStyles = makeResetStyles({
   position: "fixed",
 });
 
-export default {
-  root: mergeClasses(dialogSurfaceClassNames.root, surfaceResetStyles),
-  backdrop: (isNestedDialog: boolean) =>
-    mergeClasses(
+export default (isNestedDialog: boolean) =>
+  defineStyles({
+    root: [dialogSurfaceClassNames.root, surfaceResetStyles],
+    backdrop: [
       dialogSurfaceClassNames.backdrop,
       backdropResetStyles,
       isNestedDialog && backdropStyles.nestedDialogBackdrop,
-    ),
-};
+    ],
+  });

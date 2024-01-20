@@ -1,6 +1,6 @@
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import { FButtonApperance, FButtonShape } from "./types";
 
 declare module "refina" {
@@ -22,7 +22,9 @@ FluentUI.triggerComponents.fButton = function (_) {
     shape = "rounded",
     appearance = "secondary",
   ) => {
-    styles.root(shape, appearance, false, disabled, false)(_);
+    const styles = useStyles(shape, appearance, false, disabled, false);
+
+    styles.root();
     _._button(
       {
         type: "button",

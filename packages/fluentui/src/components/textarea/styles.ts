@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { FTextareaAppearance, FTextareaResize } from "./types";
 
 export const textareaClassNames = {
@@ -262,14 +262,15 @@ const textareaResizeStyles = makeStyles({
   },
 });
 
-export default {
-  root: (
-    disabled: boolean,
-    filled: boolean,
-    invalid: boolean,
-    appearance: FTextareaAppearance,
-  ) =>
-    mergeClasses(
+export default (
+  disabled: boolean,
+  filled: boolean,
+  invalid: boolean,
+  appearance: FTextareaAppearance,
+  resize: FTextareaResize,
+) =>
+  defineStyles({
+    root: [
       textareaClassNames.root,
       rootStyles.base,
       disabled && rootStyles.disabled,
@@ -278,13 +279,12 @@ export default {
       !disabled && rootStyles.interactive,
       !disabled && appearance === "outline" && rootStyles.outlineInteractive,
       !disabled && invalid && rootStyles.invalid,
-    ),
-  textarea: (disabled: boolean, resize: FTextareaResize) =>
-    mergeClasses(
+    ],
+    textarea: [
       textareaClassNames.textarea,
       textareaStyles.base,
       textareaStyles.medium,
       textareaResizeStyles[resize],
       disabled && textareaStyles.disabled,
-    ),
-};
+    ],
+  });

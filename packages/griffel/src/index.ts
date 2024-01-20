@@ -1,14 +1,14 @@
 import {
   GriffelStyle,
   createDOMRenderer,
+  mergeClasses,
   makeResetStyles as vanillaMakeResetStyles,
   makeStaticStyles as vanillaMakeStaticStyles,
   makeStyles as vanillaMakeStyles,
-  mergeClasses as vanillaMergeClasses,
   type GriffelResetStyle,
   type GriffelStaticStyles,
 } from "@griffel/core";
-import { $clsFunc, Context } from "refina";
+import { getContext } from "refina";
 
 let dir: "ltr" | "rtl" = "ltr";
 export function setDir(newDir: "ltr" | "rtl") {
@@ -32,13 +32,35 @@ export function makeStaticStyles(
   return vanillaMakeStaticStyles(styles)({ renderer });
 }
 
-export function mergeClasses(
-  ...classNames: (string | false | undefined)[]
-): (_: Context) => true {
-  return $clsFunc(vanillaMergeClasses(...classNames));
+export function defineStyles<
+  T extends Record<string, (string | false | undefined)[]>,
+>(
+  styles: T,
+): {
+  [K in Extract<keyof T, string>]: () => true;
+} {
+  const context = getContext();
+  if (!context)
+    throw new Error("defineStyles must be called inside a component");
+  const result = {} as any;
+  if (context.$recvContext) {
+    for (const key in styles) {
+      result[key] = () => true;
+    }
+  } else {
+    for (const key in styles) {
+      result[key] = () => {
+        const cls = mergeClasses(...styles[key]);
+        context.$cls(cls);
+        return true;
+      };
+    }
+  }
+  return result;
 }
 
 export {
+  mergeClasses,
   shorthands,
   type GriffelResetStyle,
   type GriffelStyle,

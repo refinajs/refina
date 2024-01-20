@@ -1,8 +1,8 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
   makeStyles,
-  mergeClasses,
   shorthands,
 } from "@refina/griffel";
 import { FInputAppearance } from "./types";
@@ -262,9 +262,13 @@ const contentStyles = makeStyles({
   },
 });
 
-export default {
-  root: (appearance: FInputAppearance, disabled: boolean, invalid: boolean) =>
-    mergeClasses(
+export default (
+  appearance: FInputAppearance,
+  disabled: boolean,
+  invalid: boolean,
+) =>
+  defineStyles({
+    root: [
       inputClassNames.root,
       rootClassName,
       rootStyles.medium,
@@ -277,25 +281,22 @@ export default {
       appearance === "filled" && rootStyles.filled,
       !disabled && invalid && rootStyles.invalid,
       disabled && rootStyles.disabled,
-    ),
-  input: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    input: [
       inputClassNames.input,
       inputClassName,
       disabled && inputElementStyles.disabled,
-    ),
-  contentBefore: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    contentBefore: [
       inputClassNames.contentBefore,
       contentClassName,
       disabled && contentStyles.disabled,
       contentStyles.medium,
-    ),
-  contentAfter: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    contentAfter: [
       inputClassNames.contentAfter,
       contentClassName,
       disabled && contentStyles.disabled,
       contentStyles.medium,
-    ),
-};
+    ],
+  });

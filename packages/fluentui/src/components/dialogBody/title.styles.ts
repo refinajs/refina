@@ -1,9 +1,9 @@
 import { typographyStyles } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
-  shorthands,
   makeStyles,
-  mergeClasses,
+  shorthands,
 } from "@refina/griffel";
 import { createFocusOutlineStyle } from "../../focus";
 
@@ -62,13 +62,13 @@ export const dialogTitleInternalStyles = makeResetStyles({
   textAlign: "unset",
 });
 
-export default {
-  root: (withoutAction: boolean) =>
-    mergeClasses(
+export default (withoutAction: boolean) =>
+  defineStyles({
+    root: [
       dialogTitleClassNames.root,
       rootResetStyles,
       withoutAction && styles.rootWithoutAction,
-    ),
-  action: mergeClasses(dialogTitleClassNames.action, actionResetStyles),
-  closeButton: mergeClasses(dialogTitleInternalStyles),
-};
+    ],
+    action: [dialogTitleClassNames.action, actionResetStyles],
+    closeButton: [dialogTitleInternalStyles],
+  });

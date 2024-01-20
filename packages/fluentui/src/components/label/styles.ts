@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles } from "@refina/griffel";
 
 export const labelClassNames = {
   root: "fui-Label",
@@ -46,18 +46,17 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: (disabled: boolean) =>
-    mergeClasses(
+export default (disabled: boolean) =>
+  defineStyles({
+    root: [
       labelClassNames.root,
       styles.root,
       disabled && styles.disabled,
       styles.medium,
-    ),
-  required: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    required: [
       labelClassNames.required,
       styles.required,
       disabled && styles.requiredDisabled,
-    ),
-};
+    ],
+  });

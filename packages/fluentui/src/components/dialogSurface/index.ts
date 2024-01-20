@@ -1,6 +1,6 @@
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import dialogSurfaceStyles from "./styles";
+import useSurfaceStyles from "./styles";
 
 declare module "refina" {
   interface Components {
@@ -11,8 +11,10 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fDialogSurface = function (_) {
   return (inner: Content) => {
+    const surfaceStyles = useSurfaceStyles(false);
+
     _.fPortal(_ => {
-      dialogSurfaceStyles.backdrop(false)(_);
+      surfaceStyles.backdrop();
       _._div({
         onmousedown: ev => {
           ev.stopPropagation();
@@ -26,7 +28,7 @@ FluentUI.triggerComponents.fDialogSurface = function (_) {
         },
       });
 
-      dialogSurfaceStyles.root(_);
+      surfaceStyles.root();
       _._div(
         {
           tabIndex: -1,

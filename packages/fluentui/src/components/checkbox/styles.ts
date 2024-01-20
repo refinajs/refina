@@ -1,9 +1,9 @@
 import { tokens } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
   makeStyles,
   shorthands,
-  mergeClasses,
 } from "@refina/griffel";
 import { createFocusOutlineStyle } from "../../focus";
 
@@ -198,9 +198,9 @@ const labelStyles = makeStyles({
   },
 });
 
-export default {
-  root: (disabled: boolean, checked: boolean | "mixed") =>
-    mergeClasses(
+export default (disabled: boolean, checked: boolean | "mixed") =>
+  defineStyles({
+    root: [
       checkboxClassNames.root,
       rootBaseClassName,
       disabled
@@ -210,17 +210,13 @@ export default {
         : checked
         ? rootStyles.checked
         : rootStyles.unchecked,
-    ),
-  input: mergeClasses(
-    checkboxClassNames.input,
-    inputBaseClassName,
-    inputStyles.after,
-  ),
-  indicator: mergeClasses(checkboxClassNames.indicator, indicatorBaseClassName),
-  label: mergeClasses(
-    checkboxClassNames.label,
-    labelStyles.base,
-    labelStyles.medium,
-    labelStyles.after,
-  ),
-};
+    ],
+    input: [checkboxClassNames.input, inputBaseClassName, inputStyles.after],
+    indicator: [checkboxClassNames.indicator, indicatorBaseClassName],
+    label: [
+      checkboxClassNames.label,
+      labelStyles.base,
+      labelStyles.medium,
+      labelStyles.after,
+    ],
+  });

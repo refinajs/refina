@@ -2,7 +2,7 @@
  * WARNING: This style file is non-standard.
  * Copied from https://react.fluentui.dev/?path=/docs/components-tablist--default#with-panels
  */
-import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 
 const styles = makeStyles({
   root: {
@@ -22,7 +22,8 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(styles.root),
-  panels: mergeClasses(styles.panels),
-};
+export default () =>
+  defineStyles({
+    root: [styles.root],
+    panels: [styles.panels],
+  });

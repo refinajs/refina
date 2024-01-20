@@ -1,6 +1,6 @@
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 
 declare module "refina" {
   interface Components {
@@ -16,17 +16,19 @@ declare module "refina" {
 }
 FluentUI.triggerComponents.fTab = function (_) {
   return (selected, content, disabled = false, animating = false) => {
-    styles.root(disabled, selected, animating, false)(_);
+    const styles = useStyles(disabled, selected, animating, false, false);
+
+    styles.root();
     _._button(
       {
         onclick: this.$fireWith(),
         disabled: disabled,
       },
       _ => {
-        styles.content(false, false)(_);
+        styles.content();
         _._span({}, content);
 
-        styles.contentReservedSpace(false)(_);
+        styles.contentReservedSpace();
         _._span({}, content);
       },
     );

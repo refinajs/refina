@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeResetStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeResetStyles, shorthands } from "@refina/griffel";
 
 export const dialogContentClassNames = {
   root: "fui-DialogContent",
@@ -21,6 +21,7 @@ const styles = makeResetStyles({
   gridColumnEnd: 4,
 });
 
-export default {
-  root: mergeClasses(dialogContentClassNames.root, styles),
-};
+export default () =>
+  defineStyles({
+    root: [dialogContentClassNames.root, styles],
+  });

@@ -3,7 +3,7 @@ import "@refina/fluentui-icons/errorCircle.ts";
 import "@refina/fluentui-icons/warning.ts";
 import { Content, Context, View } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import type { FFieldValidationState } from "./types";
 
 const validationMessageIcons = {
@@ -26,17 +26,19 @@ declare module "refina" {
 }
 FluentUI.outputComponents.fField = function (_) {
   return (inner, label, required, state = "none", validationMessage) => {
-    styles.root(_);
+    const styles = useStyles(state, state === "error", state !== "none");
+
+    styles.root();
     _._div({}, _ => {
-      styles.label(_);
+      styles.label();
       _.fLabel(label, required);
 
       _.embed(inner);
 
       if (validationMessage) {
-        styles.validationMessage(state === "error", state !== "none")(_);
+        styles.validationMessage();
         _._div({}, _ => {
-          styles.validationMessageIcon(state)(_);
+          styles.validationMessageIcon();
           _.embed(validationMessageIcons[state]);
 
           _.embed(validationMessage);

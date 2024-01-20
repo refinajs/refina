@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { createFocusOutlineStyle } from "../../focus";
 
 export const sliderClassNames = {
@@ -261,33 +261,27 @@ const inputStyles = makeStyles({
   },
 });
 
-export default {
-  root: (disabled: boolean) =>
-    mergeClasses(
+export default (disabled: boolean) =>
+  defineStyles({
+    root: [
       sliderClassNames.root,
       rootStyles.root,
       rootStyles.focusIndicatorHorizontal,
       rootStyles.medium,
       rootStyles.horizontal,
       disabled ? rootStyles.disabled : rootStyles.enabled,
-    ),
-  rail: mergeClasses(
-    sliderClassNames.rail,
-    railStyles.rail,
-    railStyles.horizontal,
-  ),
-  thumb: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    rail: [sliderClassNames.rail, railStyles.rail, railStyles.horizontal],
+    thumb: [
       sliderClassNames.thumb,
       thumbStyles.thumb,
       thumbStyles.horizontal,
       disabled && thumbStyles.disabled,
-    ),
-  input: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    input: [
       sliderClassNames.input,
       inputStyles.input,
       inputStyles.horizontal,
       disabled && inputStyles.disabled,
-    ),
-};
+    ],
+  });

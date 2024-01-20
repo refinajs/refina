@@ -1,6 +1,6 @@
 import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import { FTextareaAppearance, FTextareaResize } from "./types";
 
 declare module "refina" {
@@ -25,14 +25,17 @@ FluentUI.triggerComponents.fTextarea = function (_) {
     resize = "none",
     appearance = "outline",
   ) => {
-    styles.root(
+    const styles = useStyles(
       disabled,
       appearance.startsWith("filled"),
       false,
       appearance,
-    )(_);
+      resize,
+    );
+
+    styles.root();
     _._span({}, _ => {
-      styles.textarea(disabled, resize)(_);
+      styles.textarea();
       _.$ref(inputRef) &&
         _._textarea({
           value: valueOf(value),

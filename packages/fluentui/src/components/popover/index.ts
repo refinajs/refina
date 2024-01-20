@@ -9,7 +9,7 @@ import {
   valueOf,
 } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 
 declare module "refina" {
   interface Components {
@@ -33,6 +33,8 @@ FluentUI.triggerComponents.fControlledPopover = function (_) {
     inner,
     // withArrow = false,
   ) => {
+    const styles = useStyles("medium");
+
     const close = () => {
       _.$updateModel(open, false);
       this.$fire();
@@ -72,7 +74,7 @@ FluentUI.triggerComponents.fControlledPopover = function (_) {
       });
 
       _.fPortal(_ => {
-        styles.root("medium")(_);
+        styles.root();
         _.$ref(contentRef) &&
           _._div(
             {

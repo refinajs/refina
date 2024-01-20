@@ -1,7 +1,7 @@
 import { Content, MainElRef, Model, byIndex, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
 import { tabIndicatorCssVars } from "./indicator.styles";
-import styles from "./styles";
+import useStyles from "./styles";
 
 interface Rect {
   x: number;
@@ -47,7 +47,9 @@ FluentUI.triggerComponents.fTabList = function (_) {
     const tabDisabled =
       typeof disabled === "boolean" ? [] : disabled.map(d => d ?? false);
 
-    styles.root(tabListDisabled)(_);
+    const styles = useStyles(tabListDisabled);
+
+    styles.root();
     _._div({}, _ =>
       _.for(contents, byIndex, (content, index) => {
         let tabRef = tabRefs.get(index);

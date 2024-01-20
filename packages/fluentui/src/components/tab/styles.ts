@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { createCustomFocusIndicatorStyle } from "../../focus";
 import { activeIndicatorStyles as activeIndicatorStyles2 } from "../tabList/indicator.styles";
 
@@ -455,14 +455,15 @@ const contentStyles = makeStyles({
 /**
  * Apply styling to the Tab slots based on the state
  */
-export default {
-  root: (
-    disabled: boolean,
-    selected: boolean,
-    animating: boolean,
-    vertical: boolean,
-  ) =>
-    mergeClasses(
+export default (
+  disabled: boolean,
+  selected: boolean,
+  animating: boolean,
+  vertical: boolean,
+  hasIcon: boolean,
+) =>
+  defineStyles({
+    root: [
       tabClassNames.root,
       rootStyles.base,
       vertical ? rootStyles.vertical : rootStyles.horizontal,
@@ -499,37 +500,34 @@ export default {
                 ? activeIndicatorStyles2.vertical
                 : activeIndicatorStyles2.horizontal),
           ]),
-    ),
+    ],
 
-  icon: (selected: boolean) =>
-    mergeClasses(
+    icon: [
       tabClassNames.icon,
       iconStyles.base,
       iconStyles.medium,
       selected && iconStyles.selected,
-    ),
+    ],
 
-  // This needs to be before content.className is updated
-  contentReservedSpace: (hasIcon: boolean) =>
-    mergeClasses(
+    // This needs to be before content.className is updated
+    contentReservedSpace: [
       reservedSpaceClassNames.content,
       contentStyles.base,
       hasIcon ? contentStyles.iconBefore : contentStyles.noIconBefore,
       contentStyles.placeholder,
-    ),
+    ],
 
-  // FIXME: this is a deprecated API
-  // should be removed in the next major version
-  // eslint-disable-next-line deprecation/deprecation
-  //contentReservedSpaceClassName = contentReservedSpace.className,
+    // FIXME: this is a deprecated API
+    // should be removed in the next major version
+    // eslint-disable-next-line deprecation/deprecation
+    //contentReservedSpaceClassName = contentReservedSpace.className,
 
-  content: (selected: boolean, hasIcon: boolean) =>
-    mergeClasses(
+    content: [
       tabClassNames.content,
       contentStyles.base,
       selected && contentStyles.selected,
       hasIcon ? contentStyles.iconBefore : contentStyles.noIconBefore,
-    ),
+    ],
 
-  // useTabAnimatedIndicatorStyles_unstable(state);
-};
+    // useTabAnimatedIndicatorStyles_unstable(state);
+  });

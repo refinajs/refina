@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { createFocusOutlineStyle } from "../../focus";
 
 export const accordionHeaderClassNames = {
@@ -106,25 +106,24 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: (disabled: boolean) =>
-    mergeClasses(
+export default (disabled: boolean) =>
+  defineStyles({
+    root: [
       accordionHeaderClassNames.root,
       styles.root,
       disabled && styles.rootDisabled,
-    ),
-  button: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    button: [
       accordionHeaderClassNames.button,
       styles.resetButton,
       styles.button,
       styles.focusIndicator,
       disabled && styles.buttonDisabled,
-    ),
-  expandIcon: mergeClasses(
-    accordionHeaderClassNames.expandIcon,
-    styles.expandIcon,
-    styles.expandIconStart,
-  ),
-  icon: mergeClasses(accordionHeaderClassNames.icon, styles.icon),
-};
+    ],
+    expandIcon: [
+      accordionHeaderClassNames.expandIcon,
+      styles.expandIcon,
+      styles.expandIconStart,
+    ],
+    icon: [accordionHeaderClassNames.icon, styles.icon],
+  });

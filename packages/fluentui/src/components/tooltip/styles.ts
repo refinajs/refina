@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { createArrowStyles } from "../../positioning";
 import { arrowHeight } from "./constants";
 
@@ -45,12 +45,12 @@ const styles = makeStyles({
   arrow: createArrowStyles({ arrowHeight }),
 });
 
-export default {
-  content: (visible: boolean) =>
-    mergeClasses(
+export default (visible: boolean) =>
+  defineStyles({
+    content: [
       tooltipClassNames.content,
       styles.root,
       visible && styles.visible,
-    ),
-  arrowClassName: mergeClasses(styles.arrow),
-};
+    ],
+    arrowClassName: [styles.arrow],
+  });

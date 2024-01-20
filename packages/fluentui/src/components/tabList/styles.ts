@@ -1,4 +1,4 @@
-import { makeStyles, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles } from "@refina/griffel";
 
 export const tabListClassNames = {
   root: "fui-TabList",
@@ -28,11 +28,11 @@ const styles = makeStyles({
 /**
  * Apply styling to the TabList slots based on the state
  */
-export default {
-  root: (vertical: boolean) =>
-    mergeClasses(
+export default (vertical: boolean) =>
+  defineStyles({
+    root: [
       tabListClassNames.root,
       styles.root,
       vertical ? styles.vertical : styles.horizontal,
-    ),
-};
+    ],
+  });

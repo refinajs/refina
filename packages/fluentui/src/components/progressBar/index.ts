@@ -1,5 +1,5 @@
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import { FProgressBarColor, FProgressBarValue } from "./types";
 
 declare module "refina" {
@@ -9,9 +9,11 @@ declare module "refina" {
 }
 FluentUI.outputComponents.fProgressBar = function (_) {
   return (value, color) => {
-    styles.root(_);
+    const styles = useStyles(value, color);
+
+    styles.root();
     _._div({}, _ => {
-      styles.bar(value, color)(_);
+      styles.bar();
       if (value !== "indertermine")
         _.$css(`width: ${Math.min(100, Math.max(0, value * 100))}%`);
       _._div();

@@ -1,6 +1,6 @@
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 
 declare module "refina" {
   interface Components {
@@ -9,6 +9,7 @@ declare module "refina" {
 }
 FluentUI.outputComponents.fPortal = function (_) {
   return inner => {
-    _.portal(_ => styles.root(_) && _._div({}, inner));
+    const styles = useStyles();
+    _.portal(_ => styles.root() && _._div({}, inner));
   };
 };

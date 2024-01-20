@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 
 export const accordionPanelClassNames = {
   root: "fui-AccordionPanel",
@@ -14,6 +14,7 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(accordionPanelClassNames.root, styles.root),
-};
+export default () =>
+  defineStyles({
+    root: [accordionPanelClassNames.root, styles.root],
+  });

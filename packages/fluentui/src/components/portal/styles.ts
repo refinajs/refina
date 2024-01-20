@@ -1,4 +1,4 @@
-import { makeStyles, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles } from "@refina/griffel";
 
 const portalMountNodeStyles = makeStyles({
   root: {
@@ -15,6 +15,7 @@ const portalMountNodeStyles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(portalMountNodeStyles.root),
-};
+export default () =>
+  defineStyles({
+    root: [portalMountNodeStyles.root],
+  });

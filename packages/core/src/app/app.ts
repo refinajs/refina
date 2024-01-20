@@ -254,6 +254,7 @@ export class App {
    */
   protected execMain() {
     try {
+      currentContext = this.context._;
       this.callHook("beforeMain");
       this.main(this.context as unknown as Context);
       if (import.meta.env.DEV) {
@@ -263,6 +264,7 @@ export class App {
         }
       }
       this.callHook("afterMain");
+      currentContext = undefined;
     } catch (e) {
       // Do not throw the error to make sure the cleanup code is executed.
       this.callHook("onError", e);
@@ -393,4 +395,15 @@ export class App {
       return false;
     }
   }
+}
+
+let currentContext: Context | undefined = undefined;
+
+/**
+ * Get the current context.
+ *
+ * @returns The current context.
+ */
+export function getContext(): Context | undefined {
+  return currentContext;
 }

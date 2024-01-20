@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 
 export const optionClassNames = {
   root: "fui-Option",
@@ -126,27 +126,27 @@ const styles = makeStyles({
 /**
  * Apply styling to the Option slots based on the state
  */
-export default {
-  root: (
-    active: boolean,
-    focusVisible: boolean,
-    disabled: boolean,
-    selected: boolean,
-  ) =>
-    mergeClasses(
+export default (
+  active: boolean,
+  focusVisible: boolean,
+  disabled: boolean,
+  selected: boolean,
+  multiselect: boolean,
+) =>
+  defineStyles({
+    root: [
       optionClassNames.root,
       styles.root,
       active && focusVisible && styles.active,
       disabled && styles.disabled,
       selected && styles.selected,
-    ),
-  checkIcon: (disabled: boolean, selected: boolean, multiselect: boolean) =>
-    mergeClasses(
+    ],
+    checkIcon: [
       optionClassNames.checkIcon,
       styles.checkIcon,
       multiselect && styles.multiselectCheck,
       selected && styles.selectedCheck,
       selected && multiselect && styles.selectedMultiselectCheck,
       disabled && styles.checkDisabled,
-    ),
-};
+    ],
+  });

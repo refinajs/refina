@@ -1,9 +1,9 @@
 import { tokens } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
   makeStyles,
   shorthands,
-  mergeClasses,
 } from "@refina/griffel";
 
 export const switchClassNames = {
@@ -238,17 +238,10 @@ const labelStyles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(switchClassNames.root, rootBaseClassName),
-  indicator: mergeClasses(switchClassNames.indicator, indicatorBaseClassName),
-  input: mergeClasses(
-    switchClassNames.input,
-    inputBaseClassName,
-    inputStyles.after,
-  ),
-  label: mergeClasses(
-    switchClassNames.label,
-    labelStyles.base,
-    labelStyles.after,
-  ),
-};
+export default () =>
+  defineStyles({
+    root: [switchClassNames.root, rootBaseClassName],
+    indicator: [switchClassNames.indicator, indicatorBaseClassName],
+    input: [switchClassNames.input, inputBaseClassName, inputStyles.after],
+    label: [switchClassNames.label, labelStyles.base, labelStyles.after],
+  });

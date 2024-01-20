@@ -10,9 +10,9 @@ import {
   valueOf,
 } from "refina";
 import FluentUI from "../../plugin";
-import listboxStyles from "./listbox.styles";
-import optionStyles from "./option.styles";
-import dropdownStyles from "./styles";
+import useListboxStyles from "./listbox.styles";
+import useOptionStyles from "./option.styles";
+import useDropdownStyles from "./styles";
 import { FDropdownAppearance } from "./types";
 
 /**
@@ -205,13 +205,17 @@ FluentUI.triggerComponents.fDropdown = function (_) {
       this.$fire(option);
     };
 
-    dropdownStyles.root(appearance, rootDisabled, false)(_);
+    const dropdownStyles = useDropdownStyles(
+      appearance,
+      rootDisabled,
+      false,
+      selectedValue === "" && placeholder !== undefined,
+    );
+
+    dropdownStyles.root();
     _.$ref(rootRef) &&
       _._div({}, _ => {
-        dropdownStyles.button(
-          selectedValue === "" && placeholder !== undefined,
-          rootDisabled,
-        )(_);
+        dropdownStyles.button();
         _.$ref(buttonEl, targetRef) &&
           _._button(
             {
@@ -282,15 +286,17 @@ FluentUI.triggerComponents.fDropdown = function (_) {
             _ => {
               _.t(selectedValue === "" ? placeholder ?? "" : selectedValue);
 
-              dropdownStyles.expandIcon(rootDisabled)(_);
+              dropdownStyles.expandIcon();
               _._span({}, _ => _.fiChevronDownRegular());
             },
           );
         if (open) {
+          const listboxStyles = useListboxStyles();
+
           _.fPortal(
             _ =>
-              dropdownStyles.listbox(_) &&
-              listboxStyles.root(_) &&
+              dropdownStyles.listbox() &&
+              listboxStyles.root() &&
               _.$ref(containerRef) &&
               _._div(
                 {
@@ -338,12 +344,16 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                     const active = index === activeIndex;
                     const selected = option === selectedValue;
                     const optionDisabled = disabledOptions.has(index);
-                    optionStyles.root(
+
+                    const optionStyles = useOptionStyles(
                       active,
                       focusVisible,
                       optionDisabled,
                       selected,
-                    )(_);
+                      false,
+                    );
+
+                    optionStyles.root();
                     _._div(
                       {
                         onclick: ev => {
@@ -358,11 +368,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                         },
                       },
                       _ => {
-                        optionStyles.checkIcon(
-                          optionDisabled,
-                          selected,
-                          false,
-                        )(_);
+                        optionStyles.checkIcon();
                         _.fiCheckmarkFilled();
                         _.t(option);
                       },

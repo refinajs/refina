@@ -1,6 +1,6 @@
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 
 type _R<T extends readonly any[], U extends readonly any[]> =
   | readonly []
@@ -40,13 +40,15 @@ FluentUI.triggerComponents.fTabs = function (_) {
       activeTab = names[0] as string;
     }
 
-    styles.root(_);
+    const styles = useStyles();
+
+    styles.root();
     _._div({}, _ => {
       if (_.fTabList(selectedIndex, names, false)) {
         activeTab = names[_.$ev];
         this.$fire(activeTab);
       }
-      styles.panels(_);
+      styles.panels();
       _._div({}, contents[selectedIndex]);
     });
   };

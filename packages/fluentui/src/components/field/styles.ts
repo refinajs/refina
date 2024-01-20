@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, makeResetStyles, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeResetStyles, makeStyles } from "@refina/griffel";
 import { FFieldValidationState } from "./types";
 
 export const fieldClassNames = {
@@ -103,26 +103,25 @@ const validationMessageIconStyles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(fieldClassNames.root, rootStyles.base),
-  label: mergeClasses(
-    fieldClassNames.label,
-    labelStyles.base,
-    labelStyles.vertical,
-  ),
-  validationMessageIcon: (validationState: FFieldValidationState) =>
-    mergeClasses(
+export default (
+  validationState: FFieldValidationState,
+  isError: boolean,
+  hasIcon: boolean,
+) =>
+  defineStyles({
+    root: [fieldClassNames.root, rootStyles.base],
+    label: [fieldClassNames.label, labelStyles.base, labelStyles.vertical],
+    validationMessageIcon: [
       fieldClassNames.validationMessageIcon,
       validationMessageIconBaseClassName,
       validationState !== "none" &&
         validationMessageIconStyles[validationState],
-    ),
-  validationMessage: (isError: boolean, hasIcon: boolean) =>
-    mergeClasses(
+    ],
+    validationMessage: [
       fieldClassNames.validationMessage,
       secondaryTextBaseClassName,
       isError && secondaryTextStyles.error,
       hasIcon && secondaryTextStyles.withIcon,
-    ),
-  hint: mergeClasses(fieldClassNames.hint, secondaryTextBaseClassName),
-};
+    ],
+    hint: [fieldClassNames.hint, secondaryTextBaseClassName],
+  });

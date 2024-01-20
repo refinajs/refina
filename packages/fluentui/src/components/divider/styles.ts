@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { DividerContentAlignment } from "./types";
 
 export const dividerClassNames = {
@@ -239,13 +239,13 @@ const verticalStyles = makeStyles({
   },
 });
 
-export default {
-  root: (
-    alignContent: DividerContentAlignment,
-    vertical: boolean,
-    noChildren: boolean,
-  ) =>
-    mergeClasses(
+export default (
+  alignContent: DividerContentAlignment,
+  vertical: boolean,
+  noChildren: boolean,
+) =>
+  defineStyles({
+    root: [
       dividerClassNames.root,
 
       // Base styles
@@ -266,6 +266,6 @@ export default {
 
       // Childless styles
       noChildren && baseStyles.childless,
-    ),
-  wrapper: mergeClasses(dividerClassNames.wrapper),
-};
+    ],
+    wrapper: [dividerClassNames.wrapper],
+  });

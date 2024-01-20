@@ -1,9 +1,9 @@
 import { tokens } from "@fluentui/tokens";
 import {
+  defineStyles,
   makeResetStyles,
   makeStyles,
   shorthands,
-  mergeClasses,
 } from "@refina/griffel";
 import { createCustomFocusIndicatorStyle } from "../../focus";
 import { FButtonApperance, FButtonShape } from "./types";
@@ -531,15 +531,15 @@ const iconStyles = makeStyles({
   },
 });
 
-export default {
-  root: (
-    shape: FButtonShape,
-    appearance: FButtonApperance,
-    iconOnly: boolean,
-    disabled: boolean,
-    disabledFocusable: boolean,
-  ) =>
-    mergeClasses(
+export default (
+  shape: FButtonShape,
+  appearance: FButtonApperance,
+  iconOnly: boolean,
+  disabled: boolean,
+  disabledFocusable: boolean,
+) =>
+  defineStyles({
+    root: [
       buttonClassNames.root,
       rootBaseClassName,
 
@@ -562,13 +562,5 @@ export default {
 
       // Icon-only styles
       iconOnly && rootIconOnlyStyles.medium,
-    ),
-
-  icon: (rootHasChildren: boolean, iconPosition: "before" | "after") =>
-    mergeClasses(
-      buttonClassNames.icon,
-      iconBaseClassName,
-      rootHasChildren && iconStyles[iconPosition],
-      iconStyles.medium,
-    ),
-};
+    ],
+  });

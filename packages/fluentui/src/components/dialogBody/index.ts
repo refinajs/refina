@@ -1,10 +1,10 @@
 import "@refina/fluentui-icons/dismiss.js";
 import { Content, Context } from "refina";
 import FluentUI from "../../plugin";
-import dialogActionsStyles from "./actions.styles";
-import dialogBodyStyles from "./body.styles";
-import dialogContentStyles from "./content.styles";
-import dialogTitleStyles from "./title.styles";
+import useActionsStyles from "./actions.styles";
+import useBodyStyles from "./body.styles";
+import useContentStyles from "./content.styles";
+import useTitleStyles from "./title.styles";
 
 export const fromCloseButtonSym = Symbol("fDialogCloseEventFromCloseButton");
 export type FDialogBodyEventData =
@@ -37,6 +37,11 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
     actionsPosition = "start",
     closeButton = false,
   ) => {
+    const bodyStyles = useBodyStyles();
+    const titleStyles = useTitleStyles(!closeButton);
+    const contentStyles = useContentStyles();
+    const actionsStyles = useActionsStyles(true, actionsPosition);
+
     const wrapper = (
       content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
     ) => {
@@ -46,15 +51,15 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
       return content;
     };
 
-    dialogBodyStyles.root(_);
+    bodyStyles.root();
     _._div({}, _ => {
-      dialogTitleStyles.root(!closeButton)(_);
+      titleStyles.root();
       _._div({}, title);
 
       if (closeButton) {
-        dialogTitleStyles.action(_);
+        titleStyles.action();
         _._div({}, _ => {
-          dialogTitleStyles.closeButton(_);
+          titleStyles.closeButton();
           _._button(
             {
               type: "button",
@@ -65,11 +70,11 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
         });
       }
 
-      dialogContentStyles.root(_);
+      contentStyles.root();
       _._div({}, wrapper(content));
 
       if (actions !== undefined) {
-        dialogActionsStyles.root(true, actionsPosition)(_);
+        actionsStyles.root();
         _._div({}, wrapper(actions));
       }
     });

@@ -1,6 +1,6 @@
 import { DOMElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
-import styles, { sliderCSSVars } from "./styles";
+import useStyles, { sliderCSSVars } from "./styles";
 
 function getPercent(value: number, min: number, max: number) {
   return max === min ? 0 : ((value - min) / (max - min)) * 100;
@@ -28,7 +28,9 @@ FluentUI.triggerComponents.fSlider = function (_) {
   return (value, disabled = false, min = 0, max = 100, step) => {
     const modelValue = valueOf(value);
 
-    styles.root(disabled)(_);
+    const styles = useStyles(disabled);
+
+    styles.root();
     _.$css`
       ${sliderCSSVars.sliderDirectionVar}: 90deg;
       ${
@@ -49,7 +51,7 @@ FluentUI.triggerComponents.fSlider = function (_) {
         _.$updateModel(value, newValue);
         this.$fire(newValue);
       };
-      styles.input(disabled)(_);
+      styles.input();
       _.$ref(inputRef) &&
         _._input({
           type: "range",
@@ -62,10 +64,10 @@ FluentUI.triggerComponents.fSlider = function (_) {
           oninput: onChange,
         });
 
-      styles.rail(_);
+      styles.rail();
       _._div();
 
-      styles.thumb(disabled)(_);
+      styles.thumb();
       _._div();
     });
   };

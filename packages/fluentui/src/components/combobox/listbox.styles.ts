@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 
 export const listboxClassNames = {
   root: "fui-Listbox",
@@ -19,6 +19,7 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: mergeClasses(listboxClassNames.root, styles.root),
-};
+export default () =>
+  defineStyles({
+    root: [listboxClassNames.root, styles.root],
+  });

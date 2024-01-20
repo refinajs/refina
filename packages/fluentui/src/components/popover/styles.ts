@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import {
   createArrowHeightStyles,
   createArrowStyles,
@@ -57,12 +57,12 @@ const styles = makeStyles({
   arrow: createArrowStyles({ arrowHeight: undefined }),
 });
 
-export default {
-  root: (
-    size: "small" | "medium" | "large",
-    appearance?: "inverted" | "brand",
-  ) =>
-    mergeClasses(
+export default (
+  size: "small" | "medium" | "large",
+  appearance?: "inverted" | "brand",
+) =>
+  defineStyles({
+    root: [
       popoverSurfaceClassNames.root,
       styles.root,
       size === "small" && styles.smallPadding,
@@ -70,10 +70,9 @@ export default {
       size === "large" && styles.largePadding,
       appearance === "inverted" && styles.inverted,
       appearance === "brand" && styles.brand,
-    ),
-  arrow: (size: "small" | "medium" | "large") =>
-    mergeClasses(
+    ],
+    arrow: [
       styles.arrow,
       size === "small" ? styles.smallArrow : styles.mediumLargeArrow,
-    ),
-};
+    ],
+  });

@@ -1,5 +1,5 @@
 import { tokens } from "@fluentui/tokens";
-import { makeStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { FProgressBarColor, FProgressBarValue } from "./types";
 
 export const progressBarClassNames = {
@@ -99,15 +99,15 @@ const barStyles = makeStyles({
     backgroundColor: tokens.colorPaletteGreenBackground3,
   },
 });
-export default {
-  root: mergeClasses(
-    progressBarClassNames.root,
-    rootStyles.root,
-    rootStyles.rounded,
-    rootStyles.medium,
-  ),
-  bar: (value: FProgressBarValue, color?: FProgressBarColor) =>
-    mergeClasses(
+export default (value: FProgressBarValue, color?: FProgressBarColor) =>
+  defineStyles({
+    root: [
+      progressBarClassNames.root,
+      rootStyles.root,
+      rootStyles.rounded,
+      rootStyles.medium,
+    ],
+    bar: [
       progressBarClassNames.bar,
       barStyles.base,
       barStyles.brand,
@@ -116,5 +116,5 @@ export default {
         value > ZERO_THRESHOLD &&
         barStyles.nonZeroDeterminate,
       color && value !== "indertermine" && barStyles[color],
-    ),
-};
+    ],
+  });

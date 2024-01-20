@@ -1,8 +1,8 @@
 import {
+  defineStyles,
   makeResetStyles,
-  shorthands,
   makeStyles,
-  mergeClasses,
+  shorthands,
 } from "@refina/griffel";
 import { DIALOG_GAP, MEDIA_QUERY_BREAKPOINT_SELECTOR } from "./constants";
 
@@ -55,14 +55,14 @@ const styles = makeStyles({
   },
 });
 
-export default {
-  root: (fluid: boolean, position: "start" | "end") =>
-    mergeClasses(
+export default (fluid: boolean, position: "start" | "end") =>
+  defineStyles({
+    root: [
       dialogActionsClassNames.root,
       resetStyles,
       position === "start" && styles.gridPositionStart,
       position === "end" && styles.gridPositionEnd,
       fluid && position === "start" && styles.fluidStart,
       fluid && position === "end" && styles.fluidEnd,
-    ),
-};
+    ],
+  });

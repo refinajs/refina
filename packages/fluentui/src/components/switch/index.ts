@@ -1,7 +1,7 @@
 import "@refina/fluentui-icons/circle.ts";
 import { DOMElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 
 declare module "refina" {
   interface Components {
@@ -19,7 +19,9 @@ FluentUI.triggerComponents.fSwitch = function (_) {
   return (label, state, disabled = false) => {
     const stateValue = valueOf(state);
 
-    styles.root(_);
+    const styles = useStyles();
+
+    styles.root();
     _._div(
       {
         onclick: () => {
@@ -31,16 +33,16 @@ FluentUI.triggerComponents.fSwitch = function (_) {
         },
       },
       _ => {
-        styles.input(_);
+        styles.input();
         _.$ref(inputRef) &&
           _._input({
             type: "checkbox",
             disabled: disabled,
             checked: stateValue,
           });
-        styles.indicator(_);
+        styles.indicator();
         _._div({}, _ => _.fiCircleFilled());
-        styles.label(_);
+        styles.label();
         _.fLabel(label);
       },
     );

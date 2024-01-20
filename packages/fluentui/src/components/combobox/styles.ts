@@ -1,5 +1,5 @@
 import { tokens, typographyStyles } from "@fluentui/tokens";
-import { makeStyles, mergeClasses, shorthands } from "@refina/griffel";
+import { defineStyles, makeStyles, shorthands } from "@refina/griffel";
 import { FDropdownAppearance } from "./types";
 import { iconSizes } from "./tokens";
 
@@ -233,13 +233,14 @@ const iconStyles = makeStyles({
   },
 });
 
-export default {
-  root: (
-    appearance: FDropdownAppearance,
-    disabled: boolean,
-    invalid: boolean,
-  ) =>
-    mergeClasses(
+export default (
+  appearance: FDropdownAppearance,
+  disabled: boolean,
+  invalid: boolean,
+  placeholderVisible: boolean,
+) =>
+  defineStyles({
+    root: [
       dropdownClassNames.root,
       styles.root,
       styles[appearance],
@@ -247,28 +248,23 @@ export default {
       invalid && appearance !== "underline" && styles.invalid,
       invalid && appearance === "underline" && styles.invalidUnderline,
       disabled && styles.disabled,
-    ),
-
-  button: (placeholderVisible: boolean, disabled: boolean) =>
-    mergeClasses(
+    ],
+    button: [
       dropdownClassNames.button,
       styles.button,
       styles.medium,
       placeholderVisible && styles.placeholder,
       disabled && styles.disabledText,
-    ),
-
-  listbox: mergeClasses(
-    dropdownClassNames.listbox,
-    styles.listbox,
-    !open && styles.listboxCollapsed,
-  ),
-
-  expandIcon: (disabled: boolean) =>
-    mergeClasses(
+    ],
+    listbox: [
+      dropdownClassNames.listbox,
+      styles.listbox,
+      !open && styles.listboxCollapsed,
+    ],
+    expandIcon: [
       dropdownClassNames.expandIcon,
       iconStyles.icon,
       iconStyles.medium,
       disabled && iconStyles.disabled,
-    ),
-};
+    ],
+  });

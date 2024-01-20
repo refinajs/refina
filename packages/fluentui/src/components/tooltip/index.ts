@@ -2,7 +2,7 @@ import { Component, Content, MainElRef, ref } from "refina";
 import FluentUI from "../../plugin";
 import { resolvePositioningShorthand } from "../../positioning";
 import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
-import styles from "./styles";
+import useStyles from "./styles";
 
 interface VisibleTooltip {
   component: Component<{}>;
@@ -128,8 +128,10 @@ FluentUI.outputComponents.fTooltip = function (_) {
       };
       const { containerRef } = _.usePositioning(positioningOptions, visible);
 
+      const styles = useStyles(visible);
+
       _.fPortal(_ => {
-        styles.content(visible)(_);
+        styles.content();
         _.$ref(containerRef) &&
           _._div(
             {

@@ -1,9 +1,10 @@
-import { mergeClasses } from "@refina/griffel";
+import { defineStyles } from "@refina/griffel";
 
 export const accordionItemClassNames = {
   root: "fui-AccordionItem",
 } as const;
 
-export default {
-  root: mergeClasses(accordionItemClassNames.root),
-};
+export default () =>
+  defineStyles({
+    root: [accordionItemClassNames.root],
+  });

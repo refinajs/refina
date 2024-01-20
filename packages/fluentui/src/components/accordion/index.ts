@@ -1,8 +1,8 @@
 import "@refina/fluentui-icons/chevronRight.ts";
 import { Content } from "refina";
 import FluentUI from "../../plugin";
-import headerStyles from "./header.styles";
-import itemStyles from "./item.styles";
+import useHeaderStyles from "./header.styles";
+import useItemStyles from "./item.styles";
 
 declare module "refina" {
   interface Components {
@@ -15,13 +15,16 @@ declare module "refina" {
 }
 FluentUI.statusComponents.fAccordion = function (_) {
   return (header, disabled = false, defaultOpen = false) => {
+    const headerStyles = useHeaderStyles(disabled);
+    const itemStyles = useItemStyles();
+
     this.$_status ??= defaultOpen;
 
-    itemStyles.root(_);
+    itemStyles.root();
     _._div({}, _ => {
-      headerStyles.root(disabled)(_);
+      headerStyles.root();
       _._div({}, _ => {
-        headerStyles.button(disabled)(_);
+        headerStyles.button();
         _._button(
           {
             onclick: () => {
@@ -30,7 +33,7 @@ FluentUI.statusComponents.fAccordion = function (_) {
             },
           },
           _ => {
-            headerStyles.expandIcon(_);
+            headerStyles.expandIcon();
             _._span({}, _ => {
               _.$css` transform: rotate(${this.$status ? 90 : 0}deg)`;
               _.fiChevronRightRegular();

@@ -1,8 +1,8 @@
-import { makeResetStyles, shorthands, mergeClasses } from "@refina/griffel";
+import { defineStyles, makeResetStyles, shorthands } from "@refina/griffel";
 import {
   DIALOG_GAP,
-  SURFACE_PADDING,
   MEDIA_QUERY_BREAKPOINT_SELECTOR,
+  SURFACE_PADDING,
 } from "./constants";
 
 export const dialogBodyClassNames = {
@@ -27,6 +27,7 @@ const resetStyles = makeResetStyles({
   },
 });
 
-export default {
-  root: mergeClasses(dialogBodyClassNames.root, resetStyles),
-};
+export default () =>
+  defineStyles({
+    root: [dialogBodyClassNames.root, resetStyles],
+  });

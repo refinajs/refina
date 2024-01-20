@@ -2,7 +2,7 @@ import "@refina/fluentui-icons/checkmark.ts";
 import "@refina/fluentui-icons/square.ts";
 import { DOMElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import { FCheckboxState } from "./types";
 
 declare module "refina" {
@@ -25,7 +25,9 @@ FluentUI.triggerComponents.fCheckbox = function (_) {
   ) => {
     const checkedValue = valueOf(checked);
 
-    styles.root(disabled, checkedValue)(_);
+    const styles = useStyles(disabled, checkedValue);
+
+    styles.root();
     _._span(
       {
         onclick: () => {
@@ -35,14 +37,14 @@ FluentUI.triggerComponents.fCheckbox = function (_) {
         },
       },
       _ => {
-        styles.input(_);
+        styles.input();
         _.$ref(inputRef) &&
           _._input({
             type: "checkbox",
             checked: checkedValue === true,
           });
 
-        styles.indicator(_);
+        styles.indicator();
         _._div({}, _ => {
           if (checkedValue === "mixed") {
             _.fiSquare12Filled();
@@ -51,7 +53,7 @@ FluentUI.triggerComponents.fCheckbox = function (_) {
           }
         });
 
-        styles.label(_);
+        styles.label();
         _.fLabel(label, false, disabled);
       },
     );

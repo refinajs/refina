@@ -1,6 +1,6 @@
 import { HTMLElementComponent, Model, ref, valueOf } from "refina";
 import FluentUI from "../../plugin";
-import styles from "./styles";
+import useStyles from "./styles";
 import { FInputAppearance } from "./types";
 
 declare module "refina" {
@@ -29,7 +29,9 @@ FluentUI.triggerComponents.fInput = function (_) {
     stringifier = v => `${v}`,
     parseValue = v => v as any,
   ) => {
-    styles.root(appearance, disabled, false)(_);
+    const styles = useStyles(appearance, disabled, false);
+
+    styles.root();
     _._span(
       {
         onclick: () => {
@@ -37,7 +39,7 @@ FluentUI.triggerComponents.fInput = function (_) {
         },
       },
       _ => {
-        styles.input(disabled)(_);
+        styles.input();
         _.$ref(inputRef) &&
           _._input({
             type,
