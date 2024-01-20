@@ -130,6 +130,9 @@ importers:
       '@refina/fluentui':
         specifier: workspace:^
         version: link:../../fluentui
+      '@refina/fluentui-icons':
+        specifier: workspace:^
+        version: link:../../fluentui-icons
       refina:
         specifier: workspace:^
         version: link:../../core

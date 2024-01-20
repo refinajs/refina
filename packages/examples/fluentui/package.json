@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@refina/fluentui": "workspace:^",
+    "@refina/fluentui-icons": "workspace:^",
     "refina": "workspace:^"
   }
 }

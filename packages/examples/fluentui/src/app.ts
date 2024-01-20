@@ -5,6 +5,7 @@ import FluentUI, {
   createLightTheme,
 } from "@refina/fluentui";
 import { $app, byIndex, model, valueOf } from "refina";
+import "@refina/fluentui-icons/person.ts";
 
 const myNewTheme: BrandVariants = {
   10: "#020305",
@@ -45,6 +46,14 @@ $app.use(
   darkTheme,
   lightTheme,
 )(_ => {
+  _.fDivider("avatar");
+  _.$css`display:flex;gap:10px`;
+  _._div({}, _ => {
+    _.fAvatar("John Doe", "active");
+    _.fAvatar("https://placekitten.com/200/300", "inactive");
+    _.fAvatar(_ => _.fiPersonFilled(), "inactive");
+  });
+
   _.fDivider("button");
   _.fButton("Button");
   _.fPrimaryButton("Primary Button");
