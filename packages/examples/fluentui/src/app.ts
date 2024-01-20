@@ -4,8 +4,8 @@ import FluentUI, {
   createDarkTheme,
   createLightTheme,
 } from "@refina/fluentui";
-import { $app, byIndex, model, valueOf } from "refina";
 import "@refina/fluentui-icons/person.ts";
+import { $app, byIndex, model, valueOf } from "refina";
 
 const myNewTheme: BrandVariants = {
   10: "#020305",
@@ -53,6 +53,9 @@ $app.use(
     _.fAvatar("https://placekitten.com/200/300", "inactive");
     _.fAvatar(_ => _.fiPersonFilled(), "inactive");
   });
+
+  _.fDivider("breadcrumb");
+  _.fBreadcrumb(["Root", "Home", "Files", "a.txt"], [1]);
 
   _.fDivider("button");
   _.fButton("Button");
