@@ -12,11 +12,11 @@ import InputEventVue from "snippets/input-event.vue";
 ## 例子：获取用户在 input 元素中的输入。
 
 ```ts
-import { d } from "refina";
+import { model } from "refina";
 
-const username = d("");
+const username = model("");
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   username.value.length && _.button("Clear") && (username.value = "");
@@ -43,7 +43,7 @@ $app.use(Basics)(_ => {
 ```ts
 import { fromProp } from "refina";
 const user = { username: "" };
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(fromProp(user, "username")); // [!code focus]
 });
@@ -86,7 +86,7 @@ assert(getD(wrappedValue) === 1);
 下面的例子中，用户的输入被存储在 `sessionStorage`，而不是一个变量。
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   if (_.textInput(sessionStorage.getItem("username") ?? "")) {
     sessionStorage.setItem("username", _.$ev);
