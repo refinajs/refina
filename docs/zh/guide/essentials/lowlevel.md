@@ -8,7 +8,7 @@ import LowlevelVue from "snippets/lowlevel.vue";
 
 但是仍有小部分情况你需要直接渲染 DOM 元素。
 
-Also, the components provided by component libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
+以及，组件库也是通过底层渲染方法来渲染 HTML 或 SVG 元素，以构成组件。
 
 :::info
 
@@ -129,7 +129,7 @@ for (const key in data) {
 元素的内容（即打开、闭合标签之间的东西）。 它可以是：
 
 - 一个字符串或数字，将被以字符串节点的形式渲染。
-- A fragment, which will be rendered as the content of the element.
+- 一个片段，将调用它以渲染内部的元素。
 - 一个包裹了上述2种之一的 `PD` 对象。
 
 ## `eventListeners` 参数
@@ -138,7 +138,7 @@ for (const key in data) {
 
 > 这里的 `TheEventMap` 是元素对应的事件表，比如 `HTMLElementEventMap`、`WebComponentsEventListeners[TagName]`。
 
-An object whose keys are the names of the events, and whose values are the event listeners or an object which contains the event listener and the options.
+传入的值应是一个对象，键为事件名，值为回调函数或回调函数与其他选项组成的对象。
 
 回调函数和其他选项将被传递给元素的 `addEventListener` 方法。
 
@@ -200,17 +200,17 @@ divElement.addEventListener(
 在以下两种情况，将回调函数传递给 `data` 参数不工作：
 
 - 这个事件是一个自定义的事件。
-- To specify the `options` parameter of the `addEventListener` method.
+- 需要指定传递给 `addEventListener` 方法的 `options`。
 
 :::warning 在接收事件后触发应用更新
 
 不同于组件函数，底层渲染函数不会再接收到事件后自动更新应用视图。
 
-You should call [`app.update()`](../apis/directives.md#update) manually to update the app if you want to apply the changes of the states to the app.
+如果你想要反映状态的更改，你需要手动调用 [`app.update()`](../apis/directives.md#update) 方法以触发应用更新。
 
 :::
 
-## Ref an Element {#ref-element}
+## 元素引用 {#ref-element}
 
 你可以使用 [`_.$ref` 指令](../apis/directives.md#ref) 来引用元素。
 
