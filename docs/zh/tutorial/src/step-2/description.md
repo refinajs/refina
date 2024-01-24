@@ -1,8 +1,8 @@
 # 声明式渲染
 
-你在编辑器中看到的是一个 Refina 应用。 A Refina application is created by the `$app` function, which takes `option` and a "main function" as its arguments. The `option` can be an array of plugins, and the main function describes how the HTML should look like and what it should do based on JavaScript state.
+你在编辑器中看到的是一个 Refina 应用。 Refina 应用通过 `$app` 函数创建，其第一个参数是创建应用的选项，第二个参数是主函数。 创建应用的选项可以是插件列表，主函数则根据 JavaScript 的状态来描述 HTML 应该是什么样子、要做什么事情。
 
-The main function is called every time the state changes or an event should be received.
+每当接收事件和更新视图时，应用的主函数都会被调用。
 
 此处安装了 `@refina/basic-components` 包的 `Basics` 插件， 它提供了一系列简单的组件，帮助你快速构建页面。
 
@@ -18,7 +18,7 @@ $app([Basics], _ => {
 });
 ```
 
-TypeScript doesn't know what plugins are used unless you declare them explicitly. So the `Plugins` interface should be declared:
+TypeScript 并不知道有哪些插件被使用，除非显式地声明它们 ：
 
 ```ts
 declare module "refina" {
@@ -28,7 +28,7 @@ declare module "refina" {
 }
 ```
 
-组件的一些参数代表“内容”（子元素）。 You can pass a string, a number or a function (we call it "fragment") to it:
+组件的一些参数代表“内容”（子元素）。 你可以向它传递一个字符串、数字或者函数（我们叫这个函数为“片段”）：
 
 ```ts
 $app([Basics], _ => {
