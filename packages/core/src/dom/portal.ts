@@ -83,12 +83,16 @@ export class DOMPortalComponent extends DOMElementComponent {
     throw new Error("Cannot add event listeners to portal.");
   }
 
-  addCls(_classes: string): void {
+  addCls(_classes: string): never {
     throw new Error("Cannot add classes to portal.");
   }
 
-  addCss(_style: string) {
+  addCss(_style: string): never {
     throw new Error("Cannot add styles to portal.");
+  }
+
+  addAttrs(_attrs: Partial<this["node"]>): never {
+    throw new Error("Cannot add attrs to portal.");
   }
 
   get asChildNode(): null {

@@ -252,6 +252,21 @@ export interface IntrinsicBaseContext {
   $css(template: TemplateStringsArray, ...args: unknown[]): true;
 
   /**
+   * Set the id of the next element.
+   *
+   * @param id The id to set.
+   */
+  $id(id: string): true;
+  $id(template: TemplateStringsArray, ...args: unknown[]): true;
+
+  /**
+   * Add attributes to the next element.
+   *
+   * @param attrs The attributes to add.
+   */
+  $attrs(attrs: Record<string, unknown>): true;
+
+  /**
    * The transformed context function calls (excluding `_.t` calls).
    *
    * A unique key is generated for each call in source code,

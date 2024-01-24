@@ -54,6 +54,8 @@ export function initializeRecvContext(app: App) {
     context.$props =
     context.$cls =
     context.$css =
+    context.$id =
+    context.$attrs =
       () => true;
 
   context.$$assertEmpty = () => {};

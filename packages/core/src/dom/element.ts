@@ -112,7 +112,7 @@ type EventListenerParams = [
  *
  * The main function of this class is to manage the children of the DOM element.
  */
-export class DOMElementComponent<
+export abstract class DOMElementComponent<
   E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
 > extends DOMNodeComponent<TagNameToDOMElement<E>> {
   /**
@@ -138,6 +138,7 @@ export class DOMElementComponent<
   protected mountedChildren = new Set<DOMNodeComponent>();
 
   updateDOM(): MaybeChildNode {
+    this.applyAttrs();
     this.applyCls();
     this.applyCss();
     this.applyEventListeners();
@@ -180,6 +181,34 @@ export class DOMElementComponent<
     this.pendingChildren = [];
 
     return lastNode;
+  }
+
+  /**
+   * The attributes that are not applied yet.
+   *
+   * It can accumulate attributes from multiple calls of `addAttr` during the `UPDATE` call.
+   */
+  protected pendingAttrs: Partial<this["node"]> = {};
+
+  /**
+   * Add a attributes to the element.
+   *
+   * @param attrs The attributes to add.
+   */
+  addAttrs(attrs: Partial<this["node"]>) {
+    Object.assign(this.pendingAttrs, attrs);
+  }
+
+  /**
+   * The attributes that are applied to the DOM element.
+   */
+  protected appliedAttrs: Partial<this["node"]> = {};
+
+  /**
+   * Write the pending attributes to the DOM element.
+   */
+  protected applyAttrs(): void {
+    throw new Error("Not implemented.");
   }
 
   /**
@@ -353,19 +382,48 @@ export class DOMElementComponent<
   }
 }
 
-/**
- * The more precise type for only HTML elements.
- */
-export type HTMLElementComponent<
+export class HTMLElementComponent<
   E extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
-> = DOMElementComponent<E>;
+> extends DOMElementComponent<E> {
+  protected applyAttrs(): void {
+    for (const key in this.pendingAttrs) {
+      const newValue = this.pendingAttrs[key];
+      if (this.appliedAttrs[key] === newValue) continue;
+      if (newValue === undefined) {
+        // Delete the property if the value is undefined.
+        delete this.node[key];
+      } else {
+        // For a HTML element, just assign the value to the property.
+        this.node[key] = newValue;
+      }
+    }
+    this.appliedAttrs = this.pendingAttrs;
+    this.pendingAttrs = {};
+  }
+}
 
-/**
- * The more precise type for only SVG elements.
- */
-export type SVGElementComponent<
+export class SVGElementComponent<
   E extends keyof SVGElementTagNameMap = keyof SVGElementTagNameMap,
-> = DOMElementComponent<E>;
+> extends DOMElementComponent<E> {
+  protected applyAttrs(): void {
+    for (const key in this.pendingAttrs) {
+      const newValue = this.pendingAttrs[key];
+      if (this.appliedAttrs[key] === newValue) continue;
+      if (newValue === undefined) {
+        this.node.removeAttribute(key);
+      } else if (typeof newValue === "function") {
+        // Cannot stringify a function, so just assign it.
+        this.node[key] = newValue as any;
+      } else {
+        // For SVG elements, all attributes are string,
+        //  and just assign it to the SVGElement does not work.
+        this.node.setAttribute(key, String(newValue));
+      }
+    }
+    this.appliedAttrs = this.pendingAttrs;
+    this.pendingAttrs = {};
+  }
+}
 
 /**
  * Replace all hyphens with low lines.

@@ -6,7 +6,9 @@ import {
   DOMElementComponent,
   DOMElementEventListenersInfoRaw,
   DOMNodeComponent,
-  SVGElementFuncData,
+  HTMLElementComponent,
+  SVGElementComponent,
+  SVGElementFuncData as SVGElementFuncAttrs,
   TextNodeComponent,
 } from "../dom";
 import {
@@ -53,6 +55,11 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
   $$nextCss: string;
 
   /**
+   * The attributes that will be added to the next element.
+   */
+  $$nextAttrs: Record<string, unknown>;
+
+  /**
    * Fulfill `nextRef` with the given value,
    *  and clear `nextRef`.
    *
@@ -85,6 +92,14 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
   $$consumeCss(): string;
 
   /**
+   * Get the attrs that will be added to the next component,
+   *  and clear `nextAttrs`.
+   *
+   * @returns The attrs.
+   */
+  $$consumeAttrs(): Record<string, unknown>;
+
+  /**
    * Process the content of a DOM element component in `UPDATE` state.
    *
    * @param el The DOM element component.
@@ -99,7 +114,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    * @param tagName The tag name of the element.
    * @param cls The classes of the element.
    * @param css The styles of the element.
-   * @param data The data to assign to the element.
+   * @param attrs The attrs of the element.
    * @param inner The inner content of the element.
    * @param eventListeners The event listeners of the element.
    */
@@ -108,7 +123,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
     tagName: E,
     cls: string,
     css: string,
-    data?: Partial<HTMLElementTagNameMap[E]>,
+    attrs?: Partial<HTMLElementTagNameMap[E]>,
     inner?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
@@ -120,7 +135,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    * @param tagName The tag name of the element.
    * @param cls The classes of the element.
    * @param css The styles of the element.
-   * @param data The data to assign to the element.
+   * @param attrs The attrs of the element.
    * @param inner The inner content of the element.
    * @param eventListeners The event listeners of the element.
    */
@@ -129,7 +144,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
     tagName: E,
     cls: string,
     css: string,
-    data?: SVGElementFuncData,
+    attrs?: SVGElementFuncAttrs,
     inner?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
@@ -168,6 +183,8 @@ export function initializeUpdateContext(app: App) {
   context.$$nextCls = "";
 
   context.$$nextCss = "";
+
+  context.$$nextAttrs = {};
 
   context.$ref = (ref, ...refs) => {
     context.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
@@ -226,6 +243,24 @@ export function initializeUpdateContext(app: App) {
     return css;
   };
 
+  context.$id = (...args: unknown[]) => {
+    context.$$nextAttrs.id = Array.isArray(args[0])
+      ? String.raw({ raw: args[0] }, ...args.slice(1))
+      : args[0];
+    return true;
+  };
+
+  context.$attrs = attrs => {
+    Object.assign(context.$$nextAttrs, attrs);
+    return true;
+  };
+
+  context.$$consumeAttrs = () => {
+    const attrs = context.$$nextAttrs;
+    context.$$nextAttrs = {};
+    return attrs;
+  };
+
   context.$$assertEmpty = () => {
     if (context.$$nextRef) {
       console.warn("Ref", context.$$nextRef, "is not fulfilled.");
@@ -248,7 +283,9 @@ export function initializeUpdateContext(app: App) {
   context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
-      const [data, inner, eventListeners] = args;
+      const [attrsArg, inner, eventListeners] = args;
+
+      const attrs = { ...(attrsArg as object), ...context.$$consumeAttrs() };
 
       if (
         funcName.startsWith("_svg") &&
@@ -262,7 +299,7 @@ export function initializeUpdateContext(app: App) {
           tagName,
           context.$$consumeCls(),
           context.$$consumeCss(),
-          data as SVGElementFuncData | undefined,
+          attrs as SVGElementFuncAttrs | undefined,
           inner as Content | undefined,
           eventListeners as
             | DOMElementEventListenersInfoRaw<keyof SVGElementTagNameMap>
@@ -278,7 +315,7 @@ export function initializeUpdateContext(app: App) {
           tagName,
           context.$$consumeCls(),
           context.$$consumeCss(),
-          data as
+          attrs as
             | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
             | undefined,
           inner as Content | undefined,
@@ -432,14 +469,14 @@ export function initializeUpdateContext(app: App) {
     tagName,
     cls,
     css,
-    data = {},
+    attrs = {},
     inner,
     eventListeners = {},
   ) => {
     let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
     if (!el) {
       // Create a new element if not exist.
-      el = new DOMElementComponent<keyof HTMLElementTagNameMap>(
+      el = new HTMLElementComponent<keyof HTMLElementTagNameMap>(
         document.createElement(tagName),
       );
       context.$$currentRefNode[ckey] = el;
@@ -450,18 +487,7 @@ export function initializeUpdateContext(app: App) {
 
     context.$$updateDOMContent(el, inner);
 
-    for (const key in data) {
-      if (data[key] === undefined) {
-        // Delete the property if the value is undefined.
-        // @ts-expect-error
-        delete el.node[key];
-      } else {
-        // For a HTML element, just assign the value to the property.
-        // @ts-expect-error
-        el.node[key] = data[key];
-      }
-    }
-
+    el.addAttrs(attrs);
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);
@@ -472,14 +498,14 @@ export function initializeUpdateContext(app: App) {
     tagName,
     cls,
     css,
-    data = {},
+    attrs = {},
     inner,
     eventListeners = {},
   ) => {
     let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
     if (!el) {
       // Create a new element if not exist.
-      el = new DOMElementComponent<keyof SVGElementTagNameMap>(
+      el = new SVGElementComponent<keyof SVGElementTagNameMap>(
         document.createElementNS("http://www.w3.org/2000/svg", tagName),
       );
       context.$$currentRefNode[ckey] = el;
@@ -490,21 +516,7 @@ export function initializeUpdateContext(app: App) {
 
     context.$$updateDOMContent(el, inner);
 
-    for (const key in data) {
-      const value = data[key];
-      if (value === undefined) {
-        el.node.removeAttribute(key);
-      } else if (typeof value === "function") {
-        // Cannot stringify a function, so just assign it.
-        // @ts-expect-error
-        el.node[key] = value;
-      } else {
-        // For SVG elements, all attributes are string,
-        //  and just assign it to the SVGElement does not work.
-        el.node.setAttribute(key, String(value));
-      }
-    }
-
+    el.addAttrs(attrs);
     el.addCls(cls);
     el.addCss(css);
     el.addEventListeners(eventListeners);

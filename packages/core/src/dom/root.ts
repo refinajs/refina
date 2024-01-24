@@ -1,4 +1,4 @@
-import { DOMElementComponent } from "./element";
+import { HTMLElementComponent } from "./element";
 import { MaybeChildNode } from "./node";
 import { DOMPortalComponent } from "./portal";
 
@@ -10,7 +10,7 @@ import { DOMPortalComponent } from "./portal";
  *
  * This component manages top-level components of the app and portals.
  */
-export class DOMRootComponent extends DOMElementComponent<
+export class DOMRootComponent extends HTMLElementComponent<
   keyof HTMLElementTagNameMap
 > {
   /**

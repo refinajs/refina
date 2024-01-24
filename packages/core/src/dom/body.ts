@@ -1,9 +1,9 @@
-import { DOMElementComponent } from "./element";
+import { HTMLElementComponent } from "./element";
 
 /**
  * The body component that manages classes, styles and event listeners of the `<body>` element.
  */
-export class DOMBodyComponent extends DOMElementComponent {
+export class DOMBodyComponent extends HTMLElementComponent {
   updateDOM(): null {
     this.applyCls();
     this.applyCss();

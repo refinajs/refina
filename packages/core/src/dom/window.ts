@@ -30,6 +30,10 @@ export class DOMWindowComponent extends DOMElementComponent<any> {
     throw new Error("Cannot add styles to window.");
   }
 
+  addAttrs(_attrs: Partial<this["node"]>): void {
+    throw new Error("Cannot add attrs to window.");
+  }
+
   insertAfter(_node: ChildNode): never {
     throw new Error("Cannot insert window component after another node.");
   }
