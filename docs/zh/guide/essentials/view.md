@@ -2,7 +2,7 @@
 
 视图是一个函数，它渲染一部分页面。
 
-It is mostly used to render a part of the page one or few times or as the content of a page for multi-page applications.
+它往往被用于拆分页面或复用页面重复出现的部分。
 
 ## 使用方式
 
@@ -44,7 +44,7 @@ $app(_ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-A fragment can have parameters:
+A view can have parameters:
 
 ```ts
 import { $view, _ } from "refina";
@@ -57,7 +57,7 @@ export default $view((name: string, id?: number) => {
 });
 ```
 
-Then, you can pass the parameters to the fragment:
+Then, you can pass the parameters to the view:
 
 ```ts
 _(MyView)("John", 123);
@@ -91,7 +91,7 @@ export default $view(_ => {
 
 - 组件被注册为上下文对象中的函数，而视图只是一个普通的函数。
 - 每个组件实例有它专属的状态，而视图没有。
-- A component has a [`$primaryEl` property](./component.md#primary-element), and classes and styles can be added to it, while a view has no such property.
+- 组件有 [`$primaryEl` 属性](./component.md#primary-element)，并且可以向它添加类名和样式；视图则不行。
 - 组件可以通过 [`_.$ref`](../apis/directives.md#ref) 指令引用其实例，而视图不行，因为视图没有实例。
 - 组件可以有[额外的 props](./component.md#extra-props)，但是视图没有，视图只有普通的函数参数。
 
