@@ -1,71 +1,59 @@
-import { Content } from "refina";
-import FluentUI from "../../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 import useStyles from "./styles";
 import { FButtonApperance, FButtonShape } from "./types";
 
-declare module "refina" {
-  interface Components {
-    fButton(
-      inner: Content,
-      disabled?: boolean,
-      shape?: FButtonShape,
-      appearance?: FButtonApperance,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-FluentUI.triggerComponents.fButton = function (_) {
-  return (
-    inner,
+export class FButton extends TriggerComponent {
+  shape: FButtonShape = "rounded";
+  appearance: FButtonApperance = "secondary";
+  $main(
+    inner: Content,
     disabled = false,
-    shape = "rounded",
-    appearance = "secondary",
-  ) => {
-    const styles = useStyles(shape, appearance, false, disabled, false);
+  ): this is {
+    $ev: MouseEvent;
+  } {
+    const styles = useStyles(
+      this.shape,
+      this.appearance,
+      false,
+      disabled,
+      false,
+    );
 
     styles.root();
     _._button(
       {
         type: "button",
         disabled,
-        onclick: this.$fireWith(),
+        onclick: this.$fire,
       },
       inner,
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    fPrimaryButton(
-      inner: Content,
-      disabled?: boolean,
-      shape?: FButtonShape,
-    ): this is {
-      $ev: void;
-    };
+    return this.$fired;
   }
 }
-FluentUI.triggerComponents.fPrimaryButton = function (_) {
-  return (inner, disabled, shape) =>
-    _.fButton(inner, disabled, shape, "primary") && this.$fire();
-};
 
-declare module "refina" {
-  interface Components {
-    fCircularButton(
-      inner: Content,
-      disabled?: boolean,
-      appearance?: FButtonApperance,
-    ): this is {
-      $ev: void;
-    };
-  }
+export class FCircularButton extends FButton {
+  shape = "circular" as const;
 }
-FluentUI.triggerComponents.fCircularButton = function (_) {
-  return (inner, disabled, appearance) =>
-    _.fButton(inner, disabled, "circular", appearance) && this.$fire();
-};
+
+export class FSquareButton extends FButton {
+  shape = "square" as const;
+}
+
+export class FPrimaryButton extends FButton {
+  appearance = "primary" as const;
+}
+
+export class FSecondaryButton extends FButton {
+  appearance = "secondary" as const;
+}
+
+export class FSubtleButton extends FButton {
+  appearance = "subtle" as const;
+}
+
+export class FTransparentButton extends FButton {
+  appearance = "transparent" as const;
+}
 
 export * from "./types";

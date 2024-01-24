@@ -9,11 +9,11 @@ import { onMounted } from "vue";
 import RunRefina from "./run-refina.vue";
 
 onMounted(() => {
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#input-event-root" }, _ => {
     _.label("Username");
     if (_.textInput(sessionStorage.getItem("username") ?? "")) {
       sessionStorage.setItem("username", _.$ev);
     }
-  }, "input-event-root");
+  });
 });
 </script>

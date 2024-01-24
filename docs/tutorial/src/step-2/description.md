@@ -1,15 +1,15 @@
 # Declarative Rendering
 
-What you see in the editor is a Refina application. A Refina application is created by the `$app` function, which takes a view function as an argument. That view function is the main function of the application, which describes how the HTML should look like and what it should do based on JavaScript state.
+What you see in the editor is a Refina application. A Refina application is created by the `$app` function, which takes `option` and a "main function" as its arguments. The `option` can be an array of plugins, and the main function describes how the HTML should look like and what it should do based on JavaScript state.
 
-The view function is called every time the state changes or an event should be received.
+The main function is called every time the state changes or an event should be received.
 
 To render components, you can use the `Basics` plugin in `@refina/basic-components` package. It provides a set of basic components that you can use to build your application.
 
 Each of the components has a corresponding function on the `_` parameter, which we call a context object. Simply calling the function will render the component:
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1("Hello world!");
   // <h1>Hello world!</h1>
 
@@ -18,10 +18,20 @@ $app.use(Basics)(_ => {
 });
 ```
 
-Some parameters of the component represent `Content`s. You can pass a string, a number or a view function to it:
+TypeScript doesn't know what plugins are used unless you declare them explicitly. So the `Plugins` interface should be declared:
 
 ```ts
-$app.use(Basics)(_ => {
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}
+```
+
+Some parameters of the component represent `Content`s. You can pass a string, a number or a function (we call it "fragment") to it:
+
+```ts
+$app([Basics], _ => {
   _.div("Hello world!");
   // <div>Hello world!</div>
 

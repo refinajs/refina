@@ -9,7 +9,7 @@ import { onMounted } from "vue";
 import RunRefina from "./run-refina.vue";
 
 onMounted(() => {
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#static-page-root" }, _ => {
     _.$css`color: red`;
     _.h1("Hello, Refina!");
 
@@ -18,6 +18,6 @@ onMounted(() => {
       _.p("This is a paragraph.");
       _.p(_ => _.img("https://picsum.photos/200/300", "placeholder"));
     });
-  }, "static-page-root");
+  });
 });
 </script>

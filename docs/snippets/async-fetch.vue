@@ -9,12 +9,18 @@ import { $app } from "refina";
 import { onUpdated, ref } from "vue";
 import RunRefina from "./run-refina.vue";
 
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}
+
 const running = ref(false);
 
 const run = () => {
   running.value = true;
   setTimeout(() => {
-    $app.use(Basics)(_ => {
+    $app({ plugins: [Basics], root: "#async-fetch-root" }, _ => {
       if (
         _.await(() => fetch("https://jsonplaceholder.typicode.com/todos/1"))
       ) {
@@ -29,7 +35,7 @@ const run = () => {
 
         _.p("Loading...");
       }
-    }, "async-fetch-root");
+    });
   }, 10);
 };
 </script>

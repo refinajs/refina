@@ -1,14 +1,9 @@
-import MdUI from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdCircularProgress(percentage?: number | undefined): void;
-  }
-}
-MdUI.outputComponents.mdCircularProgress = function (_) {
-  return percentage => {
+export class MdCircularProgress extends Component {
+  $main(percentage?: number | undefined): void {
     _._mdui_circular_progress({
       value: percentage,
     });
-  };
-};
+  }
+}

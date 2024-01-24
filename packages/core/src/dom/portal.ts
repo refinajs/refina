@@ -1,5 +1,3 @@
-import { Prelude } from "../constants";
-import { Content } from "./content";
 import { DOMElementComponent } from "./element";
 import { DOMNodeComponent, MaybeChildNode } from "./node";
 
@@ -102,43 +100,4 @@ export class DOMPortalComponent extends DOMElementComponent {
   prependTo(_parent: Element): void {}
 
   removeFrom(_parent: Element): void {}
-}
-
-Prelude.registerFunc("portal", function (ckey, inner) {
-  let portal = this.$$currentRefTreeNode[ckey] as
-    | DOMPortalComponent
-    | undefined;
-  if (!portal) {
-    portal = new DOMPortalComponent(this.$app.root.node);
-    this.$$currentRefTreeNode[ckey] = portal;
-  }
-
-  const updateContext = this.$updateContext?.$lowlevel;
-  if (updateContext) {
-    updateContext.$$fulfillRef(portal);
-
-    updateContext.$app.root.pendingPortals.push(portal);
-
-    updateContext.$$updateDOMContent(portal, inner);
-  } else {
-    const recvContext = this.$recvContext!.$lowlevel;
-
-    recvContext.$$processDOMElement(ckey, inner);
-  }
-
-  return portal;
-});
-
-declare module "../context/base" {
-  interface ContextFuncs<C extends ContextState> {
-    /**
-     * Render content to the end of the root element.
-     *
-     * This is usefull when you want to render a dialog or a tooltip
-     *  that should not be affected by the parent element's styles.
-     */
-    portal: DOMPortalComponent extends C["enabled"]
-      ? (inner: Content) => void
-      : never;
-  }
 }

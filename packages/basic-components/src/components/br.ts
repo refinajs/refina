@@ -1,13 +1,7 @@
-import Basics from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    br(): void;
+export class BasicBr extends Component {
+  $main(): void {
+    _._br();
   }
 }
-
-Basics.outputComponents.br = function (_) {
-  return () => {
-    _._br();
-  };
-};

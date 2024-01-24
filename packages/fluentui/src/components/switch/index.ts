@@ -1,22 +1,17 @@
-import "@refina/fluentui-icons/circle.ts";
-import { DOMElementComponent, Model, ref, valueOf } from "refina";
-import FluentUI from "../../plugin";
+import { FiCircleFilled } from "@refina/fluentui-icons/circle";
+import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { FLabel } from "../label";
 import useStyles from "./styles";
 
-declare module "refina" {
-  interface Components {
-    fSwitch(
-      label: string,
-      state: Model<boolean>,
-      disabled?: boolean,
-    ): this is {
-      $ev: boolean;
-    };
-  }
-}
-FluentUI.triggerComponents.fSwitch = function (_) {
-  const inputRef = ref<DOMElementComponent<"input">>();
-  return (label, state, disabled = false) => {
+export class FSwitch extends TriggerComponent {
+  inputRef = elementRef<"input">();
+  $main(
+    label: string,
+    state: Model<boolean>,
+    disabled = false,
+  ): this is {
+    $ev: boolean;
+  } {
     const stateValue = valueOf(state);
 
     const styles = useStyles();
@@ -27,24 +22,25 @@ FluentUI.triggerComponents.fSwitch = function (_) {
         onclick: () => {
           if (!disabled) {
             const newState = !stateValue;
-            _.$updateModel(state, newState);
+            this.$updateModel(state, newState);
             this.$fire(newState);
           }
         },
       },
       _ => {
         styles.input();
-        _.$ref(inputRef) &&
-          _._input({
-            type: "checkbox",
-            disabled: disabled,
-            checked: stateValue,
-          });
+        _.$ref(this.inputRef);
+        _._input({
+          type: "checkbox",
+          disabled: disabled,
+          checked: stateValue,
+        });
         styles.indicator();
-        _._div({}, _ => _.fiCircleFilled());
+        _._div({}, _ => _(FiCircleFilled)());
         styles.label();
-        _.fLabel(label);
+        _(FLabel)(label);
       },
     );
-  };
-};
+    return this.$fired;
+  }
+}

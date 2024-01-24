@@ -71,7 +71,6 @@ export function isModel<T>(m: Model<T>): m is JustModel<T> {
  * @returns Whether the value is changed.
  */
 export function dangerously_updateModel<T>(m: Model<T>, v: T): boolean {
-  // @ts-ignore
   if (isModel(m) && (m as JustModel<T>).value !== v) {
     (m as JustModel<T>).value = v;
     return true;

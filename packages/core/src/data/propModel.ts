@@ -1,4 +1,4 @@
-import { JustModel, IsModelSymbol } from "./model";
+import { IsModelSymbol, JustModel } from "./model";
 
 type ValueSatisfiedKeysImpl<T, O, K extends keyof O> = K extends any
   ? O[K] extends T

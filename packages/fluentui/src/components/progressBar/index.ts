@@ -1,14 +1,9 @@
-import FluentUI from "../../plugin";
+import { Component, _ } from "refina";
 import useStyles from "./styles";
 import { FProgressBarColor, FProgressBarValue } from "./types";
 
-declare module "refina" {
-  interface Components {
-    fProgressBar(value: FProgressBarValue, color?: FProgressBarColor): void;
-  }
-}
-FluentUI.outputComponents.fProgressBar = function (_) {
-  return (value, color) => {
+export class FProgressBar extends Component {
+  $main(value: FProgressBarValue, color?: FProgressBarColor): void {
     const styles = useStyles(value, color);
 
     styles.root();
@@ -18,7 +13,7 @@ FluentUI.outputComponents.fProgressBar = function (_) {
         _.$css(`width: ${Math.min(100, Math.max(0, value * 100))}%`);
       _._div();
     });
-  };
-};
+  }
+}
 
 export * from "./types";

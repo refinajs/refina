@@ -2,13 +2,13 @@
 
 Hooks are functions that are called at specific times during the app's lifecycle.
 
-Hooks can be added by plugin when it is being installed, or by main function in the `UPDATE` call.
+Hooks can be added by plugins, or by main function programmatically.
 
-## Onetime Hooks
+## One-time Hooks
 
-Onetime hooks are called only once.
+One-time hooks are called only once.
 
-Use `_.$app.pushOnetimeHook` to add a onetime hook.
+Use `_.$app.pushOnetimeHook` to add a one-time hook.
 
 Can be accessed via `_.$app.onetimeHooks`.
 

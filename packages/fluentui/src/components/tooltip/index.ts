@@ -1,28 +1,23 @@
-import { Component, Content, MainElRef, ref } from "refina";
-import FluentUI from "../../plugin";
-import { resolvePositioningShorthand } from "../../positioning";
+import { Component, Content, PrimaryElRef, _, ref } from "refina";
+import { resolvePositioningShorthand, usePositioning } from "../../positioning";
+import { FPortal } from "../portal";
 import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
 import useStyles from "./styles";
 
 interface VisibleTooltip {
-  component: Component<{}>;
-  hide: (by: Component<{}>) => void;
+  component: Component;
+  hide: (by: Component) => void;
 }
 
-declare module "refina" {
-  interface Components {
-    fTooltip(inner: Content, content: Content): void;
-  }
-}
-FluentUI.outputComponents.fTooltip = function (_) {
-  let visible = false;
-  const embedRef: MainElRef = ref();
-  let timeout = NaN;
-  const clearThisTimeout = () => {
-    if (!Number.isNaN(timeout)) clearTimeout(timeout);
+export class FTooltip extends Component {
+  visible = false;
+  embedRef: PrimaryElRef = ref();
+  timeout = NaN;
+  clearThisTimeout = () => {
+    if (!Number.isNaN(this.timeout)) clearTimeout(this.timeout);
   };
 
-  return (inner: Content, content: Content) => {
+  $main(inner: Content, content: Content): void {
     const onTriggerEnter = () => {
       const visibleTooltip = _.$permanentData[visibleTooltipSymbol] as
         | VisibleTooltip
@@ -33,21 +28,21 @@ FluentUI.outputComponents.fTooltip = function (_) {
       if (anotherTooltip) {
         visibleTooltip.hide(this);
       }
-      clearThisTimeout();
-      timeout = setTimeout(() => {
-        visible = true;
-        _.$update();
+      this.clearThisTimeout();
+      this.timeout = setTimeout(() => {
+        this.visible = true;
+        this.$update();
       }, delay);
     };
     const onTriggerLeave = () => {
-      clearThisTimeout();
-      timeout = setTimeout(() => {
-        visible = false;
-        _.$update();
+      this.clearThisTimeout();
+      this.timeout = setTimeout(() => {
+        this.visible = false;
+        this.$update();
       }, 250);
     };
 
-    let triggerElement = embedRef.current?.$mainEl?.node;
+    let triggerElement = this.embedRef.current?.$primaryEl?.node;
     if (triggerElement) {
       triggerElement.onpointerenter = null;
       triggerElement.onpointerleave = null;
@@ -55,9 +50,9 @@ FluentUI.outputComponents.fTooltip = function (_) {
       triggerElement.onblur = null;
     }
 
-    _.$ref(embedRef) && _.embed(inner);
+    _.$ref(this.embedRef) && _.embed(inner);
 
-    triggerElement = embedRef.current?.$mainEl?.node;
+    triggerElement = this.embedRef.current?.$primaryEl?.node;
     if (triggerElement) {
       const mergeCallbacks =
         <E>(cb1: ((ev: E) => void) | null, cb2: (ev: E) => void) =>
@@ -78,8 +73,8 @@ FluentUI.outputComponents.fTooltip = function (_) {
         onTriggerEnter,
       );
       triggerElement.onblur = mergeCallbacks(triggerElement.onblur, () => {
-        visible = false;
-        _.$update();
+        this.visible = false;
+        this.$update();
       });
     } else {
       throw new Error(
@@ -87,16 +82,16 @@ FluentUI.outputComponents.fTooltip = function (_) {
       );
     }
 
-    if (visible) {
+    if (this.visible) {
       (
         _.$permanentData[visibleTooltipSymbol] as VisibleTooltip | undefined
       )?.hide(this);
       _.$permanentData[visibleTooltipSymbol] = {
         component: this,
-        hide: (by: Component<{}>) => {
+        hide: (by: Component) => {
           if (by === this) return;
-          clearThisTimeout();
-          visible = false;
+          this.clearThisTimeout();
+          this.visible = false;
         },
       } satisfies VisibleTooltip;
 
@@ -105,9 +100,9 @@ FluentUI.outputComponents.fTooltip = function (_) {
           "keydown",
           ev => {
             if (ev.key === "Escape") {
-              if (visible) {
-                visible = false;
-                _.$update();
+              if (this.visible) {
+                this.visible = false;
+                this.$update();
               }
             }
           },
@@ -118,29 +113,32 @@ FluentUI.outputComponents.fTooltip = function (_) {
       }
 
       const positioningOptions = {
-        targetRef: embedRef,
-        enabled: visible,
+        targetRef: this.embedRef,
+        enabled: this.visible,
         arrowPadding: 2 * tooltipBorderRadius,
         position: "above" as const,
         align: "center" as const,
         offset: 4,
         ...resolvePositioningShorthand("above"),
       };
-      const { containerRef } = _.usePositioning(positioningOptions, visible);
+      const { containerRef } = _(usePositioning)(
+        positioningOptions,
+        this.visible,
+      );
 
-      const styles = useStyles(visible);
+      const styles = useStyles(this.visible);
 
-      _.fPortal(_ => {
+      _(FPortal)(_ => {
         styles.content();
         _.$ref(containerRef) &&
           _._div(
             {
-              onpointerenter: clearThisTimeout,
+              onpointerenter: this.clearThisTimeout,
               onpointerleave: onTriggerLeave,
             },
             content,
           );
       });
     }
-  };
-};
+  }
+}

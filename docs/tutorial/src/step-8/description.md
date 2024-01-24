@@ -7,14 +7,14 @@ It is used to split the page into multiple parts, which can be rendered separate
 To define a view in Refina, you can use the `$view` function:
 
 ```ts
-import { $view } from "refina";
+import { $view, _ } from "refina";
 
-export default $view((_, id) => {
-  _.h1("Card");
+export default $view((id: number) => {
+  _.h1(`Card ${id}`);
 });
 ```
 
-To use a view, you call the context object with the view function:
+To use a view, you call the context object with the fragment:
 
 ```ts
 import { $app } from "refina";

@@ -9,7 +9,7 @@ Here is an example:
 ```ts
 let count = 0;
 
-$app(_ => {
+const app = $app(_ => {
   _.$cls`my-button`; // _.$cls and _.$css are also available
   _._button(
     // Attributes (optional)
@@ -17,7 +17,7 @@ $app(_ => {
       id: "my-div",
       onclick() {
         count++;
-        _.$update(); // Update the application
+        app.update(); // Update the application
       },
     },
     // Content (optional)

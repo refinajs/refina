@@ -1,22 +1,19 @@
-import RouterPlugin from "./plugin";
-import { BeforeRouteContext, beforeRouteSymbol } from "./router";
+import { $contextFunc, _ } from "refina";
+import { BeforeRouteContext, getIncomingRoute } from "./router";
 
-RouterPlugin.registerFunc("beforeRoute", function (_ckey: string) {
-  if (this.$app.isEventReceiver(beforeRouteSymbol)) {
-    // @ts-ignore
-    const pendingRoute = this.$ev as BeforeRouteContext;
-    if (pendingRoute) {
-      Object.assign(this, pendingRoute);
-      return true;
-    }
-  }
-  return false;
-});
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    beforeRoute: never extends C["enabled"]
-      ? () => this is BeforeRouteContext
-      : never;
-  }
-}
+export const beforeRoute = $contextFunc(
+  () =>
+    (): // @ts-expect-error
+    this is BeforeRouteContext => {
+      const incomingRoute = getIncomingRoute();
+      if (incomingRoute) {
+        // @ts-expect-error
+        const pendingRoute = _.$ev as BeforeRouteContext;
+        if (pendingRoute) {
+          Object.assign(_, pendingRoute);
+          return true;
+        }
+      }
+      return false;
+    },
+);

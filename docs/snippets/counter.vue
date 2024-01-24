@@ -11,8 +11,8 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   let count = 0;
 
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#counter-root" }, _ => {
     _.button(`Count is: ${count}`) && count++;
-  }, "counter-root");
+  });
 });
 </script>

@@ -1,34 +1,22 @@
-import FluentUI from "../../plugin";
-import { FAvatarActive, FAvatarColor, FAvatarShape } from "./types";
-import useStyles from "./styles";
+import { Content, TriggerComponent, _ } from "refina";
 import { getColor } from "./colors";
-import { Content } from "refina";
 import { getInitials } from "./getInitials";
+import useStyles from "./styles";
+import { FAvatarActive, FAvatarColor, FAvatarShape } from "./types";
 
-declare module "refina" {
-  interface Components {
-    /**
-     * @param content Can be a string of name or image url, or a view function containing an icon.
-     */
-    fAvatar(
-      content: Content,
-      active?: FAvatarActive,
-      shape?: FAvatarShape,
-      color?: FAvatarColor,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-
-FluentUI.triggerComponents.fAvatar = function (_) {
-  let imgHidden = false;
-  return (
+export class FAvatar extends TriggerComponent<void> {
+  imgHidden = false;
+  /**
+   * @param content Can be a string of name or image url, or a fragment containing an icon.
+   */
+  $main(
     content: Content,
     active: FAvatarActive = "unset",
     shape: FAvatarShape = "circular",
     color: FAvatarColor = "colorful",
-  ) => {
+  ): this is {
+    $ev: void;
+  } {
     const resolvedColor =
       color === "colorful"
         ? typeof content === "function"
@@ -44,10 +32,10 @@ FluentUI.triggerComponents.fAvatar = function (_) {
           styles.image();
           _._img({
             src: content,
-            hidden: imgHidden,
-            onerror() {
-              imgHidden = true;
-              _.$update();
+            hidden: this.imgHidden,
+            onerror: () => {
+              this.imgHidden = true;
+              this.$update();
             },
           });
         };
@@ -71,5 +59,6 @@ FluentUI.triggerComponents.fAvatar = function (_) {
       },
       resolvedContent,
     );
-  };
-};
+    return this.$fired;
+  }
+}

@@ -1,29 +1,19 @@
 import { Avatar } from "mdui";
-import MdUI from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdAvatar(src: string, fit?: Avatar["fit"]): void;
-  }
-}
-MdUI.outputComponents.mdAvatar = function (_) {
-  return (src, fit) => {
+export class MdAvatar extends Component {
+  $main(src: string, fit?: Avatar["fit"]): void {
     _._mdui_avatar({
       src,
       fit,
     });
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdIconAvatar(iconName: string): void;
   }
 }
-MdUI.outputComponents.mdIconAvatar = function (_) {
-  return iconName => {
+
+export class MdIconAvatar extends Component {
+  $main(iconName: string): void {
     _._mdui_avatar({
       icon: iconName,
     });
-  };
-};
+  }
+}

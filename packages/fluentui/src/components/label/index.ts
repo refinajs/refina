@@ -1,18 +1,12 @@
-import { Content } from "refina";
-import FluentUI from "../../plugin";
+import { Component, Content, _ } from "refina";
 import useStyles from "./styles";
 
-declare module "refina" {
-  interface Components {
-    fLabel(
-      content: Content,
-      required?: Content | boolean,
-      disabled?: boolean,
-    ): void;
-  }
-}
-FluentUI.outputComponents.fLabel = function (_) {
-  return (content, required = false, disabled = false) => {
+export class FLabel extends Component {
+  $main(
+    content: Content,
+    required: Content | boolean = false,
+    disabled = false,
+  ): void {
     const requiredContent = typeof required === "boolean" ? "*" : required;
 
     const styles = useStyles(disabled);
@@ -25,5 +19,5 @@ FluentUI.outputComponents.fLabel = function (_) {
         _._span({}, requiredContent);
       }
     });
-  };
-};
+  }
+}

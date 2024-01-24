@@ -32,9 +32,15 @@ import "@refina/mdui/styles.css";
 ```ts
 import MdUI from "@refina/mdui";
 
-$app.use(MdUI)(_ => {
+$app([MdUI], _ => {
   // ...
 });
+
+declare module "refina" {
+  interface Plugins {
+    MdUI: typeof MdUI;
+  }
+}
 ```
 
 ### Use Adapted Components
@@ -56,19 +62,17 @@ The hyphens in the component names should be replaced with underscores.
 **Refina Example**:
 
 ```ts
-$app.use(MdUI)(_ => {
-  _._mdui_tooltip(
-    {
-      content: "Plain tooltip",
+_._mdui_tooltip(
+  {
+    content: "Plain tooltip",
+  },
+  _ => _.mdui_button("button"),
+  {
+    opened: () => {
+      console.log("Tooltip opened");
     },
-    _ => _.mdui_button("button"),
-    {
-      opened: () => {
-        console.log("Tooltip opened");
-      },
-    },
-  );
-});
+  },
+);
 ```
 
 **Equivalent HTML**:

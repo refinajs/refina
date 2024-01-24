@@ -1,35 +1,32 @@
-import { Content, HTMLElementComponent, ref } from "refina";
-import MdUI from "../plugin";
+import { Component, Content, _, elementRef } from "refina";
 
-declare module "refina" {
-  interface Components {
-    MdNavRailProps: {
-      contained: boolean;
-    };
-    mdNavRail<Value extends string>(
-      items: readonly [value: Value, iconName?: string][],
-      contentOverride?: Partial<Record<Value, Content>>,
-      bottomSlot?: Content,
-    ): Value;
-  }
-}
-MdUI.statusComponents.mdNavRail = function (_) {
-  const navRailRef = ref<HTMLElementComponent<"mdui-navigation-rail">>();
-  return (items, contentOverride = {}, bottomSlot) => {
+export class MdNavRail<Value extends string> extends Component {
+  contained?: boolean;
+  status: Value;
+  navRailRef = elementRef<"mdui-navigation-rail">();
+  $main(
+    items: readonly [value: Value, iconName?: string][],
+    contentOverride: Partial<Record<Value, Content>> = {},
+    bottomSlot?: Content,
+  ): Value {
     const firstItem = items[0];
-    this.$_status ??= Array.isArray(firstItem) ? firstItem[0] : firstItem;
+    this.status ??= Array.isArray(firstItem) ? firstItem[0] : firstItem;
 
-    _.$ref(navRailRef) &&
-      _._mdui_navigation_rail(
-        {
-          value: this.$status,
-          contained: this.$props.contained,
-          onchange: () => {
-            this.$status = navRailRef.current!.node.value!;
-          },
+    _.$ref(this.navRailRef);
+    _._mdui_navigation_rail(
+      {
+        value: this.status,
+        contained: this.contained,
+        onchange: () => {
+          this.status = this.navRailRef.current!.node.value! as Value;
+          this.$update();
         },
-        _ => {
-          _.for(items, "0", item => {
+      },
+      _ => {
+        _.for(
+          items,
+          ([value]) => value,
+          item => {
             const [value, icon] = item;
             _._mdui_navigation_rail_item(
               {
@@ -38,12 +35,14 @@ MdUI.statusComponents.mdNavRail = function (_) {
               },
               contentOverride[value] ?? value,
             );
-          });
+          },
+        );
 
-          if (bottomSlot) {
-            _._div({ slot: "bottom" }, bottomSlot);
-          }
-        },
-      );
-  };
-};
+        if (bottomSlot) {
+          _._div({ slot: "bottom" }, bottomSlot);
+        }
+      },
+    );
+    return this.status;
+  }
+}

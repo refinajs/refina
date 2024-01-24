@@ -4,7 +4,7 @@ import { join, dirname } from "node:path";
 import _ from "lodash";
 
 function generateComponent(
-  componentFuncName: string,
+  componentClassName: string,
   iconContent: string,
   width: string,
   viewBoxWidth: string,
@@ -17,13 +17,8 @@ function generateComponent(
         })`,
     )
     .join(";\n      ");
-  return `declare module "refina" {
-  interface Components {
-    ${componentFuncName}(): void;
-  }
-}
-FIcons.outputComponents.${componentFuncName} = function (_) {
-  return () => {
+  return `export class ${componentClassName} extends Component {
+  $main() {
     _._svgSvg(
       {
         width: "${width}",
@@ -36,8 +31,8 @@ FIcons.outputComponents.${componentFuncName} = function (_) {
         ${svgContent};
       },
     );
-  };
-};
+  }
+}
 `;
 }
 
@@ -88,14 +83,14 @@ fileNames.forEach((fileName, index) => {
 
   const lowerCamelIconName = _.camelCase(snakeIconName);
   const upperCamelIconFullName = _.upperFirst(_.camelCase(fileName));
-  const componentFuncName = `fi${upperCamelIconFullName}`;
+  const componentClassName = `Fi${upperCamelIconFullName}`;
 
   const iconContent = fs.readFileSync(sourceFilePath, { encoding: "utf8" });
   const width = [...iconContent.matchAll(/(?<= width=").+?(?=")/g)][0][0];
 
   components[lowerCamelIconName] ??= [];
   components[lowerCamelIconName].push(
-    generateComponent(componentFuncName, iconContent, width, width),
+    generateComponent(componentClassName, iconContent, width, width),
   );
 
   if (iconSize == "20") {
@@ -103,12 +98,12 @@ fileNames.forEach((fileName, index) => {
     const upperCamelIconFullName = _.upperFirst(
       _.camelCase(snakeIconName + "_" + iconType),
     );
-    const componentFuncName = `fi${upperCamelIconFullName}`;
+    const componentClassName = `Fi${upperCamelIconFullName}`;
 
     const iconContent = fs.readFileSync(sourceFilePath, { encoding: "utf8" });
 
     components[lowerCamelIconName] = [
-      generateComponent(componentFuncName, iconContent, "1em", "20"),
+      generateComponent(componentClassName, iconContent, "1em", "20"),
       ...components[lowerCamelIconName],
     ];
   }
@@ -120,7 +115,7 @@ fileNames.forEach((fileName, index) => {
 
 const componentsEntries = Object.entries(components);
 componentsEntries.forEach(([lowerCamelIconName, codes], index) => {
-  const code = `import FIcons from "../plugin";\n\n` + codes.join("\n");
+  const code = `import { Component, _ } from "refina";\n\n` + codes.join("\n");
   const outputFileName = `${lowerCamelIconName}.ts`;
   const outputFilePath = join(distDir, outputFileName);
   fs.writeFileSync(outputFilePath, code);

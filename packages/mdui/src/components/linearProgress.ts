@@ -1,14 +1,9 @@
-import MdUI from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdLinearProgress(percentage?: number | undefined): void;
-  }
-}
-MdUI.outputComponents.mdLinearProgress = function (_) {
-  return percentage => {
+export class MdLinearProgress extends Component {
+  $main(percentage?: number | undefined): void {
     _._mdui_linear_progress({
       value: percentage,
     });
-  };
-};
+  }
+}

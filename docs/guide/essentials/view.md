@@ -2,7 +2,7 @@
 
 A view is a function that renders a part of the page.
 
-It is mostly used to render a part of the page for one or few times or as the content of a page for multi-page applications.
+It is mostly used to render a part of the page one or few times or as the content of a page for multi-page applications.
 
 ## Usage
 
@@ -44,10 +44,12 @@ It is recommended to define a view in a separate file and export it as a default
 
 ## Passing Parameters {#passing-parameters}
 
-A view function can have parameters. You can declare the parameters simply:
+A fragment can have parameters:
 
 ```ts
-export default $view((_, name: string, id?: number) => {
+import { $view, _ } from "refina";
+
+export default $view((name: string, id?: number) => {
   _.p(_ => {
     _.t`My name is ${name}. `;
     id !== undefined && _.t(`My ID is ${id}.`);
@@ -55,7 +57,7 @@ export default $view((_, name: string, id?: number) => {
 });
 ```
 
-Then, you can pass the parameters to the view function:
+Then, you can pass the parameters to the fragment:
 
 ```ts
 _(MyView)("John", 123);
@@ -89,7 +91,7 @@ The major differences are:
 
 - Components are registered as context functions, while views are just normal functions.
 - Each component instance has its own states, while all the instances of a view share the same states.
-- A component has a [`$mainEl` property](./component.md#main-element), and classes and styles can be added to it, while a view has no such property.
+- A component has a [`$primaryEl` property](./component.md#primary-element), and classes and styles can be added to it, while a view has no such property.
 - A component can be refed by the [`_.$ref`](../apis/directives.md#ref) directive, while a view can't because a view has no instance.
 - A component has [extra props](./component.md#extra-props), while a view only has parameters.
 

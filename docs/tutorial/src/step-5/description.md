@@ -3,7 +3,7 @@
 We can listen to events by checking the return value of the component function:
 
 ```ts {2-4}
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (_.button("Click me!")) {
     console.log("Clicked!", _.$ev);
   }
@@ -19,7 +19,7 @@ You can update states inside the event handler:
 ```ts {4}
 let click = false;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.button("Click me!") && (clicked = true);
   clicked && _.p("Clicked!");
 });
@@ -38,7 +38,7 @@ $app(_ => {
 });
 ```
 
-`n` will be incremented every time the view function is called, which is not predictable.
+`n` will be incremented every time the fragment is called, which is not predictable.
 
 :::
 

@@ -9,8 +9,8 @@ import { onMounted } from "vue";
 import RunRefina from "./run-refina.vue";
 
 onMounted(() => {
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "now-root" }, _ => {
     _.p(`The current time is ${_.now(500)}`);
-  }, "now-root");
+  });
 });
 </script>

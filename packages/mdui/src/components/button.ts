@@ -1,74 +1,34 @@
 import { Button } from "mdui";
-import { Content } from "refina";
-import MdUI from "../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 
-export type ButtonVariant = Button["variant"];
-
-declare module "refina" {
-  interface Components {
-    mdButton(
-      inner: Content,
-      disabled?: boolean,
-      varient?: ButtonVariant,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-MdUI.triggerComponents.mdButton = function (_) {
-  return (inner, disabled = false, variant = "filled") => {
+export class MdButton extends TriggerComponent<void> {
+  variant: Button["variant"] = "filled";
+  $main(
+    inner: Content,
+    disabled: boolean = false,
+  ): this is {
+    $ev: void;
+  } {
     _._mdui_button(
       {
         disabled,
         onclick: this.$fireWith(),
-        variant,
+        variant: this.variant,
       },
       inner,
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdTonalButton(
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
+    return this.$fired;
   }
 }
-MdUI.triggerComponents.mdTonalButton = function (_) {
-  return (inner, disabled) =>
-    _.mdButton(inner, disabled, "tonal") && this.$fire();
-};
 
-declare module "refina" {
-  interface Components {
-    mdOutlinedButton(
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
-  }
+export class MdTonalButton extends MdButton {
+  variant = "tonal" as const;
 }
-MdUI.triggerComponents.mdOutlinedButton = function (_) {
-  return (inner, disabled) =>
-    _.mdButton(inner, disabled, "outlined") && this.$fire();
-};
 
-declare module "refina" {
-  interface Components {
-    mdTextButton(
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
-  }
+export class MdOutlinedButton extends MdButton {
+  variant = "outlined" as const;
 }
-MdUI.triggerComponents.mdTextButton = function (_) {
-  return (inner, disabled) =>
-    _.mdButton(inner, disabled, "text") && this.$fire();
-};
+
+export class MdTextButton extends MdButton {
+  variant = "text" as const;
+}

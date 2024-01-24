@@ -11,7 +11,7 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   let count = 0;
 
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#event-handling-root" }, _ => {
     _.p(`Count is: ${count}`);
 
     _.button(`Add`) && count++;
@@ -20,6 +20,6 @@ onMounted(() => {
       count = 0;
       console.log(_.$ev);
     }
-  }, "event-handling-root");
+  });
 });
 </script>

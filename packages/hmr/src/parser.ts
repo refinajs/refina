@@ -21,10 +21,7 @@ export interface ParseResult {
 }
 
 function isCalleeApp(callee: t.Expression | t.V8IntrinsicIdentifier) {
-  if (callee.type === "Identifier") return callee.name === "$app";
-  if (callee.type === "CallExpression") return isCalleeApp(callee.callee);
-  if (callee.type === "MemberExpression") return isCalleeApp(callee.object);
-  return false;
+  return callee.type === "Identifier" && callee.name === "$app";
 }
 
 export function parse(src: string): ParseResult | null {
@@ -47,7 +44,7 @@ export function parse(src: string): ParseResult | null {
       statement.expression.type === "CallExpression" &&
       isCalleeApp(statement.expression.callee)
     ) {
-      const mainAst = statement.expression.arguments[0] as t.Expression;
+      const mainAst = statement.expression.arguments[1] as t.Expression;
       const mainStart = mainAst.start!;
       const mainEnd = mainAst.end! - src.length;
 
@@ -71,6 +68,7 @@ export function parse(src: string): ParseResult | null {
         appInstance: null,
       };
     }
+
     if (
       statement.type === "VariableDeclaration" &&
       statement.declarations.length === 1 &&
@@ -84,7 +82,7 @@ export function parse(src: string): ParseResult | null {
       }
 
       const mainAst = statement.declarations[0].init
-        .arguments[0] as t.Expression;
+        .arguments[1] as t.Expression;
       const mainStart = mainAst.start!;
       const mainEnd = mainAst.end! - src.length;
 

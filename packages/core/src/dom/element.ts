@@ -1,5 +1,4 @@
 import { RefTreeNode } from "../app";
-import { ContextState } from "../context";
 import { Content } from "./content";
 import { DOMNodeComponent, MaybeChildNode } from "./node";
 
@@ -122,11 +121,11 @@ export class DOMElementComponent<
   $refTreeNode: RefTreeNode = {};
 
   /**
-   * The main element of the component.
+   * The primary element of the component.
    *
    * In common cases, this is the same as `this`.
    */
-  $mainEl: DOMElementComponent = this;
+  $primaryEl: DOMElementComponent = this;
 
   /**
    * Children DOM node components that are not updated to the DOM tree yet.
@@ -379,7 +378,7 @@ type ReplaceHyphenWithLowLine<S extends string> =
 /**
  * The component functions of HTML elements.
  */
-export type HTMLElementFuncs<C extends ContextState> = {
+export type HTMLElementFuncs = {
   /**
    * Render a HTML element or web component of this tag name.
    *
@@ -394,7 +393,7 @@ export type HTMLElementFuncs<C extends ContextState> = {
    *
    * **Warning**: `UPDATE` call will not be triggered automatically
    *  in the event listeners in both `data` and `eventListeners`.
-   *  You should call `_.$update()` manually if you want to trigger an `UPDATE` call.
+   *  You should call `app.update()` manually if you want to trigger an `UPDATE` call.
    *
    * @example
    * ```ts
@@ -403,7 +402,7 @@ export type HTMLElementFuncs<C extends ContextState> = {
    *     type: "button",
    *     onclick: () => {
    *       // ...
-   *       _.$update();
+   *       app.update();
    *     }
    *   },
    *   "Click me!",
@@ -418,16 +417,14 @@ export type HTMLElementFuncs<C extends ContextState> = {
    * );
    * ```
    * @param data An object that contains the attributes of the element.
-   * @param inner The inner content of the element. It can be a string, a number, or a view function.
+   * @param inner The inner content of the element. It can be a string, a number, or a fragment.
    * @param eventListeners The event listeners of the element.
    */
-  [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: DOMElementComponent<E> extends C["enabled"]
-    ? (
-        data?: Partial<HTMLElementTagNameMap[E]>,
-        inner?: Content,
-        eventListeners?: DOMElementEventListenersInfoRaw<E>,
-      ) => void
-    : never;
+  [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: (
+    data?: Partial<HTMLElementTagNameMap[E]>,
+    inner?: Content,
+    eventListeners?: DOMElementEventListenersInfoRaw<E>,
+  ) => void;
 };
 
 /**
@@ -442,7 +439,7 @@ export type SVGElementFuncData = Record<
 /**
  * The component functions of SVG elements.
  */
-export type SVGElementFuncs<C extends ContextState> = {
+export type SVGElementFuncs = {
   /**
    * Render a SVG element of this tag name.
    *
@@ -458,7 +455,7 @@ export type SVGElementFuncs<C extends ContextState> = {
    *
    * **Warning**: `UPDATE` call will not be triggered automatically
    *  in the event listeners in both `data` and `eventListeners`.
-   *  You should call `_.$update()` manually if you want to trigger an `UPDATE` call.
+   *  You should call `app.update()` manually if you want to trigger an `UPDATE` call.
    *
    * @example
    * ```ts
@@ -472,20 +469,18 @@ export type SVGElementFuncs<C extends ContextState> = {
    * );
    * ```
    * @param data An object that contains the attributes of the element.
-   * @param inner The inner content of the element. It can be a string, a number, or a view function.
+   * @param inner The inner content of the element. It can be a string, a number, or a fragment.
    * @param eventListeners The event listeners of the element.
    */
-  [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: DOMElementComponent<E> extends C["enabled"]
-    ? (
-        data?: SVGElementFuncData,
-        inner?: Content,
-        eventListeners?: DOMElementEventListenersInfoRaw<E>,
-      ) => void
-    : never;
+  [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: (
+    data?: SVGElementFuncData,
+    inner?: Content,
+    eventListeners?: DOMElementEventListenersInfoRaw<E>,
+  ) => void;
 };
 
 // Add HTML and SVG element functions to context.
-declare module "../context/base" {
-  interface ContextFuncs<C> extends HTMLElementFuncs<C> {}
-  interface ContextFuncs<C> extends SVGElementFuncs<C> {}
+declare module ".." {
+  interface ContextFuncs extends HTMLElementFuncs {}
+  interface ContextFuncs extends SVGElementFuncs {}
 }

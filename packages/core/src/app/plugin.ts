@@ -1,95 +1,136 @@
-import {
-  OutputComponentFactoryMap,
-  StatusComponentFactoryMap,
-  TriggerComponentFactoryMap,
-  createOutputComponentFunc,
-  createStatusComponentFunc,
-  createTriggerComponentFunc,
-} from "../component";
-import type {
-  ContextFuncs,
-  RealContextFuncs,
-  ToRealContextFunc,
-} from "../context";
-import type { App } from "./app";
+import { Component, toComponentFunc } from "../component";
+import { ContextMemberFactory } from "../context";
+import { Prelude } from "../prelude";
+import { App } from "./app";
+import { AppHookMap, appHookNames } from "./hooks";
 
-export class Plugin<Args extends any[] = []> {
-  /**
-   * @param name The name of the plugin.
-   * @param onInstall A hook that is called when the plugin is installed.
-   */
-  constructor(
-    public name: string,
-    public onInstall: (app: App, ...args: Args) => void = () => {},
-  ) {}
+export interface Plugin extends Partial<AppHookMap> {
+  name?: string;
+  components?: Record<string, new () => Component>;
+  contextFuncs?: Record<string, ContextMemberFactory>;
+  htmlElementAlias?: Record<string, string>;
+  onInstall?(app: App): void;
+}
 
-  /**
-   * The app that this plugin is installed on.
-   */
-  app: App;
+type PluginItem =
+  | Plugin
+  | false
+  | null
+  | undefined
+  | readonly PluginItem[]
+  | Promise<Plugin | false | null | undefined | readonly PluginItem[]>;
 
-  /**
-   * Install the plugin on an app.
-   *
-   * @param app The app to install the plugin on.
-   * @param args Arguments to pass to the plugin.
-   */
-  install(app: App, ...args: Args) {
-    this.app = app;
+export type PluginOption = PluginItem[];
 
-    // Call the onInstall hook.
-    this.onInstall(app, ...args);
+async function normalizePlugins(input: PluginItem): Promise<Plugin[]> {
+  const plugins = await Promise.all(
+    Array.isArray(input) ? input.map(normalizePlugins) : [input],
+  );
+  return plugins.flat().filter(Boolean) as Plugin[];
+}
 
-    // Merge the context functions in the plugin into the app.
-    Object.assign(app.contextFuncs, this.contextFuncs);
+export async function installPlugins(app: App, plugins: PluginOption) {
+  const pluginList = [Prelude as Plugin, ...(await normalizePlugins(plugins))];
+  for (const plugin of pluginList) {
+    plugin.onInstall?.(app);
 
-    // Merge the component functions in the plugin into the app.
-    for (const [name, factory] of Object.entries(this.outputComponents)) {
-      app.contextFuncs[name] = createOutputComponentFunc(factory as any);
-    }
-    for (const [name, factory] of Object.entries(this.statusComponents)) {
-      app.contextFuncs[name] = createStatusComponentFunc(factory as any);
-    }
-    for (const [name, factory] of Object.entries(this.triggerComponents)) {
-      app.contextFuncs[name] = createTriggerComponentFunc(factory as any);
+    if (plugin.components) {
+      for (const [name, component] of Object.entries(plugin.components)) {
+        if (import.meta.env.DEV && name.startsWith("$")) {
+          throw new Error(
+            `Component name "${name}" should not start with "$".`,
+          );
+        }
+        app.contextFuncs[name] = toComponentFunc(component);
+      }
     }
 
-    if (import.meta.env.DEV) {
-      console.debug(`[*] plugin ${this.name} installed.`);
+    if (plugin.contextFuncs) {
+      for (const [name, contextFunc] of Object.entries(plugin.contextFuncs)) {
+        if (import.meta.env.DEV && name.startsWith("$")) {
+          throw new Error(
+            `Context function name "${name}" should not start with "$".`,
+          );
+        }
+        app.contextFuncs[name] = (ckey, ...args) =>
+          contextFunc(ckey, app)(...args);
+      }
+    }
+
+    if (plugin.htmlElementAlias) {
+      Object.assign(app.htmlElementAlias, plugin.htmlElementAlias);
+    }
+
+    for (const hookName of appHookNames) {
+      const hook = plugin[hookName];
+      if (hook) {
+        app.pushPermanentHook(hookName, hook);
+      }
     }
   }
+}
 
-  /**
-   * All the **transformed** context functions that this plugin provides.
-   */
-  protected contextFuncs: Partial<RealContextFuncs> = {};
+export interface Plugins {}
 
-  /**
-   * Register a **transformed** context function.
-   *
-   * @param name The name of the context function.
-   * @param func The context function, with the first argument being the Ckey and this type being the context.
-   */
-  registerFunc<N extends keyof ContextFuncs<any>>(
-    name: N,
-    func: ToRealContextFunc<N>,
-  ) {
-    // @ts-ignore
-    this.contextFuncs[name] = func;
-  }
+type ExtractFuncName<N> = N extends string
+  ? N extends `$${string}`
+    ? never
+    : N
+  : never;
 
-  /**
-   * The output component factory function map.
-   */
-  readonly outputComponents: Partial<OutputComponentFactoryMap> = {};
+type GetContextFuncs<T extends Plugin> = T extends any
+  ? {
+      [K in ExtractFuncName<
+        keyof T["components"]
+      >]: T["components"][K] extends new () => {
+        $main: infer F;
+      }
+        ? F
+        : never;
+    } & {
+      [K in ExtractFuncName<
+        keyof T["contextFuncs"]
+      >]: T["contextFuncs"][K] extends ContextMemberFactory<infer F>
+        ? F
+        : never;
+    }
+  : never;
 
-  /**
-   * The status component factory function map.
-   */
-  readonly statusComponents: Partial<StatusComponentFactoryMap> = {};
+type GetComponents<T extends Plugin> = T extends any
+  ? {
+      [K in ExtractFuncName<
+        keyof T["components"]
+      >]: T["components"][K] extends new () => infer C ? C : never;
+    }
+  : never;
 
-  /**
-   * The trigger component factory function map.
-   */
-  readonly triggerComponents: Partial<TriggerComponentFactoryMap> = {};
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
+  x: infer R,
+) => any
+  ? R
+  : never;
+
+type NormalizePlugins<T> = T extends (...args: any[]) => infer R
+  ? NormalizePlugins<R>
+  : T extends readonly any[]
+  ? T[number] extends infer R
+    ? NormalizePlugins<R>
+    : never
+  : T extends Promise<infer R>
+  ? NormalizePlugins<R>
+  : T extends Plugin
+  ? T
+  : never;
+
+type PluginContextFuncs = UnionToIntersection<
+  GetContextFuncs<NormalizePlugins<Plugins[keyof Plugins]>>
+>;
+
+type PluginComponents = UnionToIntersection<
+  GetComponents<NormalizePlugins<Plugins[keyof Plugins]>>
+>;
+
+declare module ".." {
+  interface ContextFuncs extends PluginContextFuncs {}
+  interface Components extends PluginComponents {}
 }

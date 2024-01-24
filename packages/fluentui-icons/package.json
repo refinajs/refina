@@ -13,8 +13,7 @@
   ],
   "type": "module",
   "exports": {
-    ".": "./plugin.ts",
-    "./*": "./dist/*"
+    "./*": "./dist/*.ts"
   },
   "scripts": {
     "build": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./generator.ts --force",
@@ -31,6 +30,7 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "devDependencies": {
+    "@fluentui/svg-icons": "^1.1.218",
     "@refina/tsconfig": "workspace:^",
     "@types/lodash": "^4.14.199",
     "@types/node": "^20.6.5",
@@ -40,8 +40,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@fluentui/svg-icons": "^1.1.218",
-    "@refina/griffel": "workspace:^",
+    "@refina/griffel": "workspace:^"
+  },
+  "peerDependencies": {
     "refina": "workspace:^"
   }
 }

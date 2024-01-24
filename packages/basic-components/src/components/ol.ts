@@ -1,22 +1,15 @@
-import { LoopKey } from "refina";
-import Basics from "../plugin";
+import { Component, LoopKey, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    ol<T>(
-      data: Iterable<T>,
-      key: LoopKey<T>,
-      itemView: (item: T, index: number) => void,
-    ): void;
-  }
-}
-
-Basics.outputComponents.ol = function (_) {
-  return (data, key, itemView) => {
+export class BasicOl extends Component {
+  $main<T>(
+    data: Iterable<T>,
+    key: LoopKey<T>,
+    itemView: (item: T, index: number) => void,
+  ): void {
     _._ol({}, _ =>
       _.for(data, key, (item, index) => {
         itemView(item, index);
       }),
     );
-  };
-};
+  }
+}

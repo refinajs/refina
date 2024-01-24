@@ -1,86 +1,61 @@
 import { AppState } from "../constants";
 import {
-  Context,
-  IntrinsicBaseContext,
-  IntrinsicRecvContext,
-  IntrinsicUpdateContext,
   RealContextFuncs,
+  _,
   initializeRecvContext,
   initializeUpdateContext,
+  invalidateContext,
 } from "../context";
 import { Model, dangerously_updateModel } from "../data";
-import { DOMBodyComponent, DOMRootComponent } from "../dom";
-import { DOMWindowComponent } from "../dom/window";
-import type { View } from "../view";
+import {
+  DOMBodyComponent,
+  DOMRootComponent,
+  DOMWindowComponent,
+  Fragment,
+} from "../dom";
+import { AppHookMap } from "./hooks";
+import { PluginOption, installPlugins } from "./plugin";
 
 export type RefTreeNode = Record<string, unknown>;
 
-/**
- * The map of app hooks.
- *
- * There are two types of hooks:
- * - **Onetime hooks**: removed after one call.
- * - **Permanent hooks**: not removed after calls.
- *
- * Add hook functions to the hook map by calling `app.pushOnetimeHook` or `app.pushPermanentHook`.
- */
-export interface AppHookMap {
-  /**
-   * Initialize the context object.
-   */
-  initContext: (context: IntrinsicRecvContext | IntrinsicUpdateContext) => void;
-
-  /**
-   * Before the main function is executed, whether in `UPDATE` or `RECV` state.
-   *
-   * `app.runtimeData` is available in this hook.
-   */
-  beforeMain: () => void;
-
-  /**
-   * After the main function is executed, whether in `UPDATE` or `RECV` state.
-   *
-   * `app.runtimeData` is available in this hook.
-   */
-  afterMain: () => void;
-
-  /**
-   * Called after the main function is executed in `UPDATE` state,
-   *  but before the DOM tree is modified and classes and styles are applied.
-   *
-   * `app.runtimeData` is available in this hook.
-   */
-  beforeModifyDOM: () => void;
-
-  /**
-   * Called after the main function is executed in `UPDATE` state,
-   *  and the DOM tree is modified and classes and styles are applied.
-   *
-   * `app.runtimeData` is available in this hook.
-   */
-  afterModifyDOM: () => void;
-
-  /**
-   * Called when an error is thrown in the main function.
-   */
-  onError: (error: unknown) => void;
-}
+export type AppOptions =
+  | {
+      name?: string;
+      plugins?: PluginOption;
+      root?: string | HTMLElement;
+    }
+  | PluginOption;
 
 export class App {
-  /**
-   * @param main The main function of the app
-   * @param rootElementId The id of the root element to mount the app. Usually it is `"root"`.
-   */
   constructor(
-    public main: View,
-    public rootElementId: string,
+    options: AppOptions,
+    public main: Fragment,
   ) {
-    const rootElement = document.getElementById(rootElementId);
-    if (!rootElement) {
-      throw new Error(`Root element ${rootElementId} not found.`);
+    if (import.meta.env.DEV) console.debug(`[*] create app`);
+
+    if (Array.isArray(options)) {
+      options = { plugins: options };
     }
-    this.root = new DOMRootComponent(rootElement);
+
+    this.name = options.name;
+
+    installPlugins(this, options.plugins ?? []);
+
+    const elementOrSelector = options.root ?? "#app";
+    if (typeof elementOrSelector === "string") {
+      const element = document.querySelector(elementOrSelector);
+      if (!element) {
+        throw new Error(`Root element ${elementOrSelector} not found.`);
+      }
+      this.root = new DOMRootComponent(element as HTMLElement);
+    } else {
+      this.root = new DOMRootComponent(elementOrSelector);
+    }
   }
+
+  readonly name: string | undefined;
+
+  readonly plugins: PluginOption;
 
   /**
    * The map of context functions that are transformed, excluding HTML/SVG/Text element funcs.
@@ -131,21 +106,8 @@ export class App {
    */
   state: AppState = AppState.IDLE;
 
-  /**
-   * The context of the app.
-   */
-  readonly context = {} as unknown as IntrinsicBaseContext;
+  requireRecv: boolean;
 
-  /**
-   * Each event in this queue requires a later `RECV` call.
-   *
-   * Can be pushed during `RECV` calls, which means a new event can be triggered by another event.
-   */
-  eventQueue: [receiver: unknown, data: unknown][] = [];
-
-  /**
-   * Whether an `UPDATE` call is required after the recv queue becomes empty.
-   */
   requireUpdate: boolean;
 
   /**
@@ -178,43 +140,36 @@ export class App {
 
   /**
    * Trigger a `RECV` call.
-   *
-   * @param receiver The receiver of the event.
-   * @param data The event data.
    */
-  readonly recv = (receiver: unknown, data: unknown) => {
+  readonly recv = () => {
     if (import.meta.env.DEV) {
       const stack = new Error().stack?.replace(/.*\n.*/, "");
-      console.debug(`[*] recv triggered (receiver: ${receiver})${stack}`);
+      console.debug(`[*] recv triggered${stack}`);
     }
+
+    this.requireRecv = true;
+    this.requireUpdate = true;
 
     if (this.state === AppState.IDLE) {
       this.state = AppState.RECV;
-      this.eventQueue = [[receiver, data]];
-      this.requireUpdate = true;
 
-      while (this.eventQueue.length > 0) {
-        const [receiver, data] = this.eventQueue.shift()!;
+      while (this.requireRecv) {
+        if (import.meta.env.DEV) console.debug(`[+] recv start`);
 
-        if (import.meta.env.DEV)
-          console.debug(`[+] recv start (receiver: ${receiver}`);
+        this.requireRecv = false;
 
-        initializeRecvContext(
-          this.context as unknown as IntrinsicRecvContext,
-          this,
-          receiver,
-          data,
-        );
+        initializeRecvContext(this);
         this.execMain();
-
-        if (import.meta.env.DEV)
-          console.debug(`[-] recv end (receiver: ${receiver}`);
+        if (import.meta.env.DEV) {
+          invalidateContext();
+          console.debug(`[-] recv end`);
+        }
       }
 
       this.state = AppState.IDLE;
       this.execUpdate();
     } else if (this.state === AppState.RECV) {
-      this.eventQueue.push([receiver, data]);
+      this.requireRecv = true;
     } else if (this.state === AppState.UPDATE) {
       throw new Error("Cannot call trigger recv in `UPDATE` state.");
     }
@@ -228,10 +183,7 @@ export class App {
 
       this.state = AppState.UPDATE;
 
-      initializeUpdateContext(
-        this.context as unknown as IntrinsicUpdateContext,
-        this,
-      );
+      initializeUpdateContext(this);
       this.execMain();
 
       // Apply changes to DOM.
@@ -245,7 +197,10 @@ export class App {
       this.state = AppState.IDLE;
       this.requireUpdate = false;
 
-      if (import.meta.env.DEV) console.debug(`[-] update end`);
+      if (import.meta.env.DEV) {
+        invalidateContext();
+        console.debug(`[-] update end`);
+      }
     });
   }
 
@@ -254,17 +209,12 @@ export class App {
    */
   protected execMain() {
     try {
-      currentContext = this.context._;
       this.callHook("beforeMain");
-      this.main(this.context as unknown as Context);
+      this.main(_);
       if (import.meta.env.DEV) {
-        this.context.$$assertEmpty();
-        if (window.__REFINA_HMR__) {
-          window.__REFINA_HMR__.removedCkeys = [];
-        }
+        _.$lowlevel.$$assertEmpty();
       }
       this.callHook("afterMain");
-      currentContext = undefined;
     } catch (e) {
       // Do not throw the error to make sure the cleanup code is executed.
       this.callHook("onError", e);
@@ -325,14 +275,14 @@ export class App {
     if (onetimeHooks) {
       // Reset the runtime hooks.
       this.onetimeHooks[hookName] = undefined;
-      // @ts-ignore
-      onetimeHooks.forEach(hook => hook(...args));
+      // @ts-expect-error
+      onetimeHooks.forEach(hook => hook.apply(this, args));
     }
 
     const permanentHooks = this.permanentHooks[hookName];
     if (permanentHooks) {
-      // @ts-ignore
-      permanentHooks.forEach(hook => hook(...args));
+      // @ts-expect-error
+      permanentHooks.forEach(hook => hook.apply(this, args));
     }
   }
 
@@ -378,32 +328,10 @@ export class App {
     }
     return false;
   };
-
-  /**
-   * `true` if the app is under `RECV` state and the receiver is `key`.
-   *
-   * @param receiver The receiver to test.
-   * @returns `true` if the app is under `RECV` state and the receiver is `key`.
-   */
-  isEventReceiver(receiver: unknown): boolean {
-    if (
-      this.context.$recvContext &&
-      this.context.$recvContext.$receiver === receiver
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
 
-let currentContext: Context | undefined = undefined;
-
-/**
- * Get the current context.
- *
- * @returns The current context.
- */
-export function getContext(): Context | undefined {
-  return currentContext;
+export function $app(options: AppOptions, main: Fragment): App {
+  const app = new App(options, main);
+  app.mount();
+  return app;
 }

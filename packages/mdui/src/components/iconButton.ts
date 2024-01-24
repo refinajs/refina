@@ -1,71 +1,35 @@
 import { ButtonIcon } from "mdui";
-import MdUI from "../plugin";
+import { TriggerComponent, _ } from "refina";
 
-export type ButtonIconVariant = ButtonIcon["variant"];
+export type MdIconButtonVariant = ButtonIcon["variant"];
 
-declare module "refina" {
-  interface Components {
-    mdIconButton(
-      icon: string,
-      disabled?: boolean,
-      varient?: ButtonIconVariant,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-MdUI.triggerComponents.mdIconButton = function (_) {
-  return (icon, disabled = false, varient = "standard") => {
+export class MdIconButton extends TriggerComponent<void> {
+  variant: MdIconButtonVariant = "standard";
+  $main(
+    icon: string,
+    disabled = false,
+    variant = "standard",
+  ): this is {
+    $ev: void;
+  } {
     _._mdui_button_icon({
       icon,
       disabled,
       onclick: this.$fireWith(),
-      variant: varient,
+      variant: this.variant,
     });
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdFilledIconButton(
-      icon: string,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
+    return this.$fired;
   }
 }
-MdUI.triggerComponents.mdFilledIconButton = function (_) {
-  return (icon, disabled) =>
-    _.mdIconButton(icon, disabled, "filled") && this.$fire();
-};
 
-declare module "refina" {
-  interface Components {
-    mdTonalIconButton(
-      icon: string,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
-  }
+export class MdFilledIconButton extends MdIconButton {
+  variant = "filled" as const;
 }
-MdUI.triggerComponents.mdTonalIconButton = function (_) {
-  return (icon, disabled) =>
-    _.mdIconButton(icon, disabled, "tonal") && this.$fire();
-};
 
-declare module "refina" {
-  interface Components {
-    mdOutlinedIconButton(
-      icon: string,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
-  }
+export class MdTonalIconButton extends MdIconButton {
+  variant = "tonal" as const;
 }
-MdUI.triggerComponents.mdOutlinedIconButton = function (_) {
-  return (icon, disabled) =>
-    _.mdIconButton(icon, disabled, "outlined") && this.$fire();
-};
+
+export class MdOutlinedIconButton extends MdIconButton {
+  variant = "outlined" as const;
+}

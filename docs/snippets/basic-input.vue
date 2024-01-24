@@ -11,11 +11,11 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   const username = model("");
 
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#basic-input-root" }, _ => {
     _.label("Username");
     _.textInput(username, false, "edit me");
     username.value.length && _.button("Clear") && (username.value = "");
     _.p(`Your username is: ${username.value}`);
-  }, "basic-input-root");
+  });
 });
 </script>

@@ -1,88 +1,76 @@
-import { Content, HTMLElementComponent, Model, ref, valueOf } from "refina";
-import MdUI from "../plugin";
+import {
+  Component,
+  Content,
+  Model,
+  TriggerComponent,
+  _,
+  elementRef,
+  valueOf,
+} from "refina";
 
-declare module "refina" {
-  interface Components {
-    MdChipProps: {
-      icon: string;
-      endIcon: string;
-    };
-    mdChip(inner: Content, disabled?: boolean): void;
-  }
-}
-MdUI.outputComponents.mdChip = function (_) {
-  return (inner, disabled = false) => {
+export class MdChip extends Component {
+  icon?: string;
+  endIcon?: string;
+  $main(inner: Content, disabled = false): void {
     _._mdui_chip(
       {
         disabled,
-        icon: this.$props.icon,
-        endIcon: this.$props.endIcon,
+        icon: this.icon,
+        endIcon: this.endIcon,
       },
       inner,
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    MdDeletableChipProps: {
-      deleteIcon: string;
-    };
-    mdSelectableChip(
-      selected: Model<boolean>,
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: boolean;
-    };
   }
 }
-MdUI.triggerComponents.mdSelectableChip = function (_) {
-  const chipRef = ref<HTMLElementComponent<"mdui-chip">>();
-  return (selected, inner, disabled = false) => {
-    _.$ref(chipRef) &&
-      _._mdui_chip(
-        {
-          selectable: true,
-          selected: valueOf(selected),
-          disabled,
-          onchange: () => {
-            const newSelected = chipRef.current!.node.selected;
-            _.$updateModel(selected, newSelected);
-            this.$fire(newSelected);
-          },
-          selectedIcon: this.$props.selectedIcon,
+
+export class MdSelectableChip extends TriggerComponent {
+  selectedIcon?: string;
+  chipRef = elementRef<"mdui-chip">();
+  $main(
+    selected: Model<boolean>,
+    inner: Content,
+    disabled = false,
+  ): this is {
+    $ev: boolean;
+  } {
+    _.$ref(this.chipRef);
+    _._mdui_chip(
+      {
+        selectable: true,
+        selected: valueOf(selected),
+        disabled,
+        onchange: () => {
+          const newSelected = this.chipRef.current!.node.selected;
+          this.$updateModel(selected, newSelected);
+          this.$fire(newSelected);
         },
-        inner,
-      );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    MdSelectableChipProps: {
-      selectedIcon: string;
-    };
-    mdDeletableChip(
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: void;
-    };
+        selectedIcon: this.selectedIcon,
+      },
+      inner,
+    );
+    return this.$fired;
   }
 }
-MdUI.triggerComponents.mdDeletableChip = function (_) {
-  return (inner, disabled = false) => {
+
+export class MdDeletableChip extends TriggerComponent<void> {
+  deleteIcon?: string;
+  $main(
+    inner: Content,
+    disabled = false,
+  ): this is {
+    $ev: void;
+  } {
     _._mdui_chip(
       {
         deletable: true,
         disabled,
-        deleteIcon: this.$props.deleteIcon,
+        deleteIcon: this.deleteIcon,
       },
       inner,
       {
         delete: this.$fireWith(),
       },
     );
-  };
-};
+    return this.$fired;
+  }
+}

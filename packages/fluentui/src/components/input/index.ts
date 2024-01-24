@@ -1,155 +1,78 @@
-import { HTMLElementComponent, Model, ref, valueOf } from "refina";
-import FluentUI from "../../plugin";
+import {
+  HTMLElementComponent,
+  Model,
+  TriggerComponent,
+  _,
+  ref,
+  valueOf,
+} from "refina";
 import useStyles from "./styles";
 import { FInputAppearance } from "./types";
 
-declare module "refina" {
-  interface Components {
-    fInput<T>(
-      value: Model<T>,
-      disabled?: boolean,
-      placeholder?: string,
-      type?: string,
-      appearance?: FInputAppearance,
-      stringifier?: (v: T) => string,
-      parseValue?: (v: string) => T,
-    ): this is {
-      $ev: T;
-    };
-  }
-}
-FluentUI.triggerComponents.fInput = function (_) {
-  const inputRef = ref<HTMLElementComponent<"input">>();
-  return (
-    value,
+export class FInput<T = string> extends TriggerComponent {
+  stringifier: (v: T) => string = v => `${v}`;
+  parseValue: (v: string) => T = v => v as any;
+  appearance: FInputAppearance = "outline";
+  type = "text";
+  inputRef = ref<HTMLElementComponent<"input">>();
+  $main(
+    value: Model<T>,
     disabled = false,
     placeholder = "",
-    type = "text",
-    appearance = "outline",
-    stringifier = v => `${v}`,
-    parseValue = v => v as any,
-  ) => {
-    const styles = useStyles(appearance, disabled, false);
+  ): this is {
+    $ev: T;
+  } {
+    const styles = useStyles(this.appearance, disabled, false);
 
     styles.root();
     _._span(
       {
         onclick: () => {
-          inputRef.current?.node.focus();
+          this.inputRef.current?.node.focus();
         },
       },
       _ => {
         styles.input();
-        _.$ref(inputRef) &&
+        _.$ref(this.inputRef) &&
           _._input({
-            type,
-            value: stringifier(valueOf(value)),
+            type: this.type,
+            value: this.stringifier(valueOf(value)),
             disabled: disabled,
             placeholder: placeholder,
             oninput: () => {
-              const newValue = parseValue(inputRef.current!.node.value);
-              _.$updateModel(value, newValue);
+              const newValue = this.parseValue(
+                this.inputRef.current!.node.value,
+              );
+              this.$updateModel(value, newValue);
               this.$fire(newValue);
             },
           });
       },
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    fNumberInput(
-      value: Model<number>,
-      disabled?: boolean,
-      placeholder?: string,
-      appearance?: FInputAppearance,
-    ): this is {
-      $ev: number;
-    };
+    return this.$fired;
   }
 }
-FluentUI.triggerComponents.fNumberInput = function (_) {
-  return (value, disabled, placeholder, appearance = "outline") =>
-    _.fInput(
-      value,
-      disabled,
-      placeholder,
-      "number",
-      appearance,
-      v => (Number.isNaN(v) ? "" : String(v)),
-      v => parseInt(v),
-    ) && this.$fire(_.$ev);
-};
 
-declare module "refina" {
-  interface Components {
-    fPasswordInput(
-      value: Model<string>,
-      disabled?: boolean,
-      placeholder?: string,
-      appearance?: FInputAppearance,
-    ): this is {
-      $ev: string;
-    };
-  }
+export class FNumberInput extends FInput<number> {
+  stringifier = (v: number) => (Number.isNaN(v) ? "" : String(v));
+  parseValue = (v: string) => parseInt(v);
+  type = "number";
 }
-FluentUI.triggerComponents.fPasswordInput = function (_) {
-  return (value, disabled, placeholder, appearance = "outline") =>
-    _.fInput(value, disabled, placeholder, "password", appearance) &&
-    this.$fire(_.$ev);
-};
 
-declare module "refina" {
-  interface Components {
-    fUnderlineInput(
-      value: Model<string>,
-      disabled?: boolean,
-      placeholder?: string,
-      type?: string,
-    ): this is {
-      $ev: string;
-    };
-  }
+export class FPasswordInput extends FInput {
+  type = "password";
 }
-FluentUI.triggerComponents.fUnderlineInput = function (_) {
-  return (value, disabled, placeholder, type) =>
-    _.fInput(value, disabled, placeholder, type, "underline") &&
-    this.$fire(_.$ev);
-};
 
-declare module "refina" {
-  interface Components {
-    fUnderlineNumberInput(
-      value: Model<number>,
-      disabled?: boolean,
-      placeholder?: string,
-    ): this is {
-      $ev: number;
-    };
-  }
+export class FUnderlineInput extends FInput {
+  appreance = "underline" as const;
 }
-FluentUI.triggerComponents.fUnderlineNumberInput = function (_) {
-  return (value, disabled, placeholder) =>
-    _.fNumberInput(value, disabled, placeholder, "underline") &&
-    this.$fire(_.$ev);
-};
 
-declare module "refina" {
-  interface Components {
-    fUnderlinePasswordInput(
-      value: Model<string>,
-      disabled?: boolean,
-      placeholder?: string,
-    ): this is {
-      $ev: string;
-    };
-  }
+export class FUnderlineNumberInput extends FNumberInput {
+  appreance = "underline" as const;
 }
-FluentUI.triggerComponents.fUnderlinePasswordInput = function (_) {
-  return (value, disabled, placeholder) =>
-    _.fPasswordInput(value, disabled, placeholder, "underline") &&
-    this.$fire(_.$ev);
-};
+
+export class FUnderlinePasswordInput extends FPasswordInput {
+  appreance = "underline" as const;
+}
 
 export * from "./types";

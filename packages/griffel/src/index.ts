@@ -8,7 +8,7 @@ import {
   type GriffelResetStyle,
   type GriffelStaticStyles,
 } from "@griffel/core";
-import { getContext } from "refina";
+import { _ } from "refina";
 
 let dir: "ltr" | "rtl" = "ltr";
 export function setDir(newDir: "ltr" | "rtl") {
@@ -39,11 +39,8 @@ export function defineStyles<
 ): {
   [K in Extract<keyof T, string>]: () => true;
 } {
-  const context = getContext();
-  if (!context)
-    throw new Error("defineStyles must be called inside a component");
   const result = {} as any;
-  if (context.$recvContext) {
+  if (_.$recvContext) {
     for (const key in styles) {
       result[key] = () => true;
     }
@@ -51,7 +48,7 @@ export function defineStyles<
     for (const key in styles) {
       result[key] = () => {
         const cls = mergeClasses(...styles[key]);
-        context.$cls(cls);
+        _.$cls(cls);
         return true;
       };
     }

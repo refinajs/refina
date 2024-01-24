@@ -31,7 +31,7 @@
     "@refina/tsconfig": "workspace:^",
     "typescript": "^5.2.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "refina": "workspace:^"
   }
 }

@@ -7,7 +7,7 @@ Every Refina.js application starts by creating an `App` instance:
 ```ts
 import { $app } from "refina";
 
-$app(_ => {
+$app([], _ => {
   // The main function of the app
   // ...
 });
@@ -15,35 +15,29 @@ $app(_ => {
 
 ## Using Plugins
 
-Call `$app.use` to install plugin to the app.
-
 All the components and utility functions are provided by plugins, so it is hard to do anything without plugins.
 
-```ts
-import { $app } from "refina";
-import Basics from "@refina/basic-components";
-
-$app.use(Basics)(_ => {
-  // _.h1 is provided by the Basics plugin
-  _.h1("Hello, Refina!");
-});
-```
-
-To use multiple plugins, just call `$app.use` in a chain:
+The first parameter of `$app` can be an array of plugins:
 
 ```ts
-$app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
+$app([Plugin1, Plugin2(param1, param2), Plugin3], _ => {
   // ...
 });
 ```
 
+However, TypeScript doesn't know what plugins are used unless you declare them explicitly. So the `Plugins` interface should be declared:
+
+```ts
+declare module "refina" {
+  interface Plugins {
+    Plugin1: typeof Plugin1;
+    Plugin2: typeof Plugin2;
+    Plugin3: typeof Plugin3;
+  }
+}
+```
+
 In fact, components and utility functions in the Refina Core are provided via the plugin `Prelude`, which is automatically installed when you create an app.
-
-:::warning
-
-Because of the limitations of TypeScript, the component functions provided by plugins that are imported but not installed are still visible in the context object in the IDE. But a runtime error will occur if you use them.
-
-:::
 
 ## The Main Function
 
@@ -65,35 +59,16 @@ Otherwise, the transformation will not work, and errors will occur at runtime.
 
 The root element is the element that the app will be mounted to.
 
-By default, the root element is the element with the id `root`.
+By default, the root element is selected by `"#app"`.
 
-You can change the root element by passing the id of the element to the second parameter of `$app`:
-
-```ts
-$app(_ => {
-  // ...
-}, "my-root");
-```
-
-## Multiple Application Instances
-
-It is allowed to have multiple Refina applications on the same page.
-
-You can just specify different root elements for different applications:
-
-```html
-<body>
-  <div id="root1"></div>
-  <div id="root2"></div>
-</body>
-```
+You can change the root element by the `root` option:
 
 ```ts
-$app(_ => {
-  // ...
-}, "root1");
-
-$app(_ => {
-  // ...
-}, "root2");
+$app(
+  { plugins: [], root: "#my-root" },
+  _ => {
+    // ...
+  },
+  "my-root",
+);
 ```

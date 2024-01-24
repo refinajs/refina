@@ -5,7 +5,7 @@ export default (tailwind: boolean) => `/**
 import { $app } from "refina";
 import "./styles.css";
 
-$app(_ => {${tailwind ? `\n  _.$cls\`text-xl font-bold p-4\`;` : ""}
+$app([], _ => {${tailwind ? `\n  _.$cls\`text-xl font-bold p-4\`;` : ""}
   _._h1({}, "Hello, Refina!");
   _._p({}, _ => {${
     tailwind ? `\n    _.$cls\`block p-2 hover:bg-gray-200\`;` : ""

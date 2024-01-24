@@ -1,51 +1,47 @@
-import "@refina/fluentui-icons/checkmarkCircle.ts";
-import "@refina/fluentui-icons/errorCircle.ts";
-import "@refina/fluentui-icons/warning.ts";
-import { Content, Context, View } from "refina";
-import FluentUI from "../../plugin";
+import { FiCheckmarkCircle12Filled } from "@refina/fluentui-icons/checkmarkCircle";
+import { FiErrorCircle12Filled } from "@refina/fluentui-icons/errorCircle";
+import { FiWarning12Filled } from "@refina/fluentui-icons/warning";
+import { Component, Content, _ } from "refina";
+import { FLabel } from "../label";
 import useStyles from "./styles";
 import type { FFieldValidationState } from "./types";
 
 const validationMessageIcons = {
-  error: (_: Context) => _.fiErrorCircle12Filled(),
-  warning: (_: Context) => _.fiWarning12Filled(),
-  success: (_: Context) => _.fiCheckmarkCircle12Filled(),
-  none: () => {},
-} satisfies Record<FFieldValidationState, View>;
+  error: FiErrorCircle12Filled,
+  warning: FiWarning12Filled,
+  success: FiCheckmarkCircle12Filled,
+};
 
-declare module "refina" {
-  interface Components {
-    fField(
-      inner: Content,
-      label: Content,
-      required?: boolean | Content,
-      state?: FFieldValidationState,
-      validationMessage?: Content,
-    ): void;
-  }
-}
-FluentUI.outputComponents.fField = function (_) {
-  return (inner, label, required, state = "none", validationMessage) => {
+export class FField extends Component {
+  $main(
+    inner: Content,
+    label: Content,
+    required?: boolean | Content,
+    state: FFieldValidationState = "none",
+    validationMessage?: Content,
+  ): void {
     const styles = useStyles(state, state === "error", state !== "none");
 
     styles.root();
     _._div({}, _ => {
       styles.label();
-      _.fLabel(label, required);
+      _(FLabel)(label, required);
 
       _.embed(inner);
 
       if (validationMessage) {
         styles.validationMessage();
         _._div({}, _ => {
-          styles.validationMessageIcon();
-          _.embed(validationMessageIcons[state]);
+          if (state !== "none") {
+            styles.validationMessageIcon();
+            _(validationMessageIcons[state])();
+          }
 
           _.embed(validationMessage);
         });
       }
     });
-  };
-};
+  }
+}
 
 export * from "./types";

@@ -1,10 +1,5 @@
 import { App } from "../app";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentContext,
-  ComponentMainFunc,
-} from "../component";
+import { Component } from "../component";
 import { Ref, mergeRefs } from "../data";
 import {
   Content,
@@ -16,16 +11,13 @@ import {
 } from "../dom";
 import {
   ContextFuncs,
-  ContextState,
-  InitialContextState,
   IntrinsicBaseContext,
   RealContextFuncs,
+  _,
   initializeBaseContext,
 } from "./base";
 
-export interface IntrinsicUpdateContext<
-  CS extends ContextState = InitialContextState,
-> extends IntrinsicBaseContext<CS> {
+export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
   $lowlevel: IntrinsicUpdateContext;
 
   /**
@@ -34,11 +26,11 @@ export interface IntrinsicUpdateContext<
   $$currentDOMParent: DOMElementComponent;
 
   /**
-   * Components waiting for a `$mainEl`.
+   * Components waiting for a `$primaryEl`.
    *
-   * If the value is `true`, the component is waiting for the first DOM element to be its default `$mainEl`.
+   * If the value is `true`, the component is waiting for the first DOM element to be its default `$primaryEl`.
    */
-  $$pendingMainElOwner: (DOMElementComponent | Component<any>)[];
+  $$pendingPrimaryElOwner: (DOMElementComponent | Component)[];
 
   /**
    * The `Ref` object of the next component.
@@ -69,12 +61,12 @@ export interface IntrinsicUpdateContext<
   $$fulfillRef(current: unknown): void;
 
   /**
-   * Fulfill the pending main element owners with the given main element,
-   *  and clear the pending main element owners list.
+   * Fulfill the pending primary element owners with the given primary element,
+   *  and clear the pending primary element owners list.
    *
-   * @param mainEl The main element to fulfill.
+   * @param primaryEl The primary element to fulfill.
    */
-  $$fulfillMainEl(mainEl: DOMElementComponent): void;
+  $$fulfillPrimaryEl(primaryEl: DOMElementComponent): void;
 
   /**
    * Get the classes that will be added to the next component,
@@ -146,25 +138,26 @@ export interface IntrinsicUpdateContext<
 /**
  * The full context type in `UPDATE` state, with context funcs.
  */
-export type UpdateContext<CS extends ContextState = InitialContextState> =
-  Readonly<Omit<IntrinsicUpdateContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
+export type UpdateContext = Readonly<
+  Omit<IntrinsicUpdateContext, `$$${string}`>
+> &
+  ContextFuncs;
 
 /**
  * Intialize the context in `UPDATE` state.
- * @param context The context to initialize.
+ *
  * @param app The app instance.
  */
-export function initializeUpdateContext(
-  context: IntrinsicUpdateContext,
-  app: App,
-) {
-  initializeBaseContext(context, app);
+export function initializeUpdateContext(app: App) {
+  initializeBaseContext(app);
+
+  const context = _ as unknown as IntrinsicUpdateContext;
 
   context.$updateContext = context as unknown as UpdateContext;
 
   context.$recvContext = null;
 
-  context.$$pendingMainElOwner = [];
+  context.$$pendingPrimaryElOwner = [];
 
   context.$$currentDOMParent = app.root;
 
@@ -188,11 +181,11 @@ export function initializeUpdateContext(
     }
   };
 
-  context.$$fulfillMainEl = mainEl => {
-    for (const owner of context.$$pendingMainElOwner) {
-      owner.$mainEl = mainEl;
+  context.$$fulfillPrimaryEl = primaryEl => {
+    for (const owner of context.$$pendingPrimaryElOwner) {
+      owner.$primaryEl = primaryEl;
     }
-    context.$$pendingMainElOwner = [];
+    context.$$pendingPrimaryElOwner = [];
   };
 
   context.$prop = (key, value) => {
@@ -320,12 +313,12 @@ export function initializeUpdateContext(
 
     const text = String(content);
 
-    let textNode = context.$$currentRefTreeNode[ckey] as
+    let textNode = context.$$currentRefNode[ckey] as
       | DOMNodeComponent
       | undefined;
     if (!textNode) {
       textNode = new TextNodeComponent(document.createTextNode(text));
-      context.$$currentRefTreeNode[ckey] = textNode;
+      context.$$currentRefNode[ckey] = textNode;
     } else if (textNode.node.textContent !== text) {
       textNode.node.textContent = text;
     }
@@ -335,48 +328,42 @@ export function initializeUpdateContext(
     context.$$currentDOMParent.pendingChildren.push(textNode);
   };
 
-  context.$$processComponent = <T extends Component<any>>(
+  context.$$processComponent = <T extends Component>(
     ckey: string,
-    ctor: ComponentConstructor<T>,
-    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
+    ctor: new () => T,
     args: unknown[],
-  ): T => {
-    let component = context.$$currentRefTreeNode[ckey] as T | undefined;
+  ) => {
+    let component = context.$$currentRefNode[ckey] as T | undefined;
+
+    const parentRefNode = context.$$currentRefNode;
+
     if (!component) {
-      component = new ctor(context.$app);
-
-      const componentContext = context._ as ComponentContext<any>;
-      componentContext.$expose = exposed => {
-        Object.assign(component!, exposed);
-        return exposed;
-      };
-
-      component.$mainFunc = factory.call(component, componentContext);
-
-      context.$$currentRefTreeNode[ckey] = component;
+      component = new ctor();
+      parentRefNode[ckey] = component;
     }
 
     context.$$fulfillRef(component);
 
-    // Store the pending main element owners for context component and clear it.
-    const pendingMainElOwners = context.$$pendingMainElOwner;
-    context.$$pendingMainElOwner = [];
+    // Store the pending primary element owners for context component and clear it.
+    const pendingPrimaryElOwners = context.$$pendingPrimaryElOwner;
+    context.$$pendingPrimaryElOwner = [];
 
     // Store the classes and styles for context component and clear them.
     const css = context.$$consumeCss();
     const cls = context.$$consumeCls();
 
-    component.$mainEl = undefined as DOMElementComponent | undefined;
-    context.$$pendingMainElOwner.push(component);
+    component.$primaryEl = undefined as DOMElementComponent | undefined;
+    context.$$pendingPrimaryElOwner.push(component);
 
-    component.$props = context.$$nextProps;
+    Object.assign(component, context.$$nextProps);
     context.$$nextProps = {};
 
-    const parentRefTreeNode = context.$$currentRefTreeNode;
-    context.$$currentRefTreeNode = component.$refTreeNode;
+    context.$$currentRefNode = component.$refTreeNode;
+
+    let ret: unknown;
 
     try {
-      component.$mainFunc(...args);
+      ret = component.$main(...args);
       if (import.meta.env.DEV) {
         context.$$assertEmpty();
       }
@@ -384,42 +371,42 @@ export function initializeUpdateContext(
       context.$app.callHook("onError", e);
     }
 
-    context.$$currentRefTreeNode = parentRefTreeNode;
+    context.$$currentRefNode = parentRefNode;
 
-    if (component.$mainEl) {
-      // There is a $mainEl in the component.
-      for (const owner of pendingMainElOwners) {
-        // If the owner has a main element, it must be set by calling `context.$main()`.
+    if (component.$primaryEl) {
+      // There is a $primaryEl in the component.
+      for (const owner of pendingPrimaryElOwners) {
+        // If the owner has a primary element, it must be set by calling `context.$main()`.
         // So we don't need to set it to the default value.
-        owner.$mainEl ??= component.$mainEl;
+        owner.$primaryEl ??= component.$primaryEl;
       }
-      // All the pending main element owners are fulfilled.
-      context.$$pendingMainElOwner = [];
+      // All the pending primary element owners are fulfilled.
+      context.$$pendingPrimaryElOwner = [];
 
-      // Add the classes and styles to the main element.
-      component.$mainEl.addCls(cls);
-      component.$mainEl.addCss(css);
+      // Add the classes and styles to the primary element.
+      component.$primaryEl.addCls(cls);
+      component.$primaryEl.addCss(css);
     } else {
-      // Not append arrays to ignore pending main element owners in the inner scope.
-      // Pass the pending main element owners for context component to the next component.
-      context.$$pendingMainElOwner = pendingMainElOwners;
+      // Not append arrays to ignore pending primary element owners in the inner scope.
+      // Pass the pending primary element owners for context component to the next component.
+      context.$$pendingPrimaryElOwner = pendingPrimaryElOwners;
     }
 
-    return component;
+    return ret;
   };
 
   context.$$updateDOMContent = (el, content) => {
     const parent = context.$$currentDOMParent;
-    const refTreeNode = context.$$currentRefTreeNode;
+    const refTreeNode = context.$$currentRefNode;
     parent.pendingChildren.push(el);
 
     if (content !== undefined) {
       // Set the current DOM parent to context DOM element component.
       context.$$currentDOMParent = el;
-      context.$$currentRefTreeNode = el.$refTreeNode;
+      context.$$currentRefNode = el.$refTreeNode;
 
       if (typeof content === "function") {
-        // The content is a view function.
+        // The content is a fragment.
 
         try {
           content(context._);
@@ -436,7 +423,7 @@ export function initializeUpdateContext(
 
       // Restore the DOM parent.
       context.$$currentDOMParent = parent;
-      context.$$currentRefTreeNode = refTreeNode;
+      context.$$currentRefNode = refTreeNode;
     }
   };
 
@@ -449,30 +436,28 @@ export function initializeUpdateContext(
     inner,
     eventListeners = {},
   ) => {
-    let el = context.$$currentRefTreeNode[ckey] as
-      | DOMElementComponent
-      | undefined;
+    let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
     if (!el) {
       // Create a new element if not exist.
       el = new DOMElementComponent<keyof HTMLElementTagNameMap>(
         document.createElement(tagName),
       );
-      context.$$currentRefTreeNode[ckey] = el;
+      context.$$currentRefNode[ckey] = el;
     }
 
     context.$$fulfillRef(el);
-    context.$$fulfillMainEl(el);
+    context.$$fulfillPrimaryEl(el);
 
     context.$$updateDOMContent(el, inner);
 
     for (const key in data) {
       if (data[key] === undefined) {
         // Delete the property if the value is undefined.
-        // @ts-ignore
+        // @ts-expect-error
         delete el.node[key];
       } else {
         // For a HTML element, just assign the value to the property.
-        // @ts-ignore
+        // @ts-expect-error
         el.node[key] = data[key];
       }
     }
@@ -491,19 +476,17 @@ export function initializeUpdateContext(
     inner,
     eventListeners = {},
   ) => {
-    let el = context.$$currentRefTreeNode[ckey] as
-      | DOMElementComponent
-      | undefined;
+    let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
     if (!el) {
       // Create a new element if not exist.
       el = new DOMElementComponent<keyof SVGElementTagNameMap>(
         document.createElementNS("http://www.w3.org/2000/svg", tagName),
       );
-      context.$$currentRefTreeNode[ckey] = el;
+      context.$$currentRefNode[ckey] = el;
     }
 
     context.$$fulfillRef(el);
-    context.$$fulfillMainEl(el);
+    context.$$fulfillPrimaryEl(el);
 
     context.$$updateDOMContent(el, inner);
 
@@ -513,7 +496,7 @@ export function initializeUpdateContext(
         el.node.removeAttribute(key);
       } else if (typeof value === "function") {
         // Cannot stringify a function, so just assign it.
-        // @ts-ignore
+        // @ts-expect-error
         el.node[key] = value;
       } else {
         // For SVG elements, all attributes are string,

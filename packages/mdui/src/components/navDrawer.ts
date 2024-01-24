@@ -1,60 +1,52 @@
-import { Content, bindArgsToContent } from "refina";
-import MdUI from "../plugin";
+import {
+  Component,
+  Content,
+  TriggerComponent,
+  _,
+  bindArgsToContent,
+} from "refina";
 
-declare module "refina" {
-  interface Components {
-    MdControlledNavDrawerProps: {
-      contained: boolean;
-    };
-    mdControlledNavDrawer(open: boolean, inner: Content, modal?: boolean): void;
-  }
-}
-MdUI.outputComponents.mdControlledNavDrawer = function (_) {
-  return (open, inner, modal = false) => {
-    const modalOptions = modal
-      ? { modal: true, "close-on-esc": true, "close-on-overlay-click": true }
-      : {};
+export class MdControlledNavDrawer extends Component {
+  contained?: boolean;
+  $main(open: boolean, inner: Content, modal = false): void {
     _._mdui_navigation_drawer(
-      { ...modalOptions, open, contained: this.$props.contained },
+      {
+        open,
+        contained: this.contained,
+        modal: modal,
+        closeOnEsc: modal,
+        closeOnOverlayClick: modal,
+      },
       inner,
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    MdNavDrawerProps: {
-      contained: boolean;
-    };
-    mdNavDrawer(
-      trigger: Content<[open: (open?: boolean) => void]>,
-      inner: Content<[close: (open?: boolean) => void]>,
-      modal?: boolean,
-    ): this is {
-      $ev: boolean;
-    };
   }
 }
-MdUI.triggerComponents.mdNavDrawer = function (_) {
-  let opened = false;
-  return (
+
+export class MdNavDrawer extends TriggerComponent {
+  contained?: boolean;
+  opened = false;
+  $main(
     trigger: Content<[open: (open?: boolean) => void]>,
     inner: Content<[close: (open?: boolean) => void]>,
-    modal: boolean = false,
-  ) => {
+    modal = false,
+  ): this is {
+    $ev: boolean;
+  } {
     _.embed(
       bindArgsToContent(trigger, (open = true) => {
-        opened = open;
+        this.opened = open;
         this.$fire(open);
       }),
     );
-    _.mdControlledNavDrawer(
-      opened,
+    _.$props({ contained: this.contained });
+    _(MdControlledNavDrawer)(
+      this.opened,
       bindArgsToContent(inner, (open = false) => {
-        opened = open;
+        this.opened = open;
         this.$fire(open);
       }),
       modal,
     );
-  };
-};
+    return this.$fired;
+  }
+}

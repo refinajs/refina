@@ -14,7 +14,7 @@ function remove(id: number) {
   todos = todos.filter(todo => todo.id !== id);
 }
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.textInput(newTodo);
   _.button("Add Todo") && todos.push({ id: id++, text: newTodo.value });
 
@@ -25,3 +25,9 @@ $app.use(Basics)(_ => {
     }),
   );
 });
+
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}

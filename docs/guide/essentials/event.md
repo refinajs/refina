@@ -9,7 +9,7 @@ In this section, we will learn how to handle events in Refina.
 ```ts
 let count = 0;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.p(`Count is: ${count}`);
 
   _.button(`Add`) && count++;

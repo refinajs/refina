@@ -1,8 +1,8 @@
-import { MainElRef } from "refina";
+import { PrimaryElRef } from "refina";
 
 export interface UsePositioninggResult {
-  targetRef: MainElRef;
-  containerRef: MainElRef;
+  targetRef: PrimaryElRef;
+  containerRef: PrimaryElRef;
   updatePosition: () => void;
 }
 
@@ -72,8 +72,8 @@ export interface PositioningOptions {
    */
   fallbackPositions?: PositioningShorthandValue[];
 
-  targetRef?: MainElRef;
-  containerRef?: MainElRef;
+  targetRef?: PrimaryElRef;
+  containerRef?: PrimaryElRef;
 
   immediate?: boolean;
 }

@@ -10,9 +10,16 @@ import "./styles.css";
 let count = 0;
 const username = model("Refina");
 
-$app.use(Basics).use(MdUI)(_ => {${tailwind ? `\n  _.$cls\`underline\`;` : ""}
+$app([Basics, MdUI], _ => {${tailwind ? `\n  _.$cls\`underline\`;` : ""}
   _.h1(\`Hello \${username}!\`);
   _.mdButton(\`Count is: \${count}\`) && count++;
   _.mdTextField(username, "Username");
 });
+
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+    MdUI: typeof MdUI;
+  }
+}
 `;

@@ -5,3 +5,5 @@ export * from "./node";
 export * from "./portal";
 export * from "./root";
 export * from "./text";
+export * from "./view";
+export * from "./window";

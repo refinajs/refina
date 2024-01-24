@@ -1,17 +1,11 @@
-import { Content } from "refina";
-import FluentUI from "../../../plugin";
+import { Component, Content, _ } from "refina";
 import useStyles from "./styles";
 
-declare module "refina" {
-  interface Components {
-    fAccordionPanel(inner: Content): void;
-  }
-}
-FluentUI.outputComponents.fAccordionPanel = function (_) {
-  return inner => {
+export class FAccordionPanel extends Component {
+  $main(inner: Content): void {
     const styles = useStyles();
 
     styles.root;
     _._div({}, inner);
-  };
-};
+  }
+}

@@ -9,15 +9,15 @@ let person = {
   name: "John Doe",
 };
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1(message);
   _.p(`Hello ${person.name}!`);
 });
 ```
 
-:::warning States should be declared outside the view function.
+:::warning States should be declared outside the fragment.
 
-Variables declared inside the view function are not states. They are just local temporary variables, which are re-created every time the view function is called.
+Variables declared inside the fragment are not states. They are just local temporary variables, which are re-created every time the fragment is called.
 
 :::
 
@@ -27,7 +27,7 @@ Just like in JSX, you can render components conditionally using `if` statements 
 let cond = true;
 let value: number | null | undefined;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (cond) {
     _.h1("Hello World!");
   } else {

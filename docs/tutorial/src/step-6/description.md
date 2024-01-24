@@ -5,7 +5,7 @@ Using event handlers, we can get user input and update states accordingly.
 ```ts
 let name = "";
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (_.textInput(name)) {
     name = _.$ev;
   }
@@ -22,7 +22,7 @@ import { $app, model } from "refina";
 
 const name = model("");
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.textInput(name);
 
   _.p(`Hello ${name}!`);

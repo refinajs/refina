@@ -1,16 +1,10 @@
-import Basics from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    img(src: string, alt?: string): void;
-  }
-}
-
-Basics.outputComponents.img = function (_) {
-  return (src, alt = "") => {
+export class BasicImg extends Component {
+  $main(src: string, alt?: string): void {
     _._img({
       src,
       alt,
     });
-  };
-};
+  }
+}

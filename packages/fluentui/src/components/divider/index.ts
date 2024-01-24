@@ -1,23 +1,17 @@
-import { Content } from "refina";
-import FluentUI from "../../plugin";
+import { Component, Content, _ } from "refina";
 import useStyles from "./styles";
 import { DividerContentAlignment } from "./types";
 
-declare module "refina" {
-  interface Components {
-    fDivider(
-      inner: Content | undefined,
-      alignContent?: DividerContentAlignment,
-    ): void;
-  }
-}
-FluentUI.outputComponents.fDivider = function (_) {
-  return (inner, alignContent = "center") => {
+export class FDivider extends Component {
+  $main(
+    inner: Content | undefined,
+    alignContent: DividerContentAlignment = "center",
+  ): void {
     const styles = useStyles(alignContent, false, inner == undefined);
 
     styles.root();
     _._div({}, _ => styles.wrapper() && _._div({}, inner));
-  };
-};
+  }
+}
 
 export * from "./types";

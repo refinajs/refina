@@ -1,5 +1,14 @@
-import { Content, MainElRef, Model, byIndex, ref, valueOf } from "refina";
-import FluentUI from "../../../plugin";
+import {
+  Content,
+  PrimaryElRef,
+  Model,
+  TriggerComponent,
+  _,
+  byIndex,
+  ref,
+  valueOf,
+} from "refina";
+import { FTab } from "../tab";
 import { tabIndicatorCssVars } from "./indicator.styles";
 import useStyles from "./styles";
 
@@ -10,8 +19,8 @@ interface Rect {
   height: number;
 }
 
-function getTabRect(tabRef: MainElRef): Rect {
-  const element = tabRef.current!.$mainEl!.node;
+function getTabRect(tabRef: PrimaryElRef): Rect {
+  const element = tabRef.current!.$primaryEl!.node;
   const parentRect = element.parentElement?.getBoundingClientRect() ?? {
     x: 0,
     y: 0,
@@ -28,20 +37,15 @@ function getTabRect(tabRef: MainElRef): Rect {
   };
 }
 
-declare module "refina" {
-  interface Components {
-    fTabList(
-      selected: Model<number>,
-      contents: Content[],
-      disabled?: (boolean | undefined)[] | boolean,
-    ): this is {
-      $ev: number;
-    };
-  }
-}
-FluentUI.triggerComponents.fTabList = function (_) {
-  const tabRefs = new Map<number, MainElRef>();
-  return (selected, contents, disabled = false) => {
+export class FTabList extends TriggerComponent {
+  tabRefs = new Map<number, PrimaryElRef>();
+  $main(
+    selected: Model<number>,
+    contents: Content[],
+    disabled: (boolean | undefined)[] | boolean = false,
+  ): this is {
+    $ev: number;
+  } {
     const selectedValue = valueOf(selected);
     const tabListDisabled = typeof disabled === "boolean" ? disabled : false;
     const tabDisabled =
@@ -52,16 +56,16 @@ FluentUI.triggerComponents.fTabList = function (_) {
     styles.root();
     _._div({}, _ =>
       _.for(contents, byIndex, (content, index) => {
-        let tabRef = tabRefs.get(index);
+        let tabRef = this.tabRefs.get(index);
         if (!tabRef) {
           tabRef = ref();
-          tabRefs.set(index, tabRef);
+          this.tabRefs.set(index, tabRef);
         }
         const tabSelected = selectedValue === index;
         _.$app.pushOnetimeHook("afterModifyDOM", () => {
-          const selectedTabRect = getTabRect(tabRefs.get(selectedValue)!);
+          const selectedTabRect = getTabRect(this.tabRefs.get(selectedValue)!);
           const thisTabRect = getTabRect(tabRef!);
-          const buttonEl = tabRef!.current!.$mainEl!.node;
+          const buttonEl = tabRef!.current!.$primaryEl!.node;
           const animationOffset = selectedTabRect.x - thisTabRect.x;
           const animationScale = selectedTabRect.width / thisTabRect.width;
           buttonEl.style.setProperty(
@@ -75,12 +79,13 @@ FluentUI.triggerComponents.fTabList = function (_) {
         });
         if (
           _.$ref(tabRef) &&
-          _.fTab(tabSelected, content, tabDisabled[index], tabSelected)
+          _(FTab)(tabSelected, content, tabDisabled[index], tabSelected)
         ) {
-          _.$updateModel(selected, index);
+          this.$updateModel(selected, index);
           this.$fire(index);
         }
       }),
     );
-  };
-};
+    return this.$fired;
+  }
+}

@@ -1,25 +1,14 @@
-import { Content, byIndex } from "refina";
-import MdUI from "../plugin";
+import { Content, TriggerComponent, _, byIndex } from "refina";
 
-declare module "refina" {
-  interface Components {
-    MdSegmentedButtonProps: {
-      icons: (string | undefined)[];
-      endIcons: (string | undefined)[];
-    };
-    mdSegmentedButton(
-      contents: Content[],
-      disabled?: readonly boolean[] | boolean,
-    ): this is {
-      $ev: number;
-    };
-  }
-}
-MdUI.triggerComponents.mdSegmentedButton = function (_) {
-  return (
+export class MdSegmentedButton extends TriggerComponent {
+  icons?: (string | undefined)[];
+  endIcons?: (string | undefined)[];
+  $main(
     contents: Content[],
     disabled: readonly boolean[] | boolean = false,
-  ) => {
+  ): this is {
+    $ev: number;
+  } {
     const groupDisabled = disabled === true;
     const optionsDisabled = typeof disabled === "boolean" ? [] : disabled;
 
@@ -32,13 +21,14 @@ MdUI.triggerComponents.mdSegmentedButton = function (_) {
           _._mdui_segmented_button(
             {
               disabled: optionsDisabled[index],
-              icon: this.$props.icons?.[index],
-              endIcon: this.$props.endIcons?.[index],
+              icon: this.icons?.[index],
+              endIcon: this.endIcons?.[index],
               onclick: this.$fireWith(index),
             },
             content,
           ),
         ),
     );
-  };
-};
+    return this.$fired;
+  }
+}

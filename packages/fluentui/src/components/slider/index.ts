@@ -1,5 +1,4 @@
-import { DOMElementComponent, Model, ref, valueOf } from "refina";
-import FluentUI from "../../plugin";
+import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
 import useStyles, { sliderCSSVars } from "./styles";
 
 function getPercent(value: number, min: number, max: number) {
@@ -10,7 +9,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-declare module "refina" {
+namespace todo {
   interface Components {
     fSlider(
       value: Model<number>,
@@ -23,9 +22,17 @@ declare module "refina" {
     };
   }
 }
-FluentUI.triggerComponents.fSlider = function (_) {
-  const inputRef = ref<DOMElementComponent<"input">>();
-  return (value, disabled = false, min = 0, max = 100, step) => {
+export class FSlider extends TriggerComponent {
+  inputRef = elementRef<"input">();
+  $main(
+    value: Model<number>,
+    disabled = false,
+    min = 0,
+    max = 100,
+    step?: number,
+  ): this is {
+    $ev: number;
+  } {
     const modelValue = valueOf(value);
 
     const styles = useStyles(disabled);
@@ -47,12 +54,16 @@ FluentUI.triggerComponents.fSlider = function (_) {
       )}%;`;
     _._div({}, _ => {
       const onChange = () => {
-        const newValue = clamp(Number(inputRef.current!.node.value), min, max);
-        _.$updateModel(value, newValue);
+        const newValue = clamp(
+          Number(this.inputRef.current!.node.value),
+          min,
+          max,
+        );
+        this.$updateModel(value, newValue);
         this.$fire(newValue);
       };
       styles.input();
-      _.$ref(inputRef) &&
+      _.$ref(this.inputRef) &&
         _._input({
           type: "range",
           disabled: disabled,
@@ -70,5 +81,6 @@ FluentUI.triggerComponents.fSlider = function (_) {
       styles.thumb();
       _._div();
     });
-  };
-};
+    return this.$fired;
+  }
+}

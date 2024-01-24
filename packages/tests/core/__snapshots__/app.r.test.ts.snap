@@ -1,3 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`simple app > should render a simple app 1`] = `"<div id=\\"root\\"><h1>Hello World!</h1><div class=\\"main \\"><p style=\\"color: red;\\">This is a paragraph.</p></div></div>"`;
+exports[`simple app > should render a simple app 1`] = `"<div id=\\"app\\"><h1>Hello World!</h1><div class=\\"main \\"><p style=\\"color: red;\\">This is a paragraph.</p></div></div>"`;

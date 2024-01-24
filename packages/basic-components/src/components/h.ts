@@ -1,49 +1,37 @@
-import { Content } from "refina";
-import Basics from "../plugin";
+import { Component, Content, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    h1(inner: Content): void;
-    h2(inner: Content): void;
-    h3(inner: Content): void;
-    h4(inner: Content): void;
-    h5(inner: Content): void;
-    h6(inner: Content): void;
+export class BasicH1 extends Component {
+  $main(inner: Content): void {
+    _._h1({}, inner);
   }
 }
 
-Basics.outputComponents.h1 = function (_) {
-  return inner => {
-    _._h1({}, inner);
-  };
-};
-
-Basics.outputComponents.h2 = function (_) {
-  return inner => {
+export class BasicH2 extends Component {
+  $main(inner: Content): void {
     _._h2({}, inner);
-  };
-};
+  }
+}
 
-Basics.outputComponents.h3 = function (_) {
-  return inner => {
+export class BasicH3 extends Component {
+  $main(inner: Content): void {
     _._h3({}, inner);
-  };
-};
+  }
+}
 
-Basics.outputComponents.h4 = function (_) {
-  return inner => {
+export class BasicH4 extends Component {
+  $main(inner: Content): void {
     _._h4({}, inner);
-  };
-};
+  }
+}
 
-Basics.outputComponents.h5 = function (_) {
-  return inner => {
+export class BasicH5 extends Component {
+  $main(inner: Content): void {
     _._h5({}, inner);
-  };
-};
+  }
+}
 
-Basics.outputComponents.h6 = function (_) {
-  return inner => {
+export class BasicH6 extends Component {
+  $main(inner: Content): void {
     _._h6({}, inner);
-  };
-};
+  }
+}

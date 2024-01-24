@@ -1,105 +1,27 @@
 import type { App, RefTreeNode } from "../app";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentContext,
-  ComponentMainFunc,
-} from "../component";
+import { Component, isComponentCtor } from "../component";
 import { AppState } from "../constants";
 import { Ref } from "../data";
 import type { RecvContext } from "./recv";
 import type { UpdateContext } from "./update";
 
-/**
- * The state of a context.
- *
- * **Note**: This is only used in type checking.
- *
- * Use declaration merging to add properties to this interface.
- */
-export interface ContextState {
-  /**
-   * The current mode of the context.
-   *
-   * - `build`: The context is building the next component,
-   *    i.e. the type of the next component is unknown.
-   * - `fill`: The context is filling the current component,
-   *    i.e. the type of the current component is known.
-   */
-  mode: "build" | "fill";
-
-  /**
-   * The enabled components.
-   *
-   * Only component functions whose instance type extends this type can be called,
-   *  otherwise the component function will be of type `never`.
-   */
-  enabled: any;
-}
-
-/**
- * The initial state of a context.
- *
- * Use declaration merging to add properties to this interface.
- */
-export interface InitialContextState extends ContextState {
-  mode: "build";
-  enabled: {};
-}
+export type ContextMemberFactory<F = (...args: any) => any> = (
+  ckey: string,
+  app: App,
+) => F;
 
 /**
  * The **transformed** context funcs.
  *
  * **Note**: The values of this interface should be in the transformed form,
  *  i.e. without the `ckey` parameter.
- *
- * ---
- *
- * *Usage 1*:
- * Your component has a generic type,
- *  so you cannot add it to a specific component interface like `OutputComponents`.
- *
- * @example
- * ```ts
- * export class MyComponent<T> extends OutputComponent {
- *   main(_: Context, value: T): void {
- *     // ...
- *   }
- * }
- *
- * declare module "refina" {
- *   interface ContextFuncs<C> {
- *     myComponent: MyComponent<any> extends C["enabled"]
- *       ? <T>(value: T) => void
- *       : never;
- *   }
- * }
- * ```
- * **Warning**: Be carefull with the return value of the component function.
- *
- * ---
- *
- * *Usage 2*:
- * Add a non-component utility function to the context.
- *
- * @example
- * ```ts
- * MyPlugin.registerFunc("myFunc", <T>(ckey: string, value: T) => {
- *   // ...
- * });
- *
- * declare module "refina" {
- *   interface ContextFuncs<C> {
- *     myFunc: never extends C["enabled"]
- *       ? <T>(ckey: string, value: T) => void
- *       : never;
- *   }
- * }
- * ```
  */
-export interface ContextFuncs<C extends ContextState> {
-  <V>(callee: ContextDirectCallee<V>): V;
+export interface ContextFuncs {
   <K extends keyof this>(name: K): this[K];
+  <K extends keyof IntrinsicBaseContext>(name: K): IntrinsicBaseContext[K];
+  <C extends Component>(ctor: new () => C): C["$main"];
+  <V>(callee: ContextMemberFactory<V>): V;
+  (ignore: null | undefined): undefined;
 }
 
 /**
@@ -109,39 +31,22 @@ export interface ContextFuncs<C extends ContextState> {
  * **Note**: If the name starts with `$`, it will be ignored,
  *  because it won't be transformed.
  */
-export type ToRealContextFunc<
-  N extends keyof ContextFuncs<any>,
-  Ctx = IntrinsicBaseContext,
-> = N extends `$${string}`
-  ? never
-  : ContextFuncs<any>[N] extends (...args: infer Args) => infer RetVal
-  ? (this: Ctx, ckey: string, ...args: Args) => RetVal
-  : never;
+export type ToRealContextFunc<N extends keyof ContextFuncs> =
+  N extends `$${string}`
+    ? never
+    : ContextFuncs[N] extends (...args: infer Args) => infer RetVal
+    ? (ckey: string, ...args: Args) => RetVal
+    : never;
 
 /**
  * The real context functions.
  *
  * **Note**: The type is not precise for performance reasons in type checking.
  */
-export type RealContextFuncs<Ctx = IntrinsicBaseContext> = Record<
+export type RealContextFuncs = Record<
   string,
-  (this: Ctx, ckey: string, ...args: any) => unknown
+  (ckey: string, ...args: any) => unknown
 >;
-
-/**
- * A utility type to get the enabled props type from the context state.
- */
-export type EnabledProps<C extends ContextState> = C["mode"] extends "build"
-  ? C["enabled"] extends {
-      $props: infer T;
-    }
-    ? Record<string | number | symbol, any> & Record<keyof T, never>
-    : Record<string | number | symbol, any>
-  : C["enabled"] extends {
-      $props: infer T;
-    }
-  ? T
-  : {};
 
 /**
  * The base class of contexts.
@@ -151,9 +56,7 @@ export type EnabledProps<C extends ContextState> = C["mode"] extends "build"
  *  Use `ToFullContext` to add context funcs to the context,
  *  so that users can call them.
  */
-export interface IntrinsicBaseContext<
-  CS extends ContextState = InitialContextState,
-> {
+export interface IntrinsicBaseContext {
   /**
    * The app instance of this context.
    */
@@ -165,16 +68,7 @@ export interface IntrinsicBaseContext<
   $appState: AppState;
 
   /**
-   * The state of the context.
-   *
-   * Not exist in runtime.
-   *
-   * This is essential for `this is Context<...>` to work correctly.
-   */
-  $tsContextState: CS;
-
-  /**
-   * Get the context itself with empty ContextState.
+   * Get the context itself.
    */
   _: Context;
 
@@ -188,28 +82,14 @@ export interface IntrinsicBaseContext<
    *
    * If the context is in `RECV` state, it is `null`.
    */
-  $updateContext: UpdateContext<CS> | null;
+  $updateContext: UpdateContext | null;
 
   /**
    * If the context is in `RECV` state, it is the recv context.
    *
    * If the context is in `UPDATE` state, it is `null`.
    */
-  $recvContext: RecvContext<CS> | null;
-
-  /**
-   * Trigger an `UPDATE` call.
-   */
-  $update: App["update"];
-
-  /**
-   * Set the value of a model and trigger an `UPDATE` call if the value is changed.
-   *
-   * @param model The model.
-   * @param v The new value.
-   * @returns Whether the value is changed.
-   */
-  $updateModel: App["updateModel"];
+  $recvContext: RecvContext | null;
 
   /**
    * The shortcut of `app.permanentData`.
@@ -223,7 +103,7 @@ export interface IntrinsicBaseContext<
    *
    * Used to get the instance by whether the context function is called.
    */
-  $$currentRefTreeNode: RefTreeNode;
+  $$currentRefNode: RefTreeNode;
 
   /**
    * Lifetime: one `UPDATE` or `RECV` call.
@@ -281,7 +161,7 @@ export interface IntrinsicBaseContext<
    * @example
    * ```ts
    * const componentRef = ref<MyComponent>();
-   * const divRef = ref<HTMLElementComponent<"div">>();
+   * const divRef = elementRef<<"div">>();
    * // ...
    * _.$ref(componentRef) && _._myComponent();
    * _.$ref(divRef) && _._div();
@@ -290,13 +170,7 @@ export interface IntrinsicBaseContext<
    * @param refs The rest `Ref` objects to merge.
    * @returns always `true`.
    */
-  $ref<C2 extends CS["enabled"]>(
-    ref: Ref<C2>,
-    ...refs: Ref<C2>[]
-  ): this is Context<{
-    mode: "fill";
-    enabled: C2;
-  }>;
+  $ref<C>(ref: Ref<C>, ...refs: Ref<C>[]): true;
 
   /**
    * Set a property of the next component.
@@ -309,10 +183,7 @@ export interface IntrinsicBaseContext<
    * @param value The value of the property to set.
    * @returns always `true`.
    */
-  $prop<K extends keyof EnabledProps<CS>, V extends EnabledProps<CS>[K]>(
-    key: K,
-    value: V,
-  ): true;
+  $prop(key: string | number | symbol, value: unknown): true;
 
   /**
    * Set properties of the next component.
@@ -324,7 +195,7 @@ export interface IntrinsicBaseContext<
    * @param props The properties to set.
    * @returns always `true`.
    */
-  $props<Props extends EnabledProps<CS>>(props: Props): true;
+  $props(props: Record<string | number | symbol, unknown>): true;
 
   /**
    * Add classes to the next component.
@@ -445,11 +316,13 @@ export interface IntrinsicBaseContext<
    * @param callee The called function as a context function.
    * @returns The curresponding context property or context function.
    */
-  $$d<K extends keyof this["$lowlevel"]>(
+  $$d<K extends keyof this>(ckey: string, name: K): this[K];
+  $$d<K extends keyof IntrinsicBaseContext>(
     ckey: string,
     name: K,
-  ): this["$lowlevel"][K];
-  $$d<V>(ckey: string, callee: (this: this, ckey: string) => V): V;
+  ): IntrinsicBaseContext[K];
+  $$d<C extends Component>(ckey: string, ctor: new () => C): C["$main"];
+  $$d<V>(ckey: string, callee: ContextMemberFactory<V>): V;
 
   /**
    * Process a component.
@@ -460,88 +333,66 @@ export interface IntrinsicBaseContext<
    * @param args The parameters to pass to the main function of the component.
    * @returns The component instance.
    */
-  $$processComponent<T extends Component<any>>(
+  $$processComponent<T extends Component>(
     ckey: string,
-    ctor: ComponentConstructor<T>,
-    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
+    ctor: new () => T,
     args: unknown[],
-  ): T;
+  ): unknown;
 }
-
-export type ContextDirectCallee<V> = (
-  this: IntrinsicBaseContext,
-  ckey: string,
-) => V;
 
 /**
  * The full context type, with context funcs.
  */
-export type Context<CS extends ContextState = InitialContextState> = Readonly<
-  Omit<IntrinsicBaseContext<CS>, `$$${string}`>
-> &
-  ContextFuncs<CS>;
+export type Context = Readonly<Omit<IntrinsicBaseContext, `$$${string}`>> &
+  ContextFuncs;
 
 /**
  * Initialize a context.
- * @param context The context to initialize.
+ *
  * @param app The app instance.
  */
-export function initializeBaseContext(context: IntrinsicBaseContext, app: App) {
+export function initializeBaseContext(app: App) {
+  const context = _ as unknown as IntrinsicBaseContext;
+
   context._ = context as unknown as Context;
   context.$app = app;
-  context.$appState = app.state;
-  context.$lowlevel = context;
-  context.$update = app.update;
-  context.$updateModel = app.updateModel;
-  context.$permanentData = app.permanentData;
-
-  if (import.meta.env.DEV) {
-    // Proxy `context.$$currentRefTreeNode` to unref removed ckeys.
-    let currentRefTreeNode = app.root.$refTreeNode;
-    Object.defineProperty(context, "$$currentRefTreeNode", {
-      get() {
-        return currentRefTreeNode;
-      },
-      set(node) {
-        currentRefTreeNode = node;
-        if (window.__REFINA_HMR__) {
-          for (const ckey of window.__REFINA_HMR__.removedCkeys) {
-            delete node[ckey];
-          }
-        }
-      },
-      configurable: true,
-    });
-  } else {
-    context.$$currentRefTreeNode = app.root.$refTreeNode;
-  }
-
-  context.$runtimeData = {};
-  context.$$processedComponents = new Set();
   context.$root = app.root;
   context.$body = app.body;
   context.$window = app.window;
+  context.$appState = app.state;
+  context.$lowlevel = context;
+  context.$permanentData = app.permanentData;
+  context.$runtimeData = {};
+
+  context.$$currentRefNode = app.root.$refTreeNode;
+  context.$$processedComponents = new Set();
 
   context.$$d = (
     ckey: string,
-    nameOrCallee:
+    callee:
+      | keyof ContextFuncs
       | keyof IntrinsicBaseContext
-      | keyof ContextFuncs<InitialContextState>
-      | ((this: IntrinsicBaseContext, ckey: string) => unknown),
+      | (new () => Component)
+      | ContextMemberFactory<any>
+      | null
+      | undefined,
   ) => {
-    if (typeof nameOrCallee === "function") {
-      return nameOrCallee.call(context, ckey);
-    } else if (
-      typeof nameOrCallee === "symbol" ||
-      String(nameOrCallee)[0] === "$"
-    ) {
-      const member = context[nameOrCallee as keyof typeof context];
+    if (callee === null || callee === undefined) {
+      return undefined;
+    } else if (typeof callee === "function") {
+      if (isComponentCtor(callee)) {
+        return (...args: any) => context.$$processComponent(ckey, callee, args);
+      } else {
+        return callee(ckey, app);
+      }
+    } else if (typeof callee === "symbol" || String(callee)[0] === "$") {
+      const member = context[callee as keyof typeof context];
       if (typeof member === "function") {
         return member.bind(context);
       } else {
         return member;
       }
-    } else if (nameOrCallee === "t") {
+    } else if (callee === "t") {
       return (...args: any) => {
         context.$$t(
           ckey,
@@ -552,8 +403,47 @@ export function initializeBaseContext(context: IntrinsicBaseContext, app: App) {
       };
     } else {
       return (...args: unknown[]) => {
-        context.$$c(ckey, nameOrCallee, ...args);
+        context.$$c(ckey, callee, ...args);
       };
     }
   };
 }
+
+/**
+ * Mark the context as invalid.
+ */
+export function invalidateContext() {
+  const context = _ as unknown as IntrinsicBaseContext;
+  context.$app = null as any;
+  context.$appState = null as any;
+  context.$lowlevel = null as any;
+  context.$permanentData = null as any;
+  context.$$currentRefNode = null as any;
+  context.$runtimeData = null as any;
+  context.$$processedComponents = null as any;
+  context.$root = null as any;
+  context.$body = null as any;
+  context.$window = null as any;
+
+  const warningFunc = (): any => {
+    console.warn("This context is cleared!");
+  };
+
+  context.$prop = warningFunc;
+  context.$props = warningFunc;
+  context.$cls = warningFunc;
+  context.$css = warningFunc;
+  context.$ref = warningFunc;
+  context.$$assertEmpty = warningFunc;
+  context.$$d = warningFunc;
+  context.$$c = warningFunc;
+  context.$$t = warningFunc;
+}
+
+export function $contextFunc<F extends (...args: any[]) => any>(
+  func: ContextMemberFactory<F>,
+) {
+  return func;
+}
+
+export const _: Context = {} as any;

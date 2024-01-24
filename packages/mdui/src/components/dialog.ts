@@ -1,20 +1,15 @@
-import { Content, bindArgsToContent } from "refina";
-import MdUI from "../plugin";
+import {
+  Component,
+  Content,
+  TriggerComponent,
+  _,
+  bindArgsToContent,
+} from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdControlledDialog(
-      open: boolean,
-      title: Content,
-      body: Content,
-      actions?: Content,
-      presistent?: boolean,
-    ): void;
-  }
-}
-MdUI.outputComponents.mdControlledDialog = function (_) {
-  return (open, title, body, actions, presistent = false) => {
-    const presistentProps = presistent
+export class MdControlledDialog extends Component {
+  presistent = false;
+  $main(open: boolean, title: Content, body: Content, actions?: Content): void {
+    const presistentProps = this.presistent
       ? {}
       : { closeOnOverlayClick: true, closeOnEsc: true };
     _._mdui_dialog(
@@ -44,47 +39,38 @@ MdUI.outputComponents.mdControlledDialog = function (_) {
           );
       },
     );
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdDialog(
-      trigger: Content<[open: (open?: boolean) => void]>,
-      title: Content<[close: (open?: boolean) => void]>,
-      body: Content<[close: (open?: boolean) => void]>,
-      actions?: Content<[close: (open?: boolean) => void]>,
-      presistent?: boolean,
-    ): this is {
-      $ev: boolean;
-    };
   }
 }
-MdUI.triggerComponents.mdDialog = function (_) {
-  let opened = false;
-  return (
+
+export class MdDialog extends TriggerComponent {
+  presistent = false;
+  opened = false;
+  $main(
     trigger: Content<[open: (open?: boolean) => void]>,
     title: Content<[close: (open?: boolean) => void]>,
     body: Content<[close: (open?: boolean) => void]>,
     actions?: Content<[close: (open?: boolean) => void]>,
-    presistent: boolean = false,
-  ) => {
+  ): this is {
+    $ev: boolean;
+  } {
     const open = (open = true) => {
-      opened = open;
+      this.opened = open;
       this.$fire(open);
     };
     const close = (open = false) => {
-      opened = open;
+      this.opened = open;
       this.$fire(open);
     };
 
     _.embed(bindArgsToContent(trigger, open));
-    _.mdControlledDialog(
-      opened,
+    _.$props({ presistent: this.presistent });
+    _(MdControlledDialog)(
+      this.opened,
       bindArgsToContent(title, close),
       bindArgsToContent(body, close),
       actions && bindArgsToContent(actions, close),
-      presistent,
     );
-  };
-};
+
+    return this.$fired;
+  }
+}

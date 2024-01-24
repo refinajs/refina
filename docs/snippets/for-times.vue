@@ -9,10 +9,10 @@ import { onMounted } from "vue";
 import RunRefina from "./run-refina.vue";
 
 onMounted(() => {
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#for-times-root" }, _ => {
     _.forTimes(5, index => {
       _.p(`This is the ${index + 1}th paragraph.`);
     });
-  }, "for-times-root");
+  });
 });
 </script>

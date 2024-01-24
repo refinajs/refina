@@ -1,17 +1,5 @@
-import {
-  Context,
-  ContextDirectCallee,
-  IntrinsicBaseContext,
-  IntrinsicRecvContext,
-} from "../context";
-import {
-  Component,
-  ComponentContext,
-  ComponentExposedKey,
-  ComponentProps,
-  ComponentPropsKey,
-  Components,
-} from "./component";
+import { _ } from "../context";
+import { Component } from "./component";
 
 /**
  * The base class of all trigger components.
@@ -19,14 +7,19 @@ import {
  * A trigger component is a component that can fire events with data.
  * The return value of the context function is whether the event is fired.
  */
-export class TriggerComponent<Ev, Props> extends Component<Props> {
+export abstract class TriggerComponent<Ev = unknown> extends Component {
+  private $_fired = false;
+  private $_firedData: Ev;
+
   /**
    * Fire an event with data.
    *
    * @param data The data of the event.
    */
-  readonly $fire = (data: Ev) => {
-    this.$app.recv(this, data);
+  protected readonly $fire = (data: Ev) => {
+    this.$_fired = true;
+    this.$_firedData = data;
+    this.$app.recv();
   };
 
   /**
@@ -35,112 +28,15 @@ export class TriggerComponent<Ev, Props> extends Component<Props> {
    * @param data The data of the event.
    * @returns A function that fires the event.
    */
-  readonly $fireWith = (data: Ev) => () => {
-    this.$app.recv(this, data);
-  };
-}
+  protected readonly $fireWith = (data: Ev) => () => this.$fire(data);
 
-/**
- * The names of all trigger components.
- */
-export type TriggerComponentName = {
-  [K in keyof Components]: K extends ComponentPropsKey | ComponentExposedKey
-    ? never
-    : Components[K] extends (...args: any) => // @ts-ignore
-      this is {
-        $ev: infer _Ev;
-      }
-    ? K
-    : never;
-}[keyof Components];
-
-/**
- * Extract the event type of a trigger component.
- */
-export type TriggerComponentEvent<N extends TriggerComponentName> =
-  Components[N] extends (...args: any) => // @ts-ignore
-  this is {
-    $ev: infer Ev;
-  }
-    ? Ev
-    : never;
-
-/**
- * The factory function of a trigger component.
- */
-export type TriggerComponentFactory<
-  N extends TriggerComponentName = TriggerComponentName,
-> = (
-  this: TriggerComponent<TriggerComponentEvent<N>, ComponentProps<N>>,
-  _: ComponentContext<N>,
-) => Components[N];
-
-type UnregisteredTriggerComponentFactory<Ev, Args extends any[]> = (
-  this: TriggerComponent<Ev, {}>,
-  _: Context,
-) => (...args: Args) => void;
-
-/**
- * The trigger component factory function map.
- */
-export type TriggerComponentFactoryMap = {
-  [N in TriggerComponentName]: TriggerComponentFactory<N>;
-};
-
-/**
- * Create a context function of a trigger component.
- *
- * @param ctor The component class constructor.
- * @returns The context function.
- */
-export function createTriggerComponentFunc(
-  factory: UnregisteredTriggerComponentFactory<any, any>,
-) {
-  return function (
-    this: IntrinsicBaseContext,
-    ckey: string,
-    ...args: any
-  ): boolean {
-    const component = this.$$processComponent(
-      ckey,
-      TriggerComponent,
-      factory,
-      args,
-    );
-
-    // If the component is the current event receiver, return `true`.
-    if (this.$app.isEventReceiver(component)) {
-      // Set `$received` to `true` to skip checking the rest components.
-      (this as unknown as IntrinsicRecvContext).$received = true;
+  protected get $fired() {
+    if (_.$recvContext && this.$_fired) {
+      this.$_fired = false;
+      (_ as any).$ev = this.$_firedData;
       return true;
     } else {
       return false;
     }
-  };
-}
-
-/**
- * Define a trigger component.
- *
- * @param factory The factory function.
- */
-export function $defineTrigger<Ev, Args extends any[]>(
-  factory: UnregisteredTriggerComponentFactory<Ev, Args>,
-): ContextDirectCallee<(...args: Args) => void> {
-  const func = createTriggerComponentFunc(factory);
-  return function (ckey) {
-    return (...args) => func.call(this, ckey, ...args);
-  };
-}
-
-declare module "./component" {
-  interface ComponentRefTypeRawMap {
-    triggerComponents: {
-      [N in TriggerComponentName]: TriggerComponent<
-        TriggerComponentEvent<N>,
-        ComponentProps<N>
-      > &
-        ComponentExposed<N>;
-    };
   }
 }

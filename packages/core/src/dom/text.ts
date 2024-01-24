@@ -10,8 +10,8 @@ export class TextNodeComponent extends DOMNodeComponent<Text> {
 }
 
 // Add text node function to context.
-declare module "../context/base" {
-  interface ContextFuncs<C> {
+declare module ".." {
+  interface ContextFuncs {
     /**
      * Render a text node.
      *
@@ -21,9 +21,7 @@ declare module "../context/base" {
      * _.t(message);
      * ```
      */
-    t: TextNodeComponent extends C["enabled"]
-      ? ((template: TemplateStringsArray, ...args: unknown[]) => void) &
-          ((text: string) => void)
-      : never;
+    t(template: TemplateStringsArray, ...args: unknown[]): void;
+    t(text: string): void;
   }
 }

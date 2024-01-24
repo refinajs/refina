@@ -16,7 +16,7 @@ This is useful when you want to render a dialog or a tooltip that should not be 
 **Example**
 
 ```ts {4}
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.div(() => {
     _.span("Inside the div");
     _.portal(_ => _.span("Inside the portal"));
@@ -77,7 +77,7 @@ Set the document title.
 ```ts {6}
 import { model } from "refina";
 const username = model("");
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   _.documentTitle(`Hello ${username}`);
@@ -86,7 +86,7 @@ $app.use(Basics)(_ => {
 
 ## `_.embed` {#embed}
 
-Embed content into the current view.
+Embed content into the current rendering process.
 
 ## `_.asyncEmbed`
 
@@ -137,7 +137,7 @@ If not specified, it is `1000`, which means the time will be updated every secon
 **Example**
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.p(`The current time is ${_.now(500)}`);
 });
 ```

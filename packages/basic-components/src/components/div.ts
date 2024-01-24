@@ -1,14 +1,7 @@
-import { Content } from "refina";
-import Basics from "../plugin";
+import { Component, Content, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    div(inner?: Content): void;
+export class BasicDiv extends Component {
+  $main(inner?: Content): void {
+    _._div({}, inner);
   }
 }
-
-Basics.outputComponents.div = function (_) {
-  return inner => {
-    _._div({}, inner);
-  };
-};

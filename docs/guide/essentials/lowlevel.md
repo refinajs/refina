@@ -8,7 +8,7 @@ For most applications, you can just use the components provided by existing comp
 
 But there are still some situations in which you need to render elements manually.
 
-Also the components provided by component libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
+Also, the components provided by component libraries are implemented using low-level rendering functions which render intrinsic HTML/SVG elements.
 
 :::info
 
@@ -21,7 +21,7 @@ If a component satisfies your needs, you should use it instead of using low-leve
 ```ts
 let count = 0;
 
-$app(_ => {
+const app = $app(_ => {
   _._div(
     {
       id: "my-div",
@@ -32,7 +32,7 @@ $app(_ => {
         {
           onclick: () => {
             count++;
-            _.$update();
+            app.update();
           },
         },
         "Add",
@@ -127,7 +127,7 @@ for (const key in data) {
 The content of the element. It can be:
 
 - A string or a number, which will be rendered as a text node.
-- A view function, which will be rendered as the content of the element.
+- A fragment, which will be rendered as the content of the element.
 - A `PD` object of the above two types.
 
 ## The `eventListeners` Parameter
@@ -136,7 +136,7 @@ The content of the element. It can be:
 
 > `TheEventMap` above is the type of the event map, e.g. `HTMLElementEventMap` or `WebComponentsEventListeners[TagName]`.
 
-An object whose keys are the names of the events, and values are the event listeners or a object which contains the event listener and the options.
+An object whose keys are the names of the events, and whose values are the event listeners or an object which contains the event listener and the options.
 
 The event listener and the options will be passed to the `addEventListener` method of the element:
 
@@ -177,7 +177,7 @@ As you can see above, there are two ways to handle events:
     {
       onclick: () => {
         count++;
-        _.$update();
+        app.update();
       },
     },
     "Add",
@@ -188,7 +188,7 @@ As you can see above, there are two ways to handle events:
   _._button({}, "Add", {
     click: () => {
       count++;
-      _.$update();
+      app.update();
     },
   });
   ```
@@ -198,17 +198,17 @@ The rule is: **If passing the event listener to the `data` parameter works, you 
 In the following situations, passing the event listener to the `data` parameter may not work:
 
 - The event is a custom event.
-- Want to specify the `options` parameter of the `addEventListener` method.
+- To specify the `options` parameter of the `addEventListener` method.
 
 :::warning Update the app after handling events
 
 Unlike the component functions, the low-level rendering functions will not update the app automatically after handling events.
 
-You should call [`_.$update()`](../apis/directives.md#update) manually to update the app if you want to apply the changes of the states to the app.
+You should call [`app.update()`](../apis/directives.md#update) manually to update the app if you want to apply the changes of the states to the app.
 
 :::
 
-## Ref a Element {#ref-element}
+## Ref an Element {#ref-element}
 
 You can use [the `_.$ref` directive](../apis/directives.md#ref) to ref the element.
 
@@ -217,7 +217,7 @@ import { ref, DOMElementComponent } from "refina";
 
 const iframeRef = ref<DOMElementComponent<"iframe">>();
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.$ref(iframeRef) &&
     _._iframe({
       src: iframeURL,

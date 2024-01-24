@@ -11,10 +11,10 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   const items = ["Apple", "Banana", "Orange"];
 
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#list-rendering-root" }, _ => {
     _.for(items, bySelf, item => {
       _.p(item);
     });
-  }, "list-rendering-root");
+  });
 });
 </script>

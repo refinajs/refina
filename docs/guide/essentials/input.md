@@ -16,7 +16,7 @@ import { model } from "refina";
 
 const username = model("");
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   username.value.length && _.button("Clear") && (username.value = "");
@@ -43,7 +43,7 @@ The function `propModel` can create a model from a property of an object:
 ```ts
 import { fromProp } from "refina";
 const user = { username: "" };
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(fromProp(user, "username")); // [!code focus]
 });
@@ -86,7 +86,7 @@ Sometimes you may want to get the input value and do something with it, but you 
 The following example stores the input value to the session storage, instead of a variable.
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.label("Username");
   if (_.textInput(sessionStorage.getItem("username") ?? "")) {
     sessionStorage.setItem("username", _.$ev);

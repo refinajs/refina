@@ -1,6 +1,5 @@
-import "@refina/fluentui-icons/dismiss.js";
-import { Content, Context } from "refina";
-import FluentUI from "../../../plugin";
+import { FiDismiss20Regular } from "@refina/fluentui-icons/dismiss";
+import { Content, TriggerComponent, _ } from "refina";
 import useActionsStyles from "./actions.styles";
 import useBodyStyles from "./body.styles";
 import useContentStyles from "./content.styles";
@@ -13,30 +12,16 @@ export type FDialogBodyEventData =
   | number
   | undefined;
 
-declare module "refina" {
-  interface Components {
-    fDialogBody(
-      title: Content,
-      content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
-      actions?:
-        | Content<[close: (ev?: FDialogBodyEventData) => void]>
-        | undefined,
-      actionsPosition?: "start" | "end",
-      closeButton?: boolean,
-    ): this is {
-      $ev: FDialogBodyEventData;
-    };
-  }
-}
-
-FluentUI.triggerComponents.fDialogBody = function (_) {
-  return (
-    title,
-    content,
-    actions,
-    actionsPosition = "start",
+export class FDialogBody extends TriggerComponent {
+  $main(
+    title: Content,
+    content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
+    actions?: Content<[close: (ev?: FDialogBodyEventData) => void]> | undefined,
+    actionsPosition: "start" | "end" = "start",
     closeButton = false,
-  ) => {
+  ): this is {
+    $ev: FDialogBodyEventData;
+  } {
     const bodyStyles = useBodyStyles();
     const titleStyles = useTitleStyles(!closeButton);
     const contentStyles = useContentStyles();
@@ -46,7 +31,7 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
       content: Content<[close: (ev?: FDialogBodyEventData) => void]>,
     ) => {
       if (typeof content === "function") {
-        return (ctx: Context) => content(ctx, this.$fire);
+        return () => content(this.$fire);
       }
       return content;
     };
@@ -65,7 +50,7 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
               type: "button",
               onclick: this.$fireWith(fromCloseButtonSym),
             },
-            _ => _.fiDismiss20Regular(),
+            _ => _(FiDismiss20Regular)(),
           );
         });
       }
@@ -78,5 +63,6 @@ FluentUI.triggerComponents.fDialogBody = function (_) {
         _._div({}, wrapper(actions));
       }
     });
-  };
-};
+    return this.$fired;
+  }
+}

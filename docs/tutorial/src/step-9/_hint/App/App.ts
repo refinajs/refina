@@ -9,7 +9,7 @@ Rewrite the following HTML using low-level rendering functions.
 </svg>
 */
 
-$app(_ => {
+$app([], _ => {
   _.$css`position:fixed;`;
   _._svgSvg(
     {

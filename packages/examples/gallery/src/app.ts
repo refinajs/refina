@@ -41,7 +41,7 @@ if (isExample("fluentui")) {
   import("@refina/example-gh-login");
 } else {
   import("./tailwind.css");
-  $app.use(Basics)(_ => {
+  $app([Basics], _ => {
     _.$root.addCls("p-4");
 
     if (loading) return;
@@ -75,4 +75,10 @@ if (isExample("fluentui")) {
     _.$cls`text-gray-600`;
     _.p(`Use back button to return to the gallery.`);
   });
+}
+
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
 }

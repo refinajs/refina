@@ -1,21 +1,15 @@
-import { Content } from "refina";
-import FluentUI from "../../../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 import useStyles from "./styles";
 
-declare module "refina" {
-  interface Components {
-    fTab(
-      selected: boolean,
-      content: Content,
-      disabled?: boolean,
-      animating?: boolean,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-FluentUI.triggerComponents.fTab = function (_) {
-  return (selected, content, disabled = false, animating = false) => {
+export class FTab extends TriggerComponent<void> {
+  $main(
+    selected: boolean,
+    content: Content,
+    disabled = false,
+    animating = false,
+  ): this is {
+    $ev: void;
+  } {
     const styles = useStyles(disabled, selected, animating, false, false);
 
     styles.root();
@@ -32,5 +26,6 @@ FluentUI.triggerComponents.fTab = function (_) {
         _._span({}, content);
       },
     );
-  };
-};
+    return this.$fired;
+  }
+}

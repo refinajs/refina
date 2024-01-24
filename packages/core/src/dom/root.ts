@@ -28,7 +28,7 @@ export class DOMRootComponent extends DOMElementComponent<
     listener: (this: HTMLAnchorElement, ev: HTMLElementEventMap[K]) => void,
     options?: boolean | AddEventListenerOptions,
   ) {
-    // @ts-ignore
+    // @ts-expect-error
     return super.addEventListener(type, listener, options);
   }
 

@@ -4,7 +4,7 @@ import FluentUI, {
   createDarkTheme,
   createLightTheme,
 } from "@refina/fluentui";
-import "@refina/fluentui-icons/person.ts";
+import { FiPersonFilled } from "@refina/fluentui-icons/person";
 import { $app, byIndex, model, valueOf } from "refina";
 
 const myNewTheme: BrandVariants = {
@@ -41,17 +41,13 @@ const dropdownTest = model("");
 const textInputTest = model("");
 const numberInputTest = model(NaN);
 
-$app.use(
-  FluentUI,
-  darkTheme,
-  lightTheme,
-)(_ => {
+$app([FluentUI(darkTheme, lightTheme)], _ => {
   _.fDivider("avatar");
   _.$css`display:flex;gap:10px`;
   _._div({}, _ => {
     _.fAvatar("John Doe", "active");
     _.fAvatar("https://placekitten.com/200/300", "inactive");
-    _.fAvatar(_ => _.fiPersonFilled(), "inactive");
+    _.fAvatar(_ => _(FiPersonFilled)(), "inactive");
   });
 
   _.fDivider("breadcrumb");
@@ -130,12 +126,12 @@ $app.use(
 
   _.fDivider("dialog");
   _.fDialog(
-    (_, open) => {
+    open => {
       _.fButton("Open") && open();
     },
     "Title",
     "Content",
-    (_, close) => {
+    close => {
       if (_.fButton("Action1")) {
         close();
       }
@@ -147,10 +143,10 @@ $app.use(
 
   _.fDivider("popover");
   _.fPopover(
-    (_, targetRef, open) => {
+    (targetRef, open) => {
       _.$ref(targetRef) && _.fButton("Popover Trigger") && open();
     },
-    (_, close) => {
+    close => {
       _._h1({}, "Title");
       _._p({}, "Content content content content");
       _.fButton("Close") && close();
@@ -181,3 +177,9 @@ $app.use(
   _.fDivider("textarea");
   _.fTextarea(textInputTest, false, "placeholder", "both");
 });
+
+declare module "refina" {
+  interface Plugins {
+    FluentUI: typeof FluentUI;
+  }
+}

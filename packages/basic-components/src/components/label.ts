@@ -1,14 +1,7 @@
-import { Content } from "refina";
-import Basics from "../plugin";
+import { Component, Content, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    label(inner: Content): void;
+export class BasicLabel extends Component {
+  $main(inner: Content): void {
+    _._label({}, inner);
   }
 }
-
-Basics.outputComponents.label = function (_) {
-  return inner => {
-    _._label({}, inner);
-  };
-};

@@ -1,23 +1,12 @@
-import { Content, LoopKey, byIndex } from "refina";
-import MdUI from "../plugin";
+import { Component, Content, LoopKey, _, byIndex } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdTable<T>(
-      data: Iterable<T>,
-      head: Content[] | Content,
-      key: LoopKey<T>,
-      row: (item: T, index: number) => void,
-    ): void;
-  }
-}
-MdUI.outputComponents.mdTable = function (_) {
-  return <T>(
+export class MdTable extends Component {
+  $main<T>(
     data: Iterable<T>,
     head: Content[] | Content,
     key: LoopKey<T>,
     row: (item: T, index: number) => void,
-  ) => {
+  ): void {
     _.$cls`mdui-table`;
     _._div({}, _ => {
       _._table({}, _ => {
@@ -39,27 +28,17 @@ MdUI.outputComponents.mdTable = function (_) {
         });
       });
     });
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdTableHeader(inner: Content): void;
   }
 }
-MdUI.outputComponents.mdTableHeader = function (_) {
-  return inner => {
+
+export class MdTableHeader extends Component {
+  $main(inner: Content): void {
     _._th({}, inner);
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdTableCell(inner: Content): void;
   }
 }
-MdUI.outputComponents.mdTableCell = function (_) {
-  return inner => {
+
+export class MdTableCell extends Component {
+  $main(inner: Content): void {
     _._td({}, inner);
-  };
-};
+  }
+}

@@ -1,14 +1,9 @@
-import MdUI from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdIcon(name: string): void;
-  }
-}
-MdUI.outputComponents.mdIcon = function (_) {
-  return name => {
+export class MdIcon extends Component {
+  $main(name: string): void {
     _._mdui_icon({
       name,
     });
-  };
-};
+  }
+}

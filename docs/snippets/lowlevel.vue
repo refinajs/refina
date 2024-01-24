@@ -10,7 +10,7 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   let count = 0;
 
-  $app(_ => {
+  const app = $app({ root: "#lowlevel-root" }, _ => {
     _._div(
       {
         id: "my-div",
@@ -21,7 +21,7 @@ onMounted(() => {
           {
             onclick: () => {
               count++;
-              _.$update();
+              app.update();
             },
           },
           "Add",
@@ -40,6 +40,6 @@ onMounted(() => {
         });
       },
     );
-  }, "lowlevel-root");
+  });
 });
 </script>

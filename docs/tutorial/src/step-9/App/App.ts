@@ -9,4 +9,4 @@ Rewrite the following HTML using low-level rendering functions.
   </svg>
 */
 
-$app(_ => {});
+$app([], _ => {});

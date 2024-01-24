@@ -1,6 +1,6 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1("Make me styled!");
 });

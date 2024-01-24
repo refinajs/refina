@@ -32,7 +32,7 @@ import Basics from "@refina/basic-components";
 const name = model("");
 let count = 0; // no need to use ref()
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.t`Enter your name:`;
 
   _.textInput(name);

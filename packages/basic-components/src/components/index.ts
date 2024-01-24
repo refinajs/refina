@@ -1,6 +1,7 @@
 export * from "./a";
 export * from "./br";
 export * from "./button";
+export * from "./checkbox";
 export * from "./div";
 export * from "./h";
 export * from "./img";

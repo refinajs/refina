@@ -34,7 +34,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@griffel/core": "^1.14.2",
+    "@griffel/core": "^1.14.2"
+  },
+  "peerDependencies": {
     "refina": "workspace:^"
   }
 }

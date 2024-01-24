@@ -1,4 +1,4 @@
-import type { ComponentRefTypeMap } from "../component";
+import { Components } from "../component";
 import type { DOMElementComponent, DOMElementTagNameMap } from "../dom";
 
 /**
@@ -25,7 +25,7 @@ export interface Ref<T> {
  * @param current The initial value of the `current` property.
  * @returns The `Ref` object.
  */
-export function ref<T = MainElOwner>(current: T | null = null): Ref<T> {
+export function ref<T = PrimaryElOwner>(current: T | null = null): Ref<T> {
   return { current };
 }
 
@@ -58,17 +58,17 @@ export function mergeRefs<T>(...refs: Ref<T>[]): MergedRef<T> {
 }
 
 /**
- * Something that has a main element.
+ * Something that has a primary element.
  */
-type MainElOwner<T extends DOMElementComponent = DOMElementComponent> = {
-  readonly $mainEl: T | undefined;
+type PrimaryElOwner<T extends DOMElementComponent = DOMElementComponent> = {
+  readonly $primaryEl: T | undefined;
 };
 
 /**
- * A reference to a something that has a main element.
+ * A reference to a something that has a primary element.
  */
-export type MainElRef<T extends DOMElementComponent = DOMElementComponent> =
-  Ref<MainElOwner<T>>;
+export type PrimaryElRef<T extends DOMElementComponent = DOMElementComponent> =
+  Ref<PrimaryElOwner<T>>;
 
 /**
  * A reference to a DOM element.
@@ -92,9 +92,7 @@ export function elementRef<E extends keyof DOMElementTagNameMap>(
 /**
  * A reference to a component.
  */
-export type ComponentRef<N extends keyof ComponentRefTypeMap> = Ref<
-  ComponentRefTypeMap[N]
->;
+export type ComponentRef<N extends keyof Components> = Ref<Components[N]>;
 
 /**
  * Create a `Ref` object refs to a component.
@@ -102,8 +100,8 @@ export type ComponentRef<N extends keyof ComponentRefTypeMap> = Ref<
  * @param current The initial value of the `current` property.
  * @returns The `Ref` object.
  */
-export function componentRef<N extends keyof ComponentRefTypeMap>(
-  current: ComponentRefTypeMap[N] | null = null,
-): Ref<ComponentRefTypeMap[N]> {
+export function componentRef<N extends keyof Components>(
+  current: Components[N] | null = null,
+): ComponentRef<N> {
   return { current };
 }

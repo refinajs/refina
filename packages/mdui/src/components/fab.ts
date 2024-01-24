@@ -1,37 +1,27 @@
 import { Fab } from "mdui";
-import { Content } from "refina";
-import MdUI from "../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 
-export type FabVariant = Fab["variant"];
+export type MdFabVariant = Fab["variant"];
 
-declare module "refina" {
-  interface Components {
-    mdFab(
-      icon: string,
-      disabled?: boolean,
-      extendedContent?: Content | undefined,
-      varient?: FabVariant,
-    ): this is {
-      $ev: void;
-    };
-  }
-}
-MdUI.triggerComponents.mdFab = function (_) {
-  return (
-    icon,
+export class MdFab extends TriggerComponent<void> {
+  varient: MdFabVariant = "primary";
+  $main(
+    icon: string,
     disabled = false,
-    extendedContent = undefined,
-    varient = "primary",
-  ) => {
+    extendedContent: Content | undefined = undefined,
+  ): this is {
+    $ev: void;
+  } {
     _._mdui_fab(
       {
         icon,
         disabled,
         extended: extendedContent !== undefined,
         onclick: this.$fireWith(),
-        variant: varient,
+        variant: this.varient,
       },
       extendedContent,
     );
-  };
-};
+    return this.$fired;
+  }
+}

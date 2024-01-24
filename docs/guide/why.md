@@ -32,6 +32,6 @@ We need a frontend framework that **gives first priority to development efficien
 
 ## The Result
 
-Refina is still in the early stage of development, but it has already shown its advantages in development efficiency.
+Refina is still under active development, but it has already shown its advantages in development efficiency.
 
 Based on the real projects, the **line of code is reduced to about `60%~70%`**, and **the development efficiency is `1.4x~1.6x`** of traditional frameworks.

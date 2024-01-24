@@ -1,5 +1,4 @@
-import { Content, HTMLElementComponent, bySelf, ref } from "refina";
-import MdUI from "../plugin";
+import { Content, TriggerComponent, _, bySelf, elementRef } from "refina";
 
 type _R<T extends readonly any[], U extends readonly any[]> =
   | readonly []
@@ -15,49 +14,43 @@ type RepeatedTuple<T extends readonly any[]> =
         >>>>>>>>>>>>>
     >>>;
 
-declare module "refina" {
-  interface Components {
-    mdTabs(...tabs: RepeatedTuple<[name: string, content: Content]>): this is {
-      $ev: string;
-    };
-  }
-}
-MdUI.triggerComponents.mdTabs = function (_) {
-  const tabsRef = ref<HTMLElementComponent<"mdui-tabs">>();
-  let activeTab: string;
-  return ((...nameAndContents: (string | Content)[]) => {
+export class MdTabs extends TriggerComponent {
+  tabsRef = elementRef<"mdui-tabs">();
+  activeTab: string;
+  $main(...tabs: RepeatedTuple<[name: string, content: Content]>): this is {
+    $ev: string;
+  } {
     const names: string[] = [],
       contents: Content[] = [];
-    for (let i = 0; i < nameAndContents.length; i += 2) {
-      names.push(nameAndContents[i] as string);
-      contents.push(nameAndContents[i + 1] as Content);
+    for (let i = 0; i < tabs.length; i += 2) {
+      names.push(tabs[i] as string);
+      contents.push(tabs[i + 1] as Content);
     }
 
-    activeTab ??= nameAndContents[0] as string;
-    let selectedIndex = names.findIndex(name => name === activeTab);
+    this.activeTab ??= tabs[0] as string;
+    let selectedIndex = names.findIndex(name => name === this.activeTab);
     if (selectedIndex === -1) {
       selectedIndex = 0;
-      activeTab = names[0] as string;
+      this.activeTab = names[0] as string;
     }
 
-    _.$ref(tabsRef) &&
-      _._mdui_tabs(
-        {
-          value: activeTab,
-          onchange: () => {
-            const newActiveTab = tabsRef.current!.node.value!;
-            activeTab = newActiveTab;
-            this.$fire(newActiveTab);
-          },
+    _.$ref(this.tabsRef);
+    _._mdui_tabs(
+      {
+        value: this.activeTab,
+        onchange: () => {
+          const newActiveTab = this.tabsRef.current!.node.value!;
+          this.activeTab = newActiveTab;
+          this.$fire(newActiveTab);
         },
-        _ => {
-          _.for(names, bySelf, name => _._mdui_tab({ value: name }, name));
-          _.for(names, bySelf, (name, index) => {
-            _._mdui_tab_panel({ slot: "panel", value: name }, contents[index]);
-          });
-        },
-      );
-  }) as unknown as (
-    ...tabs: RepeatedTuple<[name: string, content: Content]>
-  ) => void;
-};
+      },
+      _ => {
+        _.for(names, bySelf, name => _._mdui_tab({ value: name }, name));
+        _.for(names, bySelf, (name, index) => {
+          _._mdui_tab_panel({ slot: "panel", value: name }, contents[index]);
+        });
+      },
+    );
+    return this.$fired;
+  }
+}

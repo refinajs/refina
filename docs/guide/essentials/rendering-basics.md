@@ -7,7 +7,7 @@ import StaticPageVue from "snippets/static-page.vue";
 Let's start by rendering a "non-interactive" page:
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.$css`color: red`;
   _.h1("Hello, Refina!");
 
@@ -35,11 +35,11 @@ Parameters of the component functions are passed in a positional way, so you nee
 
 Most components have content, which is usually corresponding to the content of the HTML element.
 
-You can not only pass a string or a number as the content but also pass a view function.
+You can not only pass a string or a number as the content but also pass a fragment.
 
 :::tip
 
-When using view functions as the content of a component, it is recommended to use the arrow function syntax.
+When using fragments as the content of a component, it is recommended to use the arrow function syntax.
 
 To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` option set to `"avoid"`.
 
@@ -49,9 +49,9 @@ To get the best experience, you can use [Prettier](https://prettier.io/) to form
 
 :::tip
 
-The curly braces around the view function can be omitted if the view function has only one statement.
+The curly braces around the fragment can be omitted if the fragment has only one statement.
 
-This is because the return value of the view function will always be ignored.
+This is because the return value of the fragment will always be ignored.
 
 You can use `&&` to connect directives which always return `true` to the component function.
 
@@ -78,7 +78,7 @@ are equivalent.
 
 You can use the `_.$cls` directive to add classes to the next component, and `_.$css` to add styles.
 
-The styles and classes will be applied to the [main element](./component.md#main-element) of the following component.
+The styles and classes will be applied to the [primary element](./component.md#primary-element) of the following component.
 
 :::tip
 
@@ -96,6 +96,6 @@ _.$css`color: ${color}`;
 _.$css("color: " + color);
 ```
 
-And it is recommended to omit the semicolon at the end of the CSS text, which will be automatically added.
+It is recommended to omit the semicolon at the end of the CSS text, which will be automatically added.
 
 :::

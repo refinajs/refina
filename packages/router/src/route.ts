@@ -1,4 +1,4 @@
-import RouterPlugin from "./plugin";
+import { $contextFunc, _ } from "refina";
 import { matchPath } from "./utils";
 
 type RouteParamsImpl<
@@ -27,53 +27,48 @@ type RouteParams<S extends string> = {
 
 const routeMatchedSymbol = Symbol("routeMatched");
 
-RouterPlugin.registerFunc("route", function (ckey: string, path: string) {
-  if (path[0] !== "/") {
-    path = "/" + path;
-  }
+export const route = $contextFunc(
+  () =>
+    <const S extends string>(
+      path: S,
+    ): // @ts-expect-error
+    this is {
+      $route: RouteParams<S>;
+    } => {
+      if (path[0] !== "/") {
+        path = ("/" + path) as S;
+      }
 
-  if (
-    Boolean(this.$runtimeData[routeMatchedSymbol]) &&
-    this.$runtimeData[routeMatchedSymbol] !== path
-  ) {
-    // Make sure that the route is matched only once for one context.
-    return false;
-  }
+      if (
+        Boolean(_.$runtimeData[routeMatchedSymbol]) &&
+        _.$runtimeData[routeMatchedSymbol] !== path
+      ) {
+        // Make sure that the route is matched only once for one context.
+        return false;
+      }
 
-  const currentPath = window.location.pathname;
+      const currentPath = window.location.pathname;
 
-  const matchResult = matchPath(path, currentPath);
+      const matchResult = matchPath(path, currentPath);
 
-  if (matchResult === false) return false;
+      if (matchResult === false) return false;
 
-  // @ts-ignore
-  this.$route = matchResult;
+      // @ts-expect-error
+      _.$route = matchResult;
 
-  // @ts-ignore
-  this.$route.$number = new Proxy(matchResult, {
-    get: (target, key) => {
-      // @ts-ignore
-      return +target[key];
+      // @ts-expect-error
+      _.$route.$number = new Proxy(matchResult, {
+        get: (target, key) => {
+          // @ts-expect-error
+          return +target[key];
+        },
+      });
+
+      _.$runtimeData[routeMatchedSymbol] = true;
+      return true;
     },
-  });
+);
 
-  this.$runtimeData[routeMatchedSymbol] = true;
-  return true;
+export const routeNotFound = $contextFunc(ckey => () => {
+  return !_.$runtimeData[routeMatchedSymbol];
 });
-
-RouterPlugin.registerFunc("routeNotFound", function (ckey: string) {
-  return !this.$runtimeData[routeMatchedSymbol];
-});
-
-declare module "refina" {
-  interface ContextFuncs<C> {
-    route: never extends C["enabled"]
-      ? <const S extends string>(
-          path: S,
-        ) => this is {
-          $route: RouteParams<S>;
-        }
-      : never;
-    routeNotFound: never extends C["enabled"] ? () => boolean : never;
-  }
-}

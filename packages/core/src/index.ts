@@ -4,5 +4,4 @@ export * from "./constants";
 export * from "./context";
 export * from "./data";
 export * from "./dom";
-export * from "./utils";
-export * from "./view";
+export * from "./prelude";

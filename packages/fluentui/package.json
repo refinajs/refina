@@ -42,7 +42,9 @@
     "@fluentui/tokens": "1.0.0-alpha.9",
     "@refina/fluentui-icons": "workspace:^",
     "@refina/griffel": "workspace:^",
-    "keyborg": "^2.0.0",
+    "keyborg": "^2.0.0"
+  },
+  "peerDependencies": {
     "refina": "workspace:^"
   }
 }

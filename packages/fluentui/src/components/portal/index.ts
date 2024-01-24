@@ -1,15 +1,9 @@
-import { Content } from "refina";
-import FluentUI from "../../plugin";
+import { Component, Content, _ } from "refina";
 import useStyles from "./styles";
 
-declare module "refina" {
-  interface Components {
-    fPortal(inner: Content): void;
-  }
-}
-FluentUI.outputComponents.fPortal = function (_) {
-  return inner => {
+export class FPortal extends Component {
+  $main(inner: Content): void {
     const styles = useStyles();
     _.portal(_ => styles.root() && _._div({}, inner));
-  };
-};
+  }
+}

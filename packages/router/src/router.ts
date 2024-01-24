@@ -8,6 +8,11 @@ export interface BeforeRouteContext {
   $routeNext(path?: string): void;
 }
 
+let incomingRoute: BeforeRouteContext | null = null;
+export function getIncomingRoute() {
+  return incomingRoute;
+}
+
 export class Router {
   constructor(public app: App) {
     this.updateCurrentPath();
@@ -35,13 +40,15 @@ export class Router {
     to: string,
     from: string | null = window.location.pathname,
   ) {
-    this.app.recv(beforeRouteSymbol, {
+    incomingRoute = {
       $routeFrom: from,
       $routeTo: to,
       $routeNext: (path: string = to) => {
         next(path);
       },
-    });
+    };
+    this.app.recv();
+    incomingRoute = null;
   }
   push(path: string) {
     this.setPendingRoute(path => {

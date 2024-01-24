@@ -1,13 +1,7 @@
-import { Content } from "refina";
-import MdUI from "../plugin";
+import { Component, Content, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdBadge(inner?: Content | undefined): void;
-  }
-}
-MdUI.outputComponents.mdBadge = function (_) {
-  return inner => {
+export class MdBadge extends Component {
+  $main(inner?: Content | undefined): void {
     if (inner === undefined) {
       _._mdui_badge({
         variant: "small",
@@ -20,5 +14,5 @@ MdUI.outputComponents.mdBadge = function (_) {
         inner,
       );
     }
-  };
-};
+  }
+}

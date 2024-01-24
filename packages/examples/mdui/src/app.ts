@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
-import MdUI, { CheckboxState } from "@refina/mdui";
-import { $app, $view, Content, bySelf, model } from "refina";
+import MdUI, { MdCheckboxState } from "@refina/mdui";
+import { $app, $view, Content, _, bySelf, model } from "refina";
 import "./styles.css";
 
-const ShowComponent = $view((_, name: string, inner: Content) => {
+const ShowComponent = $view((name: string, inner: Content) => {
   _._div({}, _ => {
     _.$css`margin-bottom:8px`;
     _._h3({}, name);
@@ -14,14 +14,14 @@ const ShowComponent = $view((_, name: string, inner: Content) => {
 let darkMode = false;
 let count = 0;
 let status = model(false);
-let status2 = model<CheckboxState>(undefined);
+let status2 = model<MdCheckboxState>(undefined);
 const options = ["Option 1", "Option 2", "Option 3"] as const;
 let selected = model<(typeof options)[number]>(options[0]);
 let sliderValue1 = model(40);
 let sliderValue2 = model(60);
 let input = model("Hello");
 
-$app.use(MdUI)(_ => {
+$app([MdUI], _ => {
   _.useMdTheme(darkMode ? "dark" : "light");
 
   _.$css`z-index:1999`;
@@ -96,10 +96,10 @@ $app.use(MdUI)(_ => {
     });
     _(ShowComponent)("Dialog", _ => {
       _.mdDialog(
-        (_, open) => _.mdButton("Open Dialog") && open(),
+        open => _.mdButton("Open Dialog") && open(),
         "Title",
         "Content",
-        (_, close) => {
+        close => {
           _.mdButton("YES") && close();
           _.mdButton("NO") && close();
         },
@@ -264,8 +264,8 @@ $app.use(MdUI)(_ => {
           _._h1({}, "Layout Main");
           _.$prop("contained", true);
           _.mdNavDrawer(
-            (_, open) => _.mdButton("open drawer") && open(),
-            (_, close) => _.mdButton("close drawer") && close(),
+            open => _.mdButton("open drawer") && open(),
+            close => _.mdButton("close drawer") && close(),
             true,
           );
         });
@@ -273,3 +273,9 @@ $app.use(MdUI)(_ => {
     });
   });
 });
+
+declare module "refina" {
+  interface Plugins {
+    MdUI: typeof MdUI;
+  }
+}

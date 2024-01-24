@@ -16,7 +16,7 @@ import { bySelf } from "refina";
 
 const items = ["Apple", "Banana", "Orange"];
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.for(items, bySelf, item => {
     _.p(item);
   });
@@ -45,7 +45,7 @@ You can use `_.forTimes` to render for given times.
 The key generator of `_.forTimes` is omitted, and the index of the item is used as the key.
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.forTimes(5, index => {
     _.p(`This is the ${index + 1}th paragraph.`);
   });

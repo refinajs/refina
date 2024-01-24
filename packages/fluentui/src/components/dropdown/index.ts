@@ -1,15 +1,18 @@
 import * as keys from "@fluentui/keyboard-keys";
-import "@refina/fluentui-icons/checkmark.ts";
-import "@refina/fluentui-icons/chevronDown.ts";
+import { FiCheckmarkFilled } from "@refina/fluentui-icons/checkmark";
+import { FiChevronDownRegular } from "@refina/fluentui-icons/chevronDown";
 import {
-  DOMElementComponent,
   HTMLElementComponent,
   Model,
+  TriggerComponent,
+  _,
   bySelf,
+  elementRef,
   ref,
   valueOf,
 } from "refina";
-import FluentUI from "../../plugin";
+import { usePositioning } from "../../positioning";
+import { FPortal } from "../portal";
 import useListboxStyles from "./listbox.styles";
 import useOptionStyles from "./option.styles";
 import useDropdownStyles from "./styles";
@@ -135,34 +138,22 @@ function getIndexFromAction(
   }
 }
 
-declare module "refina" {
-  interface Components {
-    fDropdown<OptionValue extends string>(
-      selected: Model<OptionValue | "">,
-      options: OptionValue[],
-      disabled?: boolean | boolean[],
-      placeholder?: string,
-      appearance?: FDropdownAppearance,
-    ): this is {
-      $ev: OptionValue;
-    };
-  }
-}
-FluentUI.triggerComponents.fDropdown = function (_) {
-  let activeIndex = 0;
-  let focusVisible = false;
-  let ignoreNextBlur = false;
-  let open = false;
+export class FDropdown<OptionValue extends string> extends TriggerComponent {
+  appearance: FDropdownAppearance = "outline";
+  activeIndex = 0;
+  focusVisible = false;
+  ignoreNextBlur = false;
+  open = false;
+  buttonEl = elementRef<"button">();
 
-  const buttonEl = ref<DOMElementComponent<"button">>();
-
-  return (
-    selected,
-    options,
-    disabled = false,
-    placeholder,
-    appearance = "outline",
-  ) => {
+  $main(
+    selected: Model<OptionValue | "">,
+    options: OptionValue[],
+    disabled: boolean | boolean[] = false,
+    placeholder?: string,
+  ): this is {
+    $ev: OptionValue;
+  } {
     const selectedValue = valueOf(selected);
 
     const rootDisabled = typeof disabled === "boolean" ? disabled : false;
@@ -172,7 +163,7 @@ FluentUI.triggerComponents.fDropdown = function (_) {
         : new Set(disabled.map((v, i) => (v ? i : -1)));
 
     const rootRef = ref<HTMLElementComponent<"div">>();
-    const { targetRef, containerRef } = _.usePositioning(
+    const { targetRef, containerRef } = _(usePositioning)(
       {
         position: "below" as const,
         align: "start" as const,
@@ -185,13 +176,13 @@ FluentUI.triggerComponents.fDropdown = function (_) {
           "before-top",
         ],
       },
-      open,
+      this.open,
     );
 
-    if (open) {
+    if (this.open) {
       _.$app.pushOnetimeHook("afterModifyDOM", () => {
-        containerRef.current!.$mainEl!.node.style.width = `${
-          rootRef.current!.$mainEl!.node.clientWidth
+        containerRef.current!.$primaryEl!.node.style.width = `${
+          rootRef.current!.$primaryEl!.node.clientWidth
         }px`;
       });
     }
@@ -201,12 +192,12 @@ FluentUI.triggerComponents.fDropdown = function (_) {
         return;
       }
       const option = options[index];
-      _.$updateModel(selected, option);
+      this.$updateModel(selected, option);
       this.$fire(option);
     };
 
     const dropdownStyles = useDropdownStyles(
-      appearance,
+      this.appearance,
       rootDisabled,
       false,
       selectedValue === "" && placeholder !== undefined,
@@ -216,84 +207,84 @@ FluentUI.triggerComponents.fDropdown = function (_) {
     _.$ref(rootRef) &&
       _._div({}, _ => {
         dropdownStyles.button();
-        _.$ref(buttonEl, targetRef) &&
+        _.$ref(this.buttonEl, targetRef) &&
           _._button(
             {
               onblur: () => {
-                if (!ignoreNextBlur) {
-                  open = false;
+                if (!this.ignoreNextBlur) {
+                  this.open = false;
                 }
-                ignoreNextBlur = false;
-                _.$update();
+                this.ignoreNextBlur = false;
+                this.$update();
               },
               onclick: () => {
-                open = !open;
-                _.$update();
+                this.open = !this.open;
+                this.$update();
               },
               onfocus: () => {
-                _.$update();
+                this.$update();
               },
               onkeydown: ev => {
-                const action = getDropdownActionFromKey(ev, open);
+                const action = getDropdownActionFromKey(ev, this.open);
                 const maxIndex = options.length - 1;
-                let newIndex = activeIndex;
+                let newIndex = this.activeIndex;
 
                 switch (action) {
                   case "Open":
                     ev.preventDefault();
-                    focusVisible = true;
-                    open = true;
+                    this.focusVisible = true;
+                    this.open = true;
                     break;
                   case "Close":
                     // stop propagation for escape key to avoid dismissing any parent popups
                     ev.stopPropagation();
                     ev.preventDefault();
-                    open = false;
+                    this.open = false;
                     break;
                   case "CloseSelect":
-                    if (!disabledOptions.has(activeIndex)) {
-                      open = false;
+                    if (!disabledOptions.has(this.activeIndex)) {
+                      this.open = false;
                     }
                   // fallthrough
                   case "Select":
-                    activeIndex !== -1 && selectOption(activeIndex);
+                    this.activeIndex !== -1 && selectOption(this.activeIndex);
                     ev.preventDefault();
                     break;
                   case "Tab":
-                    activeIndex !== -1 && selectOption(activeIndex);
+                    this.activeIndex !== -1 && selectOption(this.activeIndex);
                     break;
                   default:
                     newIndex = getIndexFromAction(
                       action,
-                      activeIndex,
+                      this.activeIndex,
                       maxIndex,
                     );
                 }
 
-                if (newIndex !== activeIndex) {
+                if (newIndex !== this.activeIndex) {
                   // prevent default page scroll/keyboard action if the index changed
                   ev.preventDefault();
-                  activeIndex = newIndex;
-                  focusVisible = true;
+                  this.activeIndex = newIndex;
+                  this.focusVisible = true;
                 }
-                _.$update();
+                this.$update();
               },
               onmouseover: () => {
-                focusVisible = false;
-                _.$update();
+                this.focusVisible = false;
+                this.$update();
               },
             },
             _ => {
               _.t(selectedValue === "" ? placeholder ?? "" : selectedValue);
 
               dropdownStyles.expandIcon();
-              _._span({}, _ => _.fiChevronDownRegular());
+              _._span({}, _ => _(FiChevronDownRegular)());
             },
           );
-        if (open) {
+        if (this.open) {
           const listboxStyles = useListboxStyles();
 
-          _.fPortal(
+          _(FPortal)(
             _ =>
               dropdownStyles.listbox() &&
               listboxStyles.root() &&
@@ -301,53 +292,54 @@ FluentUI.triggerComponents.fDropdown = function (_) {
               _._div(
                 {
                   onclick: () => {
-                    buttonEl.current!.node.focus();
-                    _.$update();
+                    this.buttonEl.current!.node.focus();
+                    this.$update();
                   },
                   onmouseover: () => {
-                    focusVisible = false;
-                    _.$update();
+                    this.focusVisible = false;
+                    this.$update();
                   },
                   onmousedown: () => {
-                    ignoreNextBlur = true;
-                    _.$update();
+                    this.ignoreNextBlur = true;
+                    this.$update();
                   },
                   onkeydown: ev => {
-                    const action = getDropdownActionFromKey(ev, open);
+                    const action = getDropdownActionFromKey(ev, this.open);
                     const maxIndex = options.length - 1;
-                    let newIndex = activeIndex;
+                    let newIndex = this.activeIndex;
 
                     switch (action) {
                       case "Select":
                       case "CloseSelect":
-                        activeIndex !== -1 && selectOption(activeIndex);
+                        this.activeIndex !== -1 &&
+                          selectOption(this.activeIndex);
                         break;
                       default:
                         newIndex = getIndexFromAction(
                           action,
-                          activeIndex,
+                          this.activeIndex,
                           maxIndex,
                         );
                     }
 
-                    if (newIndex !== activeIndex) {
+                    if (newIndex !== this.activeIndex) {
                       // prevent default page scroll/keyboard action if the index changed
                       ev.preventDefault();
-                      activeIndex = newIndex;
-                      focusVisible = true;
+                      this.activeIndex = newIndex;
+                      this.focusVisible = true;
                     }
-                    _.$update();
+                    this.$update();
                   },
                 },
                 _ =>
                   _.for(options, bySelf, (option, index) => {
-                    const active = index === activeIndex;
+                    const active = index === this.activeIndex;
                     const selected = option === selectedValue;
                     const optionDisabled = disabledOptions.has(index);
 
                     const optionStyles = useOptionStyles(
                       active,
-                      focusVisible,
+                      this.focusVisible,
                       optionDisabled,
                       selected,
                       false,
@@ -360,16 +352,16 @@ FluentUI.triggerComponents.fDropdown = function (_) {
                           if (optionDisabled) {
                             ev.preventDefault();
                           } else {
-                            open = false;
+                            this.open = false;
                           }
-                          activeIndex = index;
+                          this.activeIndex = index;
                           selectOption(index);
-                          _.$update();
+                          this.$update();
                         },
                       },
                       _ => {
                         optionStyles.checkIcon();
-                        _.fiCheckmarkFilled();
+                        _(FiCheckmarkFilled)();
                         _.t(option);
                       },
                     );
@@ -378,26 +370,14 @@ FluentUI.triggerComponents.fDropdown = function (_) {
           );
         }
       });
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    fUnderlineDropdown<OptionValue extends string>(
-      selected: Model<OptionValue | "">,
-      options: OptionValue[],
-      disabled?: boolean | boolean[],
-      placeholder?: string,
-    ): this is {
-      $ev: OptionValue;
-    };
+    return this.$fired;
   }
 }
-FluentUI.triggerComponents.fUnderlineDropdown = function (_) {
-  return (selected, options, disabled, placeholder) => {
-    _.fDropdown(selected, options, disabled, placeholder, "underline") &&
-      this.$fire(_.$ev);
-  };
-};
+
+export class FUnderlineDropdown<
+  OptionValue extends string,
+> extends FDropdown<OptionValue> {
+  appearance = "underline" as const;
+}
 
 export * from "./types";

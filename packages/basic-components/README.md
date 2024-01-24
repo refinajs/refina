@@ -18,7 +18,7 @@ To know more about Refina, please visit:
 ```ts
 import Basics from "@refina/basic-components";
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   // ...
 });
 ```

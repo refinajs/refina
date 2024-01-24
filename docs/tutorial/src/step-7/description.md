@@ -9,7 +9,7 @@ const todos = [
   { id: 3, text: "Read a book" },
 ];
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.for(todos, "id", item => {
     _.p(item.text);
   });

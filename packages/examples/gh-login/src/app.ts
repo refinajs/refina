@@ -26,7 +26,7 @@ let loading = false,
   msgType = "",
   msg = "";
 
-const app = $app.use(Basics)(_ => {
+const app = $app([Basics], _ => {
   if (_.$updateContext) {
     _.$root.addCss(
       `font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"`,
@@ -129,3 +129,9 @@ const app = $app.use(Basics)(_ => {
     });
   });
 });
+
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}

@@ -1,11 +1,11 @@
-import "@refina/fluentui-icons/checkmark.ts";
-import "@refina/fluentui-icons/square.ts";
-import { DOMElementComponent, Model, ref, valueOf } from "refina";
-import FluentUI from "../../plugin";
+import { FiCheckmark12Filled } from "@refina/fluentui-icons/checkmark";
+import { FiSquare12Filled } from "@refina/fluentui-icons/square";
+import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { FLabel } from "../label";
 import useStyles from "./styles";
 import { FCheckboxState } from "./types";
 
-declare module "refina" {
+namespace todo {
   interface Components {
     fCheckbox(
       label: string,
@@ -16,13 +16,16 @@ declare module "refina" {
     };
   }
 }
-FluentUI.triggerComponents.fCheckbox = function (_) {
-  const inputRef = ref<DOMElementComponent<"input">>();
-  return (
-    label,
-    checked = inputRef.current?.node.checked ?? false,
+export class FCheckbox extends TriggerComponent {
+  inputRef = elementRef<"input">();
+  $main(
+    label: string,
+    checked: Model<FCheckboxState> = this.inputRef.current?.node.checked ??
+      false,
     disabled = false,
-  ) => {
+  ): this is {
+    $ev: boolean;
+  } {
     const checkedValue = valueOf(checked);
 
     const styles = useStyles(disabled, checkedValue);
@@ -32,33 +35,34 @@ FluentUI.triggerComponents.fCheckbox = function (_) {
       {
         onclick: () => {
           const newState = checkedValue !== true;
-          _.$updateModel(checked, newState);
+          this.$updateModel(checked, newState);
           this.$fire(newState);
         },
       },
       _ => {
         styles.input();
-        _.$ref(inputRef) &&
-          _._input({
-            type: "checkbox",
-            checked: checkedValue === true,
-          });
+        _.$ref(this.inputRef);
+        _._input({
+          type: "checkbox",
+          checked: checkedValue === true,
+        });
 
         styles.indicator();
         _._div({}, _ => {
           if (checkedValue === "mixed") {
-            _.fiSquare12Filled();
+            _(FiSquare12Filled)();
           } else if (checkedValue === true) {
-            _.fiCheckmark12Filled();
+            _(FiCheckmark12Filled)();
           }
         });
 
         styles.label();
-        _.fLabel(label, false, disabled);
+        _(FLabel)(label, false, disabled);
       },
     );
-  };
-};
+    return this.$fired;
+  }
+}
 
 export * from "./types";
 export * from "./utils";

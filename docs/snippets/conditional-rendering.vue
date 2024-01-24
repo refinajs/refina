@@ -11,7 +11,7 @@ import RunRefina from "./run-refina.vue";
 onMounted(() => {
   let count = 0;
 
-  $app.use(Basics)(_ => {
+  $app({ plugins: [Basics], root: "#conditional-rendering-root" }, _ => {
     _.p(`Count is: ${count}`);
 
     _.button(`Add`) && count++;
@@ -19,6 +19,6 @@ onMounted(() => {
     if (count > 0) {
       _.button("Reset") && (count = 0);
     }
-  }, "conditional-rendering-root");
+  });
 });
 </script>

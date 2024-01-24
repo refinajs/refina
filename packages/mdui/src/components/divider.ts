@@ -1,26 +1,15 @@
-import { Context, OutputComponent } from "refina";
-import MdUI from "../plugin";
+import { Component, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdDivider(): void;
-  }
-}
-MdUI.outputComponents.mdDivider = function (_) {
-  return () => {
+export class MdDivider extends Component {
+  $main(): void {
     _._mdui_divider();
-  };
-};
-
-declare module "refina" {
-  interface Components {
-    mdVerticalDivider(): void;
   }
 }
-MdUI.outputComponents.mdVerticalDivider = function (_) {
-  return () => {
+
+export class MdVerticalDivider extends Component {
+  $main(): void {
     _._mdui_divider({
       vertical: true,
     });
-  };
-};
+  }
+}

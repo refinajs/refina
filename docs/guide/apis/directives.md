@@ -34,12 +34,6 @@ Similar to [`_.$updateContext`](#update-context).
 
 If the App is in the `RECV` state, the value is the context itself, otherwise it is `null`.
 
-## `_.$update` {#update}
-
-Call the method to trigger an `UPDATE` call.
-
-Equivalent to `_.$app.update`.
-
 ## `_.$updateModel`
 
 Update the value of a model and trigger an `UPDATE` call if the value is changed.
@@ -76,11 +70,11 @@ You can use this component to add classes, styles and event listeners to the doc
 
 The component representing the document body.
 
-You can use this component to add event listeners to window.
+You can use this component to add event listeners to `window`.
 
 ## `_.$ref` {#ref}
 
-See [Ref a Element](../essentials/lowlevel#ref-element).
+See [Ref an Element](../essentials/lowlevel#ref-element).
 
 ## `_.$props` {#props}
 

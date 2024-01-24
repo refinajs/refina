@@ -1,13 +1,7 @@
-import { Content } from "refina";
-import MdUI from "../plugin";
+import { Component, Content, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    mdBottomAppBar(inner: Content): void;
+export class MdBottomAppBar extends Component {
+  $main(inner: Content): void {
+    _._mdui_bottom_app_bar({}, inner);
   }
 }
-MdUI.outputComponents.mdBottomAppBar = function (_) {
-  return inner => {
-    _._mdui_bottom_app_bar({}, inner);
-  };
-};

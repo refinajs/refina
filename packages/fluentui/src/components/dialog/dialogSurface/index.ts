@@ -1,19 +1,14 @@
-import { Content } from "refina";
-import FluentUI from "../../../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 import useSurfaceStyles from "./styles";
+import { FPortal } from "../../portal";
 
-declare module "refina" {
-  interface Components {
-    fDialogSurface(inner: Content): this is {
-      $ev: void;
-    };
-  }
-}
-FluentUI.triggerComponents.fDialogSurface = function (_) {
-  return (inner: Content) => {
+export class FDialogSurface extends TriggerComponent<void> {
+  $main(inner: Content): this is {
+    $ev: void;
+  } {
     const surfaceStyles = useSurfaceStyles(false);
 
-    _.fPortal(_ => {
+    _(FPortal)(_ => {
       surfaceStyles.backdrop();
       _._div({
         onmousedown: ev => {
@@ -44,5 +39,6 @@ FluentUI.triggerComponents.fDialogSurface = function (_) {
         inner,
       );
     });
-  };
-};
+    return this.$fired;
+  }
+}

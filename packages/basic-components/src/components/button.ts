@@ -1,19 +1,12 @@
-import { Content } from "refina";
-import Basics from "../plugin";
+import { Content, TriggerComponent, _ } from "refina";
 
-declare module "refina" {
-  interface Components {
-    button(
-      inner: Content,
-      disabled?: boolean,
-    ): this is {
-      $ev: MouseEvent;
-    };
-  }
-}
-
-Basics.triggerComponents.button = function (_) {
-  return (inner, disabled = false) => {
+export class BasicButton extends TriggerComponent {
+  $main(
+    inner: Content,
+    disabled?: boolean,
+  ): this is {
+    $ev: MouseEvent;
+  } {
     _._button(
       {
         onclick: this.$fire,
@@ -22,5 +15,6 @@ Basics.triggerComponents.button = function (_) {
       },
       inner,
     );
-  };
-};
+    return this.$fired;
+  }
+}

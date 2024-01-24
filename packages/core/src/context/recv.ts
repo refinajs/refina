@@ -1,29 +1,16 @@
 import { App } from "../app";
-import {
-  Component,
-  ComponentConstructor,
-  ComponentContext,
-  ComponentMainFunc,
-} from "../component";
+import { Component } from "../component";
 import { Content, DOMElementComponent } from "../dom";
 import {
   ContextFuncs,
-  ContextState,
-  InitialContextState,
   IntrinsicBaseContext,
   RealContextFuncs,
+  _,
   initializeBaseContext,
 } from "./base";
 
-export interface IntrinsicRecvContext<
-  CS extends ContextState = InitialContextState,
-> extends IntrinsicBaseContext<CS> {
+export interface IntrinsicRecvContext extends IntrinsicBaseContext {
   $lowlevel: IntrinsicRecvContext;
-
-  /**
-   * The receiver of the event.
-   */
-  $receiver: unknown;
 
   /**
    * Is the event received?
@@ -42,30 +29,24 @@ export interface IntrinsicRecvContext<
 /**
  * The full context type in `RECV` state, with context funcs.
  */
-export type RecvContext<CS extends ContextState = InitialContextState> =
-  Readonly<Omit<IntrinsicRecvContext<CS>, `$$${string}`>> & ContextFuncs<CS>;
+export type RecvContext = Readonly<Omit<IntrinsicRecvContext, `$$${string}`>> &
+  ContextFuncs;
 
 /**
  * Initialize a context in `RECV` state.
- * @param context The context to initialize.
+ *
  * @param app The app instance.
  * @param receiver The receiver of the event.
  * @param event The event data.
  */
-export function initializeRecvContext(
-  context: IntrinsicRecvContext,
-  app: App,
-  receiver: unknown,
-  event: unknown,
-) {
-  initializeBaseContext(context, app);
+export function initializeRecvContext(app: App) {
+  initializeBaseContext(app);
+
+  const context = _ as unknown as IntrinsicRecvContext;
 
   context.$updateContext = null;
   context.$recvContext = context as unknown as RecvContext;
 
-  context.$receiver = receiver;
-  //@ts-ignore
-  context.$ev = event;
   context.$received = false;
 
   context.$ref =
@@ -108,15 +89,15 @@ export function initializeRecvContext(
 
   context.$$processDOMElement = (ckey, content) => {
     if (typeof content === "function") {
-      // The content is a view function.
+      // The content is a fragment.
 
-      const el = context.$$currentRefTreeNode[ckey] as
+      const el = context.$$currentRefNode[ckey] as
         | DOMElementComponent
         | undefined;
 
       if (el) {
-        const parentRefTreeNode = context.$$currentRefTreeNode;
-        context.$$currentRefTreeNode = el.$refTreeNode;
+        const parentRefNode = context.$$currentRefNode;
+        context.$$currentRefNode = el.$refTreeNode;
 
         try {
           content(context._);
@@ -124,40 +105,33 @@ export function initializeRecvContext(
           context.$app.callHook("onError", e);
         }
 
-        context.$$currentRefTreeNode = parentRefTreeNode;
+        context.$$currentRefNode = parentRefNode;
       }
     }
     // Text node is ignored in `RECV` state.
   };
 
-  context.$$processComponent = <T extends Component<any>>(
+  context.$$processComponent = <T extends Component>(
     ckey: string,
-    ctor: ComponentConstructor<T>,
-    factory: (this: T, context: ComponentContext<any>) => ComponentMainFunc,
+    ctor: new () => T,
     args: unknown[],
   ) => {
-    let component = context.$$currentRefTreeNode[ckey] as T | undefined;
+    let component = context.$$currentRefNode[ckey] as T | undefined;
+
+    const parentRefNode = context.$$currentRefNode;
 
     if (!component) {
-      component = new ctor(context.$app);
-
-      const componentContext = context._ as ComponentContext<any>;
-      componentContext.$expose = exposed => exposed;
-
-      component.$mainFunc = factory.call(component, componentContext);
-
-      context.$$currentRefTreeNode[ckey] = component;
-    } else {
-      const parentRefTreeNode = context.$$currentRefTreeNode;
-      context.$$currentRefTreeNode = component.$refTreeNode;
-
-      // New created component has nothing to receive.
-      component.$mainFunc(...args);
-
-      context.$$currentRefTreeNode = parentRefTreeNode;
+      component = new ctor();
+      parentRefNode[ckey] = component;
     }
 
-    return component;
+    context.$$currentRefNode = component.$refTreeNode;
+
+    const ret = component.$main(...args);
+
+    context.$$currentRefNode = parentRefNode;
+
+    return ret;
   };
 
   app.callHook("initContext", context);

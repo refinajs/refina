@@ -1,6 +1,6 @@
 {
   "name": "@refina/basic-components",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "The basic components for Refina framework.",
   "keywords": [
     "refina",
@@ -32,7 +32,7 @@
     "@refina/tsconfig": "workspace:^",
     "typescript": "^5.2.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "refina": "workspace:^"
   }
 }
