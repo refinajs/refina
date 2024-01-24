@@ -38,7 +38,7 @@
 let count = 0;
 $app([Basics], _ => {
   _.p(`Count is: ${count}`);
-  count++; // The state will change in the UPDATE state
+  count++; // count 在 UPDATE 状态下也会被改变
 });
 ```
 
