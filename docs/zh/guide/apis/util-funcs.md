@@ -86,7 +86,7 @@ $app([Basics], _ => {
 
 ## `_.embed` {#embed}
 
-Embed content into the current rendering process.
+将内容嵌入当前位置。
 
 ## `_.asyncEmbed`
 
