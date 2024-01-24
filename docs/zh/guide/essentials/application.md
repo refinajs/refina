@@ -7,43 +7,37 @@
 ```ts
 import { $app } from "refina";
 
-$app(_ => {
-  // 应用主体 （主函数）
+$app([], _ => {
+  // The main function of the app
   // ...
 });
 ```
 
 ## 使用插件
 
-通过调用 `$app.use` 向应用添加插件。
-
 所有组件和工具函数都通过插件提供。所以插件是必不可少的一部分。
 
-```ts
-import { $app } from "refina";
-import Basics from "@refina/basic-components";
-
-$app.use(Basics)(_ => {
-  // _.h1 由名为 Basics 的插件提供
-  _.h1("Hello, Refina!");
-});
-```
-
-若要使用多个插件，请链式调用 `$app.use` 方法：
+The first parameter of `$app` can be an array of plugins:
 
 ```ts
-$app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
+$app([Plugin1, Plugin2(param1, param2), Plugin3], _ => {
   // ...
 });
 ```
 
+However, TypeScript doesn't know what plugins are used unless you declare them explicitly. So the `Plugins` interface should be declared:
+
+```ts
+declare module "refina" {
+  interface Plugins {
+    Plugin1: typeof Plugin1;
+    Plugin2: typeof Plugin2;
+    Plugin3: typeof Plugin3;
+  }
+}
+```
+
 事实上，属于Refina核心的组件和工具函数由名为 `Prelude` 插件的提供。这个插件在创建应用时会被自动添加。
-
-:::warning
-
-由于 TypeScript 的限制，如果仅导入插件却不安装它，其类型仍然在上下文对象中可见。 但是如果你使用这些实际上并没有安装的插件，会产生运行时错误。
-
-:::
 
 ## 主函数
 
@@ -65,35 +59,16 @@ $app.use(Plugin1).use(Plugin2, param1, param2).use(Plugin3)(_ => {
 
 根元素是应用挂载在 DOM 中的容器元素。
 
-默认的根元素是 `id` 为 `root` 的元素。
+By default, the root element is selected by `"#app"`.
 
-你可以将期望的根元素的 `id` 传入 `$app` 的第二个参数。
-
-```ts
-$app(_ => {
-  // ...
-}, "my-root");
-```
-
-## 多个应用实例
-
-在同一个页面中可以创建多个共存的 Refina 应用。
-
-你可以为每个应用指定不同的根元素。
-
-```html
-<body>
-  <div id="root1"></div>
-  <div id="root2"></div>
-</body>
-```
+You can change the root element by the `root` option:
 
 ```ts
-$app(_ => {
-  // ...
-}, "root1");
-
-$app(_ => {
-  // ...
-}, "root2");
+$app(
+  { plugins: [], root: "#my-root" },
+  _ => {
+    // ...
+  },
+  "my-root",
+);
 ```
