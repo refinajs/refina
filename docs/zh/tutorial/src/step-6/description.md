@@ -5,7 +5,7 @@
 ```ts
 let name = "";
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (_.textInput(name)) {
     name = _.$ev;
   }
@@ -22,11 +22,11 @@ import { $app, model } from "refina";
 
 const name = model("");
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.textInput(name);
 
   _.p(`Hello ${name}!`);
-  // 等价于：
+  // equivalent to:
   // _.p(`Hello ${name.value}!`);
 });
 ```
