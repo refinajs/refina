@@ -34,12 +34,6 @@ $app(_ => {
 
 如果应用处于 `RECV` 状态，那么它是当前上下文对象，否则它是 `null`。
 
-## `_.$update` {#update}
-
-调用此方法以触发页面更新（即触发 `UPDATE` 状态的调用）。
-
-与 `_.$app.update` 等价。
-
 ## `_.$updateModel`
 
 设置一个 `Model` 所包含的值，并触发页面更新。
@@ -76,11 +70,11 @@ $app(_ => {
 
 代表 `window.document` 的元素组件。
 
-通过它为 `window` 添加事件侦听器。
+You can use this component to add event listeners to `window`.
 
 ## `_.$ref` {#ref}
 
-参见 [元素引用](../essentials/lowlevel#ref-element)。
+See [Ref an Element](../essentials/lowlevel#ref-element).
 
 ## `_.$props` {#props}
 
