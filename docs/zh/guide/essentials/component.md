@@ -2,7 +2,7 @@
 
 组件允许我们将 UI 划分为独立的、可重用的部分，并且可以对每个部分进行单独的思考。
 
-Unlike components in other frameworks, where components are also used to split the app into several parts, it is preferred to use [view](./view.md) to split the app in Refina.
+与其他框架中的组件不同，Refina 中的组件**不**被用于将应用分成几个部分，对于这种需求，请使用[视图](./view.md)。
 
 ## 组件的种类
 
@@ -48,18 +48,18 @@ $app([MdUI], _ => {
 
 :::
 
-## The Primary Element {#primary-element}
+## 主元素 {#primary-element}
 
-If the component renders a DOM element (text node is excluded), it has a primary element, which can be assessed via `componentInstance.$primaryEl`.
+如果组件渲染了一个 DOM 元素（不包括文本节点），它就有一个主元素。主元素可以通过 `componentInstance.$primaryEl` 属性获得。
 
-If the component doesn't render any DOM element, its primary element is `undefined`.
+如果一个组件不包括任何非文本节点的 DOM 元素，那么它的主元素的值为 `undefined`。
 
-The primary element should be the most major element in the component. Classes and styles applied to the component will be forwarded to the primary element.
+主元素应当是组件的视觉核心。 向组件添加的类名与样式将被设置在主元素上。 组件的底层实现是一个上下文函数。 所以创建一个不属于上述种类的组件是完全可行的。
 
-A component can specify the primary element by calling `this.$primary()`. If not specified, the first element will be the primary element.
+组件可以通过调用 `this,$primary()` 指令来设置下一个元素为主元素。 默认地，组件渲染的第一个元素将被视为组件的主元素。 默认地，组件渲染的第一个元素将被视为组件的主元素。
 
 :::info
 
-Elements rendered via low-level rendering functions also have a primary element, which is always the element itself.
+通过底层渲染函数渲染的元素也有主元素，即它们自身。
 
 :::
