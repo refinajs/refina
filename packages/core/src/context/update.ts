@@ -205,11 +205,6 @@ export function initializeUpdateContext(app: App) {
     context.$$pendingPrimaryElOwner = [];
   };
 
-  context.$prop = (key, value) => {
-    context.$$nextProps[key] = value;
-    return true;
-  };
-
   context.$props = props => {
     Object.assign(context.$$nextProps, props);
     return true;

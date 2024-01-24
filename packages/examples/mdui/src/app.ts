@@ -75,12 +75,11 @@ $app([MdUI], _ => {
     _(ShowComponent)("Chip", _ => {
       _.mdChip("Student");
       _.mdChip("Student", true);
-      _.$prop("icon", "person") &&
-        _.$prop("endIcon", "arrow_forward") &&
+      _.$props({ icon: "person", endIcon: "arrow_forward" }) &&
         _.mdChip("Student", true);
       _.mdSelectableChip(status, "Student");
       _.mdDeletableChip("Student") && alert("Deleted!");
-      _.$prop("deleteIcon", "backspace") &&
+      _.$props({ deleteIcon: "backspace" }) &&
         _.mdDeletableChip("Student", true) &&
         alert("Deleted!");
     });
@@ -90,7 +89,7 @@ $app([MdUI], _ => {
     });
     _(ShowComponent)("Collapse", _ => {
       _.mdCollapse("Header", "Content");
-      _.$prop("icon", "near_me");
+      _.$props({ icon: "near_me" });
       _.mdCollapse("Header", "Content");
       _.mdCollapse("Header (disabled)", "Content", true);
     });
@@ -262,7 +261,7 @@ $app([MdUI], _ => {
       _.mdLayout(_ => {
         _.mdLayoutMain(_ => {
           _._h1({}, "Layout Main");
-          _.$prop("contained", true);
+          _.$props({ contained: true });
           _.mdNavDrawer(
             open => _.mdButton("open drawer") && open(),
             close => _.mdButton("close drawer") && close(),

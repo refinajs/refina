@@ -50,7 +50,6 @@ export function initializeRecvContext(app: App) {
   context.$received = false;
 
   context.$ref =
-    context.$prop =
     context.$props =
     context.$cls =
     context.$css =

@@ -173,19 +173,6 @@ export interface IntrinsicBaseContext {
   $ref<C>(ref: Ref<C>, ...refs: Ref<C>[]): true;
 
   /**
-   * Set a property of the next component.
-   *
-   * **Note**: The property set by this function
-   *  is declared in the type parameter of the `Component` class,
-   *  and accessed by `this.$props` in the component.
-   *
-   * @param key The key of the property to set.
-   * @param value The value of the property to set.
-   * @returns always `true`.
-   */
-  $prop(key: string | number | symbol, value: unknown): true;
-
-  /**
    * Set properties of the next component.
    *
    * **Note**: The properties set by this function
@@ -444,7 +431,6 @@ export function invalidateContext() {
     console.warn("This context is cleared!");
   };
 
-  context.$prop = warningFunc;
   context.$props = warningFunc;
   context.$cls = warningFunc;
   context.$css = warningFunc;
