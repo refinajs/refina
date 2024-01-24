@@ -36,9 +36,9 @@
 
 ```ts
 let count = 0;
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.p(`Count is: ${count}`);
-  count++; // count 在 UPDATE 状态下也会被改变
+  count++; // The state will change in the UPDATE state
 });
 ```
 
@@ -59,7 +59,7 @@ $app.use(Basics)(_ => {
 以下代码是错误的。它会造成未定义行为。
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (_.button("Click me")) {
     _.p("Hello");
   }
