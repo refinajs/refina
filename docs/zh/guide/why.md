@@ -32,6 +32,6 @@
 
 ## 效果
 
-Refina is still under active development, but it has already shown its advantages in development efficiency.
+Refina 仍在积极开发中，但它已经在开发效率上体现了非常大的优势。
 
 基于数个真实项目，Refina 相比其他前端框架**减少了大约 `30%~40%` 的代码量**，**开发效率提升至约 `1.4~1.6` 倍**。
