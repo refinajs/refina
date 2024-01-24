@@ -1,6 +1,6 @@
 import { $app } from "refina";
 import Basics from "@refina/basic-components";
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1("Title");
   _.div(_ => {
     _.h2("Part 1");
@@ -23,3 +23,8 @@ $app.use(Basics)(_ => {
     _.a("share", "#");
   });
 });
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}
