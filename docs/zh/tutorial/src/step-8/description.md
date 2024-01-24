@@ -7,14 +7,14 @@
 使用 `$view` 函数来定义视图：
 
 ```ts
-import { $view } from "refina";
+import { $view, _ } from "refina";
 
-export default $view((_, id) => {
-  _.h1("Card");
+export default $view((id: number) => {
+  _.h1(`Card ${id}`);
 });
 ```
 
-将上下文对象作为函数调用以渲染视图：
+To use a view, you call the context object with the fragment:
 
 ```ts
 import { $app } from "refina";
