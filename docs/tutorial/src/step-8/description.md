@@ -14,7 +14,7 @@ export default $view((id: number) => {
 });
 ```
 
-To use a view, you call the context object with the fragment:
+To use a view, just call the context object:
 
 ```ts
 import { $app } from "refina";

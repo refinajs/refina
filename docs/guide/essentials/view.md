@@ -44,7 +44,7 @@ It is recommended to define a view in a separate file and export it as a default
 
 ## Passing Parameters {#passing-parameters}
 
-A fragment can have parameters:
+A view can have parameters:
 
 ```ts
 import { $view, _ } from "refina";
@@ -57,7 +57,7 @@ export default $view((name: string, id?: number) => {
 });
 ```
 
-Then, you can pass the parameters to the fragment:
+Then, you can pass the parameters to the view:
 
 ```ts
 _(MyView)("John", 123);
