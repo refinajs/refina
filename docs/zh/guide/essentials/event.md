@@ -7,18 +7,6 @@ import EventHandling from "snippets/event-handling.vue";
 本节将介绍在 Refina 中如何处理事件。
 
 ```ts
-let count = 0;
-
-$app([Basics], _ => {
-  _.p(`Count is: ${count}`);
-
-  _.button(`Add`) && count++;
-
-  if (_.button("Reset")) {
-    count = 0;
-    console.log(_.$ev);
-  }
-});
 ```
 
 **运行结果**
