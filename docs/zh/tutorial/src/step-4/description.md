@@ -9,15 +9,15 @@ let person = {
   name: "John Doe",
 };
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1(message);
   _.p(`Hello ${person.name}!`);
 });
 ```
 
-:::warning 状态应当定义在视图函数的外部
+:::warning States should be declared outside the fragment.
 
-在视图函数内部定义的函数不是状态。 它们只是局部的临时变量，在每次调用视图函数时被重新创建。
+Variables declared inside the fragment are not states. They are just local temporary variables, which are re-created every time the fragment is called.
 
 :::
 
@@ -27,7 +27,7 @@ $app.use(Basics)(_ => {
 let cond = true;
 let value: number | null | undefined;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   if (cond) {
     _.h1("Hello World!");
   } else {
