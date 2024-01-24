@@ -8,7 +8,7 @@
 import { $app } from "refina";
 
 $app([], _ => {
-  // The main function of the app
+  // 应用主体 （主函数）
   // ...
 });
 ```
@@ -17,7 +17,7 @@ $app([], _ => {
 
 所有组件和工具函数都通过插件提供。所以插件是必不可少的一部分。
 
-The first parameter of `$app` can be an array of plugins:
+`$app` 的第一个参数可以是插件列表。
 
 ```ts
 $app([Plugin1, Plugin2(param1, param2), Plugin3], _ => {
@@ -25,7 +25,7 @@ $app([Plugin1, Plugin2(param1, param2), Plugin3], _ => {
 });
 ```
 
-However, TypeScript doesn't know what plugins are used unless you declare them explicitly. So the `Plugins` interface should be declared:
+但是，TypeScript 并不知道有哪些插件被使用，除非显式地声明它们 ：
 
 ```ts
 declare module "refina" {
@@ -59,9 +59,9 @@ declare module "refina" {
 
 根元素是应用挂载在 DOM 中的容器元素。
 
-By default, the root element is selected by `"#app"`.
+根元素默认是 `"#app"`。
 
-You can change the root element by the `root` option:
+你可以用 `root` 选项自定义根元素。
 
 ```ts
 $app(
