@@ -15,9 +15,9 @@ $app([Basics], _ => {
 });
 ```
 
-:::warning States should be declared outside the fragment.
+:::warning States should be declared outside the main function.
 
-Variables declared inside the fragment are not states. They are just local temporary variables, which are re-created every time the fragment is called.
+Variables declared inside the main function are not states. They are just local temporary variables, which are re-created every time the main function is called.
 
 :::
 
