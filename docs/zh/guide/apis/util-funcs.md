@@ -16,12 +16,12 @@ import NowVue from "snippets/now.vue";
 **例子**
 
 ```ts {4}
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.div(() => {
-    _.span("在 div 内部");
-    _.portal(_ => _.span("在 portal 内部"));
+    _.span("Inside the div");
+    _.portal(_ => _.span("Inside the portal"));
   });
-  _.span("在 div 外部");
+  _.span("Outside the div");
 });
 ```
 
@@ -75,9 +75,9 @@ if (_.await(() => fetch("https://example.com"))) {
 **例子**
 
 ```ts {6}
-import { d } from "refina";
-const username = d("");
-$app.use(Basics)(_ => {
+import { model } from "refina";
+const username = model("");
+$app([Basics], _ => {
   _.label("Username");
   _.textInput(username, false, "edit me");
   _.documentTitle(`Hello ${username}`);
@@ -86,7 +86,7 @@ $app.use(Basics)(_ => {
 
 ## `_.embed` {#embed}
 
-将内容嵌入当前位置。
+Embed content into the current rendering process.
 
 ## `_.asyncEmbed`
 
@@ -137,7 +137,7 @@ _.provide("username", "John", myView, ...viewParams);
 **例子**
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.p(`The current time is ${_.now(500)}`);
 });
 ```
