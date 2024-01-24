@@ -70,11 +70,11 @@ $app(_ => {
 
 代表 `window.document` 的元素组件。
 
-You can use this component to add event listeners to `window`.
+通过它为 `window` 添加事件侦听器。
 
 ## `_.$ref` {#ref}
 
-See [Ref an Element](../essentials/lowlevel#ref-element).
+参见 [元素引用](../essentials/lowlevel#ref-element)。
 
 ## `_.$props` {#props}
 
