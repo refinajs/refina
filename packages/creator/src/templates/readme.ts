@@ -46,10 +46,10 @@ ${runCommand} build
 ${
   prettier
     ? `
-### Prettify Code
+### Format Code
 
 \`\`\`sh
-${runCommand} prettier
+${runCommand} format
 \`\`\`
 `
     : ""

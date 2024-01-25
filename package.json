@@ -20,7 +20,7 @@
     "build": "pnpm -r run build",
     "build:docs": "pnpm -r --filter \"@refina/docs...\" run build",
     "check": "pnpm -r --parallel run check",
-    "prettier": "prettier --write .",
+    "format": "prettier --write .",
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version",

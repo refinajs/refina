@@ -145,7 +145,7 @@ async function main() {
         dev: "vite",
         build: "vite build",
         check: "tsc --noEmit",
-        prettier: input.usePrettier ? "prettier --write ." : undefined,
+        format: input.usePrettier ? "prettier --write ." : undefined,
       },
       dependencies: toDepObject(dependencies),
       devDependencies: toDepObject(devDependencies),
