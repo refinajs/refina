@@ -7,22 +7,20 @@ export class BasicTable extends Component {
     key: LoopKey<T>,
     row: (item: T, index: number) => void,
   ): void {
-    _._div({}, _ => {
-      _._table({}, _ => {
-        _._thead({}, _ => {
-          if (Array.isArray(head)) {
-            _.for(head, byIndex, item => {
-              _._th({}, item);
-            });
-          } else {
-            _.embed(head);
-          }
-        });
-        _._tbody({}, _ => {
-          _.for(data, key, (item, index) => {
-            _._tr({}, _ => {
-              row(item, index);
-            });
+    _._table({}, _ => {
+      _._thead({}, _ => {
+        if (Array.isArray(head)) {
+          _.for(head, byIndex, item => {
+            _._th({}, item);
+          });
+        } else {
+          _.embed(head);
+        }
+      });
+      _._tbody({}, _ => {
+        _.for(data, key, (item, index) => {
+          _._tr({}, _ => {
+            row(item, index);
           });
         });
       });
