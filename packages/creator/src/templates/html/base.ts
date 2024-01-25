@@ -4,7 +4,7 @@ export default (head: string) => `<!doctype html>
     <script type="module" src="./src/app.ts"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="app"></div>
   </body>
 </html>
 `;
