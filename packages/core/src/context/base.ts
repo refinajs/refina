@@ -251,7 +251,7 @@ export interface IntrinsicBaseContext {
    *
    * @param attrs The attributes to add.
    */
-  $attrs(attrs: Record<string, unknown>): true;
+  $attrs<T extends object>(attrs: T): true;
 
   /**
    * The transformed context function calls (excluding `_.t` calls).

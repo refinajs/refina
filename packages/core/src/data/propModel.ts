@@ -23,5 +23,5 @@ export function propModel<T, K extends keyof T>(obj: T, key: K) {
     [Symbol.toPrimitive]() {
       return this.value;
     },
-  } satisfies JustModel<T[K]> & { obj: T; key: K };
+  } as JustModel<T[K]> & { obj: T; key: K };
 }
