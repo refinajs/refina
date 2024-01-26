@@ -6,26 +6,27 @@ import {
 } from "./constants";
 import { ParseResult } from "./parser";
 
-export function wrapMain({ imports, mainSrc }: ParseResult) {
+export function wrapMain({ imports, mainSrc, appInstance }: ParseResult) {
+  const appId = appInstance ?? appInstDeafultId;
   mainSrc.prepend(`${imports}
 export const ${mainFuncId} = (${localsObjId}) => `);
 
   mainSrc.append(`
-let ${appInstDeafultId}, ${localsObjId};
+let ${appId}, ${localsObjId};
 
-export function ${initFuncId}(app, locals) {
-  ${appInstDeafultId} = app;
-  ${localsObjId} = locals;
+export function ${initFuncId}(__app_param__, __locals_param__) {
+  ${appId} = __app_param__;
+  ${localsObjId} = __locals_param__;
 }
 
-import.meta.hot?.accept(async (newMainModule) => {
-  newMainModule.${initFuncId}(${appInstDeafultId}, ${localsObjId});
-  const newMain = newMainModule.${mainFuncId}(${localsObjId});
-  if(${appInstDeafultId}.state !== "idle") {
-    await ${appInstDeafultId}.promises.mainExecuted;
+import.meta.hot?.accept(async (__new_main_mod__) => {
+  __new_main_mod__.${initFuncId}(${appId}, ${localsObjId});
+  const newMain = __new_main_mod__.${mainFuncId}(${localsObjId});
+  if(${appId}.state !== "idle") {
+    await ${appId}.promises.mainExecuted;
   }
-  ${appInstDeafultId}.main = newMain;
-   ${appInstDeafultId}.update();
+  ${appId}.main = newMain;
+   ${appId}.update();
 });
 `);
 }
