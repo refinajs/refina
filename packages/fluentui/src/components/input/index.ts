@@ -14,6 +14,7 @@ export class FInput<T = string> extends TriggerComponent {
   parseValue: (v: string) => T = v => v as any;
   appearance: FInputAppearance = "outline";
   type = "text";
+  extraAttrs: Partial<HTMLInputElement> = {};
   inputRef = ref<HTMLElementComponent<"input">>();
   $main(
     value: Model<T>,
@@ -46,6 +47,7 @@ export class FInput<T = string> extends TriggerComponent {
               this.$updateModel(value, newValue);
               this.$fire(newValue);
             },
+            ...this.extraAttrs,
           });
       },
     );
@@ -55,8 +57,9 @@ export class FInput<T = string> extends TriggerComponent {
 
 export class FNumberInput extends FInput<number> {
   stringifier = (v: number) => (Number.isNaN(v) ? "" : String(v));
-  parseValue = (v: string) => parseInt(v);
+  parseValue = (v: string) => parseFloat(v);
   type = "number";
+  extraAttrs: Partial<HTMLInputElement> = { step: "any" };
 }
 
 export class FPasswordInput extends FInput {
