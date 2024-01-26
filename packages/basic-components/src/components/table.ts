@@ -10,9 +10,11 @@ export class BasicTable extends Component {
     _._table({}, _ => {
       _._thead({}, _ => {
         if (Array.isArray(head)) {
-          _.for(head, byIndex, item => {
-            _._th({}, item);
-          });
+          _._tr({}, _ =>
+            _.for(head, byIndex, item => {
+              _._th({}, item);
+            }),
+          );
         } else {
           _.embed(head);
         }
