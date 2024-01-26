@@ -5,7 +5,7 @@ import {
   TriggerComponent,
   _,
   model,
-  valueOf,
+  unwrap,
 } from "refina";
 import { FDialogBody } from "../dialogBody";
 import { FDialogSurface } from "../dialogSurface";
@@ -22,7 +22,7 @@ export class FControlledDialog extends TriggerComponent<void> {
   ): this is {
     $ev: void;
   } {
-    if (valueOf(open)) {
+    if (unwrap(open)) {
       if (
         _(FDialogSurface)(_ => {
           if (

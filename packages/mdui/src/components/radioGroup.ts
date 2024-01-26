@@ -5,7 +5,7 @@ import {
   _,
   bySelf,
   elementRef,
-  valueOf,
+  unwrap,
 } from "refina";
 
 export class MdRadioGroup<Value extends string> extends TriggerComponent {
@@ -24,7 +24,7 @@ export class MdRadioGroup<Value extends string> extends TriggerComponent {
     _.$ref(this.radioGroupRef);
     _._mdui_radio_group(
       {
-        value: valueOf(selected),
+        value: unwrap(selected),
         disabled: groupDisabled,
         onchange: () => {
           const newSelected = this.radioGroupRef.current!.node.value as Value;

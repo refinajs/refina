@@ -6,7 +6,7 @@ import {
   _,
   byIndex,
   ref,
-  valueOf,
+  unwrap,
 } from "refina";
 import { FTab } from "../tab";
 import { tabIndicatorCssVars } from "./indicator.styles";
@@ -46,7 +46,7 @@ export class FTabList extends TriggerComponent {
   ): this is {
     $ev: number;
   } {
-    const selectedValue = valueOf(selected);
+    const selectedValue = unwrap(selected);
     const tabListDisabled = typeof disabled === "boolean" ? disabled : false;
     const tabDisabled =
       typeof disabled === "boolean" ? [] : disabled.map(d => d ?? false);

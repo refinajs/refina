@@ -8,7 +8,7 @@ import {
   _,
   model,
   ref,
-  valueOf,
+  unwrap,
 } from "refina";
 import { usePositioning } from "../../positioning";
 import { FPortal } from "../portal";
@@ -33,7 +33,7 @@ export class FControlledPopover extends TriggerComponent<void> {
       this.$fire();
     };
 
-    if (valueOf(open)) {
+    if (unwrap(open)) {
       if (_.$updateContext) {
         _.$root.addEventListener(
           "click",

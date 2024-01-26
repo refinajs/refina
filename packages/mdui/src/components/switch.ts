@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class MdSwitch extends TriggerComponent {
   switchRef = elementRef<"mdui-switch">();
@@ -10,7 +10,7 @@ export class MdSwitch extends TriggerComponent {
   } {
     _.$ref(this.switchRef);
     _._mdui_switch({
-      checked: valueOf(checked),
+      checked: unwrap(checked),
       disabled,
       onchange: () => {
         const newState = this.switchRef.current!.node.checked;

@@ -1,5 +1,5 @@
 import { TextField } from "mdui";
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export type MdTextFieldVariant = TextField["variant"];
 
@@ -16,7 +16,7 @@ export class MdTextField extends TriggerComponent {
   } {
     _.$ref(this.inputRef);
     _._mdui_text_field({
-      value: valueOf(value),
+      value: unwrap(value),
       label,
       disabled,
       variant: this.variant,
@@ -65,7 +65,7 @@ export class MdTextarea extends TriggerComponent {
 
     _.$ref(this.inputRef);
     _._mdui_text_field({
-      value: valueOf(value),
+      value: unwrap(value),
       label,
       disabled,
       variant: this.variant,

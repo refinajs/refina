@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class BasicCheckbox extends TriggerComponent {
   inputRef = elementRef<"input">();
@@ -8,7 +8,7 @@ export class BasicCheckbox extends TriggerComponent {
     _.$ref(this.inputRef);
     _._input({
       type: "checkbox",
-      checked: valueOf(checked),
+      checked: unwrap(checked),
       onchange: () => {
         const newChecked = this.inputRef.current!.node.checked;
         this.$updateModel(checked, newChecked);

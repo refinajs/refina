@@ -1,4 +1,4 @@
-import { IsModelSymbol, JustModel } from "./model";
+import { toModelValue, JustModel } from "./model";
 
 /**
  * Create a model that references a property of an object.
@@ -19,7 +19,9 @@ export function propModel<T, K extends keyof T>(obj: T, key: K) {
       this.obj[this.key] = v;
     },
 
-    [IsModelSymbol]: true as const,
+    [toModelValue]() {
+      return this.value;
+    },
     [Symbol.toPrimitive]() {
       return this.value;
     },

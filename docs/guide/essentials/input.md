@@ -57,27 +57,27 @@ The definition of `Model` is:
 type Model<T> = T | JustModel<T>;
 ```
 
-### The `valueOf` Function
+### The `unwrap` Function
 
 This function can extract the value from a model.
 
 ```ts
 const intrinsicValue = 1;
-assert(valueOf(intrinsicValue) === 1);
+assert(unwrap(intrinsicValue) === 1);
 
 const wrappedValue = model(1);
-assert(valueOf(wrappedValue) === 1);
+assert(unwrap(wrappedValue) === 1);
 ```
 
 :::info
 
-If the wrapped value is defined via `model` function, it is of type `JustModel<T>`, so you don't need to use `valueOf` function to extract the value. You can access `yourModel.value` directly.
+If the wrapped value is defined via `model` function, it is of type `JustModel<T>`, so you don't need to use `unwrap` function to extract the value. You can access `yourModel.value` directly.
 
 :::
 
 ### The `_.$updateModel` Function
 
-Corresponding to `valueOf` function, this function can update the value of a model.
+Corresponding to `unwrap` function, this function can update the value of a model.
 
 ## Another Way to Get Input Value
 

@@ -11,5 +11,3 @@ export const arrowHeight = 6;
  * will likely never change.
  */
 export const tooltipBorderRadius = 4;
-
-export const visibleTooltipSymbol = Symbol("visibleTooltip");

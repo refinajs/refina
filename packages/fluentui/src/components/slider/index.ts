@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 import useStyles, { sliderCSSVars } from "./styles";
 
 function getPercent(value: number, min: number, max: number) {
@@ -33,7 +33,7 @@ export class FSlider extends TriggerComponent {
   ): this is {
     $ev: number;
   } {
-    const modelValue = valueOf(value);
+    const modelValue = unwrap(value);
 
     const styles = useStyles(disabled);
 

@@ -1,5 +1,5 @@
 import { FiCircleFilled } from "@refina/fluentui-icons/circle";
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 import { FLabel } from "../label";
 import useStyles from "./styles";
 
@@ -12,7 +12,7 @@ export class FSwitch extends TriggerComponent {
   ): this is {
     $ev: boolean;
   } {
-    const stateValue = valueOf(state);
+    const stateValue = unwrap(state);
 
     const styles = useStyles();
 

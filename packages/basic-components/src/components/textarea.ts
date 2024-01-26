@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class BasicTextarea extends TriggerComponent {
   inputRef = elementRef<"textarea">();
@@ -13,7 +13,7 @@ export class BasicTextarea extends TriggerComponent {
     _._textarea({
       disabled,
       placeholder,
-      value: valueOf(value),
+      value: unwrap(value),
       oninput: () => {
         const newValue = this.inputRef.current!.node.value;
         this.$updateModel(value, newValue);

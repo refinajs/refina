@@ -5,7 +5,7 @@ import FluentUI, {
   createLightTheme,
 } from "@refina/fluentui";
 import { FiPersonFilled } from "@refina/fluentui-icons/person";
-import { $app, byIndex, model, valueOf } from "refina";
+import { $app, byIndex, model, unwrap } from "refina";
 
 const myNewTheme: BrandVariants = {
   10: "#020305",
@@ -67,7 +67,7 @@ $app([FluentUI(darkTheme, lightTheme)], _ => {
     _.fCheckbox(`Checkbox ${index}`, source),
   );
   _._br();
-  const sourcesSet = new Set(checkboxSources.map(valueOf));
+  const sourcesSet = new Set(checkboxSources.map(unwrap));
   const mixedState = sourcesSet.has(true)
     ? sourcesSet.has(false)
       ? "mixed"

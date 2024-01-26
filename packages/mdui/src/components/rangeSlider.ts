@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class MdRangeSlider extends TriggerComponent {
   sliderRef = elementRef<"mdui-range-slider">();
@@ -29,8 +29,8 @@ export class MdRangeSlider extends TriggerComponent {
     // TODO: remove this hack
     setTimeout(() => {
       this.sliderRef.current!.node.value = [
-        valueOf(lowValue),
-        valueOf(highValue),
+        unwrap(lowValue),
+        unwrap(highValue),
       ];
     });
     return this.$fired;

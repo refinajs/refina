@@ -1,6 +1,6 @@
 import { FiCheckmark12Filled } from "@refina/fluentui-icons/checkmark";
 import { FiSquare12Filled } from "@refina/fluentui-icons/square";
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 import { FLabel } from "../label";
 import useStyles from "./styles";
 import { FCheckboxState } from "./types";
@@ -26,7 +26,7 @@ export class FCheckbox extends TriggerComponent {
   ): this is {
     $ev: boolean;
   } {
-    const checkedValue = valueOf(checked);
+    const checkedValue = unwrap(checked);
 
     const styles = useStyles(disabled, checkedValue);
 

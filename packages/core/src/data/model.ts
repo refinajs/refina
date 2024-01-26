@@ -1,7 +1,9 @@
 /**
  * A unique symbol to identify a model.
+ *
+ * Converts a model to unwrapped value.
  */
-export const IsModelSymbol = Symbol("isModel");
+export const toModelValue = Symbol("toModelValue");
 
 /**
  * Since there is no reference or pointer of primitive type in JavaScript,
@@ -14,9 +16,9 @@ export interface JustModel<T> {
   value: T;
 
   /**
-   * This is a model.
+   * Convert to unwrapped value.
    */
-  [IsModelSymbol]: true;
+  [toModelValue](): T;
 
   /**
    * Convert to primitive value.
@@ -40,7 +42,9 @@ export type Model<T> = T | JustModel<T>;
 export function model<T>(v: T): JustModel<T> {
   return {
     value: v,
-    [IsModelSymbol]: true,
+    [toModelValue]() {
+      return this.value;
+    },
     [Symbol.toPrimitive]() {
       return this.value;
     },
@@ -54,11 +58,7 @@ export function model<T>(v: T): JustModel<T> {
  * @returns Whether the value is a model.
  */
 export function isModel<T>(m: Model<T>): m is JustModel<T> {
-  return (
-    typeof m === "object" &&
-    m !== null &&
-    (m[IsModelSymbol as keyof Model<T>] as boolean)
-  );
+  return m?.[toModelValue as keyof Model<T>] as boolean;
 }
 
 /**
@@ -76,4 +76,14 @@ export function dangerously_updateModel<T>(m: Model<T>, v: T): boolean {
     return true;
   }
   return false;
+}
+
+/**
+ * Get the unwrapped value.
+ *
+ * @param v Maybe a model.
+ * @returns The unwrapped value.
+ */
+export function unwrap<T>(v: Model<T>): T {
+  return (v as Partial<JustModel<T>>)[toModelValue]?.() ?? (v as T);
 }

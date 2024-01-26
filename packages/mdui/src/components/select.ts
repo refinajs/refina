@@ -6,7 +6,7 @@ import {
   _,
   bySelf,
   elementRef,
-  valueOf,
+  unwrap,
 } from "refina";
 
 export type MdSelectVariant = Select["variant"];
@@ -28,7 +28,7 @@ export class MdSelect<Value extends string> extends TriggerComponent {
     _.$ref(this.selectRef);
     _._mdui_select(
       {
-        value: valueOf(value),
+        value: unwrap(value),
         disabled: groupDisabled,
         variant: this.varient,
         onchange: () => {

@@ -4,7 +4,7 @@ import {
   TriggerComponent,
   _,
   ref,
-  valueOf,
+  unwrap,
 } from "refina";
 import useStyles from "./styles";
 import { FInputAppearance } from "./types";
@@ -37,7 +37,7 @@ export class FInput<T = string> extends TriggerComponent {
         _.$ref(this.inputRef) &&
           _._input({
             type: this.type,
-            value: this.stringifier(valueOf(value)),
+            value: this.stringifier(unwrap(value)),
             disabled: disabled,
             placeholder: placeholder,
             oninput: () => {

@@ -4,7 +4,7 @@ import {
   TriggerComponent,
   _,
   elementRef,
-  valueOf,
+  unwrap,
 } from "refina";
 
 export type MdCheckboxState = boolean | undefined;
@@ -18,7 +18,7 @@ export class MdCheckbox extends TriggerComponent {
   ): this is {
     $ev: MdCheckboxState;
   } {
-    const stateValue = valueOf(state);
+    const stateValue = unwrap(state);
     const checked = stateValue;
     const indeterminate = stateValue === undefined;
 

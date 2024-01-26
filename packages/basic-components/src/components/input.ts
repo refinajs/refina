@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class BasicInput extends TriggerComponent {
   inputRef = elementRef<"input">();
@@ -15,7 +15,7 @@ export class BasicInput extends TriggerComponent {
       type: this.type,
       disabled,
       placeholder,
-      value: valueOf(value),
+      value: unwrap(value),
       oninput: () => {
         const newValue = this.inputRef.current!.node.value;
         this.$updateModel(value, newValue);

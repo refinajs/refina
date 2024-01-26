@@ -5,7 +5,7 @@ import {
   TriggerComponent,
   _,
   elementRef,
-  valueOf,
+  unwrap,
 } from "refina";
 
 export class MdChip extends Component {
@@ -37,7 +37,7 @@ export class MdSelectableChip extends TriggerComponent {
     _._mdui_chip(
       {
         selectable: true,
-        selected: valueOf(selected),
+        selected: unwrap(selected),
         disabled,
         onchange: () => {
           const newSelected = this.chipRef.current!.node.selected;

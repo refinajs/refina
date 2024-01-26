@@ -9,7 +9,7 @@ import {
   bySelf,
   elementRef,
   ref,
-  valueOf,
+  unwrap,
 } from "refina";
 import { usePositioning } from "../../positioning";
 import { FPortal } from "../portal";
@@ -154,7 +154,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent {
   ): this is {
     $ev: OptionValue;
   } {
-    const selectedValue = valueOf(selected);
+    const selectedValue = unwrap(selected);
 
     const rootDisabled = typeof disabled === "boolean" ? disabled : false;
     const disabledOptions =

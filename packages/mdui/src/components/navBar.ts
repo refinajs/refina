@@ -1,4 +1,4 @@
-import { Component, Content, _, elementRef, valueOf } from "refina";
+import { Component, Content, _, elementRef, unwrap } from "refina";
 
 export class MdNavBar<Value extends string> extends Component {
   navBarRef = elementRef<"mdui-navigation-bar">();
@@ -7,7 +7,7 @@ export class MdNavBar<Value extends string> extends Component {
     options: (Value | [value: Value, iconName?: string])[],
     contentOverride: Partial<Record<Value, Content>> = {},
   ): Value {
-    const firstOption = valueOf(options)[0];
+    const firstOption = unwrap(options)[0];
     this.status ??= Array.isArray(firstOption) ? firstOption[0] : firstOption;
 
     _.$ref(this.navBarRef);

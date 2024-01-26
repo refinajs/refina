@@ -1,4 +1,4 @@
-import { Model, TriggerComponent, _, elementRef, valueOf } from "refina";
+import { Model, TriggerComponent, _, elementRef, unwrap } from "refina";
 
 export class MdSlider extends TriggerComponent {
   sliderRef = elementRef<"mdui-slider">();
@@ -13,7 +13,7 @@ export class MdSlider extends TriggerComponent {
   } {
     _.$ref(this.sliderRef);
     _._mdui_slider({
-      value: valueOf(value),
+      value: unwrap(value),
       disabled,
       min,
       max,

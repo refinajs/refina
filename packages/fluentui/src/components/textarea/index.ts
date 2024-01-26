@@ -4,7 +4,7 @@ import {
   TriggerComponent,
   _,
   ref,
-  valueOf,
+  unwrap,
 } from "refina";
 import useStyles from "./styles";
 import { FTextareaAppearance, FTextareaResize } from "./types";
@@ -33,7 +33,7 @@ export class FTextarea extends TriggerComponent {
       styles.textarea();
       _.$ref(this.inputRef);
       _._textarea({
-        value: valueOf(value),
+        value: unwrap(value),
         disabled: disabled,
         placeholder,
         oninput: () => {
