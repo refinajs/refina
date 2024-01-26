@@ -1,13 +1,13 @@
 import { Component, Content, PrimaryElRef, _, ref } from "refina";
 import { resolvePositioningShorthand, usePositioning } from "../../positioning";
 import { FPortal } from "../portal";
-import { tooltipBorderRadius, visibleTooltipSymbol } from "./constants";
+import { tooltipBorderRadius } from "./constants";
 import useStyles from "./styles";
 
-interface VisibleTooltip {
+let visibleTooltip: {
   component: Component;
   hide: (by: Component) => void;
-}
+} | null = null;
 
 export class FTooltip extends Component {
   visible = false;
@@ -19,14 +19,11 @@ export class FTooltip extends Component {
 
   $main(inner: Content, content: Content): void {
     const onTriggerEnter = () => {
-      const visibleTooltip = _.$permanentData[visibleTooltipSymbol] as
-        | VisibleTooltip
-        | undefined;
       const anotherTooltip =
         visibleTooltip && visibleTooltip.component !== this;
       const delay = anotherTooltip ? 0 : 250;
       if (anotherTooltip) {
-        visibleTooltip.hide(this);
+        visibleTooltip!.hide(this);
       }
       this.clearThisTimeout();
       this.timeout = setTimeout(() => {
@@ -83,17 +80,15 @@ export class FTooltip extends Component {
     }
 
     if (this.visible) {
-      (
-        _.$permanentData[visibleTooltipSymbol] as VisibleTooltip | undefined
-      )?.hide(this);
-      _.$permanentData[visibleTooltipSymbol] = {
+      visibleTooltip?.hide(this);
+      visibleTooltip = {
         component: this,
         hide: (by: Component) => {
           if (by === this) return;
           this.clearThisTimeout();
           this.visible = false;
         },
-      } satisfies VisibleTooltip;
+      };
 
       if (_.$updateContext) {
         _.$window.addEventListener(

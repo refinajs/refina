@@ -94,12 +94,6 @@ Add styles to the next component or element.
 
 See [Add Classes and Styles](../essentials/rendering-basics#add-classes-and-styles).
 
-## `_.$permanentData`
-
-The shortcut of `_.$app.permanentData`.
-
-**Lifetime**: from the construction of the app to the window is closed.
-
 ## `_.$runtimeData` {#runtime-data}
 
 The shortcut of `_.$state.runtimeData`.

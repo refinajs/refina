@@ -92,13 +92,6 @@ export interface IntrinsicBaseContext {
   $recvContext: RecvContext | null;
 
   /**
-   * The shortcut of `app.permanentData`.
-   *
-   * Lifetime: from the construction of the app to the window is closed.
-   */
-  $permanentData: App["permanentData"];
-
-  /**
    * The current ref tree node.
    *
    * Used to get the instance by whether the context function is called.
@@ -363,7 +356,6 @@ export function initializeBaseContext(app: App) {
   context.$window = app.window;
   context.$appState = app.state;
   context.$lowlevel = context;
-  context.$permanentData = app.permanentData;
   context.$runtimeData = {};
 
   context.$$currentRefNode = app.root.$refTreeNode;
@@ -419,7 +411,6 @@ export function invalidateContext() {
   context.$app = null as any;
   context.$appState = null as any;
   context.$lowlevel = null as any;
-  context.$permanentData = null as any;
   context.$$currentRefNode = null as any;
   context.$runtimeData = null as any;
   context.$$processedComponents = null as any;
