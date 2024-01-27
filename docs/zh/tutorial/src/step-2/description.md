@@ -28,7 +28,7 @@ declare module "refina" {
 }
 ```
 
-组件的一些参数代表“内容”（子元素）。 你可以向它传递一个字符串、数字或者函数（我们叫这个函数为“片段”）：
+组件的一些参数代表“内容”（子元素）。 You can pass a string, a number or a function (we call it "view function") to it:
 
 ```ts
 $app([Basics], _ => {
