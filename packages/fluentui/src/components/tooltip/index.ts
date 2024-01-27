@@ -17,7 +17,7 @@ export class FTooltip extends Component {
     if (!Number.isNaN(this.timeout)) clearTimeout(this.timeout);
   };
 
-  $main(inner: Content, content: Content): void {
+  $main(children: Content, content: Content): void {
     const onTriggerEnter = () => {
       const anotherTooltip =
         visibleTooltip && visibleTooltip.component !== this;
@@ -47,7 +47,7 @@ export class FTooltip extends Component {
       triggerElement.onblur = null;
     }
 
-    _.$ref(this.embedRef) && _.embed(inner);
+    _.$ref(this.embedRef) && _.embed(children);
 
     triggerElement = this.embedRef.current?.$primaryEl?.node;
     if (triggerElement) {
@@ -75,7 +75,7 @@ export class FTooltip extends Component {
       });
     } else {
       throw new Error(
-        "Cannot find trigger element, did you forget to use the new context in the inner part?",
+        "Cannot find trigger element, did you forget to use the new context in the children part?",
       );
     }
 

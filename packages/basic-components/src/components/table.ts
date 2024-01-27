@@ -31,13 +31,13 @@ export class BasicTable extends Component {
 }
 
 export class BasicTh extends Component {
-  $main(inner: Content): void {
-    _._th({}, inner);
+  $main(children: Content): void {
+    _._th({}, children);
   }
 }
 
 export class BasicTd extends Component {
-  $main(inner: Content): void {
-    _._td({}, inner);
+  $main(children: Content): void {
+    _._td({}, children);
   }
 }

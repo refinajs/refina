@@ -2,7 +2,7 @@ import { Content, TriggerComponent, _ } from "refina";
 
 export class BasicButton extends TriggerComponent {
   $main(
-    inner: Content,
+    children: Content,
     disabled?: boolean,
   ): this is {
     $ev: MouseEvent;
@@ -13,7 +13,7 @@ export class BasicButton extends TriggerComponent {
         disabled,
         type: "button",
       },
-      inner,
+      children,
     );
     return this.$fired;
   }

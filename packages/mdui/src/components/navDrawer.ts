@@ -8,7 +8,7 @@ import {
 
 export class MdControlledNavDrawer extends Component {
   contained?: boolean;
-  $main(open: boolean, inner: Content, modal = false): void {
+  $main(open: boolean, children: Content, modal = false): void {
     _._mdui_navigation_drawer(
       {
         open,
@@ -17,7 +17,7 @@ export class MdControlledNavDrawer extends Component {
         closeOnEsc: modal,
         closeOnOverlayClick: modal,
       },
-      inner,
+      children,
     );
   }
 }
@@ -27,7 +27,7 @@ export class MdNavDrawer extends TriggerComponent {
   opened = false;
   $main(
     trigger: Content<[open: (open?: boolean) => void]>,
-    inner: Content<[close: (open?: boolean) => void]>,
+    children: Content<[close: (open?: boolean) => void]>,
     modal = false,
   ): this is {
     $ev: boolean;
@@ -41,7 +41,7 @@ export class MdNavDrawer extends TriggerComponent {
     _.$props({ contained: this.contained });
     _(MdControlledNavDrawer)(
       this.opened,
-      bindArgsToContent(inner, (open = false) => {
+      bindArgsToContent(children, (open = false) => {
         this.opened = open;
         this.$fire(open);
       }),

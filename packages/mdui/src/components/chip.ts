@@ -11,14 +11,14 @@ import {
 export class MdChip extends Component {
   icon?: string;
   endIcon?: string;
-  $main(inner: Content, disabled = false): void {
+  $main(children: Content, disabled = false): void {
     _._mdui_chip(
       {
         disabled,
         icon: this.icon,
         endIcon: this.endIcon,
       },
-      inner,
+      children,
     );
   }
 }
@@ -28,7 +28,7 @@ export class MdSelectableChip extends TriggerComponent {
   chipRef = elementRef<"mdui-chip">();
   $main(
     selected: Model<boolean>,
-    inner: Content,
+    children: Content,
     disabled = false,
   ): this is {
     $ev: boolean;
@@ -46,7 +46,7 @@ export class MdSelectableChip extends TriggerComponent {
         },
         selectedIcon: this.selectedIcon,
       },
-      inner,
+      children,
     );
     return this.$fired;
   }
@@ -55,7 +55,7 @@ export class MdSelectableChip extends TriggerComponent {
 export class MdDeletableChip extends TriggerComponent<void> {
   deleteIcon?: string;
   $main(
-    inner: Content,
+    children: Content,
     disabled = false,
   ): this is {
     $ev: void;
@@ -66,7 +66,7 @@ export class MdDeletableChip extends TriggerComponent<void> {
         disabled,
         deleteIcon: this.deleteIcon,
       },
-      inner,
+      children,
       {
         delete: this.$fireWith(),
       },

@@ -3,7 +3,7 @@ import useSurfaceStyles from "./styles";
 import { FPortal } from "../../portal";
 
 export class FDialogSurface extends TriggerComponent<void> {
-  $main(inner: Content): this is {
+  $main(children: Content): this is {
     $ev: void;
   } {
     const surfaceStyles = useSurfaceStyles(false);
@@ -36,7 +36,7 @@ export class FDialogSurface extends TriggerComponent<void> {
             }
           },
         },
-        inner,
+        children,
       );
     });
     return this.$fired;

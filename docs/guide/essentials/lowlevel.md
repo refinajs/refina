@@ -76,7 +76,7 @@ const app = $app([], _ => {
 
 - Parameters: (all optional)
   - `data`: an object which will be assigned to the element.
-  - `inner`: the content of the element.
+  - `children`: the children of the element.
   - `eventListeners`: the event listeners of the element.
 - Return value: `void`
 
@@ -120,7 +120,7 @@ for (const key in data) {
 }
 ```
 
-## The `inner` Parameter
+## The `children` Parameter
 
 **Type**: `Content`
 

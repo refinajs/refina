@@ -105,7 +105,7 @@ export interface IntrinsicBaseContext {
    *
    *
    * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
-   *  which is not scoped to the inner content,
+   *  which is not scoped to children,
    *  use `_.provide` to provide values to `_.$runtimeData` instead.
    */
   $runtimeData: Record<symbol, unknown>;

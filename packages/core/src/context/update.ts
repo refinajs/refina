@@ -115,7 +115,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    * @param cls The classes of the element.
    * @param css The styles of the element.
    * @param attrs The attrs of the element.
-   * @param inner The inner content of the element.
+   * @param children Children of the element.
    * @param eventListeners The event listeners of the element.
    */
   $$processHTMLElement<E extends keyof HTMLElementTagNameMap>(
@@ -124,7 +124,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
     cls: string,
     css: string,
     attrs?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: Content,
+    children?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
 
@@ -136,7 +136,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    * @param cls The classes of the element.
    * @param css The styles of the element.
    * @param attrs The attrs of the element.
-   * @param inner The inner content of the element.
+   * @param children Children of the element.
    * @param eventListeners The event listeners of the element.
    */
   $$processSVGElement<E extends keyof SVGElementTagNameMap>(
@@ -145,7 +145,7 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
     cls: string,
     css: string,
     attrs?: SVGElementFuncAttrs,
-    inner?: Content,
+    children?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ): void;
 }
@@ -278,7 +278,7 @@ export function initializeUpdateContext(app: App) {
   context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
-      const [attrsArg, inner, eventListeners] = args;
+      const [attrsArg, children, eventListeners] = args;
 
       const attrs = { ...(attrsArg as object), ...context.$$consumeAttrs() };
 
@@ -295,7 +295,7 @@ export function initializeUpdateContext(app: App) {
           context.$$consumeCls(),
           context.$$consumeCss(),
           attrs as SVGElementFuncAttrs | undefined,
-          inner as Content | undefined,
+          children as Content | undefined,
           eventListeners as
             | DOMElementEventListenersInfoRaw<keyof SVGElementTagNameMap>
             | undefined,
@@ -313,7 +313,7 @@ export function initializeUpdateContext(app: App) {
           attrs as
             | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
             | undefined,
-          inner as Content | undefined,
+          children as Content | undefined,
           eventListeners as
             | DOMElementEventListenersInfoRaw<keyof HTMLElementTagNameMap>
             | undefined,
@@ -419,7 +419,7 @@ export function initializeUpdateContext(app: App) {
       component.$primaryEl.addCls(cls);
       component.$primaryEl.addCss(css);
     } else {
-      // Not append arrays to ignore pending primary element owners in the inner scope.
+      // Not append arrays to ignore pending primary element owners in the children scope.
       // Pass the pending primary element owners for context component to the next component.
       context.$$pendingPrimaryElOwner = pendingPrimaryElOwners;
     }
@@ -465,7 +465,7 @@ export function initializeUpdateContext(app: App) {
     cls,
     css,
     attrs = {},
-    inner,
+    children,
     eventListeners = {},
   ) => {
     let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
@@ -480,7 +480,7 @@ export function initializeUpdateContext(app: App) {
     context.$$fulfillRef(el);
     context.$$fulfillPrimaryEl(el);
 
-    context.$$updateDOMContent(el, inner);
+    context.$$updateDOMContent(el, children);
 
     el.addAttrs(attrs);
     el.addCls(cls);
@@ -494,7 +494,7 @@ export function initializeUpdateContext(app: App) {
     cls,
     css,
     attrs = {},
-    inner,
+    children,
     eventListeners = {},
   ) => {
     let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
@@ -509,7 +509,7 @@ export function initializeUpdateContext(app: App) {
     context.$$fulfillRef(el);
     context.$$fulfillPrimaryEl(el);
 
-    context.$$updateDOMContent(el, inner);
+    context.$$updateDOMContent(el, children);
 
     el.addAttrs(attrs);
     el.addCls(cls);

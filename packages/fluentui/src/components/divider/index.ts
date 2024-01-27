@@ -4,13 +4,13 @@ import { DividerContentAlignment } from "./types";
 
 export class FDivider extends Component {
   $main(
-    inner: Content | undefined,
+    children: Content | undefined,
     alignContent: DividerContentAlignment = "center",
   ): void {
-    const styles = useStyles(alignContent, false, inner == undefined);
+    const styles = useStyles(alignContent, false, children == undefined);
 
     styles.root();
-    _._div({}, _ => styles.wrapper() && _._div({}, inner));
+    _._div({}, _ => styles.wrapper() && _._div({}, children));
   }
 }
 

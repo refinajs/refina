@@ -21,7 +21,7 @@ export class FControlledPopover extends TriggerComponent<void> {
   $main(
     targetRef: PrimaryElRef,
     open: Model<boolean>,
-    inner: Content<[close: () => void]>,
+    children: Content<[close: () => void]>,
     // withArrow？: boolean,
   ): this is {
     $ev: void;
@@ -86,7 +86,9 @@ export class FControlledPopover extends TriggerComponent<void> {
             //   surfaceStyles.arrow("medium")(_);
             //   _.$ref(arrowRef) && _._div();
             // }
-            _.embed(() => (typeof inner === "function" ? inner(close) : inner));
+            _.embed(() =>
+              typeof children === "function" ? children(close) : children,
+            );
           },
         );
       });
@@ -100,7 +102,7 @@ export class FPopover extends TriggerComponent {
   targetRef = ref<HTMLElementComponent>();
   $main(
     trigger: View<[targetRef: PrimaryElRef, trigger: (open?: boolean) => void]>,
-    inner: Content<[close: () => void]>, // withArrow: boolean = false,
+    children: Content<[close: () => void]>, // withArrow: boolean = false,
   ): this is {
     $ev: boolean;
   } {
@@ -110,7 +112,11 @@ export class FPopover extends TriggerComponent {
       }),
     );
     if (
-      _(FControlledPopover)(this.targetRef, this.opened, inner /*, withArrow*/)
+      _(FControlledPopover)(
+        this.targetRef,
+        this.opened,
+        children /*, withArrow*/,
+      )
     ) {
       this.$fire(this.opened.value);
     }

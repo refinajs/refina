@@ -108,7 +108,7 @@ The content loaded by `_.asyncEmbed` is cached, so it will not be loaded twice.
 
 ## `_.provide`
 
-Provide a value or an object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of the inner content.
+Provide a value or an object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of children.
 
 **Example**
 

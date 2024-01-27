@@ -14,7 +14,7 @@ const validationMessageIcons = {
 
 export class FField extends Component {
   $main(
-    inner: Content,
+    children: Content,
     label: Content,
     required?: boolean | Content,
     state: FFieldValidationState = "none",
@@ -27,7 +27,7 @@ export class FField extends Component {
       styles.label();
       _(FLabel)(label, required);
 
-      _.embed(inner);
+      _.embed(children);
 
       if (validationMessage) {
         styles.validationMessage();

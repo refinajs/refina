@@ -32,13 +32,13 @@ export class MdTable extends Component {
 }
 
 export class MdTableHeader extends Component {
-  $main(inner: Content): void {
-    _._th({}, inner);
+  $main(children: Content): void {
+    _._th({}, children);
   }
 }
 
 export class MdTableCell extends Component {
-  $main(inner: Content): void {
-    _._td({}, inner);
+  $main(children: Content): void {
+    _._td({}, children);
   }
 }

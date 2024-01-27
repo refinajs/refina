@@ -475,12 +475,12 @@ export type HTMLElementFuncs = {
    * );
    * ```
    * @param data An object that contains the attributes of the element.
-   * @param inner The inner content of the element. It can be a string, a number, or a view function.
+   * @param children Children of the element. It can be a string, a number, or a view function.
    * @param eventListeners The event listeners of the element.
    */
   [E in keyof HTMLElementTagNameMap as `_${ReplaceHyphenWithLowLine<E>}`]: (
     data?: Partial<HTMLElementTagNameMap[E]>,
-    inner?: Content,
+    children?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ) => void;
 };
@@ -527,12 +527,12 @@ export type SVGElementFuncs = {
    * );
    * ```
    * @param data An object that contains the attributes of the element.
-   * @param inner The inner content of the element. It can be a string, a number, or a view function.
+   * @param children Children of the element. It can be a string, a number, or a view function.
    * @param eventListeners The event listeners of the element.
    */
   [E in keyof SVGElementTagNameMap as `_svg${Capitalize<E>}`]: (
     data?: SVGElementFuncData,
-    inner?: Content,
+    children?: Content,
     eventListeners?: DOMElementEventListenersInfoRaw<E>,
   ) => void;
 };

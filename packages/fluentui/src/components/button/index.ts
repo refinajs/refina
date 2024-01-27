@@ -6,7 +6,7 @@ export class FButton extends TriggerComponent {
   shape: FButtonShape = "rounded";
   appearance: FButtonApperance = "secondary";
   $main(
-    inner: Content,
+    children: Content,
     disabled = false,
   ): this is {
     $ev: MouseEvent;
@@ -26,7 +26,7 @@ export class FButton extends TriggerComponent {
         disabled,
         onclick: this.$fire,
       },
-      inner,
+      children,
     );
     return this.$fired;
   }

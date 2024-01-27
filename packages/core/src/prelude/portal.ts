@@ -8,7 +8,7 @@ export const portal = $contextFunc(ckey =>
    * This is usefull when you want to render a dialog or a tooltip
    *  that should not be affected by the parent element's styles.
    */
-  (inner: Content): void => {
+  (children: Content): void => {
     let portal = _.$lowlevel.$$currentRefNode[ckey] as
       | DOMPortalComponent
       | undefined;
@@ -23,11 +23,11 @@ export const portal = $contextFunc(ckey =>
 
       updateContext.$app.root.pendingPortals.push(portal);
 
-      updateContext.$$updateDOMContent(portal, inner);
+      updateContext.$$updateDOMContent(portal, children);
     } else {
       const recvContext = _.$recvContext!.$lowlevel;
 
-      recvContext.$$processDOMElement(ckey, inner);
+      recvContext.$$processDOMElement(ckey, children);
     }
   },
 );

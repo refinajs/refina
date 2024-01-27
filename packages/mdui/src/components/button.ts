@@ -4,7 +4,7 @@ import { Content, TriggerComponent, _ } from "refina";
 export class MdButton extends TriggerComponent<void> {
   variant: Button["variant"] = "filled";
   $main(
-    inner: Content,
+    children: Content,
     disabled: boolean = false,
   ): this is {
     $ev: void;
@@ -15,7 +15,7 @@ export class MdButton extends TriggerComponent<void> {
         onclick: this.$fireWith(),
         variant: this.variant,
       },
-      inner,
+      children,
     );
     return this.$fired;
   }

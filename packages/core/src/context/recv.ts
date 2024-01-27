@@ -66,9 +66,9 @@ export function initializeRecvContext(app: App) {
       }
 
       // The context function is for a HTML or SVG element.
-      const [_data, inner, _eventListeners] = args;
+      const [_data, children, _eventListeners] = args;
 
-      context.$$processDOMElement(ckey, inner as Content | undefined);
+      context.$$processDOMElement(ckey, children as Content | undefined);
 
       // HTML and SVG element functions do not have a return value.
       return;

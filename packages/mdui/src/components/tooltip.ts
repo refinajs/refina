@@ -3,7 +3,7 @@ import { Content, TriggerComponent, _ } from "refina";
 export class MdTooltip extends TriggerComponent {
   $main(
     text: string,
-    inner: Content,
+    children: Content,
   ): this is {
     $ev: boolean;
   } {
@@ -11,7 +11,7 @@ export class MdTooltip extends TriggerComponent {
       {
         content: text,
       },
-      inner,
+      children,
       {
         open: this.$fireWith(true),
         close: this.$fireWith(false),

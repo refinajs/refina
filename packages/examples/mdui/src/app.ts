@@ -4,11 +4,11 @@ import { $app, Component, Content, _, bySelf, model } from "refina";
 import "./styles.css";
 
 class Group extends Component {
-  $main(name: string, inner: Content) {
+  $main(name: string, children: Content) {
     _._div({}, _ => {
       _.$css`margin-bottom:8px`;
       _._h3({}, name);
-      _.embed(inner);
+      _.embed(children);
     });
   }
 }

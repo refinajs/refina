@@ -17,7 +17,7 @@ if (_.xButton("Click me", disabled)) {
 }
 ```
 
-## Param: `inner`
+## Param: `children`
 
 **type**: `Content`
 

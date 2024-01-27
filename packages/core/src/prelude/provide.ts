@@ -4,10 +4,10 @@ import { Content } from "../dom";
 type ProvideFuncType = {
   /**
    * Provide a value to `_.$runtimeData`
-   *  for the duration of the inner content.
+   *  for the duration of children.
    *
    * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
-   *  which is not scoped to the inner content.
+   *  which is not scoped to children.
    *
    * @param key The key of the value to provide.
    * @param value The value to provide.
@@ -23,10 +23,10 @@ type ProvideFuncType = {
   ): void;
   /**
    * Provide a object of values to `_.$runtimeData`
-   *  for the duration of the inner content.
+   *  for the duration of children.
    *
    * **Note**: It is usually a bad idea to write to `_.$runtimeData` directly,
-   *  which is not scoped to the inner content.
+   *  which is not scoped to children.
    *
    * @param obj The object of values to provide.
    * @param content The content to render. In this content, the values in obj is available in `_.$runtimeData`.

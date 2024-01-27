@@ -1,8 +1,8 @@
 import { Component, Content, _ } from "refina";
 
 export class MdBadge extends Component {
-  $main(inner?: Content | undefined): void {
-    if (inner === undefined) {
+  $main(children?: Content | undefined): void {
+    if (children === undefined) {
       _._mdui_badge({
         variant: "small",
       });
@@ -11,7 +11,7 @@ export class MdBadge extends Component {
         {
           variant: "large",
         },
-        inner,
+        children,
       );
     }
   }
