@@ -11,7 +11,6 @@ export default defineConfig({
       Refina({
         include: [/\.vue(\?|$)/, /\.[tj]s(\?|$)/],
         exclude: [/\.data\.ts/, /node_modules/],
-        excludeHmr: [/\.vue(\?|$)/],
       }) as any,
     ],
     resolve: {

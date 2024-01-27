@@ -1,14 +1,21 @@
 import { RefinaHmr, mainUrlSuffix } from "@refina/hmr";
-import { Plugin } from "vite";
-import { Matcher, ResolvedCommonOptions, uniformMatcher } from "./types";
+import { FilterPattern, Plugin, createFilter } from "vite";
+import { ResolvedCommonOptions } from "./types";
 
 export interface HmrOptions {
   /**
+   * Include files from HMR.
+   *
+   * @default /\.[tj]s(\?|$)/
+   */
+  includeHmr?: FilterPattern;
+
+  /**
    * Exclude files from HMR.
    *
-   * @default []
+   * @default undefined
    */
-  excludeHmr?: Matcher;
+  excludeHmr?: FilterPattern;
 }
 
 export const fullReload = {
@@ -18,9 +25,12 @@ export const fullReload = {
 export default function Hmr(
   options: HmrOptions & ResolvedCommonOptions,
 ): Plugin {
-  const exclude = uniformMatcher(options.excludeHmr ?? (() => false));
+  const HmrFilter = createFilter(
+    options.includeHmr ?? /\.[tj]s(\?|$)/,
+    options.excludeHmr,
+  );
   const shouldPerformHmr = (id: string, raw: string) =>
-    options.isRefina(id, raw) && !exclude(id);
+    options.isRefina(id, raw) && HmrFilter(id);
 
   const hmr = new RefinaHmr();
 

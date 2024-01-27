@@ -1,8 +1,8 @@
 import { RefinaTransformer } from "@refina/transformer";
-import { Plugin } from "vite";
+import { Plugin, createFilter } from "vite";
 import Hmr, { HmrOptions } from "./hmr";
 import Transformer, { TransformerOptions } from "./transformer";
-import { CommonOptions, ResolvedCommonOptions, uniformMatcher } from "./types";
+import { CommonOptions, ResolvedCommonOptions } from "./types";
 
 interface RefinaOptions extends CommonOptions, TransformerOptions, HmrOptions {
   /**
@@ -14,15 +14,17 @@ interface RefinaOptions extends CommonOptions, TransformerOptions, HmrOptions {
 }
 
 export default function Refina(options: RefinaOptions = {}): Plugin[] {
-  const include = uniformMatcher(options.include ?? /\.[tj]s(\?|$)/);
-  const exclude = uniformMatcher(options.exclude ?? /\?(.*&)?raw/);
-  const ignore = uniformMatcher(
+  const idFilter = createFilter(
+    options.include ?? /\.[tj]s(\?|$)/,
+    options.exclude ?? /\?(.*&)?raw/,
+  );
+  const rawFilter = createFilter(
+    /./,
     options.ignore ?? /^(((^|\n)\s*\/\/[^\n]*)|\n)*\s*\/\/\s*@refina-ignore/,
   );
   const resolvedOptions: RefinaOptions & ResolvedCommonOptions = {
     ...options,
-    isRefina: (id: string, raw: string) =>
-      include(id) && !exclude(id) && !ignore(raw),
+    isRefina: (id: string, raw: string) => idFilter(id) && rawFilter(raw),
   };
 
   const hmrEnabled = options.hmr ?? true;
