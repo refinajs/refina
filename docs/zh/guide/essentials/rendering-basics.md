@@ -35,11 +35,11 @@ $app([Basics], _ => {
 
 许多组件都有一个或多个内容。它们对应渲染的 HTML 的一部分。
 
-你不但可以将字符串或数字作为内容传入，也可以使用片段。
+You can not only pass a string or a number as the content but also pass a view function.
 
 :::tip
 
-当使用片段作为组件的内容时，推荐使用箭头函数。
+When using view functions as the content of a component, it is recommended to use the arrow function syntax.
 
 为了获取最佳的开发体验，你可以使用 [Prettier](https://prettier.io/) 来格式化代码，并将 `arrowParens` 设置为 `"avoid"`。
 
@@ -49,9 +49,9 @@ $app([Basics], _ => {
 
 :::tip
 
-如果片段只有一个语句，那么箭头函数的花括号可以省略。
+The curly braces around the view function can be omitted if the view function has only one statement.
 
-这是因为片段的返回值总是会被忽略。
+This is because the return value of the view function will always be ignored.
 
 你也可以使用 `&&` 来将数个一定返回真值的语句和最后一个语句连接，将多个语句转换为表达式，并省去花括号。
 
