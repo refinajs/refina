@@ -1,10 +1,10 @@
 import { Component, Content, _, elementRef } from "refina";
 
-export class MdNavRail<Value extends string> extends Component {
+export class MdNavRail extends Component {
   contained?: boolean;
-  status: Value;
+  status: string;
   navRailRef = elementRef<"mdui-navigation-rail">();
-  $main(
+  $main<Value extends string>(
     items: readonly [value: Value, iconName?: string][],
     contentOverride: Partial<Record<Value, Content>> = {},
     bottomSlot?: Content,
@@ -43,6 +43,6 @@ export class MdNavRail<Value extends string> extends Component {
         }
       },
     );
-    return this.status;
+    return this.status as Value;
   }
 }

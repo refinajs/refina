@@ -8,9 +8,9 @@ import {
   unwrap,
 } from "refina";
 
-export class MdRadioGroup<Value extends string> extends TriggerComponent {
+export class MdRadioGroup extends TriggerComponent {
   radioGroupRef = elementRef<"mdui-radio-group">();
-  $main(
+  $main<Value extends string>(
     selected: Model<Value>,
     options: readonly Value[],
     disabled: boolean | boolean[] = false,

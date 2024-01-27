@@ -138,7 +138,7 @@ function getIndexFromAction(
   }
 }
 
-export class FDropdown<OptionValue extends string> extends TriggerComponent {
+export class FDropdown extends TriggerComponent {
   appearance: FDropdownAppearance = "outline";
   activeIndex = 0;
   focusVisible = false;
@@ -146,7 +146,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent {
   open = false;
   buttonEl = elementRef<"button">();
 
-  $main(
+  $main<OptionValue extends string>(
     selected: Model<OptionValue | "">,
     options: OptionValue[],
     disabled: boolean | boolean[] = false,
@@ -374,9 +374,7 @@ export class FDropdown<OptionValue extends string> extends TriggerComponent {
   }
 }
 
-export class FUnderlineDropdown<
-  OptionValue extends string,
-> extends FDropdown<OptionValue> {
+export class FUnderlineDropdown extends FDropdown {
   appearance = "underline" as const;
 }
 

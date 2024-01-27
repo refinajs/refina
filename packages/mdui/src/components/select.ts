@@ -11,10 +11,10 @@ import {
 
 export type MdSelectVariant = Select["variant"];
 
-export class MdSelect<Value extends string> extends TriggerComponent {
+export class MdSelect extends TriggerComponent {
   selectRef = elementRef<"mdui-select">();
   varient: MdSelectVariant = "filled";
-  $main(
+  $main<Value extends string>(
     value: Model<Value>,
     options: readonly Value[],
     disabled: boolean | boolean[] = false,
@@ -52,6 +52,6 @@ export class MdSelect<Value extends string> extends TriggerComponent {
   }
 }
 
-export class MdOutlinedSelect<Value extends string> extends MdSelect<Value> {
+export class MdOutlinedSelect extends MdSelect {
   varient = "outlined" as const;
 }

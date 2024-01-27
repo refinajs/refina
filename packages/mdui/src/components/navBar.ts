@@ -1,9 +1,9 @@
 import { Component, Content, _, elementRef, unwrap } from "refina";
 
-export class MdNavBar<Value extends string> extends Component {
+export class MdNavBar extends Component {
   navBarRef = elementRef<"mdui-navigation-bar">();
-  status: Value;
-  $main(
+  status: string;
+  $main<Value extends string>(
     options: (Value | [value: Value, iconName?: string])[],
     contentOverride: Partial<Record<Value, Content>> = {},
   ): Value {
@@ -35,6 +35,6 @@ export class MdNavBar<Value extends string> extends Component {
           },
         ),
     );
-    return this.status;
+    return this.status as Value;
   }
 }
