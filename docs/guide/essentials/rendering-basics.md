@@ -35,11 +35,11 @@ Parameters of the component functions are passed in a positional way, so you nee
 
 Most components have content, which is usually corresponding to the content of the HTML element.
 
-You can not only pass a string or a number as the content but also pass a fragment.
+You can not only pass a string or a number as the content but also pass a view function.
 
 :::tip
 
-When using fragments as the content of a component, it is recommended to use the arrow function syntax.
+When using view functions as the content of a component, it is recommended to use the arrow function syntax.
 
 To get the best experience, you can use [Prettier](https://prettier.io/) to format your code with the `arrowParens` option set to `"avoid"`.
 
@@ -49,9 +49,9 @@ To get the best experience, you can use [Prettier](https://prettier.io/) to form
 
 :::tip
 
-The curly braces around the fragment can be omitted if the fragment has only one statement.
+The curly braces around the view function can be omitted if the view function has only one statement.
 
-This is because the return value of the fragment will always be ignored.
+This is because the return value of the view function will always be ignored.
 
 You can use `&&` to connect directives which always return `true` to the component function.
 

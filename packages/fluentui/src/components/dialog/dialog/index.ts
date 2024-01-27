@@ -1,6 +1,6 @@
 import {
   Content,
-  Fragment,
+  View,
   Model,
   TriggerComponent,
   _,
@@ -52,7 +52,7 @@ export class FControlledDialog extends TriggerComponent<void> {
 export class FDialog extends TriggerComponent {
   opened = model(false);
   $main(
-    trigger: Fragment<[open: (open?: boolean) => void]>,
+    trigger: View<[open: (open?: boolean) => void]>,
     title: Content,
     content: Content<[close: () => void]>,
     actions?: Content<[close: () => void]>,

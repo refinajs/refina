@@ -7,7 +7,7 @@ import { FAvatarActive, FAvatarColor, FAvatarShape } from "./types";
 export class FAvatar extends TriggerComponent<void> {
   imgHidden = false;
   /**
-   * @param content Can be a string of name or image url, or a fragment containing an icon.
+   * @param content Can be a string of name or image url, or a view function containing an icon.
    */
   $main(
     content: Content,

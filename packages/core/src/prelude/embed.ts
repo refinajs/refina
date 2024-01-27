@@ -7,7 +7,7 @@ export class Embed extends Component {
    * Embed a content into the current output component.
    *
    * @param content The content to embed.
-   * @param args The arguments to pass to the content, if the content is a fragment.
+   * @param args The arguments to pass to the content, if the content is a view function.
    */
   $main<Args extends [any, ...any[]]>(
     content: Content<Args>,
@@ -54,7 +54,7 @@ export class AsyncEmbed extends Component {
    * ```
    *
    * @param contentLoader A function that returns a promise of a object whose default export is a content.
-   * @param args The arguments to pass to the content, if the content is a fragment.
+   * @param args The arguments to pass to the content, if the content is a view function.
    */
   $main<Args extends [any, ...any[]]>(
     contentLoader: AsyncContentLoader<Args>,

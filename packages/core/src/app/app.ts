@@ -11,7 +11,7 @@ import {
   DOMBodyComponent,
   DOMRootComponent,
   DOMWindowComponent,
-  Fragment,
+  View,
 } from "../dom";
 import { AppHookMap } from "./hooks";
 import { PluginOption, installPlugins } from "./plugin";
@@ -29,7 +29,7 @@ export type AppOptions =
 export class App {
   constructor(
     options: AppOptions,
-    public main: Fragment,
+    public main: View,
   ) {
     if (import.meta.env.DEV) console.debug(`[*] create app`);
 
@@ -330,7 +330,7 @@ export class App {
   };
 }
 
-export function $app(options: AppOptions, main: Fragment): App {
+export function $app(options: AppOptions, main: View): App {
   const app = new App(options, main);
   app.mount();
   return app;

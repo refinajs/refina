@@ -38,7 +38,7 @@ $app([], _ => {
 });
 ```
 
-`n` will be incremented every time the fragment is called, which is not predictable.
+`n` will be incremented every time the view function is called, which is not predictable.
 
 :::
 

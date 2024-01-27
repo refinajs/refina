@@ -1,8 +1,5 @@
 import { Context } from "../context";
-
-export type Fragment<Args extends [any, ...any[]] = [_: Context]> = (
-  ...args: Args
-) => void;
+import { View } from "./view";
 
 /**
  * Allowed content types of DOM element components.
@@ -10,10 +7,10 @@ export type Fragment<Args extends [any, ...any[]] = [_: Context]> = (
 export type Content<Args extends [any, ...any[]] = [_: Context]> =
   | string
   | number
-  | Fragment<Args>;
+  | View<Args>;
 
 /**
- * Bind arguments to content if the content is a fragment.
+ * Bind arguments to content if the content is a view function.
  *
  * @example
  * ```ts
@@ -29,7 +26,7 @@ export type Content<Args extends [any, ...any[]] = [_: Context]> =
 export function bindArgsToContent<Args extends [any, ...any[]]>(
   content: Content<Args>,
   ...args: Args
-) {
+): Content {
   if (typeof content === "function") {
     return () => content(...args);
   }

@@ -28,7 +28,7 @@ declare module "refina" {
 }
 ```
 
-Some parameters of the component represent `Content`s. You can pass a string, a number or a function (we call it "fragment") to it:
+Some parameters of the component represent `Content`s. You can pass a string, a number or a function (we call it "view function") to it:
 
 ```ts
 $app([Basics], _ => {

@@ -97,7 +97,7 @@ The major differences are:
 
 ### How to Choose
 
-If you want to reuse a **fragment of the page**, you should use a _view_.
+If you want to reuse a **view function of the page**, you should use a _view_.
 
 If you want to reuse a **part of code with its own states**, you should use a _component_.
 

@@ -1,15 +1,17 @@
 /// <reference types="vite/client" />
 import MdUI, { MdCheckboxState } from "@refina/mdui";
-import { $app, $view, Content, _, bySelf, model } from "refina";
+import { $app, Component, Content, _, bySelf, model } from "refina";
 import "./styles.css";
 
-const ShowComponent = $view((name: string, inner: Content) => {
-  _._div({}, _ => {
-    _.$css`margin-bottom:8px`;
-    _._h3({}, name);
-    _.embed(inner);
-  });
-});
+class Group extends Component {
+  $main(name: string, inner: Content) {
+    _._div({}, _ => {
+      _.$css`margin-bottom:8px`;
+      _._h3({}, name);
+      _.embed(inner);
+    });
+  }
+}
 
 let darkMode = false;
 let count = 0;
@@ -44,35 +46,35 @@ $app([MdUI], _ => {
   );
 
   _.mdLayoutMain(_ => {
-    _(ShowComponent)("Avatar", _ => {
+    _(Group)("Avatar", _ => {
       _.mdAvatar("https://via.placeholder.com/80x80?text=A");
       _.mdIconAvatar("person");
     });
-    _(ShowComponent)("Badge", _ => {
+    _(Group)("Badge", _ => {
       _.mdBadge();
       _.t` `;
       _.mdBadge("99+");
     });
-    _(ShowComponent)("Button", _ => {
+    _(Group)("Button", _ => {
       _.mdButton("Button") && count++;
       _.mdButton("Button", true) && count++;
       _.mdTonalButton("Tonal") && count++;
       _.mdOutlinedButton("Outlined") && count++;
       _.mdTextButton("Text") && count++;
     });
-    _(ShowComponent)("Button Icon", _ => {
+    _(Group)("Button Icon", _ => {
       _.mdIconButton("add") && count++;
       _.mdIconButton("add", true) && count++;
       _.mdFilledIconButton("add") && count++;
       _.mdOutlinedIconButton("add") && count++;
       _.mdTonalIconButton("add") && count++;
     });
-    _(ShowComponent)("Checkbox", _ => {
+    _(Group)("Checkbox", _ => {
       _.mdCheckbox(status, "Checkbox");
       _.mdCheckbox(status, "Checkbox", true);
       _.mdCheckbox(status2, "Checkbox");
     });
-    _(ShowComponent)("Chip", _ => {
+    _(Group)("Chip", _ => {
       _.mdChip("Student");
       _.mdChip("Student", true);
       _.$props({ icon: "person", endIcon: "arrow_forward" }) &&
@@ -83,17 +85,17 @@ $app([MdUI], _ => {
         _.mdDeletableChip("Student", true) &&
         alert("Deleted!");
     });
-    _(ShowComponent)("Circlular Progress", _ => {
+    _(Group)("Circlular Progress", _ => {
       _.mdCircularProgress();
       _.mdCircularProgress(0.8);
     });
-    _(ShowComponent)("Collapse", _ => {
+    _(Group)("Collapse", _ => {
       _.mdCollapse("Header", "Content");
       _.$props({ icon: "near_me" });
       _.mdCollapse("Header", "Content");
       _.mdCollapse("Header (disabled)", "Content", true);
     });
-    _(ShowComponent)("Dialog", _ => {
+    _(Group)("Dialog", _ => {
       _.mdDialog(
         open => _.mdButton("Open Dialog") && open(),
         "Title",
@@ -104,30 +106,30 @@ $app([MdUI], _ => {
         },
       );
     });
-    _(ShowComponent)("Divider", _ => {
+    _(Group)("Divider", _ => {
       _.mdDivider();
       _.$css`height: 40px; margin-left: 30px`;
       _._div({}, _ => _.mdVerticalDivider());
     });
-    _(ShowComponent)("Fab", _ => {
+    _(Group)("Fab", _ => {
       _.mdFab("add") && count++;
       _.mdFab("add", true) && count++;
       _.mdFab("add", false, "Plus 1") && count++;
     });
-    _(ShowComponent)("Icon", _ => {
+    _(Group)("Icon", _ => {
       _.mdIcon("search");
       _.mdIcon("delete");
     });
-    _(ShowComponent)("Linear Progress", _ => {
+    _(Group)("Linear Progress", _ => {
       _.mdLinearProgress();
       _.mdLinearProgress(sliderValue1.value / 100);
     });
-    _(ShowComponent)("List", _ =>
+    _(Group)("List", _ =>
       _.mdList(["Item 1", "Item 2", "Item 3"], bySelf, item => {
         _.t(item);
       }),
     );
-    _(ShowComponent)("Prose", _ => {
+    _(Group)("Prose", _ => {
       _.$css`border:2px black solid;border-radius:5px;padding:10px;`;
       _._div({}, _ =>
         _.mdProse(_ => {
@@ -139,7 +141,7 @@ $app([MdUI], _ => {
         }),
       );
     });
-    _(ShowComponent)("Radio Group", _ => {
+    _(Group)("Radio Group", _ => {
       _.mdRadioGroup(selected, options);
       _._br();
       _.mdRadioGroup(selected, options, [false, true], {
@@ -148,12 +150,12 @@ $app([MdUI], _ => {
       _._br();
       _.mdRadioGroup(selected, options, true);
     });
-    _(ShowComponent)("Range Slider", _ => {
+    _(Group)("Range Slider", _ => {
       _.mdRangeSlider(sliderValue1, sliderValue2);
       _.mdRangeSlider(sliderValue1, sliderValue2, false, 10);
       _.mdRangeSlider(sliderValue1, sliderValue2, true);
     });
-    _(ShowComponent)("Segmented Button", _ => {
+    _(Group)("Segmented Button", _ => {
       _.mdSegmentedButton(["+1", "+2", "+3"]) && (count += _.$ev + 1);
       _._br();
       _.mdSegmentedButton(["+1", "+2", "+3"], true) && (count += _.$ev + 1);
@@ -167,7 +169,7 @@ $app([MdUI], _ => {
         _.mdSegmentedButton([1, 2, 3]) &&
         (count += _.$ev + 1);
     });
-    _(ShowComponent)("Select", _ => {
+    _(Group)("Select", _ => {
       _.mdSelect(selected, options);
       _.mdSelect(selected, options, [false, true], {
         "Option 3": _ => _.mdAvatar("https://via.placeholder.com/80x80?text=3"),
@@ -175,16 +177,16 @@ $app([MdUI], _ => {
       _.mdSelect(selected, options, true);
       _.mdOutlinedSelect(selected, options);
     });
-    _(ShowComponent)("Slider", _ => {
+    _(Group)("Slider", _ => {
       _.mdSlider(sliderValue2);
       _.mdSlider(sliderValue2, false, 10);
       _.mdSlider(sliderValue2, true);
     });
-    _(ShowComponent)("Switch", _ => {
+    _(Group)("Switch", _ => {
       _.mdSwitch(status);
       _.mdSwitch(status, true);
     });
-    _(ShowComponent)("Table", _ => {
+    _(Group)("Table", _ => {
       const data = [
         { name: "Alice", age: 20 },
         { name: "Bob", age: 21 },
@@ -201,7 +203,7 @@ $app([MdUI], _ => {
         },
       );
     });
-    _(ShowComponent)("Tabs", _ => {
+    _(Group)("Tabs", _ => {
       _.mdTabs(
         "Tab 1",
         _ => _._p({}, "Content 1"),
@@ -211,7 +213,7 @@ $app([MdUI], _ => {
         _ => _._p({}, "Content 3"),
       );
     });
-    _(ShowComponent)("Text Field", _ => {
+    _(Group)("Text Field", _ => {
       _.mdTextField(input);
       _.mdTextField(input, "Message");
       _.mdTextField(input, "Message", true);
@@ -221,11 +223,11 @@ $app([MdUI], _ => {
       _.mdTextarea(input, "Message (3 rows)");
       _.$props({ rows: [2, 5] }) && _.mdTextarea(input, "Message (2-5 rows)");
     });
-    _(ShowComponent)("Tooltip", _ => {
+    _(Group)("Tooltip", _ => {
       _.mdTooltip("Message", _ => _.mdButton("Hover me!")) &&
         console.log(_.$ev);
     });
-    _(ShowComponent)("Layouts", _ => {
+    _(Group)("Layouts", _ => {
       const exampleWindowStyle =
         "z-index:0;height:400px;border:1px black solid;margin:20px;padding:10px;border-radius:5px;";
       _.$css(exampleWindowStyle);

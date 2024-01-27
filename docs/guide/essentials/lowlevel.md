@@ -127,7 +127,7 @@ for (const key in data) {
 The content of the element. It can be:
 
 - A string or a number, which will be rendered as a text node.
-- A fragment, which will be rendered as the content of the element.
+- A view function, which will be rendered as the content of the element.
 - A `PD` object of the above two types.
 
 ## The `eventListeners` Parameter

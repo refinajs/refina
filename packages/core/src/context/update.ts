@@ -438,7 +438,7 @@ export function initializeUpdateContext(app: App) {
       context.$$currentRefNode = el.$refTreeNode;
 
       if (typeof content === "function") {
-        // The content is a fragment.
+        // The content is a view function.
 
         try {
           content(context._);

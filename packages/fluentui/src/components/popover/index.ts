@@ -1,6 +1,6 @@
 import {
   Content,
-  Fragment,
+  View,
   HTMLElementComponent,
   PrimaryElRef,
   Model,
@@ -99,9 +99,7 @@ export class FPopover extends TriggerComponent {
   opened = model(false);
   targetRef = ref<HTMLElementComponent>();
   $main(
-    trigger: Fragment<
-      [targetRef: PrimaryElRef, trigger: (open?: boolean) => void]
-    >,
+    trigger: View<[targetRef: PrimaryElRef, trigger: (open?: boolean) => void]>,
     inner: Content<[close: () => void]>, // withArrow: boolean = false,
   ): this is {
     $ev: boolean;
