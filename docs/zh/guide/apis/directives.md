@@ -21,7 +21,7 @@
 **使用方法**：
 
 ```ts
-$app(_ => {
+$app([], _ => {
   if (_.$updateContext) {
     _.$root.addCls("dark");
   }
@@ -45,11 +45,11 @@ $app(_ => {
 **使用方法**：
 
 ```ts
-$app(_ => {
-  _.$ev; // 错误： 'Context' 上不存在 '$ev'。
+$app([], _ => {
+  _.$ev; // ERROR: Property '$ev' does not exist on type 'Context'.
 
   if (_.button("Click me")) {
-    _.$ev; // 类型为 MouseEvent
+    _.$ev; // of type MouseEvent
   }
 });
 ```
@@ -94,12 +94,6 @@ $app(_ => {
 
 参见 [添加类名与样式](../essentials/rendering-basics#add-classes-and-styles).
 
-## `_.$permanentData`
-
-`_.$app.permanentData` 的简写。
-
-**生命周期**: 从页面创建到应用被关闭。
-
 ## `_.$runtimeData` {#runtime-data}
 
 `_.$state.runtimeData` 的简写。
@@ -108,6 +102,8 @@ $app(_ => {
 
 :::info
 
-通常你不需要直接读写 `_.$runtimeData`，因为它可能会从可控的作用域泄露。请使用 `_.provide` 方法向一定范围内提供值。
+It is usually a bad idea to write to `_.$runtimeData` directly,
+which is not scoped to children,
+use `_.provide` to provide values to `_.$runtimeData` instead.
 
 :::
