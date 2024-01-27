@@ -1,5 +1,5 @@
 import {
-  appInstDeafultId,
+  appInstDefaultId,
   initFuncId,
   localsObjId,
   mainFuncId,
@@ -9,10 +9,9 @@ import { Bindings } from "./getBindings";
 import { ParseResult } from "./parser";
 
 export function wrapLocals(
+  { appCallAst, mainFuncAst, localsSrc, appInstName }: ParseResult,
   srcPath: string,
-  { appCallStart, mainStart, mainEnd, localsSrc }: ParseResult,
   bindings: Bindings,
-  appInstance: string | null,
 ) {
   localsSrc.prepend(
     `import { ${mainFuncId}, ${initFuncId} } from ${JSON.stringify(
@@ -23,24 +22,25 @@ export function wrapLocals(
   let left = `\nconst ${localsObjId} = Object.seal({`;
   for (const [name, readonly] of Object.entries(bindings)) {
     if (readonly) {
-      left += `${name},`;
+      left += `  ${name},\n`;
     } else {
-      left += `get ${name}() { return ${name} },`;
-      left += `set ${name}(v) { ${name} = v },`;
+      left += `  get ${name}() { return ${name} },\n`;
+      left += `  set ${name}(v) { ${name} = v },\n`;
     }
   }
-  if (appInstance) {
-    left += `get ${appInstance}() { return ${appInstance} },`;
-  }
   left += `});\n\n`;
-  if (!appInstance) {
-    left += `const ${appInstDeafultId} = `;
+  if (!appInstName) {
+    left += `const ${appInstDefaultId} = `;
   }
-  localsSrc.prependLeft(appCallStart, left);
+  localsSrc.prependLeft(appCallAst.start!, left);
 
-  localsSrc.update(mainStart, mainEnd, `${mainFuncId}(${localsObjId})`);
+  localsSrc.update(
+    mainFuncAst.start!,
+    mainFuncAst.end!,
+    `${mainFuncId}(${localsObjId})`,
+  );
 
   localsSrc.append(`
-  ${initFuncId}(${appInstance ?? appInstDeafultId}, ${localsObjId});
+  ${initFuncId}(${appInstName ?? appInstDefaultId}, ${localsObjId});
 `);
 }

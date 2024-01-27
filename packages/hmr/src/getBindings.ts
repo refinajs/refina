@@ -1,23 +1,40 @@
-import type t from "@babel/types";
+import t from "@babel/types";
+import { ParseResult } from "./parser";
 
 export type Bindings = Record<string, boolean>;
 
-export function getBindings(ast: t.Statement[]): Bindings {
+export function getBindings({ localsAst, appCallAst }: ParseResult): Bindings {
   const bindings: Bindings = {};
-  for (const statement of ast) {
-    if (statement.type === "VariableDeclaration") {
-      const readonly = statement.kind === "const";
-      for (const declaration of statement.declarations) {
-        addLValToBindings(declaration.id, bindings, readonly);
-      }
-    } else if (
-      statement.type === "FunctionDeclaration" ||
-      statement.type === "ClassDeclaration"
-    ) {
-      bindings[statement.id!.name] = true;
+  for (const statement of localsAst) {
+    if (statement !== appCallAst && t.isDeclaration(statement)) {
+      addDeclarationToBindings(statement, bindings);
     }
   }
   return bindings;
+}
+
+function addDeclarationToBindings(ast: t.Declaration, bindings: Bindings) {
+  switch (ast.type) {
+    case "FunctionDeclaration":
+    case "ClassDeclaration":
+      if (ast.id) {
+        bindings[ast.id.name] = false;
+      }
+      break;
+    case "VariableDeclaration":
+      for (const declaration of ast.declarations) {
+        addLValToBindings(declaration.id, bindings, ast.kind === "const");
+      }
+      break;
+    case "ExportNamedDeclaration":
+      if (ast.declaration) {
+        addDeclarationToBindings(ast.declaration, bindings);
+      }
+      break;
+    case "TSEnumDeclaration":
+      bindings[ast.id.name] = true;
+      break;
+  }
 }
 
 function addLValToBindings(ast: t.LVal, bindings: Bindings, readonly: boolean) {

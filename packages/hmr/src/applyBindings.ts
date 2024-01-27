@@ -1,22 +1,42 @@
 import t from "@babel/types";
 import MagicString from "magic-string";
 import { getLocalsAccessor } from "./constants";
+import { Bindings } from "./getBindings";
+import { ParseResult } from "./parser";
 
-interface SourceWithMetadata {
-  s: MagicString;
-  usedBindings: Set<string>;
+class Context {
+  constructor(public src: MagicString) {}
+  usedBindings: Bindings = {};
+  getting(id: string): void {
+    this.usedBindings[id] ??= true;
+  }
+  setting(id: string): void {
+    this.usedBindings[id] = false;
+  }
 }
 
-function processStmt(
-  ast: t.Statement,
-  src: SourceWithMetadata,
-  bindings: Set<string>,
+export function applyBindings(
+  { mainAst, mainSrc, appCallAst, mainFuncAst }: ParseResult,
+  bindings: Record<string, boolean>,
 ) {
+  const src = new Context(mainSrc);
+  const bindingsSet = new Set(Object.keys(bindings));
+  for (const stmt of mainAst) {
+    if (stmt === appCallAst) {
+      processExpr(mainFuncAst, src, bindingsSet);
+    } else {
+      processStmt(stmt, src, bindingsSet);
+    }
+  }
+  return src.usedBindings;
+}
+
+function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
   switch (ast.type) {
     case "BlockStatement":
       const innerBindings = new Set(bindings);
       for (const stmt of ast.body) {
-        processStmt(stmt, src, innerBindings);
+        processStmt(stmt, ctx, innerBindings);
       }
       break;
 
@@ -27,36 +47,36 @@ function processStmt(
       break;
 
     case "DoWhileStatement":
-      processStmt(ast.body, src, bindings);
+      processStmt(ast.body, ctx, bindings);
       break;
 
     case "ExpressionStatement":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     case "ForInStatement":
       const innerBindings2 = new Set(bindings);
       if (ast.left.type === "VariableDeclaration") {
-        processVariableDeclaration(ast.left, src, innerBindings2);
+        processVariableDeclaration(ast.left, ctx, innerBindings2);
       } else {
-        processLVal(ast.left, src, innerBindings2);
+        processLVal(ast.left, ctx, innerBindings2);
       }
-      processExpr(ast.right, src, innerBindings2);
-      processStmt(ast.body, src, innerBindings2);
+      processExpr(ast.right, ctx, innerBindings2);
+      processStmt(ast.body, ctx, innerBindings2);
       break;
 
     case "ForStatement":
       const innerBindings3 = new Set(bindings);
       if (ast.init) {
         if (ast.init.type === "VariableDeclaration") {
-          processVariableDeclaration(ast.init, src, innerBindings3);
+          processVariableDeclaration(ast.init, ctx, innerBindings3);
         } else {
-          processExpr(ast.init, src, innerBindings3);
+          processExpr(ast.init, ctx, innerBindings3);
         }
       }
-      if (ast.test) processExpr(ast.test, src, innerBindings3);
-      if (ast.update) processExpr(ast.update, src, innerBindings3);
-      processStmt(ast.body, src, innerBindings3);
+      if (ast.test) processExpr(ast.test, ctx, innerBindings3);
+      if (ast.update) processExpr(ast.update, ctx, innerBindings3);
+      processStmt(ast.body, ctx, innerBindings3);
       break;
 
     case "FunctionDeclaration":
@@ -65,91 +85,115 @@ function processStmt(
       }
       const innerBindings4 = new Set(bindings);
       for (const param of ast.params) {
-        processDeclarationId(param, src, innerBindings4);
+        processDeclarationId(param, ctx, innerBindings4);
       }
-      processStmt(ast.body, src, innerBindings4);
+      processStmt(ast.body, ctx, innerBindings4);
       break;
 
     case "IfStatement":
       const innerBindings5 = new Set(bindings);
-      processExpr(ast.test, src, innerBindings5);
-      processStmt(ast.consequent, src, innerBindings5);
-      if (ast.alternate) processStmt(ast.alternate, src, innerBindings5);
+      processExpr(ast.test, ctx, innerBindings5);
+      processStmt(ast.consequent, ctx, innerBindings5);
+      if (ast.alternate) processStmt(ast.alternate, ctx, innerBindings5);
       break;
 
     case "LabeledStatement":
-      processStmt(ast.body, src, bindings);
+      processStmt(ast.body, ctx, bindings);
       break;
 
     case "ReturnStatement":
-      if (ast.argument) processExpr(ast.argument, src, bindings);
+      if (ast.argument) processExpr(ast.argument, ctx, bindings);
       break;
 
     case "SwitchStatement":
-      processExpr(ast.discriminant, src, bindings);
+      processExpr(ast.discriminant, ctx, bindings);
       for (const caseClause of ast.cases) {
-        if (caseClause.test) processExpr(caseClause.test, src, bindings);
+        if (caseClause.test) processExpr(caseClause.test, ctx, bindings);
         const innerBindings6 = new Set(bindings);
         for (const stmt of caseClause.consequent) {
-          processStmt(stmt, src, innerBindings6);
+          processStmt(stmt, ctx, innerBindings6);
         }
       }
       break;
 
     case "ThrowStatement":
-      processExpr(ast.argument, src, bindings);
+      processExpr(ast.argument, ctx, bindings);
       break;
 
     case "TryStatement":
-      processStmt(ast.block, src, bindings);
+      processStmt(ast.block, ctx, bindings);
       if (ast.handler) {
         const innerBindings7 = new Set(bindings);
         if (ast.handler.param)
-          processLVal(ast.handler.param, src, innerBindings7);
-        processStmt(ast.handler.body, src, bindings);
+          processLVal(ast.handler.param, ctx, innerBindings7);
+        processStmt(ast.handler.body, ctx, bindings);
       }
-      if (ast.finalizer) processStmt(ast.finalizer, src, bindings);
+      if (ast.finalizer) processStmt(ast.finalizer, ctx, bindings);
       break;
 
     case "VariableDeclaration":
-      processVariableDeclaration(ast, src, bindings);
+      processVariableDeclaration(ast, ctx, bindings);
       break;
 
     case "WhileStatement":
       const innerBindings8 = new Set(bindings);
-      processExpr(ast.test, src, innerBindings8);
-      processStmt(ast.body, src, innerBindings8);
+      processExpr(ast.test, ctx, innerBindings8);
+      processStmt(ast.body, ctx, innerBindings8);
       break;
 
     case "WithStatement":
       const innerBindings9 = new Set(bindings);
-      processExpr(ast.object, src, innerBindings9);
-      processStmt(ast.body, src, innerBindings9);
+      processExpr(ast.object, ctx, innerBindings9);
+      processStmt(ast.body, ctx, innerBindings9);
       break;
 
     case "ClassDeclaration":
       throw new Error("Not implemented: ClassDeclaration");
 
     case "ExportAllDeclaration":
+      break;
+
     case "ExportDefaultDeclaration":
+      if (t.isExpression(ast.declaration)) {
+        processExpr(ast.declaration, ctx, bindings);
+      } else {
+        processStmt(ast.declaration, ctx, bindings);
+      }
+      break;
+
     case "ExportNamedDeclaration":
+      if (ast.declaration) {
+        processStmt(ast.declaration, ctx, bindings);
+      } else if (ast.source) {
+        // export { a, b } from "module";
+      } else {
+        for (const specifier of ast.specifiers) {
+          if (specifier.type === "ExportSpecifier") {
+            processExpr(specifier.local, ctx, bindings);
+          } else {
+            throw new Error("Not implemented: ExportNamespaceSpecifier");
+          }
+        }
+      }
+      break;
+
     case "TSExportAssignment":
     case "TSNamespaceExportDeclaration":
-      throw new Error("Cannot export from app main");
+      throw new Error(`Not implemented: ${ast.type}`);
 
     case "ForOfStatement":
-      processExpr(ast.right, src, bindings);
+      processExpr(ast.right, ctx, bindings);
       if (ast.left.type === "VariableDeclaration") {
-        processVariableDeclaration(ast.left, src, bindings);
+        processVariableDeclaration(ast.left, ctx, bindings);
       } else {
-        processLVal(ast.left, src, bindings);
+        processLVal(ast.left, ctx, bindings);
       }
       break;
 
     case "ImportDeclaration":
-    case "TSImportEqualsDeclaration":
-      throw new Error("Cannot import from app main");
+      break;
 
+    case "TSImportEqualsDeclaration":
     case "EnumDeclaration":
       throw new Error("Not implemented: EnumDeclaration");
 
@@ -175,7 +219,7 @@ function processStmt(
     case "TSEnumDeclaration":
       for (const member of ast.members) {
         if (member.initializer) {
-          processExpr(member.initializer, src, bindings);
+          processExpr(member.initializer, ctx, bindings);
         }
       }
       break;
@@ -185,9 +229,9 @@ function processStmt(
   }
 }
 
-export function processExpr(
+function processExpr(
   ast: t.Expression,
-  src: SourceWithMetadata,
+  ctx: Context,
   bindings: ReadonlySet<string>,
 ) {
   switch (ast.type) {
@@ -195,69 +239,69 @@ export function processExpr(
       for (const element of ast.elements) {
         if (!element) continue;
         if (element.type === "SpreadElement") {
-          processExpr(element.argument, src, bindings);
+          processExpr(element.argument, ctx, bindings);
         } else {
-          processExpr(element, src, bindings);
+          processExpr(element, ctx, bindings);
         }
       }
       break;
 
     case "AssignmentExpression":
       if (ast.left.type === "OptionalMemberExpression") {
-        processExpr(ast.left, src, bindings);
+        processExpr(ast.left, ctx, bindings);
       } else {
-        processLVal(ast.left, src, bindings);
+        processLVal(ast.left, ctx, bindings);
       }
-      processExpr(ast.right, src, bindings);
+      processExpr(ast.right, ctx, bindings);
       break;
 
     case "BinaryExpression":
       if (ast.left.type !== "PrivateName") {
-        processExpr(ast.left, src, bindings);
+        processExpr(ast.left, ctx, bindings);
       }
-      processExpr(ast.right, src, bindings);
+      processExpr(ast.right, ctx, bindings);
       break;
 
     case "CallExpression":
       if (ast.callee.type === "V8IntrinsicIdentifier") {
         throw new Error("Not implemented: " + ast.callee.name);
       }
-      processExpr(ast.callee, src, bindings);
+      processExpr(ast.callee, ctx, bindings);
       for (const arg of ast.arguments) {
-        processArgument(arg, src, bindings);
+        processArgument(arg, ctx, bindings);
       }
       break;
 
     case "ConditionalExpression":
-      processExpr(ast.test, src, bindings);
-      processExpr(ast.consequent, src, bindings);
-      processExpr(ast.alternate, src, bindings);
+      processExpr(ast.test, ctx, bindings);
+      processExpr(ast.consequent, ctx, bindings);
+      processExpr(ast.alternate, ctx, bindings);
       break;
 
     case "FunctionExpression":
       const innerBindings = new Set(bindings);
       for (const param of ast.params) {
-        processDeclarationId(param, src, innerBindings);
+        processDeclarationId(param, ctx, innerBindings);
       }
-      processStmt(ast.body, src, innerBindings);
+      processStmt(ast.body, ctx, innerBindings);
       break;
 
     case "Identifier":
       if (bindings.has(ast.name)) {
-        src.usedBindings.add(ast.name);
-        src.s.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+        ctx.getting(ast.name);
+        ctx.src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
       }
       break;
 
     case "LogicalExpression":
-      processExpr(ast.left, src, bindings);
-      processExpr(ast.right, src, bindings);
+      processExpr(ast.left, ctx, bindings);
+      processExpr(ast.right, ctx, bindings);
       break;
 
     case "MemberExpression":
-      processExpr(ast.object, src, bindings);
+      processExpr(ast.object, ctx, bindings);
       if (ast.property.type !== "PrivateName") {
-        processExpr(ast.property, src, bindings);
+        processExpr(ast.property, ctx, bindings);
       }
       break;
 
@@ -265,9 +309,9 @@ export function processExpr(
       if (ast.callee.type === "V8IntrinsicIdentifier") {
         throw new Error("Not implemented: " + ast.callee.name);
       }
-      processExpr(ast.callee, src, bindings);
+      processExpr(ast.callee, ctx, bindings);
       for (const arg of ast.arguments) {
-        processArgument(arg, src, bindings);
+        processArgument(arg, ctx, bindings);
       }
       break;
 
@@ -280,8 +324,8 @@ export function processExpr(
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
               if (bindings.has(name)) {
-                src.usedBindings.add(name);
-                src.s.update(
+                ctx.getting(name);
+                ctx.src.update(
                   property.key.start!,
                   property.key.end!,
                   `${name}:${getLocalsAccessor(name)}`,
@@ -289,20 +333,25 @@ export function processExpr(
               }
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, src, bindings);
+                processExpr(property.key, ctx, bindings);
               }
-              processExprOrPatternLike(property.value, src, bindings);
+              const value = property.value;
+              if (t.isExpression(value)) {
+                processExpr(value, ctx, bindings);
+              } else {
+                processLVal(value, ctx, bindings);
+              }
             }
             break;
           case "SpreadElement":
-            processExpr(property.argument, src, bindings);
+            processExpr(property.argument, ctx, bindings);
             break;
           case "ObjectMethod":
             const innerBindings2 = new Set(bindings);
             for (const param of property.params) {
-              processLVal(param, src, innerBindings2);
+              processLVal(param, ctx, innerBindings2);
             }
-            processStmt(property.body, src, innerBindings2);
+            processStmt(property.body, ctx, innerBindings2);
             break;
           default:
             const _exhaustiveCheck: never = property;
@@ -312,34 +361,34 @@ export function processExpr(
 
     case "SequenceExpression":
       for (const expression of ast.expressions) {
-        processExpr(expression, src, bindings);
+        processExpr(expression, ctx, bindings);
       }
       break;
 
     case "ParenthesizedExpression":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     case "ThisExpression":
       break;
 
     case "UnaryExpression":
-      processExpr(ast.argument, src, bindings);
+      processExpr(ast.argument, ctx, bindings);
       break;
 
     case "UpdateExpression":
-      processExpr(ast.argument, src, bindings);
+      processExpr(ast.argument, ctx, bindings);
       break;
 
     case "ArrowFunctionExpression":
       const innerBindings3 = new Set(bindings);
       for (const param of ast.params) {
-        processDeclarationId(param, src, innerBindings3);
+        processDeclarationId(param, ctx, innerBindings3);
       }
       if (ast.body.type === "BlockStatement") {
-        processStmt(ast.body, src, innerBindings3);
+        processStmt(ast.body, ctx, innerBindings3);
       } else {
-        processExpr(ast.body, src, innerBindings3);
+        processExpr(ast.body, ctx, innerBindings3);
       }
       break;
 
@@ -356,45 +405,42 @@ export function processExpr(
       break;
 
     case "TaggedTemplateExpression":
-      processExpr(ast.tag, src, bindings);
-      processExpr(ast.quasi, src, bindings);
+      processExpr(ast.tag, ctx, bindings);
+      processExpr(ast.quasi, ctx, bindings);
       break;
 
     case "TemplateLiteral":
       for (const expression of ast.expressions) {
         if (t.isExpression(expression)) {
-          processExpr(expression, src, bindings);
+          processExpr(expression, ctx, bindings);
         }
       }
       break;
 
     case "YieldExpression":
       if (ast.argument) {
-        processExpr(ast.argument, src, bindings);
+        processExpr(ast.argument, ctx, bindings);
       }
       break;
 
     case "AwaitExpression":
-      processExpr(ast.argument, src, bindings);
-      break;
-
-    case "Import":
+      processExpr(ast.argument, ctx, bindings);
       break;
 
     case "OptionalMemberExpression":
-      processExpr(ast.object, src, bindings);
-      processExpr(ast.property, src, bindings);
+      processExpr(ast.object, ctx, bindings);
+      processExpr(ast.property, ctx, bindings);
       break;
 
     case "OptionalCallExpression":
-      processExpr(ast.callee, src, bindings);
+      processExpr(ast.callee, ctx, bindings);
       for (const arg of ast.arguments) {
-        processArgument(arg, src, bindings);
+        processArgument(arg, ctx, bindings);
       }
       break;
 
     case "TypeCastExpression":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     case "BindExpression":
@@ -413,6 +459,7 @@ export function processExpr(
       // Literal
       break;
 
+    case "Import":
     case "JSXElement":
     case "JSXFragment":
     case "ModuleExpression":
@@ -427,7 +474,7 @@ export function processExpr(
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     default:
@@ -435,36 +482,32 @@ export function processExpr(
   }
 }
 
-function processLVal(
-  ast: t.LVal,
-  src: SourceWithMetadata,
-  bindings: ReadonlySet<string>,
-) {
+function processLVal(ast: t.LVal, ctx: Context, bindings: ReadonlySet<string>) {
   switch (ast.type) {
     case "Identifier":
-      if (bindings.has(ast.name)) src.usedBindings.add(ast.name);
-      src.s.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+      if (bindings.has(ast.name)) ctx.setting(ast.name);
+      ctx.src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
       break;
 
     case "MemberExpression":
-      processExpr(ast.object, src, bindings);
+      processExpr(ast.object, ctx, bindings);
       if (ast.property.type !== "PrivateName") {
-        processExpr(ast.property, src, bindings);
+        processExpr(ast.property, ctx, bindings);
       }
       break;
 
     case "RestElement":
-      processLVal(ast.argument, src, bindings);
+      processLVal(ast.argument, ctx, bindings);
       break;
 
     case "AssignmentPattern":
-      processLVal(ast.left, src, bindings);
-      processExpr(ast.right, src, bindings);
+      processLVal(ast.left, ctx, bindings);
+      processExpr(ast.right, ctx, bindings);
       break;
 
     case "ArrayPattern":
       for (const element of ast.elements) {
-        if (element) processLVal(element, src, bindings);
+        if (element) processLVal(element, ctx, bindings);
       }
       break;
 
@@ -472,7 +515,7 @@ function processLVal(
       for (const property of ast.properties) {
         switch (property.type) {
           case "RestElement":
-            processLVal(property, src, bindings);
+            processLVal(property, ctx, bindings);
             break;
           case "ObjectProperty":
             if (property.shorthand) {
@@ -480,8 +523,8 @@ function processLVal(
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
               if (bindings.has(name)) {
-                src.usedBindings.add(name);
-                src.s.update(
+                ctx.setting(name);
+                ctx.src.update(
                   property.key.start!,
                   property.key.end!,
                   `${name}:${getLocalsAccessor(name)}`,
@@ -489,10 +532,14 @@ function processLVal(
               }
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, src, bindings);
+                processExpr(property.key, ctx, bindings);
               }
-              // may be assignment pattern
-              processExprOrPatternLike(property.value, src, bindings);
+              const value = property.value;
+              if (t.isPatternLike(value)) {
+                processLVal(value, ctx, bindings);
+              } else {
+                processExpr(value, ctx, bindings);
+              }
             }
             break;
           default:
@@ -508,7 +555,7 @@ function processLVal(
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     default:
@@ -518,7 +565,7 @@ function processLVal(
 
 function processDeclarationId(
   ast: t.LVal,
-  src: SourceWithMetadata,
+  ctx: Context,
   bindings: Set<string>,
 ) {
   switch (ast.type) {
@@ -536,14 +583,14 @@ function processDeclarationId(
       break;
 
     case "AssignmentPattern":
-      processDeclarationId(ast.left, src, bindings);
+      processDeclarationId(ast.left, ctx, bindings);
       // let { a = a } = {}; should throw ReferenceError.
-      processExpr(ast.right, src, bindings);
+      processExpr(ast.right, ctx, bindings);
       break;
 
     case "ArrayPattern":
       for (const element of ast.elements) {
-        if (element) processDeclarationId(element, src, bindings);
+        if (element) processDeclarationId(element, ctx, bindings);
       }
       break;
 
@@ -567,13 +614,13 @@ function processDeclarationId(
               bindings.delete(property.key.name);
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, src, bindings);
+                processExpr(property.key, ctx, bindings);
               }
               if (!t.isLVal(property.value))
                 throw new Error(
                   "Object property must be a pattern in variable decl",
                 );
-              processDeclarationId(property.value, src, bindings);
+              processDeclarationId(property.value, ctx, bindings);
             }
             break;
 
@@ -590,7 +637,7 @@ function processDeclarationId(
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, src, bindings);
+      processExpr(ast.expression, ctx, bindings);
       break;
 
     default:
@@ -600,25 +647,13 @@ function processDeclarationId(
 
 function processVariableDeclaration(
   ast: t.VariableDeclaration,
-  src: SourceWithMetadata,
+  ctx: Context,
   bindings: Set<string>,
 ) {
   const declarations = ast.declarations;
   for (const declaration of declarations) {
-    if (declaration.init) processExpr(declaration.init, src, bindings);
-    processDeclarationId(declaration.id, src, bindings);
-  }
-}
-
-function processExprOrPatternLike(
-  ast: t.Expression | t.PatternLike,
-  src: SourceWithMetadata,
-  bindings: ReadonlySet<string>,
-) {
-  if (t.isPatternLike(ast)) {
-    processLVal(ast, src, bindings);
-  } else {
-    processExpr(ast, src, bindings);
+    if (declaration.init) processExpr(declaration.init, ctx, bindings);
+    processDeclarationId(declaration.id, ctx, bindings);
   }
 }
 
@@ -628,15 +663,15 @@ function processArgument(
     | t.SpreadElement
     | t.JSXNamespacedName
     | t.ArgumentPlaceholder,
-  src: SourceWithMetadata,
+  ctx: Context,
   bindings: ReadonlySet<string>,
 ) {
   if (t.isJSXNamespacedName(ast)) {
   } else if (ast.type === "SpreadElement") {
-    processExpr(ast.argument, src, bindings);
+    processExpr(ast.argument, ctx, bindings);
   } else if (ast.type === "ArgumentPlaceholder") {
     throw new Error("Not implemented: " + ast.type);
   } else {
-    processExpr(ast, src, bindings);
+    processExpr(ast, ctx, bindings);
   }
 }

@@ -3,25 +3,15 @@ import t from "@babel/types";
 import MagicString from "magic-string";
 
 export interface ParseResult {
-  appCallStart: number;
-  appCallEnd: number;
-
-  mainStart: number;
-  mainEnd: number;
-
-  imports: string;
-
   localsAst: t.Statement[];
   localsSrc: MagicString;
 
-  mainAst: t.Expression;
+  mainAst: t.Statement[];
   mainSrc: MagicString;
 
-  appInstance: string | null;
-}
-
-function isCalleeApp(callee: t.Expression | t.V8IntrinsicIdentifier) {
-  return callee.type === "Identifier" && callee.name === "$app";
+  appCallAst: t.ExpressionStatement | t.VariableDeclaration;
+  appInstName: string | null;
+  mainFuncAst: t.Expression;
 }
 
 export function parse(src: string): ParseResult | null {
@@ -30,82 +20,98 @@ export function parse(src: string): ParseResult | null {
     plugins: ["typescript"],
   }).program.body;
 
-  let imports = "";
+  const localsAst: t.Statement[] = [];
+  const mainAst: t.Statement[] = [];
+  let appCallAst: t.ExpressionStatement | t.VariableDeclaration | null = null;
+
   for (const statement of statements) {
-    if (statement.type === "ImportDeclaration") {
-      imports += src.slice(statement.start!, statement.end!) + ";\n";
+    switch (statement.type) {
+      case "ImportDeclaration":
+        localsAst.push(statement);
+        mainAst.push(statement);
+        break;
+      case "VariableDeclaration":
+        if (
+          statement.declarations.length === 1 &&
+          statement.kind === "const" &&
+          statement.declarations[0].init?.type === "CallExpression" &&
+          statement.declarations[0].init.callee.type === "Identifier"
+        ) {
+          const calleeName = statement.declarations[0].init.callee.name;
+          if (calleeName === "$app") {
+            localsAst.push(statement);
+            mainAst.push(statement);
+            appCallAst = statement;
+          } else if (calleeName === "$view") {
+            mainAst.push(statement);
+          } else {
+            localsAst.push(statement);
+          }
+        } else {
+          localsAst.push(statement);
+        }
+        break;
+      case "ExpressionStatement":
+        if (
+          statement.expression.type === "CallExpression" &&
+          statement.expression.callee.type === "Identifier" &&
+          statement.expression.callee.name === "$app"
+        ) {
+          localsAst.push(statement);
+          mainAst.push(statement);
+          appCallAst = statement;
+        } else {
+          localsAst.push(statement);
+        }
+        break;
+      default:
+        localsAst.push(statement);
     }
   }
 
-  for (let i = 0; i < statements.length; i++) {
-    const statement = statements[i];
-    if (
-      statement.type === "ExpressionStatement" &&
-      statement.expression.type === "CallExpression" &&
-      isCalleeApp(statement.expression.callee)
-    ) {
-      const mainAst = statement.expression.arguments[1] as t.Expression;
-      const mainStart = mainAst.start!;
-      const mainEnd = mainAst.end! - src.length;
+  if (!appCallAst) return null;
 
-      const localsSrc = new MagicString(src);
-      localsSrc.remove(mainStart, mainEnd);
+  const localsSrc = cutSrc(src, localsAst);
+  const mainSrc = cutSrc(src, mainAst);
 
-      const mainSrc = new MagicString(src);
-      mainSrc.remove(0, mainStart);
-      mainSrc.remove(mainEnd, src.length);
+  let appInstName: string | null = null;
+  let mainFuncAst: t.Expression;
 
-      return {
-        appCallStart: statement.start!,
-        appCallEnd: statement.end!,
-        mainStart,
-        mainEnd,
-        imports,
-        localsAst: statements.filter((_, j) => j !== i),
-        localsSrc,
-        mainAst,
-        mainSrc,
-        appInstance: null,
-      };
-    }
+  if (appCallAst.type === "VariableDeclaration") {
+    const id = appCallAst.declarations[0].id;
+    if (id.type !== "Identifier")
+      throw new Error("App instance must be an identifier.");
+    appInstName = id.name;
 
-    if (
-      statement.type === "VariableDeclaration" &&
-      statement.declarations.length === 1 &&
-      statement.declarations[0].init?.type === "CallExpression" &&
-      isCalleeApp(statement.declarations[0].init.callee)
-    ) {
-      const declaration = statement.declarations[0];
-
-      if (statement.kind !== "const") {
-        throw new Error("Cannot declare non-const app instance.");
-      }
-
-      const mainAst = statement.declarations[0].init
-        .arguments[1] as t.Expression;
-      const mainStart = mainAst.start!;
-      const mainEnd = mainAst.end! - src.length;
-
-      const localsSrc = new MagicString(src);
-      localsSrc.remove(mainStart, mainEnd);
-
-      const mainSrc = new MagicString(src);
-      mainSrc.remove(0, mainStart);
-      mainSrc.remove(mainEnd, src.length);
-
-      return {
-        appCallStart: statement.start!,
-        appCallEnd: statement.end!,
-        mainStart,
-        mainEnd,
-        imports,
-        localsAst: statements.filter((_, j) => j !== i),
-        localsSrc,
-        mainAst,
-        mainSrc,
-        appInstance: (declaration.id as t.Identifier).name,
-      };
-    }
+    mainFuncAst = (appCallAst.declarations[0].init! as t.CallExpression)
+      .arguments[1] as t.Expression;
+  } else {
+    mainFuncAst = (appCallAst.expression as t.CallExpression)
+      .arguments[1] as t.Expression;
   }
-  return null;
+
+  return {
+    localsAst,
+    localsSrc,
+    mainAst,
+    mainSrc,
+    appCallAst,
+    appInstName,
+    mainFuncAst,
+  };
+}
+
+function cutSrc(src: string, statements: t.Statement[]) {
+  const s = new MagicString(src);
+  let cutStart = 0;
+  for (const statement of statements) {
+    if (cutStart < statement.start!) {
+      s.update(cutStart, statement.start!, "\n");
+    } else if (cutStart > statement.start!) {
+      throw new Error("Statements are not in order.");
+    }
+    cutStart = statement.end!;
+  }
+  s.remove(cutStart, src.length);
+  return s;
 }

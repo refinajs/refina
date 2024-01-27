@@ -1,15 +1,24 @@
 import {
-  appInstDeafultId,
+  appInstDefaultId,
   initFuncId,
   localsObjId,
   mainFuncId,
 } from "./constants";
 import { ParseResult } from "./parser";
 
-export function wrapMain({ imports, mainSrc, appInstance }: ParseResult) {
-  const appId = appInstance ?? appInstDeafultId;
-  mainSrc.prepend(`${imports}
-export const ${mainFuncId} = (${localsObjId}) => `);
+export function wrapMain({
+  appCallAst,
+  mainFuncAst,
+  mainSrc,
+  appInstName,
+}: ParseResult) {
+  const appId = appInstName ?? appInstDefaultId;
+
+  mainSrc.update(
+    appCallAst.start!,
+    mainFuncAst.start!,
+    `export const ${mainFuncId} = (${localsObjId}) => (`,
+  );
 
   mainSrc.append(`
 let ${appId}, ${localsObjId};
@@ -26,7 +35,7 @@ import.meta.hot?.accept(async (__new_main_mod__) => {
     await ${appId}.promises.mainExecuted;
   }
   ${appId}.main = newMain;
-   ${appId}.update();
+  ${appId}.update();
 });
 `);
 }

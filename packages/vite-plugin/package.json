@@ -27,7 +27,7 @@
     }
   },
   "scripts": {
-    "dev": "tsup --watch",
+    "dev": "tsup --watch . --watch ../hmr --watch ../transformer",
     "build": "tsup",
     "check": "tsc --noEmit",
     "prepare": "pnpm build",

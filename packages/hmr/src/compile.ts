@@ -1,8 +1,8 @@
 import type { SourceMap } from "magic-string";
+import { applyBindings } from "./applyBindings";
 import { mainUrlSuffix } from "./constants";
 import { Bindings, getBindings } from "./getBindings";
 import { parse } from "./parser";
-import { processExpr } from "./process";
 import { wrapLocals } from "./wrapLocals";
 import { wrapMain } from "./wrapMain";
 
@@ -13,9 +13,6 @@ interface TransformResult {
 }
 
 export interface RefinaDescriptor {
-  mainStart: number;
-  mainEnd: number; // negative
-
   bindings: Bindings;
 
   locals: TransformResult;
@@ -32,28 +29,13 @@ export function compile(id: string, src: string): RefinaDescriptor | null {
   const localsRaw = parseResult.localsSrc.toString();
   const mainRaw = parseResult.mainSrc.toString();
 
-  const bindings = getBindings(parseResult.localsAst);
-  const usedBindings = new Set<string>();
+  const bindings = getBindings(parseResult);
+  const usedBindings = applyBindings(parseResult, bindings);
 
-  processExpr(
-    parseResult.mainAst,
-    { s: parseResult.mainSrc, usedBindings },
-    new Set(Object.keys(bindings)),
-  );
-
-  wrapLocals(
-    id,
-    parseResult,
-    Object.fromEntries(
-      Object.entries(bindings).filter(([name]) => usedBindings.has(name)),
-    ),
-    parseResult.appInstance,
-  );
+  wrapLocals(parseResult, id, usedBindings);
   wrapMain(parseResult);
 
   return {
-    mainStart: parseResult.mainStart,
-    mainEnd: parseResult.mainEnd,
     bindings,
     locals: {
       raw: localsRaw,
