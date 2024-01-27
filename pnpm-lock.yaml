@@ -36,8 +36,8 @@ importers:
         specifier: workspace:^
         version: link:../packages/basic-components
       '@refina/repl':
-        specifier: ^0.0.7
-        version: 0.0.7
+        specifier: ^0.0.9
+        version: 0.0.9
       '@vue/theme':
         specifier: ^2.2.5
         version: 2.2.5(@algolia/client-search@4.22.1)(search-insights@2.13.0)(vitepress@1.0.0-rc.31)(vue@3.3.9)
@@ -1607,8 +1607,8 @@ packages:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
     dev: true
 
-  /@refina/repl@0.0.7:
-    resolution: {integrity: sha512-Dw058qmCKMQ+6Rrsa6J23TqPl/ijd0WcSL8GUuTLB1thZY+KCWrgKejS8c1aeFMT34dAP9d2UG8fqXzWPmAfCQ==}
+  /@refina/repl@0.0.9:
+    resolution: {integrity: sha512-Ef/bQYUVHx4PYUvtAnpZ9FbFaZhyD5DaOZb8iDjzwrBZ/rDXHmOZixjeH0shI8m50Spfr9HFP+AkgulxVllP2w==}
     dependencies:
       '@refina/transformer': 0.3.1
       typescript: 5.3.3
