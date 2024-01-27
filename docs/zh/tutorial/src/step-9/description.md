@@ -9,7 +9,7 @@
 ```ts
 let count = 0;
 
-const app = $app(_ => {
+const app = $app([], _ => {
   _.$cls`my-button`; // _.$cls and _.$css are also available
   _._button(
     // Attributes (optional)
