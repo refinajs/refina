@@ -21,7 +21,7 @@ export default $view(_ => {
 ```ts
 import MyView from "./MyView.ts";
 
-$app(_ => {
+$app([], _ => {
   _(MyView)();
   _.div(MyView.$func);
 });

@@ -20,7 +20,7 @@ To use a view, just call the context object:
 import { $app } from "refina";
 import CardView from "./CardView";
 
-$app(_ => {
+$app([], _ => {
   _(CardView)("1");
   _(CardView)("2");
   _(CardView)("3");

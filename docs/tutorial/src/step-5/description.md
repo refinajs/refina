@@ -33,7 +33,7 @@ The following code will cause undefined behavior:
 
 ```ts
 let n = 0;
-$app(_ => {
+$app([], _ => {
   n++;
 });
 ```

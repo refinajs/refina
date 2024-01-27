@@ -21,7 +21,7 @@ If a component satisfies your needs, you should use it instead of using low-leve
 ```ts
 let count = 0;
 
-const app = $app(_ => {
+const app = $app([], _ => {
   _._div(
     {
       id: "my-div",

@@ -21,7 +21,7 @@ If the App is in the `UPDATE` state, the value is the context itself, otherwise 
 **Usage**:
 
 ```ts
-$app(_ => {
+$app([], _ => {
   if (_.$updateContext) {
     _.$root.addCls("dark");
   }
@@ -45,7 +45,7 @@ This directive is only available in the event handler.
 **Usage**:
 
 ```ts
-$app(_ => {
+$app([], _ => {
   _.$ev; // ERROR: Property '$ev' does not exist on type 'Context'.
 
   if (_.button("Click me")) {
