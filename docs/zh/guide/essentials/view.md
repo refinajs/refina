@@ -21,7 +21,7 @@ export default $view(_ => {
 ```ts
 import MyView from "./MyView.ts";
 
-$app(_ => {
+$app([], _ => {
   _(MyView)();
   _.div(MyView.$func);
 });
@@ -97,7 +97,7 @@ export default $view(_ => {
 
 ### 如何选择
 
-如果你想复用**页面的片段**，可以使用 _视图_。
+If you want to reuse a **view function of the page**, you should use a _view_.
 
 如果你想复用**有状态的代码**，你需要使用_组件_。
 
