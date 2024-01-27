@@ -108,7 +108,7 @@ _.asyncEmbed(() => import("./someContent.ts"));
 
 ## `_.provide`
 
-提供一组键值或一个对象到 [`_.$runtimeData`](./directives.md#runtime-data)，并且这些值与对象仅在内部有效。
+Provide a value or an object of values to [`_.$runtimeData`](./directives.md#runtime-data) for the duration of children.
 
 **例子**
 
