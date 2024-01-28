@@ -1,4 +1,4 @@
-import { flip as baseFlip, Placement } from "@floating-ui/dom";
+import { flip as baseFlip, Middleware, Placement } from "@floating-ui/dom";
 import type { PositioningOptions } from "../types";
 import { resolvePositioningShorthand } from "../utils/resolvePositioningShorthand";
 import { toFloatingUIPlacement } from "../utils/toFloatingUIPlacement";
@@ -10,7 +10,7 @@ export interface FlipMiddlewareOptions
   isRtl?: boolean;
 }
 
-export function flip(options: FlipMiddlewareOptions) {
+export function flip(options: FlipMiddlewareOptions): Middleware {
   const { hasScrollableElement, fallbackPositions = [], isRtl } = options;
 
   const fallbackPlacements = fallbackPositions.reduce<Placement[]>(

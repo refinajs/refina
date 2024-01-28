@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/node": "^20.6.5",
     "terser": "^5.26.0",
-    "vite": "^4.4.8",
+    "vite": "^4.5.2",
     "vite-plugin-refina": "workspace:^"
   }
 }

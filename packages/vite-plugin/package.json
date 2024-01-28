@@ -49,11 +49,12 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "vite": "^4.4.8"
+    "vite": "^4.5.2"
   },
   "dependencies": {
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.6",
-    "magic-string": "^0.30.2"
+    "magic-string": "^0.30.2",
+    "vite-plugin-dts": "^3.7.2"
   }
 }

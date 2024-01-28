@@ -23,7 +23,7 @@ type CtxFuncCall = (
 export class RefinaTransformer {
   ckeyPrefix = "";
 
-  laskFileKey = 0;
+  lastFileKey = 0;
   transformedFiles = new Map<
     string,
     {
@@ -34,11 +34,11 @@ export class RefinaTransformer {
     }
   >();
 
-  protected toFileKey(id: number) {
+  toFileKey(id: number) {
     return id.toString(36).toUpperCase();
   }
 
-  protected toCkey(fileKey: string, callId: number) {
+  toCkey(fileKey: string, callId: number) {
     return `${this.ckeyPrefix}${fileKey}-${callId.toString(36).toUpperCase()}`;
   }
 
@@ -143,6 +143,9 @@ export class RefinaTransformer {
   }
 
   transformFile(fileName: string, src: string, ignoreTransformed: boolean) {
+    if (src.includes(patterns.CKEY_PLACEHOLDER))
+      return this.transformDep(fileName, src, true);
+
     const transformed = this.transformedFiles.get(fileName);
     const sourceMapOptions: SourceMapOptions = {
       source: fileName,
@@ -155,7 +158,7 @@ export class RefinaTransformer {
     let key: string;
     const s = new MagicString(src);
     if (ignoreTransformed || !transformed) {
-      key = this.toFileKey(this.laskFileKey++);
+      key = this.toFileKey(this.lastFileKey++);
       const lastIndex = this.transformNewFile(s, calls, key);
 
       this.transformedFiles.set(fileName, {
@@ -191,6 +194,26 @@ export class RefinaTransformer {
       key,
       code: s.toString(),
       map: s.generateMap(sourceMapOptions),
+    };
+  }
+
+  transformDep(fileName: string, src: string, force = false) {
+    if (!force && !src.includes(patterns.CKEY_PLACEHOLDER)) return null;
+    const transformed = this.transformedFiles.get(fileName);
+    const key = transformed?.key ?? this.toFileKey(this.lastFileKey++);
+    const s = new MagicString(src);
+    let pos = -1;
+    let i = 0;
+    while ((pos = src.indexOf(patterns.CKEY_PLACEHOLDER, pos + 1)) !== -1) {
+      s.update(pos, pos + 9, this.toCkey(key, ++i));
+    }
+    return {
+      key,
+      code: s.toString(),
+      map: s.generateMap({
+        source: fileName,
+        includeContent: true,
+      }),
     };
   }
 }
@@ -236,18 +259,19 @@ export function transformFragment(
   generateCkey: (callIndex: number) => string,
 ) {
   let lastKey = 0;
-  src = src.replaceAll(patterns.TEXT_NODE_TAGFUNC, (_, text) => {
-    const ckey = generateCkey(lastKey++);
-    return `_.$$t("${ckey}", \`${text}\`)`;
-  });
-  src = src.replaceAll(patterns.COMPONENT_FUNC, (_, name) => {
-    const ckey = generateCkey(lastKey++);
-    return name === "t" ? `_.$$t("${ckey}",` : `_.$$c("${ckey}", "${name}",`;
-  });
-  src = src.replaceAll(patterns.DIRECT_CALL, (_, name) => {
-    const ckey = generateCkey(lastKey++);
-    return `_.$$d("${ckey}", ${name})`;
-  });
+  src = src
+    .replaceAll(patterns.TEXT_NODE_TAGFUNC, (_, text) => {
+      const ckey = generateCkey(lastKey++);
+      return `_.$$t("${ckey}", \`${text}\`)`;
+    })
+    .replaceAll(patterns.COMPONENT_FUNC, (_, name) => {
+      const ckey = generateCkey(lastKey++);
+      return name === "t" ? `_.$$t("${ckey}",` : `_.$$c("${ckey}", "${name}",`;
+    })
+    .replaceAll(patterns.DIRECT_CALL, (_, name) => {
+      const ckey = generateCkey(lastKey++);
+      return `_.$$d("${ckey}", ${name})`;
+    });
   return lastKey === 0 ? null : src;
 }
 

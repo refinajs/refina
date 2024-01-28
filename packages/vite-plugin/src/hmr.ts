@@ -1,6 +1,6 @@
 import { RefinaHmr, mainUrlSuffix } from "@refina/hmr";
 import { FilterPattern, Plugin, createFilter } from "vite";
-import { ResolvedCommonOptions } from "./types";
+import { ResolvedCommonOptions } from "./options";
 
 export interface HmrOptions {
   /**
@@ -30,12 +30,12 @@ export default function Hmr(
     options.excludeHmr,
   );
   const shouldPerformHmr = (id: string, raw: string) =>
-    options.isRefina(id, raw) && HmrFilter(id);
+    options.filter(id, raw) && HmrFilter(id);
 
   const hmr = new RefinaHmr();
 
   return {
-    name: "refina-hmr",
+    name: "refina:hmr",
     apply: "serve",
     enforce: "pre",
     transform(raw, id) {

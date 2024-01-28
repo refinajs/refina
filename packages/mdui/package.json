@@ -10,18 +10,26 @@
   ],
   "files": [
     "src",
-    "styles.css",
+    "dist",
+    "tsconfig.json",
     "README.md"
   ],
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "default": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./*": "./*"
   },
   "scripts": {
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "prepublishOnly": "npm run check && npm run build"
   },
   "repository": {
     "type": "git",
@@ -31,11 +39,13 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "devDependencies": {
-    "@refina/tsconfig": "workspace:^",
-    "typescript": "^5.2.2",
     "@mdui/jq": "^3.0.1",
     "@mdui/shared": "^1.0.3",
-    "lit": "^3.1.0"
+    "@refina/tsconfig": "workspace:^",
+    "lit": "^3.1.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.2",
+    "vite-plugin-refina": "workspace:^"
   },
   "dependencies": {
     "mdui": "^2.0.3"

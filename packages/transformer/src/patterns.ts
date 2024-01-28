@@ -3,4 +3,5 @@ export default {
   COMPONENT_FUNC:
     /(?<![._$#a-zA-Z0-9])_\s*\.\s*([a-zA-Z0-9_]+)\s*(?:\<([\s\S]+?)\>)?\s*\(/g,
   DIRECT_CALL: /(?<![._$#a-zA-Z0-9])_\s*\(\s*([^{)]+?)\s*\)(?!\s*[{])/g,
-};
+  CKEY_PLACEHOLDER: `[#[${"CKEY"}]#]`,
+} as const;
