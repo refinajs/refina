@@ -55,7 +55,7 @@ export default function Transformer(
       config = resolvedConfig;
       if (config.mode === "production") {
         let i = 0;
-        transformer.toCkey = () => toBase62(i++);
+        transformer.toCkey = () => transformer.ckeyPrefix + toBase62(i++);
       }
     },
     transform(raw, id) {
