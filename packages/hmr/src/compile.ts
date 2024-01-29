@@ -1,7 +1,7 @@
 import type { SourceMap } from "magic-string";
 import { applyBindings } from "./applyBindings";
 import { mainUrlSuffix } from "./constants";
-import { Bindings, getBindings } from "./getBindings";
+import { getBindings } from "./getBindings";
 import { parse } from "./parser";
 import { wrapLocals } from "./wrapLocals";
 import { wrapMain } from "./wrapMain";
@@ -13,10 +13,7 @@ interface TransformResult {
 }
 
 export interface RefinaDescriptor {
-  bindings: Bindings;
-
   locals: TransformResult;
-
   main: TransformResult;
 }
 
@@ -36,7 +33,6 @@ export function compile(id: string, src: string): RefinaDescriptor | null {
   wrapMain(parseResult);
 
   return {
-    bindings,
     locals: {
       raw: localsRaw,
       code: parseResult.localsSrc.toString(),
