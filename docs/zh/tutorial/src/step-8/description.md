@@ -14,7 +14,7 @@ export default $view((id: number) => {
 });
 ```
 
-To use a view, just call the context object:
+调用上下文对象以使用视图：
 
 ```ts
 import { $app } from "refina";
