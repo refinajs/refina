@@ -3,7 +3,7 @@ import Basics from "@refina/basic-components";
 import JSConfetti from "js-confetti";
 const confetti = new JSConfetti();
 confetti.addConfetti();
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.$css`
     all: unset;
     font-size: xx-large;
@@ -12,3 +12,8 @@ $app.use(Basics)(_ => {
     margin: 3em 30%;`;
   _.button("🎉 Congratulations!") && confetti.addConfetti();
 });
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}

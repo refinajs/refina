@@ -21,7 +21,7 @@ import LowlevelVue from "snippets/lowlevel.vue";
 ```ts
 let count = 0;
 
-$app(_ => {
+const app = $app([], _ => {
   _._div(
     {
       id: "my-div",
@@ -32,7 +32,7 @@ $app(_ => {
         {
           onclick: () => {
             count++;
-            _.$update();
+            app.update();
           },
         },
         "Add",
@@ -76,7 +76,7 @@ $app(_ => {
 
 - 参数：（均为可选参数）
   - `data`: 将被合并到元素实例的对象。
-  - `inner`: 元素的内容（即打开、闭合标签之间的东西）。
+  - `children`: the children of the element.
   - `eventListeners`: 元素的事件侦听器。
 - 返回值: `void`
 
@@ -122,14 +122,14 @@ for (const key in data) {
 }
 ```
 
-## `inner` 参数
+## The `children` Parameter
 
 **类型**: `D<Content>`
 
 元素的内容（即打开、闭合标签之间的东西）。 它可以是：
 
 - 一个字符串或数字，将被以字符串节点的形式渲染。
-- 一个视图函数，将调用它以渲染内部的元素。
+- A view function, which will be rendered as the content of the element.
 - 一个包裹了上述2种之一的 `PD` 对象。
 
 ## `eventListeners` 参数
@@ -179,7 +179,7 @@ divElement.addEventListener(
     {
       onclick: () => {
         count++;
-        _.$update();
+        app.update();
       },
     },
     "Add",
@@ -190,7 +190,7 @@ divElement.addEventListener(
   _._button({}, "Add", {
     click: () => {
       count++;
-      _.$update();
+      app.update();
     },
   });
   ```
@@ -206,7 +206,7 @@ divElement.addEventListener(
 
 不同于组件函数，底层渲染函数不会再接收到事件后自动更新应用视图。
 
-如果你想要反映状态的更改，你需要手动调用 [`_.$update()`](../apis/directives.md#update) 方法以触发应用更新。
+如果你想要反映状态的更改，你需要手动调用 [`app.update()`](../apis/directives.md#update) 方法以触发应用更新。
 
 :::
 
@@ -219,7 +219,7 @@ import { ref, DOMElementComponent } from "refina";
 
 const iframeRef = ref<DOMElementComponent<"iframe">>();
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.$ref(iframeRef) &&
     _._iframe({
       src: iframeURL,

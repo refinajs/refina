@@ -9,20 +9,20 @@
 ```ts
 let count = 0;
 
-$app(_ => {
-  _.$cls`my-button`; // _.$cls 和 _.$css 仍然可用
+const app = $app([], _ => {
+  _.$cls`my-button`; // _.$cls and _.$css are also available
   _._button(
-    // 元素属性（可选）
+    // Attributes (optional)
     {
       id: "my-div",
       onclick() {
         count++;
-        _.$update(); // 记得更新应用
+        app.update(); // Update the application
       },
     },
-    // 元素内容（可选）
+    // Content (optional)
     _ => _.span(`Count is ${count}`),
-    // 事件侦听器（可选）
+    // Event listeners (optional)
     {
       hover: {
         mousemove(ev) {

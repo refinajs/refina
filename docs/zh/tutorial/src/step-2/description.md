@@ -1,6 +1,6 @@
 # 声明式渲染
 
-你在编辑器中看到的是一个 Refina 应用。 Refina 应用通过 `$app` 函数创建，其参数是一个视图函数。 这个视图函数就是应用的主函数，它根据 JavaScript 的状态来描述 HTML 应该是什么样子、要做什么事情。
+你在编辑器中看到的是一个 Refina 应用。 Refina 应用通过 `$app` 函数创建，其第一个参数是创建应用的选项，第二个参数是主函数。 创建应用的选项可以是插件列表，主函数则根据 JavaScript 的状态来描述 HTML 应该是什么样子、要做什么事情。
 
 每当接收事件和更新视图时，应用的主函数都会被调用。
 
@@ -9,7 +9,7 @@
 每个组件在视图函数的第一个参数上有一个对应的组件函数。这个参数是上下文对象，它必须被命名为 `_`。 简单地调用组件函数会渲染组件。
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.h1("Hello world!");
   // <h1>Hello world!</h1>
 
@@ -18,10 +18,20 @@ $app.use(Basics)(_ => {
 });
 ```
 
-组件的一些参数代表“内容”（子元素）。 你可以向它们传入字符串、数字或者是视图函数。
+TypeScript 并不知道有哪些插件被使用，除非显式地声明它们 ：
 
 ```ts
-$app.use(Basics)(_ => {
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}
+```
+
+组件的一些参数代表“内容”（子元素）。 You can pass a string, a number or a function (we call it "view function") to it:
+
+```ts
+$app([Basics], _ => {
   _.div("Hello world!");
   // <div>Hello world!</div>
 

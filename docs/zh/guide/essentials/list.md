@@ -16,7 +16,7 @@ import { bySelf } from "refina";
 
 const items = ["Apple", "Banana", "Orange"];
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.for(items, bySelf, item => {
     _.p(item);
   });
@@ -45,7 +45,7 @@ Refina 提供了两个 key 生成器：
 `_.forTimes` 没有 key 生成器。它将索引作为 key。
 
 ```ts
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.forTimes(5, index => {
     _.p(`This is the ${index + 1}th paragraph.`);
   });

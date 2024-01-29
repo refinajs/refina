@@ -1,5 +1,5 @@
-import { $view } from "refina";
-export default $view((_, title, content) => {
+import { $view, Content, _ } from "refina";
+export default $view((title: string, content: Content) => {
   _.h1(title);
   _.p(content);
 });

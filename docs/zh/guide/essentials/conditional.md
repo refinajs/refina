@@ -9,7 +9,7 @@ import ConditionalRenderingVue from "snippets/conditional-rendering.vue";
 ```ts
 let count = 0;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.p(`Count is: ${count}`);
 
   _.button(`Add`) && count++;

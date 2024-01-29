@@ -7,20 +7,20 @@
 使用 `$view` 函数来定义视图：
 
 ```ts
-import { $view } from "refina";
+import { $view, _ } from "refina";
 
-export default $view((_, id) => {
-  _.h1("Card");
+export default $view((id: number) => {
+  _.h1(`Card ${id}`);
 });
 ```
 
-将上下文对象作为函数调用以渲染视图：
+To use a view, just call the context object:
 
 ```ts
 import { $app } from "refina";
 import CardView from "./CardView";
 
-$app(_ => {
+$app([], _ => {
   _(CardView)("1");
   _(CardView)("2");
   _(CardView)("3");

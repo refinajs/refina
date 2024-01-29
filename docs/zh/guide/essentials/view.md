@@ -21,7 +21,7 @@ export default $view(_ => {
 ```ts
 import MyView from "./MyView.ts";
 
-$app(_ => {
+$app([], _ => {
   _(MyView)();
   _.div(MyView.$func);
 });
@@ -44,10 +44,12 @@ $app(_ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-视图可以有参数。 你可以使用普通的语法定义视图参数：
+A view can have parameters:
 
 ```ts
-export default $view((_, name: string, id?: number) => {
+import { $view, _ } from "refina";
+
+export default $view((name: string, id?: number) => {
   _.p(_ => {
     _.t`My name is ${name}. `;
     id !== undefined && _.t(`My ID is ${id}.`);
@@ -55,7 +57,7 @@ export default $view((_, name: string, id?: number) => {
 });
 ```
 
-然后可以这样向视图传递参数：
+Then, you can pass the parameters to the view:
 
 ```ts
 _(MyView)("John", 123);
@@ -89,13 +91,13 @@ export default $view(_ => {
 
 - 组件被注册为上下文对象中的函数，而视图只是一个普通的函数。
 - 每个组件实例有它专属的状态，而视图没有。
-- 组件有 [`$mainEl` property](./component.md#main-element) 属性，并且可以向它添加类名和样式；视图则不行。
+- 组件有 [`$primaryEl` 属性](./component.md#primary-element)，并且可以向它添加类名和样式；视图则不行。
 - 组件可以通过 [`_.$ref`](../apis/directives.md#ref) 指令引用其实例，而视图不行，因为视图没有实例。
 - 组件可以有[额外的 props](./component.md#extra-props)，但是视图没有，视图只有普通的函数参数。
 
 ### 如何选择
 
-如果你想复用**页面的片段**，可以使用 _视图_。
+If you want to reuse a **view function of the page**, you should use a _view_.
 
 如果你想复用**有状态的代码**，你需要使用_组件_。
 

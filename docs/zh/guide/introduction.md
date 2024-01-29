@@ -12,9 +12,15 @@ import Basics from "@refina/basic-components";
 
 let count = 0;
 
-$app.use(Basics)(_ => {
+$app([Basics], _ => {
   _.button(`Count is: ${count}`) && count++;
 });
+
+declare module "refina" {
+  interface Plugins {
+    Basics: typeof Basics;
+  }
+}
 ```
 
 **结果展示**
