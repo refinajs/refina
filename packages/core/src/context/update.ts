@@ -282,10 +282,7 @@ export function initializeUpdateContext(app: App) {
 
       const attrs = { ...(attrsArg as object), ...context.$$consumeAttrs() };
 
-      if (
-        funcName.startsWith("_svg") &&
-        funcName[4].toUpperCase() === funcName[4]
-      ) {
+      if (/^_svg[A-Z]/.test(funcName)) {
         // The context function is for a SVG element.
         const tagName = (funcName[4].toLowerCase() +
           funcName.slice(5)) as keyof SVGElementTagNameMap;
