@@ -32,7 +32,6 @@ export function RefinaLib(options: RefinaLibOptions = {}): Plugin[] {
               fileName: "index",
             },
             sourcemap: true,
-            emptyOutDir: true,
             rollupOptions: {
               external(source, importer, isResolved) {
                 return (
