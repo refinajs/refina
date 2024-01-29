@@ -8,7 +8,6 @@ import {
   DOMNodeComponent,
   HTMLElementComponent,
   SVGElementComponent,
-  SVGElementFuncData as SVGElementFuncAttrs,
   TextNodeComponent,
 } from "../dom";
 import {
@@ -106,48 +105,6 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    * @param content The content of the DOM element component.
    */
   $$updateDOMContent(el: DOMElementComponent, content?: Content): void;
-
-  /**
-   * Process a HTML element.
-   *
-   * @param ckey The Ckey of the element.
-   * @param tagName The tag name of the element.
-   * @param cls The classes of the element.
-   * @param css The styles of the element.
-   * @param attrs The attrs of the element.
-   * @param children Children of the element.
-   * @param eventListeners The event listeners of the element.
-   */
-  $$processHTMLElement<E extends keyof HTMLElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    cls: string,
-    css: string,
-    attrs?: Partial<HTMLElementTagNameMap[E]>,
-    children?: Content,
-    eventListeners?: DOMElementEventListenersInfoRaw<E>,
-  ): void;
-
-  /**
-   * Process a SVG element.
-   *
-   * @param ckey The Ckey of the element.
-   * @param tagName The tag name of the element.
-   * @param cls The classes of the element.
-   * @param css The styles of the element.
-   * @param attrs The attrs of the element.
-   * @param children Children of the element.
-   * @param eventListeners The event listeners of the element.
-   */
-  $$processSVGElement<E extends keyof SVGElementTagNameMap>(
-    ckey: string,
-    tagName: E,
-    cls: string,
-    css: string,
-    attrs?: SVGElementFuncAttrs,
-    children?: Content,
-    eventListeners?: DOMElementEventListenersInfoRaw<E>,
-  ): void;
 }
 
 /**
@@ -278,44 +235,51 @@ export function initializeUpdateContext(app: App) {
   context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
-      const [attrsArg, children, eventListeners] = args;
+      const [attrsArg, children, eventListeners] = args as [
+        attrs?: Record<string, unknown>,
+        children?: Content,
+        eventListeners?: DOMElementEventListenersInfoRaw,
+      ];
 
+      const cls = context.$$consumeCls();
+      const css = context.$$consumeCss();
       const attrs = { ...(attrsArg as object), ...context.$$consumeAttrs() };
 
-      if (/^_svg[A-Z]/.test(funcName)) {
-        // The context function is for a SVG element.
-        const tagName = (funcName[4].toLowerCase() +
-          funcName.slice(5)) as keyof SVGElementTagNameMap;
-        context.$$processSVGElement(
-          ckey,
-          tagName,
-          context.$$consumeCls(),
-          context.$$consumeCss(),
-          attrs as SVGElementFuncAttrs | undefined,
-          children as Content | undefined,
-          eventListeners as
-            | DOMElementEventListenersInfoRaw<keyof SVGElementTagNameMap>
-            | undefined,
-        );
-      } else {
-        // The context function is for a HTML element.
-        const rawTagName = funcName.slice(1);
-        const tagName = (context.$app.htmlElementAlias[rawTagName] ??
-          rawTagName) as keyof HTMLElementTagNameMap;
-        context.$$processHTMLElement(
-          ckey,
-          tagName,
-          context.$$consumeCls(),
-          context.$$consumeCss(),
-          attrs as
-            | Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]>
-            | undefined,
-          children as Content | undefined,
-          eventListeners as
-            | DOMElementEventListenersInfoRaw<keyof HTMLElementTagNameMap>
-            | undefined,
-        );
+      let el = context.$$currentRefNode[ckey] as
+        | DOMElementComponent
+        | undefined;
+      if (!el) {
+        if (/^_svg[A-Z]/.test(funcName)) {
+          // The context function is for a SVG element.
+          const tagName = (funcName[4].toLowerCase() +
+            funcName.slice(5)) as keyof SVGElementTagNameMap;
+          // Create a new element if not exist.
+          el = new SVGElementComponent<keyof SVGElementTagNameMap>(
+            document.createElementNS("http://www.w3.org/2000/svg", tagName),
+          );
+          context.$$currentRefNode[ckey] = el;
+        } else {
+          // The context function is for a HTML element.
+          const rawTagName = funcName.slice(1);
+          const tagName = (context.$app.htmlElementAlias[rawTagName] ??
+            rawTagName) as keyof HTMLElementTagNameMap;
+          // Create a new element if not exist.
+          el = new HTMLElementComponent<keyof HTMLElementTagNameMap>(
+            document.createElement(tagName),
+          );
+          context.$$currentRefNode[ckey] = el;
+        }
       }
+
+      context.$$fulfillRef(el);
+      context.$$fulfillPrimaryEl(el);
+
+      context.$$updateDOMContent(el, children);
+
+      el.addAttrs(attrs);
+      el.addCls(cls);
+      el.addCss(css);
+      el.addEventListeners(eventListeners ?? {});
       // HTML and SVG element functions do not have a return value.
       return;
     }
@@ -454,64 +418,6 @@ export function initializeUpdateContext(app: App) {
       context.$$currentDOMParent = parent;
       context.$$currentRefNode = refTreeNode;
     }
-  };
-
-  context.$$processHTMLElement = (
-    ckey,
-    tagName,
-    cls,
-    css,
-    attrs = {},
-    children,
-    eventListeners = {},
-  ) => {
-    let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
-    if (!el) {
-      // Create a new element if not exist.
-      el = new HTMLElementComponent<keyof HTMLElementTagNameMap>(
-        document.createElement(tagName),
-      );
-      context.$$currentRefNode[ckey] = el;
-    }
-
-    context.$$fulfillRef(el);
-    context.$$fulfillPrimaryEl(el);
-
-    context.$$updateDOMContent(el, children);
-
-    el.addAttrs(attrs);
-    el.addCls(cls);
-    el.addCss(css);
-    el.addEventListeners(eventListeners);
-  };
-
-  context.$$processSVGElement = (
-    ckey,
-    tagName,
-    cls,
-    css,
-    attrs = {},
-    children,
-    eventListeners = {},
-  ) => {
-    let el = context.$$currentRefNode[ckey] as DOMElementComponent | undefined;
-    if (!el) {
-      // Create a new element if not exist.
-      el = new SVGElementComponent<keyof SVGElementTagNameMap>(
-        document.createElementNS("http://www.w3.org/2000/svg", tagName),
-      );
-      context.$$currentRefNode[ckey] = el;
-    }
-
-    context.$$fulfillRef(el);
-    context.$$fulfillPrimaryEl(el);
-
-    context.$$updateDOMContent(el, children);
-
-    el.addAttrs(attrs);
-    el.addCls(cls);
-    el.addCss(css);
-    el.addEventListeners(eventListeners);
   };
 
   app.callHook("initContext", context);

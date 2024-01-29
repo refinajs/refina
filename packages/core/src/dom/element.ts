@@ -85,7 +85,7 @@ export type DOMElementEventListeners<E extends keyof DOMElementTagNameMap> =
  * The event listeners info type of a DOM element.
  */
 export type DOMElementEventListenersInfoRaw<
-  E extends keyof DOMElementTagNameMap,
+  E extends keyof DOMElementTagNameMap = keyof DOMElementTagNameMap,
 > = {
   [K in keyof DOMElementEventListeners<E>]?:
     | DOMElementEventListeners<E>[K]
