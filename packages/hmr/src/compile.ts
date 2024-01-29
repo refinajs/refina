@@ -29,7 +29,7 @@ export function compile(id: string, src: string): RefinaDescriptor | null {
   const bindings = getBindings(parseResult);
   const usedBindings = applyBindings(parseResult, bindings);
 
-  wrapLocals(parseResult, id, usedBindings);
+  wrapLocals(parseResult, id, usedBindings, bindings);
   wrapMain(parseResult);
 
   return {
