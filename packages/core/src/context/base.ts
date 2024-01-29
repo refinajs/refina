@@ -2,6 +2,7 @@ import type { App, RefTreeNode } from "../app";
 import { Component, isComponentCtor } from "../component";
 import { AppState } from "../constants";
 import { Ref } from "../data";
+import { PatchTarget } from "../patch/patch";
 import type { RecvContext } from "./recv";
 import type { UpdateContext } from "./update";
 
@@ -247,6 +248,14 @@ export interface IntrinsicBaseContext {
   $attrs<T extends object>(attrs: T): true;
 
   /**
+   * Patch the selected element or component.
+   *
+   * @param selector The selector of the element to patch.
+   */
+  $patch(selector: string): PatchTarget;
+  $patch(template: TemplateStringsArray, ...args: unknown[]): PatchTarget;
+
+  /**
    * The transformed context function calls (excluding `_.t` calls).
    *
    * A unique key is generated for each call in source code,
@@ -326,12 +335,14 @@ export interface IntrinsicBaseContext {
    * @param ctor The constructor of the component class.
    * @param factory The factory function of the component.
    * @param args The parameters to pass to the main function of the component.
+   * @param name The name of the component.
    * @returns The component instance.
    */
   $$processComponent<T extends Component>(
     ckey: string,
     ctor: new () => T,
     args: unknown[],
+    name: string,
   ): unknown;
 }
 
@@ -375,7 +386,8 @@ export function initializeBaseContext(app: App) {
       return undefined;
     } else if (typeof callee === "function") {
       if (isComponentCtor(callee)) {
-        return (...args: any) => context.$$processComponent(ckey, callee, args);
+        return (...args: any) =>
+          context.$$processComponent(ckey, callee, args, callee.name);
       } else {
         return callee(ckey, app);
       }

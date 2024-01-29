@@ -11,12 +11,26 @@ import {
   TextNodeComponent,
 } from "../dom";
 import {
+  PatchTarget,
+  SelectorNode,
+  createPatchTarget,
+  parseSelector,
+} from "../patch";
+import {
   ContextFuncs,
   IntrinsicBaseContext,
   RealContextFuncs,
   _,
   initializeBaseContext,
 } from "./base";
+
+interface NextData {
+  props: Record<any, any>;
+  attrs: Record<any, any>;
+  cls: string;
+  css: string;
+  eventListeners: DOMElementEventListenersInfoRaw[];
+}
 
 export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
   $lowlevel: IntrinsicUpdateContext;
@@ -34,29 +48,17 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
   $$pendingPrimaryElOwner: (DOMElementComponent | Component)[];
 
   /**
+   * Fulfill the pending primary element owners with the given primary element,
+   *  and clear the pending primary element owners list.
+   *
+   * @param primaryEl The primary element to fulfill.
+   */
+  $$fulfillPrimaryEl(primaryEl: DOMElementComponent): void;
+
+  /**
    * The `Ref` object of the next component.
    */
   $$nextRef: Ref<unknown> | null;
-
-  /**
-   * The properties that will be set to the next component.
-   */
-  $$nextProps: Record<string | number | symbol, unknown>;
-
-  /**
-   * The classes that will be added to the next component.
-   */
-  $$nextCls: string;
-
-  /**
-   * The styles that will be added to the next component.
-   */
-  $$nextCss: string;
-
-  /**
-   * The attributes that will be added to the next element.
-   */
-  $$nextAttrs: Record<string, unknown>;
 
   /**
    * Fulfill `nextRef` with the given value,
@@ -66,37 +68,20 @@ export interface IntrinsicUpdateContext extends IntrinsicBaseContext {
    */
   $$fulfillRef(current: unknown): void;
 
-  /**
-   * Fulfill the pending primary element owners with the given primary element,
-   *  and clear the pending primary element owners list.
-   *
-   * @param primaryEl The primary element to fulfill.
-   */
-  $$fulfillPrimaryEl(primaryEl: DOMElementComponent): void;
+  $$pendingPatches: SelectorNode[];
+
+  $$fulfillPatches(name: string): PatchTarget[];
 
   /**
-   * Get the classes that will be added to the next component,
-   *  and clear `nextCls`.
-   *
-   * @returns The classes.
+   * The data of the next element or component.
    */
-  $$consumeCls(): string;
+  $$nextData: NextData;
 
   /**
-   * Get the styles that will be added to the next component,
-   *  and clear `nextCss`.
-   *
-   * @returns The styles.
+   * Get the data of the next element or component,
+   *  and clear the data.
    */
-  $$consumeCss(): string;
-
-  /**
-   * Get the attrs that will be added to the next component,
-   *  and clear `nextAttrs`.
-   *
-   * @returns The attrs.
-   */
-  $$consumeAttrs(): Record<string, unknown>;
+  $$consumeNextData(patches: PatchTarget[]): NextData;
 
   /**
    * Process the content of a DOM element component in `UPDATE` state.
@@ -133,15 +118,17 @@ export function initializeUpdateContext(app: App) {
 
   context.$$currentDOMParent = app.root;
 
+  context.$$pendingPatches = [];
+
   context.$$nextRef = null;
 
-  context.$$nextProps = {};
-
-  context.$$nextCls = "";
-
-  context.$$nextCss = "";
-
-  context.$$nextAttrs = {};
+  context.$$nextData = {
+    props: {},
+    attrs: {},
+    cls: "",
+    css: "",
+    eventListeners: [],
+  };
 
   context.$ref = (ref, ...refs) => {
     context.$$nextRef = refs.length === 0 ? ref : mergeRefs(ref, ...refs);
@@ -163,87 +150,131 @@ export function initializeUpdateContext(app: App) {
   };
 
   context.$props = props => {
-    Object.assign(context.$$nextProps, props);
+    Object.assign(context.$$nextData.props, props);
     return true;
   };
 
   context.$cls = (...args: unknown[]) => {
-    context.$$nextCls +=
+    context.$$nextData.cls +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]) + " ";
     return true;
   };
 
-  context.$$consumeCls = () => {
-    const cls = context.$$nextCls;
-    context.$$nextCls = "";
-    return cls;
-  };
-
   context.$css = (...args: unknown[]) => {
-    context.$$nextCss +=
+    context.$$nextData.css +=
       (Array.isArray(args[0])
         ? String.raw({ raw: args[0] }, ...args.slice(1))
         : args[0]) + ";";
     return true;
   };
 
-  context.$$consumeCss = () => {
-    const css = context.$$nextCss;
-    context.$$nextCss = "";
-    return css;
-  };
-
   context.$id = (...args: unknown[]) => {
-    context.$$nextAttrs.id = Array.isArray(args[0])
+    context.$$nextData.attrs.id = Array.isArray(args[0])
       ? String.raw({ raw: args[0] }, ...args.slice(1))
       : args[0];
     return true;
   };
 
   context.$attrs = attrs => {
-    Object.assign(context.$$nextAttrs, attrs);
+    Object.assign(context.$$nextData.attrs, attrs);
     return true;
   };
 
-  context.$$consumeAttrs = () => {
-    const attrs = context.$$nextAttrs;
-    context.$$nextAttrs = {};
-    return attrs;
+  context.$patch = (...args) => {
+    const selector = Array.isArray(args[0])
+      ? String.raw({ raw: args[0] }, ...args.slice(1))
+      : (args[0] as string);
+    const patchTarget = createPatchTarget();
+    context.$$pendingPatches.push(parseSelector(selector, patchTarget));
+    return patchTarget;
   };
 
-  context.$$assertEmpty = () => {
-    if (context.$$nextRef) {
-      console.warn("Ref", context.$$nextRef, "is not fulfilled.");
-      context.$$nextRef = null;
-    }
-    if (Object.keys(context.$$nextProps).length > 0) {
-      console.warn("Props", context.$$nextProps, "is not fulfilled.");
-      context.$$nextProps = {};
-    }
-    if (context.$$nextCls.length > 0) {
-      console.warn("Classes", context.$$nextCls, "is not fulfilled.");
-      context.$$nextCls = "";
-    }
-    if (context.$$nextCss.length > 0) {
-      console.warn("Styles", context.$$nextCss, "is not fulfilled.");
-      context.$$nextCss = "";
-    }
+  context.$$fulfillPatches = name => {
+    const patches = context.$$pendingPatches.map(patch => patch(name));
+    context.$$pendingPatches = patches.filter(
+      patch => typeof patch === "function",
+    ) as SelectorNode[];
+    return patches.filter(patch => typeof patch === "object") as PatchTarget[];
   };
+
+  context.$$consumeNextData = patches => {
+    const data = {
+      props: context.$$nextData.props,
+      attrs: context.$$nextData.attrs,
+      cls: context.$$nextData.cls,
+      css: context.$$nextData.css,
+      eventListeners: context.$$nextData.eventListeners,
+    };
+    for (let i = patches.length - 1; i >= 0; i--) {
+      const patch = patches[i].patchData;
+      Object.assign(data.props, patch.props);
+      Object.assign(data.attrs, patch.attrs);
+      if (patch.resetCls) {
+        data.cls = patch.cls;
+      } else {
+        data.cls += " " + patch.cls;
+      }
+      if (patch.resetCss) {
+        data.css = patch.css;
+      } else {
+        data.css += " " + patch.css;
+      }
+      if (Object.keys(patch.eventListeners).length > 0) {
+        data.eventListeners.push(patch.eventListeners);
+      }
+    }
+    context.$$nextData = {
+      props: {},
+      attrs: {},
+      cls: "",
+      css: "",
+      eventListeners: [],
+    };
+    return data;
+  };
+
+  if (import.meta.env.DEV) {
+    context.$$assertEmpty = () => {
+      if (context.$$nextRef) {
+        console.warn("Ref", context.$$nextRef, "is not fulfilled.");
+        context.$$nextRef = null;
+      }
+      const { props, attrs, cls, css, eventListeners } = context.$$nextData;
+      if (Object.keys(props).length > 0) {
+        console.warn("Props", props, "is not fulfilled.");
+      }
+      if (Object.keys(attrs).length > 0) {
+        console.warn("Attrs", attrs, "is not fulfilled.");
+      }
+      if (cls.length > 0) {
+        console.warn("Classes", cls, "is not fulfilled.");
+      }
+      if (css.length > 0) {
+        console.warn("Styles", css, "is not fulfilled.");
+      }
+      if (eventListeners.length > 0) {
+        console.warn("Event listeners", eventListeners, "is not fulfilled.");
+      }
+      context.$$nextData = {
+        props: {},
+        attrs: {},
+        cls: "",
+        css: "",
+        eventListeners: [],
+      };
+    };
+  }
 
   context.$$c = (ckey, funcName, ...args) => {
     if (funcName[0] === "_") {
       // The context function is for a HTML or SVG element.
-      const [attrsArg, children, eventListeners] = args as [
+      const [attrsArg, children, eventListenersArg] = args as [
         attrs?: Record<string, unknown>,
         children?: Content,
         eventListeners?: DOMElementEventListenersInfoRaw,
       ];
-
-      const cls = context.$$consumeCls();
-      const css = context.$$consumeCss();
-      const attrs = { ...(attrsArg as object), ...context.$$consumeAttrs() };
 
       let el = context.$$currentRefNode[ckey] as
         | DOMElementComponent
@@ -271,15 +302,30 @@ export function initializeUpdateContext(app: App) {
         }
       }
 
+      const patches = context.$$pendingPatches;
+      const thisPatches = context.$$fulfillPatches(funcName);
+      const { props, attrs, cls, css, eventListeners } =
+        context.$$consumeNextData(thisPatches);
+
+      if (import.meta.env.DEV) {
+        if (Object.keys(props).length > 0) {
+          console.warn(`Props ${Object.keys(props)} is not fulfilled.`);
+        }
+      }
+
       context.$$fulfillRef(el);
       context.$$fulfillPrimaryEl(el);
 
       context.$$updateDOMContent(el, children);
 
-      el.addAttrs(attrs);
+      el.addAttrs({ ...attrsArg, ...attrs });
       el.addCls(cls);
       el.addCss(css);
-      el.addEventListeners(eventListeners ?? {});
+      eventListenersArg && el.addEventListeners(eventListenersArg);
+      eventListeners.forEach(e => el!.addEventListeners(e));
+
+      context.$$pendingPatches = patches;
+
       // HTML and SVG element functions do not have a return value.
       return;
     }
@@ -295,15 +341,6 @@ export function initializeUpdateContext(app: App) {
   };
 
   context.$$t = (ckey, content) => {
-    if (import.meta.env.DEV) {
-      if (context.$$consumeCls().length > 0) {
-        console.warn(`Text node cannot have classes`);
-      }
-      if (context.$$consumeCss().length > 0) {
-        console.warn(`Text node cannot have style`);
-      }
-    }
-
     const text = String(content);
 
     let textNode = context.$$currentRefNode[ckey] as
@@ -318,6 +355,10 @@ export function initializeUpdateContext(app: App) {
 
     context.$$fulfillRef(textNode);
 
+    if (import.meta.env.DEV) {
+      context.$$assertEmpty();
+    }
+
     context.$$currentDOMParent.pendingChildren.push(textNode);
   };
 
@@ -325,6 +366,7 @@ export function initializeUpdateContext(app: App) {
     ckey: string,
     ctor: new () => T,
     args: unknown[],
+    name: string,
   ) => {
     let component = context.$$currentRefNode[ckey] as T | undefined;
 
@@ -341,15 +383,15 @@ export function initializeUpdateContext(app: App) {
     const pendingPrimaryElOwners = context.$$pendingPrimaryElOwner;
     context.$$pendingPrimaryElOwner = [];
 
-    // Store the classes and styles for context component and clear them.
-    const css = context.$$consumeCss();
-    const cls = context.$$consumeCls();
+    const patches = context.$$pendingPatches;
+    const thisPatches = context.$$fulfillPatches(name);
+    const { props, attrs, cls, css, eventListeners } =
+      context.$$consumeNextData(thisPatches);
+
+    Object.assign(component, props);
 
     component.$primaryEl = undefined as DOMElementComponent | undefined;
     context.$$pendingPrimaryElOwner.push(component);
-
-    Object.assign(component, context.$$nextProps);
-    context.$$nextProps = {};
 
     context.$$currentRefNode = component.$refTreeNode;
 
@@ -364,8 +406,6 @@ export function initializeUpdateContext(app: App) {
       context.$app.callHook("onError", e);
     }
 
-    context.$$currentRefNode = parentRefNode;
-
     if (component.$primaryEl) {
       // There is a $primaryEl in the component.
       for (const owner of pendingPrimaryElOwners) {
@@ -376,14 +416,20 @@ export function initializeUpdateContext(app: App) {
       // All the pending primary element owners are fulfilled.
       context.$$pendingPrimaryElOwner = [];
 
-      // Add the classes and styles to the primary element.
-      component.$primaryEl.addCls(cls);
-      component.$primaryEl.addCss(css);
+      // Add attrs, classes and styles to the primary element.
+      const el = component.$primaryEl;
+      el.addAttrs(attrs);
+      el.addCls(cls);
+      el.addCss(css);
+      eventListeners.forEach(e => el.addEventListeners(e));
     } else {
       // Not append arrays to ignore pending primary element owners in the children scope.
       // Pass the pending primary element owners for context component to the next component.
       context.$$pendingPrimaryElOwner = pendingPrimaryElOwners;
     }
+
+    context.$$currentRefNode = parentRefNode;
+    context.$$pendingPatches = patches;
 
     return ret;
   };

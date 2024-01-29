@@ -397,6 +397,11 @@ export class HTMLElementComponent<
         this.node[key] = newValue;
       }
     }
+    for (const key in this.appliedAttrs) {
+      if (!(key in this.pendingAttrs)) {
+        delete this.node[key];
+      }
+    }
     this.appliedAttrs = this.pendingAttrs;
     this.pendingAttrs = {};
   }
@@ -418,6 +423,11 @@ export class SVGElementComponent<
         // For SVG elements, all attributes are string,
         //  and just assign it to the SVGElement does not work.
         this.node.setAttribute(key, String(newValue));
+      }
+    }
+    for (const key in this.appliedAttrs) {
+      if (!(key in this.pendingAttrs)) {
+        this.node.removeAttribute(key);
       }
     }
     this.appliedAttrs = this.pendingAttrs;

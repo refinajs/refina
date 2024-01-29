@@ -62,12 +62,13 @@ export function isComponentCtor(ctor: Function): ctor is new () => Component {
   return "prototype" in ctor && ctor.prototype instanceof Component;
 }
 
-export function toComponentFunc(ctor: new () => Component) {
+export function toComponentFunc(name: string, ctor: new () => Component) {
   return function (ckey: string, ...args: any) {
     return (_ as unknown as IntrinsicBaseContext).$$processComponent(
       ckey,
       ctor,
       args,
+      name,
     );
   };
 }

@@ -1,6 +1,7 @@
 import { App } from "../app";
 import { Component } from "../component";
 import { Content, DOMElementComponent } from "../dom";
+import { emptyPatchTarget } from "../patch/patch";
 import {
   ContextFuncs,
   IntrinsicBaseContext,
@@ -56,6 +57,8 @@ export function initializeRecvContext(app: App) {
     context.$id =
     context.$attrs =
       () => true;
+
+  context.$patch = () => emptyPatchTarget;
 
   context.$$assertEmpty = () => {};
 
@@ -116,6 +119,7 @@ export function initializeRecvContext(app: App) {
     ckey: string,
     ctor: new () => T,
     args: unknown[],
+    _name: string,
   ) => {
     let component = context.$$currentRefNode[ckey] as T | undefined;
 

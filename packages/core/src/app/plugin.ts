@@ -41,7 +41,7 @@ export async function installPlugins(app: App, plugins: PluginOption) {
             `Component name "${name}" should not start with "$".`,
           );
         }
-        app.contextFuncs[name] = toComponentFunc(component);
+        app.contextFuncs[name] = toComponentFunc(name, component);
       }
     }
 
