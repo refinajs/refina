@@ -20,8 +20,9 @@ export function wrapLocals(
   );
 
   let left = `\nconst ${localsObjId} = Object.seal({`;
-  for (const [name, readonly] of Object.entries(bindings)) {
-    if (readonly) {
+  const sortedBindingNames = Object.keys(bindings).sort();
+  for (const name of sortedBindingNames) {
+    if (bindings[name]) {
       left += `  ${name},\n`;
     } else {
       left += `  get ${name}() { return ${name} },\n`;
