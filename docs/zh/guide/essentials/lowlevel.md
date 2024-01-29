@@ -76,7 +76,7 @@ const app = $app([], _ => {
 
 - 参数：（均为可选参数）
   - `data`: 将被合并到元素实例的对象。
-  - `children`: the children of the element.
+  - `children`: 子元素。
   - `eventListeners`: 元素的事件侦听器。
 - 返回值: `void`
 
@@ -122,14 +122,14 @@ for (const key in data) {
 }
 ```
 
-## The `children` Parameter
+## `children` 参数
 
 **类型**: `D<Content>`
 
 元素的内容（即打开、闭合标签之间的东西）。 它可以是：
 
 - 一个字符串或数字，将被以字符串节点的形式渲染。
-- A view function, which will be rendered as the content of the element.
+- 一个视图函数，将调用它以渲染内部的元素。
 - 一个包裹了上述2种之一的 `PD` 对象。
 
 ## `eventListeners` 参数
