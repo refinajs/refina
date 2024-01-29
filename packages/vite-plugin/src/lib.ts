@@ -31,6 +31,7 @@ export function RefinaLib(options: RefinaLibOptions = {}): Plugin[] {
               formats: ["es"],
               fileName: "index",
             },
+            target: "esnext",
             sourcemap: true,
             rollupOptions: {
               external(source, importer, isResolved) {
