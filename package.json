@@ -18,6 +18,7 @@
     "test": "pnpm run build:tests && vitest --coverage",
     "coverage": "vitest run --coverage",
     "build": "pnpm -r run build",
+    "build:gallery": "pnpm -r --filter \"@refina/gallery...\" run build",
     "build:docs": "pnpm -r --filter \"@refina/docs...\" run build",
     "build:tests": "pnpm -r --filter \"@refina/tests...\" run build",
     "check": "pnpm -r --parallel run check",
