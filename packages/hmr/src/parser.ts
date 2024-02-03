@@ -1,17 +1,17 @@
 import { parse as babelParse } from "@babel/parser";
 import t from "@babel/types";
-import MagicString from "magic-string";
 
 export interface ParseResult {
-  localsAst: t.Statement[];
-  localsSrc: MagicString;
+  statements: t.Statement[];
 
-  mainAst: t.Statement[];
-  mainSrc: MagicString;
+  importStmts: t.Statement[];
+  methodStmts: t.FunctionDeclaration[];
+  viewStmts: t.Statement[];
+  otherStmts: t.Statement[];
 
-  appCallAst: t.ExpressionStatement | t.VariableDeclaration;
+  appStmt: t.ExpressionStatement | t.VariableDeclaration;
   appInstName: string | null;
-  mainFuncAst: t.Expression;
+  mainFuncExpr: t.Expression;
 }
 
 export function parse(src: string): ParseResult | null {
@@ -20,15 +20,17 @@ export function parse(src: string): ParseResult | null {
     plugins: ["typescript"],
   }).program.body;
 
-  const localsAst: t.Statement[] = [];
-  const mainAst: t.Statement[] = [];
-  let appCallAst: t.ExpressionStatement | t.VariableDeclaration | null = null;
+  const importStmts: t.Statement[] = [];
+  const methodStmts: t.FunctionDeclaration[] = [];
+  const viewStmts: t.Statement[] = [];
+  let appStmt: t.ExpressionStatement | t.VariableDeclaration | null = null;
+  const otherStmts: t.Statement[] = [];
 
-  for (const statement of statements) {
+  for (let i = 0; i < statements.length; i++) {
+    const statement = statements[i];
     switch (statement.type) {
       case "ImportDeclaration":
-        localsAst.push(statement);
-        mainAst.push(statement);
+        importStmts.push(statement);
         break;
       case "VariableDeclaration":
         if (
@@ -39,16 +41,14 @@ export function parse(src: string): ParseResult | null {
         ) {
           const calleeName = statement.declarations[0].init.callee.name;
           if (calleeName === "$app") {
-            localsAst.push(statement);
-            mainAst.push(statement);
-            appCallAst = statement;
+            appStmt = statement;
           } else if (calleeName === "$view") {
-            mainAst.push(statement);
+            viewStmts.push(statement);
           } else {
-            localsAst.push(statement);
+            otherStmts.push(statement);
           }
         } else {
-          localsAst.push(statement);
+          otherStmts.push(statement);
         }
         break;
       case "ExpressionStatement":
@@ -57,61 +57,45 @@ export function parse(src: string): ParseResult | null {
           statement.expression.callee.type === "Identifier" &&
           statement.expression.callee.name === "$app"
         ) {
-          localsAst.push(statement);
-          mainAst.push(statement);
-          appCallAst = statement;
+          appStmt = statement;
         } else {
-          localsAst.push(statement);
+          otherStmts.push(statement);
         }
         break;
+      case "FunctionDeclaration":
+        methodStmts.push(statement);
+        break;
       default:
-        localsAst.push(statement);
+        otherStmts.push(statement);
     }
   }
 
-  if (!appCallAst) return null;
-
-  const localsSrc = cutSrc(src, localsAst);
-  const mainSrc = cutSrc(src, mainAst);
+  if (!appStmt) return null;
 
   let appInstName: string | null = null;
-  let mainFuncAst: t.Expression;
+  let mainFuncExpr: t.Expression;
 
-  if (appCallAst.type === "VariableDeclaration") {
-    const id = appCallAst.declarations[0].id;
+  if (appStmt.type === "VariableDeclaration") {
+    const id = appStmt.declarations[0].id;
     if (id.type !== "Identifier")
       throw new Error("App instance must be an identifier.");
     appInstName = id.name;
 
-    mainFuncAst = (appCallAst.declarations[0].init! as t.CallExpression)
+    mainFuncExpr = (appStmt.declarations[0].init! as t.CallExpression)
       .arguments[1] as t.Expression;
   } else {
-    mainFuncAst = (appCallAst.expression as t.CallExpression)
+    mainFuncExpr = (appStmt.expression as t.CallExpression)
       .arguments[1] as t.Expression;
   }
 
   return {
-    localsAst,
-    localsSrc,
-    mainAst,
-    mainSrc,
-    appCallAst,
+    statements,
+    importStmts,
+    methodStmts,
+    viewStmts,
+    appStmt,
+    otherStmts,
     appInstName,
-    mainFuncAst,
+    mainFuncExpr,
   };
-}
-
-function cutSrc(src: string, statements: t.Statement[]) {
-  const s = new MagicString(src);
-  let cutStart = 0;
-  for (const statement of statements) {
-    if (cutStart < statement.start!) {
-      s.update(cutStart, statement.start!, "\n");
-    } else if (cutStart > statement.start!) {
-      throw new Error("Statements are not in order.");
-    }
-    cutStart = statement.end!;
-  }
-  s.remove(cutStart, src.length);
-  return s;
 }

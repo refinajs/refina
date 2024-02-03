@@ -1,42 +1,58 @@
 import t from "@babel/types";
 import MagicString from "magic-string";
 import { getLocalsAccessor } from "./constants";
-import { Bindings } from "./getBindings";
-import { ParseResult } from "./parser";
 
-class Context {
-  constructor(public src: MagicString) {}
-  usedBindings: Bindings = {};
-  getting(id: string): void {
-    this.usedBindings[id] ??= true;
+type Transformer = (src: MagicString) => void;
+
+export type Deps = Record<
+  string,
+  {
+    write: boolean;
+    transformers: Transformer[];
   }
-  setting(id: string): void {
-    this.usedBindings[id] = false;
+>;
+
+class GetDepsContext {
+  deps: Deps = {};
+  getting(id: string, transformer: Transformer): void {
+    this.deps[id] ??= {
+      write: false,
+      transformers: [],
+    };
+    this.deps[id].transformers.push(transformer);
+  }
+  setting(id: string, transformer: Transformer): void {
+    this.deps[id] ??= {
+      write: true,
+      transformers: [],
+    };
+    this.deps[id].write = true;
+    this.deps[id].transformers.push(transformer);
   }
 }
 
-export function applyBindings(
-  { mainAst, mainSrc, appCallAst, mainFuncAst }: ParseResult,
-  bindings: Record<string, boolean>,
+export function getStmtDeps(ast: t.Statement): Deps {
+  const context = new GetDepsContext();
+  getStmtDepsImpl(ast, context, new Set());
+  return context.deps;
+}
+
+export function getExprDeps(ast: t.Expression): Deps {
+  const context = new GetDepsContext();
+  getExprDepsImpl(ast, context, new Set());
+  return context.deps;
+}
+
+function getStmtDepsImpl(
+  ast: t.Statement,
+  ctx: GetDepsContext,
+  locals: Set<string>,
 ) {
-  const src = new Context(mainSrc);
-  const bindingsSet = new Set(Object.keys(bindings));
-  for (const stmt of mainAst) {
-    if (stmt === appCallAst) {
-      processExpr(mainFuncAst, src, bindingsSet);
-    } else {
-      processStmt(stmt, src, bindingsSet);
-    }
-  }
-  return src.usedBindings;
-}
-
-function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
   switch (ast.type) {
     case "BlockStatement":
-      const innerBindings = new Set(bindings);
+      const innerLocals = new Set(locals);
       for (const stmt of ast.body) {
-        processStmt(stmt, ctx, innerBindings);
+        getStmtDepsImpl(stmt, ctx, innerLocals);
       }
       break;
 
@@ -47,104 +63,104 @@ function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
       break;
 
     case "DoWhileStatement":
-      processStmt(ast.body, ctx, bindings);
+      getStmtDepsImpl(ast.body, ctx, locals);
       break;
 
     case "ExpressionStatement":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, locals);
       break;
 
     case "ForInStatement":
-      const innerBindings2 = new Set(bindings);
+      const innerLocals2 = new Set(locals);
       if (ast.left.type === "VariableDeclaration") {
-        processVariableDeclaration(ast.left, ctx, innerBindings2);
+        processVariableDeclaration(ast.left, ctx, innerLocals2);
       } else {
-        processLVal(ast.left, ctx, innerBindings2);
+        processLVal(ast.left, ctx, innerLocals2);
       }
-      processExpr(ast.right, ctx, innerBindings2);
-      processStmt(ast.body, ctx, innerBindings2);
+      getExprDepsImpl(ast.right, ctx, innerLocals2);
+      getStmtDepsImpl(ast.body, ctx, innerLocals2);
       break;
 
     case "ForStatement":
-      const innerBindings3 = new Set(bindings);
+      const innerLocals3 = new Set(locals);
       if (ast.init) {
         if (ast.init.type === "VariableDeclaration") {
-          processVariableDeclaration(ast.init, ctx, innerBindings3);
+          processVariableDeclaration(ast.init, ctx, innerLocals3);
         } else {
-          processExpr(ast.init, ctx, innerBindings3);
+          getExprDepsImpl(ast.init, ctx, innerLocals3);
         }
       }
-      if (ast.test) processExpr(ast.test, ctx, innerBindings3);
-      if (ast.update) processExpr(ast.update, ctx, innerBindings3);
-      processStmt(ast.body, ctx, innerBindings3);
+      if (ast.test) getExprDepsImpl(ast.test, ctx, innerLocals3);
+      if (ast.update) getExprDepsImpl(ast.update, ctx, innerLocals3);
+      getStmtDepsImpl(ast.body, ctx, innerLocals3);
       break;
 
     case "FunctionDeclaration":
       if (ast.id) {
-        bindings.add(ast.id.name);
+        locals.add(ast.id.name);
       }
-      const innerBindings4 = new Set(bindings);
+      const innerLocals4 = new Set(locals);
       for (const param of ast.params) {
-        processDeclarationId(param, ctx, innerBindings4);
+        processDeclarationId(param, ctx, innerLocals4);
       }
-      processStmt(ast.body, ctx, innerBindings4);
+      getStmtDepsImpl(ast.body, ctx, innerLocals4);
       break;
 
     case "IfStatement":
-      const innerBindings5 = new Set(bindings);
-      processExpr(ast.test, ctx, innerBindings5);
-      processStmt(ast.consequent, ctx, innerBindings5);
-      if (ast.alternate) processStmt(ast.alternate, ctx, innerBindings5);
+      const innerLocals5 = new Set(locals);
+      getExprDepsImpl(ast.test, ctx, innerLocals5);
+      getStmtDepsImpl(ast.consequent, ctx, innerLocals5);
+      if (ast.alternate) getStmtDepsImpl(ast.alternate, ctx, innerLocals5);
       break;
 
     case "LabeledStatement":
-      processStmt(ast.body, ctx, bindings);
+      getStmtDepsImpl(ast.body, ctx, locals);
       break;
 
     case "ReturnStatement":
-      if (ast.argument) processExpr(ast.argument, ctx, bindings);
+      if (ast.argument) getExprDepsImpl(ast.argument, ctx, locals);
       break;
 
     case "SwitchStatement":
-      processExpr(ast.discriminant, ctx, bindings);
+      getExprDepsImpl(ast.discriminant, ctx, locals);
       for (const caseClause of ast.cases) {
-        if (caseClause.test) processExpr(caseClause.test, ctx, bindings);
-        const innerBindings6 = new Set(bindings);
+        if (caseClause.test) getExprDepsImpl(caseClause.test, ctx, locals);
+        const innerLocals6 = new Set(locals);
         for (const stmt of caseClause.consequent) {
-          processStmt(stmt, ctx, innerBindings6);
+          getStmtDepsImpl(stmt, ctx, innerLocals6);
         }
       }
       break;
 
     case "ThrowStatement":
-      processExpr(ast.argument, ctx, bindings);
+      getExprDepsImpl(ast.argument, ctx, locals);
       break;
 
     case "TryStatement":
-      processStmt(ast.block, ctx, bindings);
+      getStmtDepsImpl(ast.block, ctx, locals);
       if (ast.handler) {
-        const innerBindings7 = new Set(bindings);
+        const innerLocals7 = new Set(locals);
         if (ast.handler.param)
-          processLVal(ast.handler.param, ctx, innerBindings7);
-        processStmt(ast.handler.body, ctx, bindings);
+          processLVal(ast.handler.param, ctx, innerLocals7);
+        getStmtDepsImpl(ast.handler.body, ctx, locals);
       }
-      if (ast.finalizer) processStmt(ast.finalizer, ctx, bindings);
+      if (ast.finalizer) getStmtDepsImpl(ast.finalizer, ctx, locals);
       break;
 
     case "VariableDeclaration":
-      processVariableDeclaration(ast, ctx, bindings);
+      processVariableDeclaration(ast, ctx, locals);
       break;
 
     case "WhileStatement":
-      const innerBindings8 = new Set(bindings);
-      processExpr(ast.test, ctx, innerBindings8);
-      processStmt(ast.body, ctx, innerBindings8);
+      const innerLocals8 = new Set(locals);
+      getExprDepsImpl(ast.test, ctx, innerLocals8);
+      getStmtDepsImpl(ast.body, ctx, innerLocals8);
       break;
 
     case "WithStatement":
-      const innerBindings9 = new Set(bindings);
-      processExpr(ast.object, ctx, innerBindings9);
-      processStmt(ast.body, ctx, innerBindings9);
+      const innerLocals9 = new Set(locals);
+      getExprDepsImpl(ast.object, ctx, innerLocals9);
+      getStmtDepsImpl(ast.body, ctx, innerLocals9);
       break;
 
     case "ClassDeclaration":
@@ -155,21 +171,21 @@ function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
 
     case "ExportDefaultDeclaration":
       if (t.isExpression(ast.declaration)) {
-        processExpr(ast.declaration, ctx, bindings);
+        getExprDepsImpl(ast.declaration, ctx, locals);
       } else {
-        processStmt(ast.declaration, ctx, bindings);
+        getStmtDepsImpl(ast.declaration, ctx, locals);
       }
       break;
 
     case "ExportNamedDeclaration":
       if (ast.declaration) {
-        processStmt(ast.declaration, ctx, bindings);
+        getStmtDepsImpl(ast.declaration, ctx, locals);
       } else if (ast.source) {
         // export { a, b } from "module";
       } else {
         for (const specifier of ast.specifiers) {
           if (specifier.type === "ExportSpecifier") {
-            processExpr(specifier.local, ctx, bindings);
+            getExprDepsImpl(specifier.local, ctx, locals);
           } else {
             throw new Error("Not implemented: ExportNamespaceSpecifier");
           }
@@ -182,11 +198,11 @@ function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
       throw new Error(`Not implemented: ${ast.type}`);
 
     case "ForOfStatement":
-      processExpr(ast.right, ctx, bindings);
+      getExprDepsImpl(ast.right, ctx, locals);
       if (ast.left.type === "VariableDeclaration") {
-        processVariableDeclaration(ast.left, ctx, bindings);
+        processVariableDeclaration(ast.left, ctx, locals);
       } else {
-        processLVal(ast.left, ctx, bindings);
+        processLVal(ast.left, ctx, locals);
       }
       break;
 
@@ -219,7 +235,7 @@ function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
     case "TSEnumDeclaration":
       for (const member of ast.members) {
         if (member.initializer) {
-          processExpr(member.initializer, ctx, bindings);
+          getExprDepsImpl(member.initializer, ctx, locals);
         }
       }
       break;
@@ -229,79 +245,80 @@ function processStmt(ast: t.Statement, ctx: Context, bindings: Set<string>) {
   }
 }
 
-function processExpr(
+function getExprDepsImpl(
   ast: t.Expression,
-  ctx: Context,
-  bindings: ReadonlySet<string>,
+  ctx: GetDepsContext,
+  locals: ReadonlySet<string>,
 ) {
   switch (ast.type) {
     case "ArrayExpression":
       for (const element of ast.elements) {
         if (!element) continue;
         if (element.type === "SpreadElement") {
-          processExpr(element.argument, ctx, bindings);
+          getExprDepsImpl(element.argument, ctx, locals);
         } else {
-          processExpr(element, ctx, bindings);
+          getExprDepsImpl(element, ctx, locals);
         }
       }
       break;
 
     case "AssignmentExpression":
       if (ast.left.type === "OptionalMemberExpression") {
-        processExpr(ast.left, ctx, bindings);
+        getExprDepsImpl(ast.left, ctx, locals);
       } else {
-        processLVal(ast.left, ctx, bindings);
+        processLVal(ast.left, ctx, locals);
       }
-      processExpr(ast.right, ctx, bindings);
+      getExprDepsImpl(ast.right, ctx, locals);
       break;
 
     case "BinaryExpression":
       if (ast.left.type !== "PrivateName") {
-        processExpr(ast.left, ctx, bindings);
+        getExprDepsImpl(ast.left, ctx, locals);
       }
-      processExpr(ast.right, ctx, bindings);
+      getExprDepsImpl(ast.right, ctx, locals);
       break;
 
     case "CallExpression":
       if (ast.callee.type === "V8IntrinsicIdentifier") {
         throw new Error("Not implemented: " + ast.callee.name);
       }
-      processExpr(ast.callee, ctx, bindings);
+      getExprDepsImpl(ast.callee, ctx, locals);
       for (const arg of ast.arguments) {
-        processArgument(arg, ctx, bindings);
+        processArgument(arg, ctx, locals);
       }
       break;
 
     case "ConditionalExpression":
-      processExpr(ast.test, ctx, bindings);
-      processExpr(ast.consequent, ctx, bindings);
-      processExpr(ast.alternate, ctx, bindings);
+      getExprDepsImpl(ast.test, ctx, locals);
+      getExprDepsImpl(ast.consequent, ctx, locals);
+      getExprDepsImpl(ast.alternate, ctx, locals);
       break;
 
     case "FunctionExpression":
-      const innerBindings = new Set(bindings);
+      const innerLocals = new Set(locals);
       for (const param of ast.params) {
-        processDeclarationId(param, ctx, innerBindings);
+        processDeclarationId(param, ctx, innerLocals);
       }
-      processStmt(ast.body, ctx, innerBindings);
+      getStmtDepsImpl(ast.body, ctx, innerLocals);
       break;
 
     case "Identifier":
-      if (bindings.has(ast.name)) {
-        ctx.getting(ast.name);
-        ctx.src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+      if (!locals.has(ast.name)) {
+        ctx.getting(ast.name, src =>
+          src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name)),
+        );
       }
       break;
 
     case "LogicalExpression":
-      processExpr(ast.left, ctx, bindings);
-      processExpr(ast.right, ctx, bindings);
+      getExprDepsImpl(ast.left, ctx, locals);
+      getExprDepsImpl(ast.right, ctx, locals);
       break;
 
     case "MemberExpression":
-      processExpr(ast.object, ctx, bindings);
+      getExprDepsImpl(ast.object, ctx, locals);
       if (ast.property.type !== "PrivateName") {
-        processExpr(ast.property, ctx, bindings);
+        getExprDepsImpl(ast.property, ctx, locals);
       }
       break;
 
@@ -309,9 +326,9 @@ function processExpr(
       if (ast.callee.type === "V8IntrinsicIdentifier") {
         throw new Error("Not implemented: " + ast.callee.name);
       }
-      processExpr(ast.callee, ctx, bindings);
+      getExprDepsImpl(ast.callee, ctx, locals);
       for (const arg of ast.arguments) {
-        processArgument(arg, ctx, bindings);
+        processArgument(arg, ctx, locals);
       }
       break;
 
@@ -323,35 +340,36 @@ function processExpr(
               if (property.key.type !== "Identifier")
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
-              if (bindings.has(name)) {
-                ctx.getting(name);
-                ctx.src.update(
-                  property.key.start!,
-                  property.key.end!,
-                  `${name}:${getLocalsAccessor(name)}`,
+              if (!locals.has(name)) {
+                ctx.getting(name, src =>
+                  src.update(
+                    property.key.start!,
+                    property.key.end!,
+                    `${name}:${getLocalsAccessor(name)}`,
+                  ),
                 );
               }
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, ctx, bindings);
+                getExprDepsImpl(property.key, ctx, locals);
               }
               const value = property.value;
               if (t.isExpression(value)) {
-                processExpr(value, ctx, bindings);
+                getExprDepsImpl(value, ctx, locals);
               } else {
-                processLVal(value, ctx, bindings);
+                processLVal(value, ctx, locals);
               }
             }
             break;
           case "SpreadElement":
-            processExpr(property.argument, ctx, bindings);
+            getExprDepsImpl(property.argument, ctx, locals);
             break;
           case "ObjectMethod":
-            const innerBindings2 = new Set(bindings);
+            const innerLocals2 = new Set(locals);
             for (const param of property.params) {
-              processLVal(param, ctx, innerBindings2);
+              processLVal(param, ctx, innerLocals2);
             }
-            processStmt(property.body, ctx, innerBindings2);
+            getStmtDepsImpl(property.body, ctx, innerLocals2);
             break;
           default:
             const _exhaustiveCheck: never = property;
@@ -361,34 +379,34 @@ function processExpr(
 
     case "SequenceExpression":
       for (const expression of ast.expressions) {
-        processExpr(expression, ctx, bindings);
+        getExprDepsImpl(expression, ctx, locals);
       }
       break;
 
     case "ParenthesizedExpression":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, locals);
       break;
 
     case "ThisExpression":
       break;
 
     case "UnaryExpression":
-      processExpr(ast.argument, ctx, bindings);
+      getExprDepsImpl(ast.argument, ctx, locals);
       break;
 
     case "UpdateExpression":
-      processExpr(ast.argument, ctx, bindings);
+      getExprDepsImpl(ast.argument, ctx, locals);
       break;
 
     case "ArrowFunctionExpression":
-      const innerBindings3 = new Set(bindings);
+      const innerLocals3 = new Set(locals);
       for (const param of ast.params) {
-        processDeclarationId(param, ctx, innerBindings3);
+        processDeclarationId(param, ctx, innerLocals3);
       }
       if (ast.body.type === "BlockStatement") {
-        processStmt(ast.body, ctx, innerBindings3);
+        getStmtDepsImpl(ast.body, ctx, innerLocals3);
       } else {
-        processExpr(ast.body, ctx, innerBindings3);
+        getExprDepsImpl(ast.body, ctx, innerLocals3);
       }
       break;
 
@@ -405,42 +423,42 @@ function processExpr(
       break;
 
     case "TaggedTemplateExpression":
-      processExpr(ast.tag, ctx, bindings);
-      processExpr(ast.quasi, ctx, bindings);
+      getExprDepsImpl(ast.tag, ctx, locals);
+      getExprDepsImpl(ast.quasi, ctx, locals);
       break;
 
     case "TemplateLiteral":
       for (const expression of ast.expressions) {
         if (t.isExpression(expression)) {
-          processExpr(expression, ctx, bindings);
+          getExprDepsImpl(expression, ctx, locals);
         }
       }
       break;
 
     case "YieldExpression":
       if (ast.argument) {
-        processExpr(ast.argument, ctx, bindings);
+        getExprDepsImpl(ast.argument, ctx, locals);
       }
       break;
 
     case "AwaitExpression":
-      processExpr(ast.argument, ctx, bindings);
+      getExprDepsImpl(ast.argument, ctx, locals);
       break;
 
     case "OptionalMemberExpression":
-      processExpr(ast.object, ctx, bindings);
-      processExpr(ast.property, ctx, bindings);
+      getExprDepsImpl(ast.object, ctx, locals);
+      getExprDepsImpl(ast.property, ctx, locals);
       break;
 
     case "OptionalCallExpression":
-      processExpr(ast.callee, ctx, bindings);
+      getExprDepsImpl(ast.callee, ctx, locals);
       for (const arg of ast.arguments) {
-        processArgument(arg, ctx, bindings);
+        processArgument(arg, ctx, locals);
       }
       break;
 
     case "TypeCastExpression":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, locals);
       break;
 
     case "BindExpression":
@@ -474,7 +492,7 @@ function processExpr(
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, locals);
       break;
 
     default:
@@ -482,32 +500,38 @@ function processExpr(
   }
 }
 
-function processLVal(ast: t.LVal, ctx: Context, bindings: ReadonlySet<string>) {
+function processLVal(
+  ast: t.LVal,
+  ctx: GetDepsContext,
+  locals: ReadonlySet<string>,
+) {
   switch (ast.type) {
     case "Identifier":
-      if (bindings.has(ast.name)) ctx.setting(ast.name);
-      ctx.src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name));
+      if (!locals.has(ast.name))
+        ctx.setting(ast.name, src =>
+          src.update(ast.start!, ast.end!, getLocalsAccessor(ast.name)),
+        );
       break;
 
     case "MemberExpression":
-      processExpr(ast.object, ctx, bindings);
+      getExprDepsImpl(ast.object, ctx, locals);
       if (ast.property.type !== "PrivateName") {
-        processExpr(ast.property, ctx, bindings);
+        getExprDepsImpl(ast.property, ctx, locals);
       }
       break;
 
     case "RestElement":
-      processLVal(ast.argument, ctx, bindings);
+      processLVal(ast.argument, ctx, locals);
       break;
 
     case "AssignmentPattern":
-      processLVal(ast.left, ctx, bindings);
-      processExpr(ast.right, ctx, bindings);
+      processLVal(ast.left, ctx, locals);
+      getExprDepsImpl(ast.right, ctx, locals);
       break;
 
     case "ArrayPattern":
       for (const element of ast.elements) {
-        if (element) processLVal(element, ctx, bindings);
+        if (element) processLVal(element, ctx, locals);
       }
       break;
 
@@ -515,30 +539,31 @@ function processLVal(ast: t.LVal, ctx: Context, bindings: ReadonlySet<string>) {
       for (const property of ast.properties) {
         switch (property.type) {
           case "RestElement":
-            processLVal(property, ctx, bindings);
+            processLVal(property, ctx, locals);
             break;
           case "ObjectProperty":
             if (property.shorthand) {
               if (property.key.type !== "Identifier")
                 throw new Error("Object property must be an identifier");
               const name = property.key.name;
-              if (bindings.has(name)) {
-                ctx.setting(name);
-                ctx.src.update(
-                  property.key.start!,
-                  property.key.end!,
-                  `${name}:${getLocalsAccessor(name)}`,
+              if (!locals.has(name)) {
+                ctx.setting(name, src =>
+                  src.update(
+                    property.key.start!,
+                    property.key.end!,
+                    `${name}:${getLocalsAccessor(name)}`,
+                  ),
                 );
               }
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, ctx, bindings);
+                getExprDepsImpl(property.key, ctx, locals);
               }
               const value = property.value;
               if (t.isPatternLike(value)) {
-                processLVal(value, ctx, bindings);
+                processLVal(value, ctx, locals);
               } else {
-                processExpr(value, ctx, bindings);
+                getExprDepsImpl(value, ctx, locals);
               }
             }
             break;
@@ -555,7 +580,7 @@ function processLVal(ast: t.LVal, ctx: Context, bindings: ReadonlySet<string>) {
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, locals);
       break;
 
     default:
@@ -565,12 +590,12 @@ function processLVal(ast: t.LVal, ctx: Context, bindings: ReadonlySet<string>) {
 
 function processDeclarationId(
   ast: t.LVal,
-  ctx: Context,
+  ctx: GetDepsContext,
   bindings: Set<string>,
 ) {
   switch (ast.type) {
     case "Identifier":
-      bindings.delete(ast.name);
+      bindings.add(ast.name);
       break;
 
     case "MemberExpression":
@@ -579,13 +604,13 @@ function processDeclarationId(
     case "RestElement":
       if (ast.argument.type !== "Identifier")
         throw new Error("Rest element must be an identifier in variable decl");
-      bindings.delete(ast.argument.name);
+      bindings.add(ast.argument.name);
       break;
 
     case "AssignmentPattern":
       processDeclarationId(ast.left, ctx, bindings);
       // let { a = a } = {}; should throw ReferenceError.
-      processExpr(ast.right, ctx, bindings);
+      getExprDepsImpl(ast.right, ctx, bindings);
       break;
 
     case "ArrayPattern":
@@ -602,7 +627,7 @@ function processDeclarationId(
               throw new Error(
                 "Rest element must be an identifier in variable decl",
               );
-            bindings.delete(property.argument.name);
+            bindings.add(property.argument.name);
             break;
 
           case "ObjectProperty":
@@ -611,10 +636,10 @@ function processDeclarationId(
                 throw new Error(
                   "Object property must be an identifier in variable decl",
                 );
-              bindings.delete(property.key.name);
+              bindings.add(property.key.name);
             } else {
               if (property.key.type !== "PrivateName" && property.computed) {
-                processExpr(property.key, ctx, bindings);
+                getExprDepsImpl(property.key, ctx, bindings);
               }
               if (!t.isLVal(property.value))
                 throw new Error(
@@ -637,7 +662,7 @@ function processDeclarationId(
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
     case "TSNonNullExpression":
-      processExpr(ast.expression, ctx, bindings);
+      getExprDepsImpl(ast.expression, ctx, bindings);
       break;
 
     default:
@@ -647,12 +672,12 @@ function processDeclarationId(
 
 function processVariableDeclaration(
   ast: t.VariableDeclaration,
-  ctx: Context,
+  ctx: GetDepsContext,
   bindings: Set<string>,
 ) {
   const declarations = ast.declarations;
   for (const declaration of declarations) {
-    if (declaration.init) processExpr(declaration.init, ctx, bindings);
+    if (declaration.init) getExprDepsImpl(declaration.init, ctx, bindings);
     processDeclarationId(declaration.id, ctx, bindings);
   }
 }
@@ -663,15 +688,15 @@ function processArgument(
     | t.SpreadElement
     | t.JSXNamespacedName
     | t.ArgumentPlaceholder,
-  ctx: Context,
+  ctx: GetDepsContext,
   bindings: ReadonlySet<string>,
 ) {
   if (t.isJSXNamespacedName(ast)) {
   } else if (ast.type === "SpreadElement") {
-    processExpr(ast.argument, ctx, bindings);
+    getExprDepsImpl(ast.argument, ctx, bindings);
   } else if (ast.type === "ArgumentPlaceholder") {
     throw new Error("Not implemented: " + ast.type);
   } else {
-    processExpr(ast, ctx, bindings);
+    getExprDepsImpl(ast, ctx, bindings);
   }
 }

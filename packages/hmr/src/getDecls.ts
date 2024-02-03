@@ -1,51 +1,67 @@
 import t from "@babel/types";
-import { ParseResult } from "./parser";
 
-export type Bindings = Record<string, boolean>;
-
-export function getBindings({ localsAst, appCallAst }: ParseResult): Bindings {
-  const bindings: Bindings = {};
-  for (const statement of localsAst) {
-    if (statement !== appCallAst && t.isDeclaration(statement)) {
-      addDeclarationToBindings(statement, bindings);
-    }
+export type Decls = Record<
+  string,
+  {
+    readonly: boolean;
   }
-  return bindings;
-}
+>;
 
-function addDeclarationToBindings(ast: t.Declaration, bindings: Bindings) {
+export function getStmtDecls(ast: t.Statement): Decls {
+  if (!t.isDeclaration(ast)) return {};
+
+  const decls: Decls = {};
+
   switch (ast.type) {
     case "FunctionDeclaration":
     case "ClassDeclaration":
       if (ast.id) {
-        bindings[ast.id.name] = false;
+        decls[ast.id.name] = { readonly: false };
       }
       break;
     case "VariableDeclaration":
       for (const declaration of ast.declarations) {
-        addLValToBindings(declaration.id, bindings, ast.kind === "const");
+        addLValToDecls(declaration.id, decls, ast.kind === "const");
+      }
+      break;
+    case "ImportDeclaration":
+      for (const specifier of ast.specifiers) {
+        switch (specifier.type) {
+          case "ImportSpecifier":
+            decls[specifier.local.name] = { readonly: true };
+            break;
+          case "ImportDefaultSpecifier":
+            decls[specifier.local.name] = { readonly: true };
+            break;
+          case "ImportNamespaceSpecifier":
+            decls[specifier.local.name] = { readonly: true };
+            break;
+          default:
+            const _exhaustiveCheck: never = specifier;
+        }
       }
       break;
     case "ExportNamedDeclaration":
       if (ast.declaration) {
-        addDeclarationToBindings(ast.declaration, bindings);
+        Object.assign(decls, getStmtDecls(ast.declaration));
       }
       break;
     case "TSEnumDeclaration":
-      bindings[ast.id.name] = true;
+      decls[ast.id.name] = { readonly: true };
       break;
   }
+  return decls;
 }
 
-function addLValToBindings(ast: t.LVal, bindings: Bindings, readonly: boolean) {
+function addLValToDecls(ast: t.LVal, decls: Decls, readonly: boolean) {
   switch (ast.type) {
     case "Identifier":
-      bindings[ast.name] = readonly;
+      decls[ast.name] = { readonly };
       break;
     case "ArrayPattern":
       for (const element of ast.elements) {
         if (element !== null) {
-          addLValToBindings(element, bindings, readonly);
+          addLValToDecls(element, decls, readonly);
         }
       }
       break;
@@ -53,12 +69,12 @@ function addLValToBindings(ast: t.LVal, bindings: Bindings, readonly: boolean) {
       for (const property of ast.properties) {
         switch (property.type) {
           case "RestElement":
-            addLValToBindings(property.argument, bindings, readonly);
+            addLValToDecls(property.argument, decls, readonly);
             break;
           case "ObjectProperty":
             if (property.key.type !== "Identifier")
               throw new Error("Object property must be an identifier");
-            bindings[property.key.name] = readonly;
+            decls[property.key.name] = { readonly };
             break;
           default:
             const _exhaustiveCheck: never = property;
@@ -66,12 +82,12 @@ function addLValToBindings(ast: t.LVal, bindings: Bindings, readonly: boolean) {
       }
       break;
     case "AssignmentPattern":
-      addLValToBindings(ast.left, bindings, readonly);
+      addLValToDecls(ast.left, decls, readonly);
       break;
     case "RestElement":
       if (ast.argument.type !== "Identifier")
         throw new Error("Rest element must be an identifier");
-      bindings[ast.argument.name] = readonly;
+      decls[ast.argument.name] = { readonly };
       break;
     case "MemberExpression":
     case "TSParameterProperty":

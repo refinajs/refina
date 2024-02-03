@@ -1,3 +1,4 @@
+import MagicString from "magic-string";
 import {
   appInstDefaultId,
   initFuncId,
@@ -6,12 +7,10 @@ import {
 } from "./constants";
 import { ParseResult } from "./parser";
 
-export function wrapMain({
-  appCallAst,
-  mainFuncAst,
-  mainSrc,
-  appInstName,
-}: ParseResult) {
+export function wrapMain(
+  { appStmt: appCallAst, mainFuncExpr: mainFuncAst, appInstName }: ParseResult,
+  mainSrc: MagicString,
+) {
   const appId = appInstName ?? appInstDefaultId;
 
   mainSrc.update(
