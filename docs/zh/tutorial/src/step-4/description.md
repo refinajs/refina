@@ -15,9 +15,9 @@ $app([Basics], _ => {
 });
 ```
 
-:::warning States should be declared outside the main function.
+:::warning 状态应当定义在主函数的外部
 
-Variables declared inside the main function are not states. They are just local temporary variables, which are re-created every time the main function is called.
+在主函数内部定义的函数不是状态。 它们只是局部的临时变量，每当主函数被调用时都会重新创建。
 
 :::
 

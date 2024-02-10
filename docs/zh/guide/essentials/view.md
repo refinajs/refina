@@ -44,7 +44,7 @@ $app([], _ => {
 
 ## 传入视图参数 {#passing-parameters}
 
-A view can have parameters:
+一个视图可以有参数：
 
 ```ts
 import { $view, _ } from "refina";
@@ -57,7 +57,7 @@ export default $view((name: string, id?: number) => {
 });
 ```
 
-Then, you can pass the parameters to the view:
+然后可以这样向视图传递参数：
 
 ```ts
 _(MyView)("John", 123);
@@ -97,7 +97,7 @@ export default $view(_ => {
 
 ### 如何选择
 
-If you want to reuse a **view function of the page**, you should use a _view_.
+如果你想复用**页面的片段**，可以使用 _视图_。
 
 如果你想复用**有状态的代码**，你需要使用_组件_。
 

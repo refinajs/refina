@@ -57,7 +57,7 @@ $app([Basics], _ => {
 type D<T> = T | PD<T>;
 ```
 
-### The `unwrap` Function
+### `unwrap` 函数
 
 该函数可以从类型为 `Model` 的值中取出原始值。
 
@@ -71,13 +71,13 @@ assert(unwrap(wrappedValue) === 1);
 
 :::info
 
-If the wrapped value is defined via `model` function, it is of type `JustModel<T>`, so you don't need to use `unwrap` function to extract the value. 你可以直接访问 `yourModel.value`.
+由 `model` 函数创建值的类型是 `JustModel<T>`, 因此你不需要使用 `unwrap` 函数。 你可以直接访问 `wrappedValue.value`. 你可以直接访问 `yourModel.value`.
 
 :::
 
-### `_.$setD` 函数
+### `_.$updateModel` 函数
 
-Corresponding to `unwrap` function, this function can update the value of a model.
+与 `unwrap` 函数相对应，这个函数可以设置类型为 `Model` 中的数据的值，并触发应用的更新。
 
 ## 另一种获取用户输入的方式。
 
