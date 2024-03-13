@@ -21,6 +21,7 @@ export class FAccordion extends Component {
             onclick: () => {
               if (disabled) return;
               this.status = !this.status;
+              this.$update();
             },
           },
           _ => {
