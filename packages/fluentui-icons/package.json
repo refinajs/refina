@@ -1,6 +1,6 @@
 {
   "name": "@refina/fluentui-icons",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The FluentUI icons library for Refina framework.",
   "keywords": [
     "refina",
@@ -8,8 +8,9 @@
     "icons"
   ],
   "files": [
-    "index.ts",
-    "dist"
+    "dist",
+    "README.md",
+    "tsconfig.json"
   ],
   "type": "module",
   "exports": {
