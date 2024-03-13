@@ -67,15 +67,15 @@ export class FPasswordInput extends FInput {
 }
 
 export class FUnderlineInput extends FInput {
-  appreance = "underline" as const;
+  appearance = "underline" as const;
 }
 
 export class FUnderlineNumberInput extends FNumberInput {
-  appreance = "underline" as const;
+  appearance = "underline" as const;
 }
 
 export class FUnderlinePasswordInput extends FPasswordInput {
-  appreance = "underline" as const;
+  appearance = "underline" as const;
 }
 
 export * from "./types";
