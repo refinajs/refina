@@ -1,13 +1,15 @@
 {
   "name": "@refina/griffel",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Griffel.js support for Refina framework.",
   "keywords": [
     "refina",
     "griffel"
   ],
   "files": [
-    "./src"
+    "./src",
+    "README.md",
+    "tsconfig.json"
   ],
   "type": "module",
   "main": "./src/index.ts",
