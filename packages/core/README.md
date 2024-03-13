@@ -4,7 +4,7 @@
 
 This package contains the core of Refina.
 
-To know more about Refina, please visit:
+To learn more about Refina, please visit:
 
 - [Documentation](https://refina.vercel.app).
 - [GitHub Repository](https://github.com/refinajs/refina).

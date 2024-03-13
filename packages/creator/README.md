@@ -4,7 +4,7 @@
 
 The recommended way to start a Vite-powered Refina.js project
 
-To know more about Refina, please visit:
+To learn more about Refina, please visit:
 
 - [Documentation](https://refina.vercel.app).
 - [Getting Started](https://refina.vercel.app/guide/introduction.html)

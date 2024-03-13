@@ -4,13 +4,13 @@
 
 This is the adapted version of **[MdUI](https://mdui.org/) v2** for [**Refina**](https://refina.vercel.app).
 
-To know more about MdUI, please visit:
+To learn more about MdUI, please visit:
 
 - [Website](https://mdui.org/).
 - [Documentation](https://mdui.org/docs/2/).
 - [GitHub Repository](https://github.com/zdhxiong/mdui).
 
-To know more about Refina, please visit:
+To learn more about Refina, please visit:
 
 - [Documentation](https://refina.vercel.app).
 - [Getting Started](https://refina.vercel.app/guide/introduction.html)
