@@ -164,7 +164,34 @@ function getStmtDepsImpl(
       break;
 
     case "ClassDeclaration":
-      throw new Error("Not implemented: ClassDeclaration");
+      if (ast.id) {
+        locals.add(ast.id.name);
+      }
+      if (ast.superClass) {
+        getExprDepsImpl(ast.superClass, ctx, locals);
+      }
+      for (const s of ast.body.body) {
+        if (t.isClassMethod(s) || t.isClassPrivateMethod(s)) {
+          const innerLocals10 = new Set(locals);
+          for (const param of s.params) {
+            processDeclarationId(param, ctx, innerLocals10);
+          }
+          getStmtDepsImpl(s.body, ctx, innerLocals10);
+        } else if (t.isClassProperty(s) || t.isClassPrivateProperty(s)) {
+          if (s.value) {
+            getExprDepsImpl(s.value, ctx, locals);
+          }
+        } else if (t.isStaticBlock(s)) {
+          for (const stmt of s.body) {
+            getStmtDepsImpl(stmt, ctx, locals);
+          }
+        } else if (t.isClassAccessorProperty(s)) {
+          throw new Error("Not implemented: ClassAccessorProperty");
+        } else {
+          // TS
+        }
+      }
+      break;
 
     case "ExportAllDeclaration":
       break;
