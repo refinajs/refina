@@ -90,6 +90,7 @@ export function createArrowStyles(
         `${borderStyle} /* @noflip */`,
         `${borderColor} /* @noflip */`,
       ),
+      // @ts-expect-error
       ...shorthands.borderBottom(borderWidth, borderStyle, borderColor),
       borderBottomRightRadius: tokens.borderRadiusSmall,
       transform: "rotate(var(--angle)) translate(0, 50%) rotate(45deg)",
