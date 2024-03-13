@@ -39,7 +39,7 @@
   "license": "MIT",
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.2",
     "vite": "^4.5.2",
     "vite-plugin-refina": "workspace:^"
   },

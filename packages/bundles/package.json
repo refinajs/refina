@@ -28,8 +28,8 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.6.5",
-    "terser": "^5.26.0",
+    "@types/node": "^20.11.26",
+    "terser": "^5.29.1",
     "vite": "^4.5.2",
     "vite-plugin-refina": "workspace:^"
   }

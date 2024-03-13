@@ -14,9 +14,9 @@
   },
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "typescript": "^5.1.6",
+    "typescript": "^5.4.2",
     "vite": "^4.5.2",
-    "vite-plugin-inspect": "^0.7.35",
+    "vite-plugin-inspect": "^0.7.42",
     "vite-plugin-refina": "workspace:^"
   },
   "dependencies": {

@@ -27,11 +27,11 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "dependencies": {
-    "@babel/parser": "^7.23.6",
-    "@babel/types": "^7.23.6",
-    "magic-string": "^0.30.2"
+    "@babel/parser": "^7.24.0",
+    "@babel/types": "^7.24.0",
+    "magic-string": "^0.30.8"
   },
   "devDependencies": {
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   }
 }

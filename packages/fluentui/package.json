@@ -40,17 +40,17 @@
   "license": "MIT",
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.2",
     "vite": "^4.5.2",
     "vite-plugin-refina": "workspace:^"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.5.3",
-    "@fluentui/keyboard-keys": "^9.0.6",
+    "@floating-ui/dom": "^1.6.3",
+    "@fluentui/keyboard-keys": "^9.0.7",
     "@fluentui/tokens": "1.0.0-alpha.9",
     "@refina/fluentui-icons": "workspace:^",
     "@refina/griffel": "workspace:^",
-    "keyborg": "^2.0.0"
+    "keyborg": "^2.5.0"
   },
   "peerDependencies": {
     "refina": "workspace:^"

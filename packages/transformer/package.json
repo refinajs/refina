@@ -27,9 +27,9 @@
   "bugs": "https://github.com/KermanX/refina/issues",
   "license": "MIT",
   "dependencies": {
-    "magic-string": "^0.30.2"
+    "magic-string": "^0.30.8"
   },
   "devDependencies": {
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   }
 }

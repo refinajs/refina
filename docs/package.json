@@ -31,6 +31,6 @@
     "@refina/repl": "^0.0.9",
     "@vue/theme": "^2.2.5",
     "refina": "workspace:^",
-    "vue": "^3.3.9"
+    "vue": "^3.4.21"
   }
 }

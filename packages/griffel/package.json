@@ -33,10 +33,10 @@
   "license": "MIT",
   "devDependencies": {
     "@refina/tsconfig": "workspace:^",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@griffel/core": "^1.14.2"
+    "@griffel/core": "^1.15.2"
   },
   "peerDependencies": {
     "refina": "workspace:^"
