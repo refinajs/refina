@@ -394,7 +394,7 @@ export class HTMLElementComponent<
         delete this.node[key];
       } else {
         // For a HTML element, just assign the value to the property.
-        this.node[key] = newValue;
+        this.node[key] = newValue as any;
       }
     }
     for (const key in this.appliedAttrs) {
