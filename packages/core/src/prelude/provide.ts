@@ -1,4 +1,4 @@
-import { $contextFunc, _ } from "../context";
+import { $contextFunc, Context, _ } from "../context";
 import { Content } from "../dom";
 
 type ProvideFuncType = {
@@ -15,12 +15,7 @@ type ProvideFuncType = {
    * @param args The arguments to pass to the content.
    *
    */
-  <Args extends [any, ...any[]]>(
-    key: symbol,
-    value: unknown,
-    content: Content<Args>,
-    ...args: Args
-  ): void;
+  (key: symbol, value: unknown, content: Content): void;
   /**
    * Provide a object of values to `_.$runtimeData`
    *  for the duration of children.
@@ -32,22 +27,18 @@ type ProvideFuncType = {
    * @param content The content to render. In this content, the values in obj is available in `_.$runtimeData`.
    * @param args The arguments to pass to the content.
    */
-  <Args extends [any, ...any[]]>(
-    obj: Record<symbol, unknown>,
-    content: Content<Args>,
-    ...args: Args
-  ): void;
+  (obj: Record<symbol, unknown>, content: Content): void;
 };
 
 export const provide = $contextFunc(
   (_ckey): ProvideFuncType =>
-    (keyOrObj, ...rest) => {
+    (keyOrObj, ...rest: any[]) => {
       if (typeof keyOrObj === "symbol") {
         const key = keyOrObj,
-          [value, content, ...args] = rest as [unknown, Content<any>, ...any];
+          [value, content] = rest as [unknown, Content<any>];
         const oldVal = _.$runtimeData[key];
         _.$runtimeData[key] = value;
-        _.embed(content, ...args);
+        _.embed(content, _);
         _.$runtimeData[key] = oldVal;
       } else {
         const obj = keyOrObj,
