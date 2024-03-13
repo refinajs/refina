@@ -12,16 +12,6 @@ export class DOMWindowComponent extends DOMElementComponent<any> {
     return null;
   }
 
-  // @ts-ignore Window is not a DOM element in fact.
-  addEventListener<K extends keyof WindowEventMap>(
-    event: K,
-    listener: (this: Window, ev: WindowEventMap[K]) => void,
-    options?: boolean | AddEventListenerOptions,
-  ): void {
-    // @ts-ignore
-    super.addEventListener(event, listener, options);
-  }
-
   addCls(_classes: string): void {
     throw new Error("Cannot add classes to window.");
   }
