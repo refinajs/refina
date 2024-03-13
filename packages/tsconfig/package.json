@@ -1,6 +1,6 @@
 {
   "name": "@refina/tsconfig",
-  "version": "0.2.0",
+  "version": "0.6.0",
   "description": "Default tsconfig for Refina framework.",
   "keywords": [
     "refina",

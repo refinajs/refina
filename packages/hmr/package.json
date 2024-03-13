@@ -1,6 +1,6 @@
 {
   "name": "@refina/hmr",
-  "version": "0.0.1",
+  "version": "0.6.0",
   "description": "The HMR compiler for Refina framework.",
   "keywords": [
     "refina",
