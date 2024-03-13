@@ -11,7 +11,10 @@ function generateComponent(
 ) {
   const svgContent = [...iconContent.matchAll(/(?<= d=)".+?"/g)]
     .map(
-      v => `_._svgPath({
+      v => `_.$lowlevel.$$c(
+        "[#[CKEY]#]",
+        "_svgPath",
+        {
           d: ${v},
           fill: "currentColor",
         })`,
@@ -19,7 +22,9 @@ function generateComponent(
     .join(";\n      ");
   return `export class ${componentClassName} extends Component {
   $main() {
-    _._svgSvg(
+    _.$lowlevel.$$c(
+      "[#[CKEY]#]",
+      "_svgSvg",
       {
         width: "${width}",
         height: "${width}",
