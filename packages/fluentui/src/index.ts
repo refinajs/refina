@@ -28,6 +28,7 @@ export default function (
       fDialogSurface: c.FDialogSurface,
       fDivider: c.FDivider,
       fDropdown: c.FDropdown,
+      fUnderlineDropdown: c.FUnderlineDropdown,
       fField: c.FField,
       fInput: c.FInput,
       fNumberInput: c.FNumberInput,
