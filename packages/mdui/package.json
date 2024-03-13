@@ -1,6 +1,6 @@
 {
   "name": "@refina/mdui",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "The MDUI v2 components for Refina framework.",
   "keywords": [
     "refina",
@@ -11,6 +11,7 @@
   "files": [
     "src",
     "dist",
+    "styles.css",
     "tsconfig.json",
     "README.md"
   ],
