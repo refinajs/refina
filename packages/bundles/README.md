@@ -23,7 +23,8 @@ To learn more about Refina, please visit:
 
 Available libs:
 
-- `basic-components`
 - `core`
+- `basic-components`
 - `mdui`
+- `fluentui`
 - `transformer`

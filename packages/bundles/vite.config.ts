@@ -3,7 +3,13 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import Refina, { RefinaTransformer } from "vite-plugin-refina";
 
-const libs = ["basic-components", "core", "mdui", "transformer"];
+const libs = {
+  core: "core/dist/index.js",
+  "basic-components": "basic-components/dist/index.js",
+  mdui: "mdui/dist/index.js",
+  fluentui: "fluentui/dist/index.js",
+  transformer: "transformer/src/index.ts",
+};
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,7 +26,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: Object.fromEntries(
-        libs.map(lib => [lib, resolve("..", lib, "src/index.ts")]),
+        Object.entries(libs).map(([k, v]) => [k, resolve(__dirname, "..", v)]),
       ),
       formats: ["es"],
     },
